@@ -1,0 +1,52 @@
+import 'package:xml/xml.dart';
+
+import '../utils/parsers.dart';
+import '../xwidget.dart';
+
+
+class ForEachTag implements Tag {
+  @override
+  String get name => "forEach";
+
+  @override
+  Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
+    // 'var' is a required attribute
+    final varName = attributes["var"];
+    if (varName == null || varName.isEmpty) throw Exception("<$name> 'var' attribute is required.");
+
+    // 'items' is a required attribute
+    final items = attributes["items"];
+    if (items == null) return null;
+
+    // check for iterable object
+    final iterable = items is Map ? items.entries : items;
+    if (iterable is! Iterable) throw Exception("<$name> 'items' attribute does not reference an iterable object");
+
+    // 'indexVar' is an optional attribute
+    final indexVarName = attributes["indexVar"];
+
+    // 'copyDependencies' is an optional attribute
+    final copyDeps = parseBool(element.getAttribute("copyDependencies")) ?? false;
+
+    var indexVar = 0;
+    final children = Children();
+    for (final item in iterable) {
+      dependencies[varName] = item is MapEntry ? {"key": item.key, "value": item.value} : item;
+      if (indexVarName != null && indexVarName.isNotEmpty) {
+        dependencies[indexVarName] = indexVar;
+      }
+      final tagChildren = XWidget.inflateXmlElementChildren(
+        element,
+        copyDeps ? dependencies.copy() : dependencies
+      );
+
+      // TODO: dispose of Dependencies copies - wrap in 'DisposeOf' widget
+      children.addAll(tagChildren);
+      indexVar++;
+    }
+
+    // cleanup scope and return results
+    dependencies.remove(varName);
+    return children;
+  }
+}

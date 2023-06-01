@@ -1,0 +1,127 @@
+# XWidget default config
+
+schema:
+  target: "xwidget_schema.g.xsd"
+  template: "xwidget|bin/res/schema_template.xsd"
+
+  types:
+    "bool": "boolAttributeType"
+    "BoxFit": "BoxFitAttributeType"
+    "Alignment": "AlignmentAttributeType"
+    "AlignmentGeometry": "AlignmentAttributeType"
+    "Axis": "AxisAttributeType"
+    "CrossAxisAlignment": "CrossAxisAlignmentAttributeType"
+    "MainAxisAlignment": "MainAxisAlignmentAttributeType"
+    "MainAxisSize": "MainAxisSizeAttributeType"
+    "TextAlign": "TextAlignAttributeType"
+    "TextOverflow": "TextOverflowAttributeType"
+    "TextDecoration": "TextDecorationAttributeType"
+    "TextDirection": "TextDirectionAttributeType"
+
+  attribute_exclusions: [
+    "*:child",
+  ]
+
+# icon options
+icons:
+  target: "lib/xwidget/generated/icons.g.dart"
+
+  imports: [
+    "package:xwidget/xwidget.dart",
+  ]
+
+  sources: [ ]
+
+# controller options
+controllers:
+  target: "lib/xwidget/generated/controllers.g.dart"
+
+  imports: [
+    "package:xwidget/xwidget.dart",
+  ]
+
+  sources: [ ]
+
+# inflater options
+inflaters:
+  target: "lib/xwidget/generated/inflaters.g.dart"
+
+  imports: [
+    "package:xwidget/utils/parsers.dart",
+    "package:xwidget/utils/utils.dart",
+    "package:xwidget/xwidget.dart",
+  ]
+
+  sources: [
+    "xwidget|bin/inflaters_custom.dart"
+  ]
+
+  includes: [ ]
+
+  constructor_exclusions: [
+    "CachedNetworkImage:imageRenderMethodForWeb",
+  ]
+
+  # TODO: find a way to read private variable defaults from source
+  constructor_arg_defaults:
+    "ActionPane:extentRatio": "0.5"
+    "AnimatedCrossFade:layoutBuilder": "AnimatedCrossFade.defaultLayoutBuilder"
+    "BorderSide:strokeAlign": "-1.0"
+    "CupertinoActivityIndicator:radius": "10.0"
+    "CupertinoActivityIndicator.partiallyRevealed:radius": "10.0"
+    "CupertinoSliverRefreshControl:builder": "CupertinoSliverRefreshControl.buildRefreshIndicator"
+    "CupertinoSliverRefreshControl:refreshIndicatorExtent": "60.0"
+    "CupertinoSliverRefreshControl:refreshTriggerPullDistance": "100.0"
+    "CupertinoTextField:placeholderStyle": "const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText)"
+    "CupertinoTextField.borderless:placeholderStyle": "const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText)"
+    "Dialog:insetPadding": "const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0)"
+    "FloatingActionButton:heroTag": "'<default FloatingActionButton hero tag>'"
+    "FloatingActionButton.small:heroTag": "'<default FloatingActionButton hero tag>'"
+    "FloatingActionButton.large:heroTag": "'<default FloatingActionButton hero tag>'"
+    "FloatingActionButton.extended:heroTag": "'<default FloatingActionButton hero tag>'"
+    "PopupMenuDivider:height": "16.0"
+    "SlidableAction:autoClose": "true"
+    "SlidableAction:backgroundColor": "Colors.white"
+    "SlidableAction:flex": "1"
+    "SliverAppBar.medium:toolbarHeight": "64.0"
+    "SliverAppBar.large:toolbarHeight": "64.0"
+    "Text:data": "text"
+    "WidgetSpan:alignment": "PlaceholderAlignment.middle"
+    "*:colorBlendMode": "BlendMode.srcIn"
+    "*:selectionHeightStyle": "BoxHeightStyle.tight"
+    "*:selectionWidthStyle": "BoxWidthStyle.tight"
+
+  constructor_arg_parsers:
+    # basic types
+    "bool": "parseBool(value)"
+    "double": "double.parse(value)"
+    "int": "int.parse(value)"
+    "String": "value"
+
+    # complex types
+    "Alignment": "parseAlignment(value)"
+    "AlignmentGeometry": "parseAlignment(value)"
+    "Duration": "parseDuration(value)"
+    "BorderRadius": "parseBorderRadius(value)"
+    "BorderRadiusGeometry": "parseBorderRadius(value)"
+    "Color": "parseColor(value)"
+    "Curve": "parseCurve(value)"
+    "EdgeInsets": "parseEdgeInsets(value)"
+    "EdgeInsetsGeometry": "parseEdgeInsetsGeometry(value)"
+    "IconData": "parseIcon(value)"
+    "FontWeight": "parseFontWeight(value)"
+    "Key": "parseKey(value)"
+    "List<String>": "parseListOfStrings(value)"
+    "List<double>": "parseListOfDoubles(value)"
+    "List<int>": "parseListOfInts(value)"
+    "Locale": "parseLocale(value)"
+    "MaterialStateProperty<Color>": "parseMaterialStateColor(value)"
+    "Offset": "parseOffset(value)"
+    "TextDecoration": "parseTextDecoration(value)"
+    "VisualDensity": "parseVisualDensity(value)"
+
+    # type/class agnostic - for specific attributes
+    "*:width": "parseWidth(value)"
+    "*:height": "parseHeight(value)"
+    "*:icon": "parseIcon(value)"
+    "*:activeIcon": "parseIcon(value)"

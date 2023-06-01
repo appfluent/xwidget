@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.appfluent.us/xwidget">
+
+    <!-- simple types -->
+
+    <xs:simpleType name="boolAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="AxisAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="horizontal"/>
+            <xs:enumeration value="vertical"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="BoxFitAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="fill"/>
+            <xs:enumeration value="contain"/>
+            <xs:enumeration value="cover"/>
+            <xs:enumeration value="fitWidth"/>
+            <xs:enumeration value="fitHeight"/>
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="scaleDown"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="AlignmentAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="topLeft"/>
+            <xs:enumeration value="topCenter"/>
+            <xs:enumeration value="topRight"/>
+            <xs:enumeration value="centerLeft"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="centerRight"/>
+            <xs:enumeration value="bottomLeft"/>
+            <xs:enumeration value="bottomCenter"/>
+            <xs:enumeration value="bottomRight"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CrossAxisAlignmentAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="start"/>
+            <xs:enumeration value="end"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="stretch"/>
+            <xs:enumeration value="baseline"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="MainAxisAlignmentAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="start"/>
+            <xs:enumeration value="end"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="spaceBetween"/>
+            <xs:enumeration value="spaceAround"/>
+            <xs:enumeration value="spaceEvenly"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="MainAxisSizeAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="min"/>
+            <xs:enumeration value="max"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextAlignAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="justify"/>
+            <xs:enumeration value="end"/>
+            <xs:enumeration value="start"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextDecorationAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="lineThrough"/>
+            <xs:enumeration value="overline"/>
+            <xs:enumeration value="underline"/>
+            <xs:enumeration value="none"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextDirectionAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ltr"/>
+            <xs:enumeration value="rtl"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextOverflowAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ellipsis"/>
+            <xs:enumeration value="clip"/>
+            <xs:enumeration value="fade"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- complex types -->
+
+    <xs:complexType name="objectType">
+        <xs:sequence>
+            <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="for" type="xs:string"/>
+        <xs:attribute name="visible" type="xs:string"/>
+    </xs:complexType>
+
+    <!-- helper elements -->
+
+    <xs:element name="add">
+        <xs:complexType >
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="for" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="attribute">
+        <xs:complexType >
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="name" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="builder">
+        <xs:complexType >
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="for" type="xs:string" use="required"/>
+            <xs:attribute name="multiChild" type="xs:string"/>
+            <xs:attribute name="copyDependencies" type="xs:string"/>
+            <xs:attribute name="vars" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="debug">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="message" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="forEach">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="var" type="xs:string" use="required"/>
+            <xs:attribute name="indexVar" type="xs:integer"/>
+            <xs:attribute name="items" type="xs:string" use="required"/>
+            <xs:attribute name="start" type="xs:integer"/>
+            <xs:attribute name="end" type="xs:integer"/>
+            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="forLoop">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="var" type="xs:string" use="required"/>
+            <xs:attribute name="begin" type="xs:integer"/>
+            <xs:attribute name="end" type="xs:integer"/>
+            <xs:attribute name="step" type="xs:integer"/>
+            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="fragment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="for" type="xs:string"/>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:anyAttribute/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="if">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="test" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="else">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="var">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##targetNamespace"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="value" type="xs:integer" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- inflater elements -->
+
+    <!--@@inflaters@@-->
+
+</xs:schema>
