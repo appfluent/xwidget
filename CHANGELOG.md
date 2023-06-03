@@ -1,3 +1,10 @@
-## 0.0.1
+### 0.0.2 (Jun 2, 2023)
 
-* Initial release. Fully functional, but lacking proper documentation and unit tests.
+* Continued work on documentation.
+* Fixed an issue with source analysis.
+* Automatically scan 'lib/xwidget/controllers' for controllers.
+
+### 0.0.1 (May 31, 2023)
+
+* Initial release. 
+* Fully functional, but lacking proper documentation and unit tests.

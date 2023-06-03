@@ -1,7 +1,7 @@
-import 'package:xwidget/custom/async.dart';
-import 'package:xwidget/custom/controller.dart';
-import 'package:xwidget/custom/list_of.dart';
-import 'package:xwidget/custom/value_listener.dart';
+import '../custom/async.dart';
+import '../custom/controller.dart';
+import '../custom/list_of.dart';
+import '../custom/value_listener.dart';
 
 // Define constants for all custom XWidget objects we want to generate inflaters for.
 // Used by builders to generate inflaters.

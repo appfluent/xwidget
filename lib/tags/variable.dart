@@ -9,7 +9,7 @@ class VariableTag implements Tag {
 
   @override
   Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
-    // 'var' is a required attribute
+    // 'name' is a required attribute
     final varName = attributes["name"];
     if (varName == null || varName.isEmpty) throw Exception("<$name> 'name' attribute is required.");
 

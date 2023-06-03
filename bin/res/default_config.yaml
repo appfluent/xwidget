@@ -1,47 +1,5 @@
 # XWidget default config
 
-schema:
-  target: "xwidget_schema.g.xsd"
-  template: "xwidget|bin/res/schema_template.xsd"
-
-  types:
-    "bool": "boolAttributeType"
-    "BoxFit": "BoxFitAttributeType"
-    "Alignment": "AlignmentAttributeType"
-    "AlignmentGeometry": "AlignmentAttributeType"
-    "Axis": "AxisAttributeType"
-    "CrossAxisAlignment": "CrossAxisAlignmentAttributeType"
-    "MainAxisAlignment": "MainAxisAlignmentAttributeType"
-    "MainAxisSize": "MainAxisSizeAttributeType"
-    "TextAlign": "TextAlignAttributeType"
-    "TextOverflow": "TextOverflowAttributeType"
-    "TextDecoration": "TextDecorationAttributeType"
-    "TextDirection": "TextDirectionAttributeType"
-
-  attribute_exclusions: [
-    "*:child",
-  ]
-
-# icon options
-icons:
-  target: "lib/xwidget/generated/icons.g.dart"
-
-  imports: [
-    "package:xwidget/xwidget.dart",
-  ]
-
-  sources: [ ]
-
-# controller options
-controllers:
-  target: "lib/xwidget/generated/controllers.g.dart"
-
-  imports: [
-    "package:xwidget/xwidget.dart",
-  ]
-
-  sources: [ ]
-
 # inflater options
 inflaters:
   target: "lib/xwidget/generated/inflaters.g.dart"
@@ -53,7 +11,7 @@ inflaters:
   ]
 
   sources: [
-    "xwidget|bin/inflaters_custom.dart"
+    "xwidget|lib/spec/inflater_spec.dart"
   ]
 
   includes: [ ]
@@ -125,3 +83,47 @@ inflaters:
     "*:height": "parseHeight(value)"
     "*:icon": "parseIcon(value)"
     "*:activeIcon": "parseIcon(value)"
+
+schema:
+  target: "xwidget_schema.g.xsd"
+  template: "xwidget|bin/res/schema_template.xsd"
+
+  types:
+    "bool": "boolAttributeType"
+    "BoxFit": "BoxFitAttributeType"
+    "Alignment": "AlignmentAttributeType"
+    "AlignmentGeometry": "AlignmentAttributeType"
+    "Axis": "AxisAttributeType"
+    "CrossAxisAlignment": "CrossAxisAlignmentAttributeType"
+    "MainAxisAlignment": "MainAxisAlignmentAttributeType"
+    "MainAxisSize": "MainAxisSizeAttributeType"
+    "TextAlign": "TextAlignAttributeType"
+    "TextOverflow": "TextOverflowAttributeType"
+    "TextDecoration": "TextDecorationAttributeType"
+    "TextDirection": "TextDirectionAttributeType"
+
+  attribute_exclusions: [
+    "*:child",
+  ]
+
+# controller options
+controllers:
+  target: "lib/xwidget/generated/controllers.g.dart"
+
+  imports: [
+    "package:xwidget/xwidget.dart",
+  ]
+
+  sources: [
+    "lib/xwidget/controllers/**.dart"
+  ]
+
+# icon options
+icons:
+  target: "lib/xwidget/generated/icons.g.dart"
+
+  imports: [
+    "package:xwidget/xwidget.dart",
+  ]
+
+  sources: [ ]
