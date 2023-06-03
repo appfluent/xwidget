@@ -1,3 +1,7 @@
+### 0.0.3 (Jun 3, 2023)
+
+* Fixed library resolution issue.
+
 ### 0.0.2 (Jun 2, 2023)
 
 * Continued work on documentation.

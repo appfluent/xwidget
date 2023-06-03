@@ -4,7 +4,6 @@ import 'package:petitparser/core.dart';
 import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/logging.dart';
 import 'custom/controller.dart';
 import 'el/parser.dart';
 import 'tags/attribute.dart';
@@ -21,6 +20,7 @@ import 'utils/parsers.dart';
 import 'utils/resources.dart';
 
 export 'utils/brackets.dart';
+import 'utils/logging.dart';
 export "utils/resources.dart";
 
 

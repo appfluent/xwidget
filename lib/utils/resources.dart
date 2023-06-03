@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:xml/xml.dart';
 
-import '../../utils/extensions.dart';
+import 'extensions.dart';
 import 'path.dart';
 import 'utils.dart';
 
