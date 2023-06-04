@@ -26,7 +26,7 @@ class SourceAnalyzer {
       libraryElements[path] = await currentSession
           .getLibraryByUri("file://$path")
           .then((libraryResult) => (libraryResult as LibraryElementResult).element);
-      CliLog.stepSuccess("Analyzed source '${basename(path)}'");
+      CliLog.success("Analyzed source '${basename(path)}'");
     }
     return libraryElements;
   }
@@ -47,12 +47,12 @@ class SourceAnalyzer {
               paths.add(entityPath);
             }
           } else if (basename(absolutePath) == basename(entityPath) ){
-            CliLog.stepWarn("Glob '$source' matches a directory. "
+            CliLog.warn("Glob '$source' matches a directory. "
                 "Add a file name or use globs (**.dart) to match specific files or file patterns.");
           }
         }
       } else {
-       CliLog.stepWarn("No files found for glob '$source'.");
+       CliLog.warn("No files found for glob '$source'.");
       }
     }
     return SourceManifest(files, paths);

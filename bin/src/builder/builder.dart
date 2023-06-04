@@ -7,6 +7,7 @@ import 'package:yaml/yaml.dart';
 import '../utils/cli_log.dart';
 import '../utils/config_loader.dart';
 import '../utils/path_resolver.dart';
+import '../utils/utils.dart';
 
 
 abstract class SpecBuilder {
@@ -14,7 +15,7 @@ abstract class SpecBuilder {
 
   SpecBuilder(this.config);
 
-  Future<void> build();
+  Future<BuilderResult> build();
 
   String buildFileComments() {
     final comments = StringBuffer();
@@ -119,10 +120,21 @@ abstract class SpecBuilder {
     return annotations;
   }
 
+  /// Check para to see if it should be publicly available
+  ///
+  /// Private means that it should not appear in the schema as an attribute and it should be a 'private'
+  /// reference in Dependencies (prepend '_' to Dependencies key).
   bool isPrivateAccessParam(ParameterElement param, bool isCustomWidget) {
     final paramType = param.type.getDisplayString(withNullability: false);
     return (paramType == "Dependencies" || paramType == "XmlElement") && isCustomWidget;
   }
+}
+
+class BuilderResult {
+  int warnings = 0;
+  int errors = 0;
+  List<String> inputs = [];
+  List<File> outputs = [];
 }
 
 class BuilderConfig {
@@ -135,7 +147,7 @@ class BuilderConfig {
     final uri = await PathResolver.relativeToAbsolute(path);
     final file = File.fromUri(uri);
     if (file.existsSync()) {
-      CliLog.stepSuccess("Found config at '$path'");
+      CliLog.success("Found config at '$path'");
       final yaml = await file.readAsString();
       final doc = loadYaml(yaml);
 
@@ -164,7 +176,7 @@ class BuilderConfig {
       ConfigLoader.loadToMap(doc, "inflaters.constructor_arg_defaults", inflaterConfig.constructorArgDefaults);
       ConfigLoader.loadToMap(doc, "inflaters.constructor_arg_parsers", inflaterConfig.constructorArgParsers);
     } else {
-      CliLog.stepWarn("Config not found at '$path'");
+      CliLog.warn("Config not found at '$path'");
     }
   }
 }
@@ -173,12 +185,29 @@ class ControllerConfig {
   String target = "";
   Set<String> imports = {};
   Set<String> sources = {};
+  bool isValid() {
+    var valid = true;
+    if (isBlank(target) && sources.isNotEmpty) {
+      CliLog.error("Config missing 'controllers' output target.");
+      valid = false;
+    }
+    return valid;
+  }
 }
 
 class IconConfig {
   String target = "";
   Set<String> imports = {};
   Set<String> sources = {};
+
+  bool isValid() {
+    var valid = true;
+    if (isBlank(target) && sources.isNotEmpty) {
+      CliLog.error("Config missing 'icons' output target.");
+      valid = false;
+    }
+    return valid;
+  }
 }
 
 class SchemaConfig with ConfigMixin {
@@ -201,6 +230,19 @@ class SchemaConfig with ConfigMixin {
 
   bool isNotExcludedAttribute(String? type, String? attribute) {
     return !isExcludedAttribute(type, attribute);
+  }
+
+  bool isValid(InflaterConfig inflaterConfig) {
+    var valid = true;
+    if (isBlank(target) && inflaterConfig.sources.isNotEmpty) {
+      CliLog.error("Config missing 'schema' output target.");
+      valid = false;
+    }
+    if (isBlank(template) && inflaterConfig.sources.isNotEmpty) {
+      CliLog.error("Config missing 'schema' template.");
+      valid = false;
+    }
+    return valid;
   }
 }
 
@@ -244,6 +286,15 @@ class InflaterConfig with ConfigMixin{
 
   bool isNotExcludedConstructorArg(String? inflaterType, String? argName) {
     return !isExcludedConstructorArg(inflaterType, argName);
+  }
+
+  bool isValid() {
+    var valid = true;
+    if (isBlank(target) && sources.isNotEmpty) {
+      CliLog.error("Config missing 'inflaters' output target.");
+      valid = false;
+    }
+    return valid;
   }
 }
 

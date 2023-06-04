@@ -120,15 +120,6 @@
 
     <!-- helper elements -->
 
-    <xs:element name="add">
-        <xs:complexType >
-            <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
-            </xs:sequence>
-            <xs:attribute name="for" type="xs:string"/>
-        </xs:complexType>
-    </xs:element>
-
     <xs:element name="attribute">
         <xs:complexType >
             <xs:sequence>
@@ -226,6 +217,57 @@
 
     <!-- inflater elements -->
 
+    <xs:element name="Controller">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="objectType">
+                    <xs:attribute name="key"/>
+                    <xs:attribute name="name"/>
+                    <xs:attribute name="errorWidget"/>
+                    <xs:attribute name="progressWidget"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="DynamicBuilder">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="objectType">
+                    <xs:attribute name="key"/>
+                    <xs:attribute name="builder"/>
+                    <xs:attribute name="errorWidget"/>
+                    <xs:attribute name="progressWidget"/>
+                    <xs:attribute name="initializer"/>
+                    <xs:attribute name="initValue"/>
+                    <xs:attribute name="disposeOfDependencies" type="boolAttributeType"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ListOf">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="objectType">
+                    <xs:attribute name="children"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ValueListener">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="objectType">
+                    <xs:attribute name="key"/>
+                    <xs:attribute name="varName"/>
+                    <xs:attribute name="initialValue"/>
+                    <xs:attribute name="defaultValue"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
     <!--@@inflaters@@-->
 
 </xs:schema>

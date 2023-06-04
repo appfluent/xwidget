@@ -10,9 +10,7 @@ inflaters:
     "package:xwidget/xwidget.dart",
   ]
 
-  sources: [
-    "xwidget|lib/spec/inflater_spec.dart"
-  ]
+  sources: [ ]
 
   includes: [ ]
 
@@ -86,7 +84,7 @@ inflaters:
 
 schema:
   target: "xwidget_schema.g.xsd"
-  template: "xwidget|bin/res/schema_template.xsd"
+  template: "xwidget|res/schema_template.xsd"
 
   types:
     "bool": "boolAttributeType"

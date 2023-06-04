@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
+import '../utils/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 import 'async.dart';
@@ -128,4 +129,38 @@ abstract class Controller extends WidgetsBindingObserver {
 
   @nonVirtual
   late final void Function(VoidCallback) _setStateProvider;
+}
+
+class ControllerWidgetInflater extends Inflater {
+
+  @override
+  String get type => 'Controller';
+
+  @override
+  bool get inflatesOwnChildren => true;
+
+  @override
+  bool get inflatesCustomWidget => true;
+
+  @override
+  ControllerWidget? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    return ControllerWidget(
+      key: attributes['key'],
+      name: attributes['name'],
+      element: attributes['_element'],
+      dependencies: attributes['_dependencies'],
+      errorWidget: attributes['errorWidget'],
+      progressWidget: attributes['progressWidget'],
+    );
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    switch (name) {
+      case 'key': return parseKey(value);
+      case 'name': return value;
+      case 'errorWidget': break;
+      case 'progressWidget': break;
+    }
+  }
 }

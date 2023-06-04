@@ -1,3 +1,10 @@
+### 0.0.4 (Jun 4, 2023)
+
+* Restructured project files.
+* Statically create required inflaters.
+* Added InvalidType checks to inflater builder.
+* Added inflater test.
+
 ### 0.0.3 (Jun 3, 2023)
 
 * Fixed library resolution issue.

@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:xwidget/xwidget.dart';
+
+import 'package:xwidget/src/xwidget.dart';
+
 
 void main() {
   test('Creates nested collections', () {

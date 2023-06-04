@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:xwidget/el/parser.dart';
+
+import 'package:xwidget/src/el/parser.dart';
 
 
 main() {

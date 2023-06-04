@@ -54,3 +54,29 @@ class MapOf extends MapBase {
     throw UnimplementedError();
   }
 }
+
+class ListOfInflater extends Inflater {
+
+  @override
+  String get type => 'ListOf';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => true;
+
+  @override
+  List? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    return ListOf(
+      [...children, ...?attributes['children']],
+    );
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    switch (name) {
+      case 'children': break;
+    }
+  }
+}

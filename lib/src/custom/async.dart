@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../utils/logging.dart';
+import '../utils/parsers.dart';
 import '../xwidget.dart';
 
 
@@ -93,5 +94,44 @@ class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
 
   Widget _defaultProgressWidget() {
     return const SizedBox.shrink();
+  }
+}
+
+class DynamicBuilderInflater extends Inflater {
+
+  @override
+  String get type => 'DynamicBuilder';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => true;
+
+  @override
+  DynamicBuilder? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    return DynamicBuilder(
+      key: attributes['key'],
+      builder: attributes['builder'],
+      dependencies: attributes['_dependencies'],
+      errorWidget: attributes['errorWidget'],
+      progressWidget: attributes['progressWidget'],
+      initializer: attributes['initializer'],
+      initValue: attributes['initValue'],
+      disposeOfDependencies: attributes['disposeOfDependencies'] ?? false,
+    );
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    switch (name) {
+      case 'key': return parseKey(value);
+      case 'builder': break;
+      case 'errorWidget': break;
+      case 'progressWidget': break;
+      case 'initializer': break;
+      case 'initValue': break;
+      case 'disposeOfDependencies': return parseBool(value);
+    }
   }
 }

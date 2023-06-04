@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
 import '../utils/logging.dart';
+import '../utils/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 
@@ -66,5 +67,39 @@ class ValueListenerState extends State<ValueListener> {
         widget.initialValue,
         widget.defaultValue
     );
+  }
+}
+
+class ValueListenerInflater extends Inflater {
+
+  @override
+  String get type => 'ValueListener';
+
+  @override
+  bool get inflatesOwnChildren => true;
+
+  @override
+  bool get inflatesCustomWidget => true;
+
+  @override
+  ValueListener? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    return ValueListener(
+      key: attributes['key'],
+      element: attributes['_element'],
+      dependencies: attributes['_dependencies'],
+      varName: attributes['varName'],
+      initialValue: attributes['initialValue'],
+      defaultValue: attributes['defaultValue'],
+    );
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    switch (name) {
+      case 'key': return parseKey(value);
+      case 'varName': return value;
+      case 'initialValue': break;
+      case 'defaultValue': break;
+    }
   }
 }

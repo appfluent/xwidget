@@ -21,62 +21,73 @@ class InflaterBuilder extends SpecBuilder {
     schemaConfig = config.schemaConfig;
 
   @override
-  Future<void> build() async {
-    final inflaters = StringBuffer();
-    final schemaElements = StringBuffer();
-    final initializers = StringBuffer();
-    final analyzer = SourceAnalyzer();
-    final sourceManifest = await analyzer.getSourceManifest(inflaterConfig.sources);
-    final includeManifest = await analyzer.getSourceManifest(inflaterConfig.includes);
-    final libraryElements = await analyzer.getLibraryElements([
-      ...sourceManifest.paths,
-      ...includeManifest.paths
-    ]);
+  Future<BuilderResult> build() async {
+    final result = BuilderResult();
+    if (_isOkToBuild()) {
+      final inflaters = StringBuffer();
+      final schemaElements = StringBuffer();
+      final initializers = StringBuffer();
+      final analyzer = SourceAnalyzer();
+      final sourceManifest = await analyzer.getSourceManifest(inflaterConfig.sources);
+      final includeManifest = await analyzer.getSourceManifest(inflaterConfig.includes);
+      final libraryElements = await analyzer.getLibraryElements([
+        ...sourceManifest.paths,
+        ...includeManifest.paths
+      ]);
 
-    inflaters.write(buildFileComments());
-    inflaters.write(buildImports(libraryElements.values, inflaterConfig.imports));
-    inflaters.write(_buildIncludeSource(includeManifest));
+      inflaters.write(buildFileComments());
+      inflaters.write(buildImports(libraryElements.values, inflaterConfig.imports));
+      inflaters.write(_buildIncludeSource(includeManifest));
 
-    // build inflater classes and schema
-    for (final path in sourceManifest.paths) {
-      final library = libraryElements[path];
-      if (library != null) {
-        for (final element in library.topLevelElements) {
-          if (element is PropertyAccessorElement) {
-            final returnElement = element.returnType.element2;
-            if (returnElement is ClassElement) {
-              final annotations = decodeMetadata(returnElement.metadata);
-              for (final constructor in returnElement.constructors) {
-                if (!constructor.isPrivate) {
-                  final inflater = _buildInflaterClass(returnElement, constructor, annotations);
-                  inflaters.write(inflater[0]);
-                  initializers.write(inflater[1]);
-                  schemaElements.write(_buildSchemaElement(returnElement, constructor, annotations));
+      // build inflater classes and schema
+      for (final path in sourceManifest.paths) {
+        final library = libraryElements[path];
+        if (library != null) {
+          for (final element in library.topLevelElements) {
+            if (element is PropertyAccessorElement) {
+              final returnType = element.returnType;
+              if (returnType.toString() != "InvalidType") {
+                final returnElement = returnType.element2;
+                if (returnElement is ClassElement) {
+                  final annotations = decodeMetadata(returnElement.metadata);
+                  for (final constructor in returnElement.constructors) {
+                    if (!constructor.isPrivate) {
+                      final inflater = _buildInflaterClass(returnElement, constructor, annotations);
+                      inflaters.write(inflater[0]);
+                      initializers.write(inflater[1]);
+                      schemaElements.write(_buildSchemaElement(returnElement, constructor, annotations));
+                    }
+                  }
                 }
+              } else {
+                CliLog.error("InvalidType for property '$element' in ${basename(path)}");
               }
             }
           }
+        } else {
+          CliLog.warn("Library element not found for path $path.");
         }
-      } else {
-        CliLog.stepWarn("Library element not found for path $path.");
       }
+
+      // build initializer method for all inflaters
+      inflaters.write(_buildInitializerMethod(initializers.toString()));
+
+      // write to inflater target
+      final inflaterTargetUri = await PathResolver.relativeToAbsolute(inflaterConfig.target);
+      final inflaterTargetFile = await File(inflaterTargetUri.path).create(recursive: true);
+      await inflaterTargetFile.writeAsString(inflaters.toString());
+      result.outputs.add(inflaterTargetFile);
+      CliLog.success("Inflaters output to '${inflaterConfig.target}'");
+
+      // write to schema target
+      final schemaTargetUri = await PathResolver.relativeToAbsolute(schemaConfig.target);
+      final schemaTargetFile = await File(schemaTargetUri.path).create(recursive: true);
+      final schema = await _buildSchema(schemaElements.toString());
+      await schemaTargetFile.writeAsString(schema);
+      result.outputs.add(schemaTargetFile);
+      CliLog.success("Schema output to '${schemaConfig.target}'");
     }
-
-    // build initializer method for all inflaters
-    inflaters.write(_buildInitializerMethod(initializers.toString()));
-
-    // write to inflater target
-    final inflaterTargetUri = await PathResolver.relativeToAbsolute(inflaterConfig.target);
-    final inflaterTargetFile = await File(inflaterTargetUri.path).create(recursive: true);
-    await inflaterTargetFile.writeAsString(inflaters.toString());
-    CliLog.stepSuccess("Inflaters output to '${inflaterConfig.target}'");
-
-    // write to schema target
-    final schemaTargetUri = await PathResolver.relativeToAbsolute(schemaConfig.target);
-    final schemaTargetFile = await File(schemaTargetUri.path).create(recursive: true);
-    final schema = await _buildSchema(schemaElements.toString());
-    await schemaTargetFile.writeAsString(schema);
-    CliLog.stepSuccess("Schema output to '${schemaConfig.target}'");
+    return result;
   }
 
   //===================================
@@ -121,12 +132,17 @@ class InflaterBuilder extends SpecBuilder {
     final inflatesOwnChildren = annotations[inflaterDefAnnotation]?[inflatesOwnChildrenParam] ?? false;
 
     for (final param in constructor.parameters) {
-      if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name)) {
-        final privateAccess = isPrivateAccessParam(param, isCustomWidget);
-        constructorArgs.write(_buildConstructorArg(constructorName, param, privateAccess));
-        if (schemaConfig.isNotExcludedAttribute(constructorName, param.name) && !privateAccess) {
-          parseCases.write(_buildInflaterParseCase(constructorName, param));
+      final paramType = param.type.getDisplayString(withNullability: false);
+      if (paramType != "InvalidType") {
+        if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name)) {
+          final privateAccess = isPrivateAccessParam(param, isCustomWidget);
+          constructorArgs.write(_buildConstructorArg(constructorName, param, privateAccess));
+          if (schemaConfig.isNotExcludedAttribute(constructorName, param.name) && !privateAccess) {
+            parseCases.write(_buildInflaterParseCase(constructorName, param));
+          }
         }
+      } else {
+        CliLog.error("InvalidType for param '$param' of class '$type'");
       }
     }
     code.write("class $className extends Inflater {\n\n");
@@ -209,6 +225,15 @@ class InflaterBuilder extends SpecBuilder {
     code.write("        }\n");
     code.write("    }\n");
     return code.toString();
+  }
+
+  bool _isOkToBuild() {
+    var ok = inflaterConfig.isValid() && schemaConfig.isValid(inflaterConfig);
+    if (inflaterConfig.sources.isEmpty) {
+      CliLog.success("Skipping inflaters. No sources specified.");
+      ok = false;
+    }
+    return ok;
   }
 
   //=============================================
