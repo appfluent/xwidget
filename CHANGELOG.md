@@ -1,3 +1,8 @@
+### 0.0.6 (Jun 4, 2023)
+
+* Added example folder.
+* Fixed async resources loading issue. 
+
 ### 0.0.5 (Jun 4, 2023)
 
 * Fixed inflater builder's default imports.

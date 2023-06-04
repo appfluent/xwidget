@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<MaterialApp xmlns="http://www.appfluent.us/xwidget" title="Flutter Demo">
+    <ThemeData for="theme" primarySwatch="${primarySwatch}"/>
+    <Controller for="home" name="HomePageController">
+        <Scaffold>
+            <AppBar for="appBar" centerTitle="true">
+                <Text for="title" data="${title}"/>
+            </AppBar>
+            <Center for="body">
+                <Column mainAxisAlignment="center">
+                    <Text>You have pushed the button this many times:</Text>
+                    <ValueListener varName="count" >
+                        <Text data="${toString(count)}">
+                            <TextStyle for="style" fontSize="32" fontWeight="bold"/>
+                        </Text>
+                    </ValueListener>
+                </Column>
+            </Center>
+            <FloatingActionButton for="floatingActionButton" tooltip="increment" onPressed="${onPressed}">
+                <Icon icon="Icons.add"/>
+            </FloatingActionButton>
+        </Scaffold>
+    </Controller>
+</MaterialApp>

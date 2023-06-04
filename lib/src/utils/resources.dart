@@ -74,7 +74,7 @@ class Resources {
         final resExt = match.namedGroup("ext") ?? "";
         final bundle = _resourceBundlesByPath[res];
         if (bundle != null) {
-          bundle.loadResources(fileName, resPath, resName, resExt);
+          await bundle.loadResources(fileName, resPath, resName, resExt);
         }
       }
     }

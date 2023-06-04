@@ -1,0 +1,14 @@
+# XWidget Config
+
+icons:
+  sources: [
+    "lib/xwidget/icon_spec.dart"
+  ]
+
+inflaters:
+  imports: [
+    "package:flutter/gestures.dart",
+  ]
+  sources: [
+    "lib/xwidget/inflater_spec.dart"
+  ]
