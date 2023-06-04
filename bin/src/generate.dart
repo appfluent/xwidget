@@ -7,7 +7,7 @@ import 'builder/inflater_builder.dart';
 import 'utils/cli_log.dart';
 
 
-const String version = "0.0.1";
+const String version = "0.0.5";
 
 void main(List<String> unparsedArgs) async {
   CliLog.info("XWidget Code Generator (version $version)");
@@ -30,7 +30,7 @@ void main(List<String> unparsedArgs) async {
 
   // load config files
   final config = BuilderConfig();
-  await config.loadConfig("xwidget|bin/res/default_config.yaml");
+  await config.loadConfig("xwidget|res/default_config.yaml");
   await config.loadConfig(args["config"]);
 
   // build components

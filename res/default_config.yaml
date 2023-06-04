@@ -5,8 +5,6 @@ inflaters:
   target: "lib/xwidget/generated/inflaters.g.dart"
 
   imports: [
-    "package:xwidget/utils/parsers.dart",
-    "package:xwidget/utils/utils.dart",
     "package:xwidget/xwidget.dart",
   ]
 

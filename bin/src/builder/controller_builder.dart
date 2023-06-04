@@ -33,7 +33,7 @@ class ControllerBuilder extends SpecBuilder {
           for (final element in library.topLevelElements) {
             if (element is ClassElement) {
               for (final interfaceType in element.allSupertypes) {
-                if (getInterfaceElementFQN(interfaceType.element) == "package:xwidget/custom/controller.dart::Controller") {
+                if (getInterfaceElementFQN(interfaceType.element) == "package:xwidget/src/custom/controller.dart::Controller") {
                   imports.write(_buildControllerImport(element));
                   registrations.write(_buildRegisterControllerCall(element));
                 }

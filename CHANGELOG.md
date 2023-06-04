@@ -1,3 +1,12 @@
+### 0.0.5 (Jun 4, 2023)
+
+* Fixed inflater builder's default imports.
+* Fixed default inflater config location.
+* Fixed controller builder's type scanner.
+* Export EL parser.
+* Export custom widgets.
+* Export logger.
+
 ### 0.0.4 (Jun 4, 2023)
 
 * Restructured project files.
