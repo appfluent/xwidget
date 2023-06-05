@@ -109,7 +109,7 @@ class CenterInflater extends Inflater {
             key: attributes['key'],
             widthFactor: attributes['widthFactor'],
             heightFactor: attributes['heightFactor'],
-            child: getOnlyChild('Center', children, null),
+            child: XWidgetUtils.getOnlyChild('Center', children, null),
         );
     }
 
@@ -268,7 +268,7 @@ class FloatingActionButtonInflater extends Inflater {
     FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
         return FloatingActionButton(
             key: attributes['key'],
-            child: getOnlyChild('FloatingActionButton', children, null),
+            child: XWidgetUtils.getOnlyChild('FloatingActionButton', children, null),
             tooltip: attributes['tooltip'],
             foregroundColor: attributes['foregroundColor'],
             backgroundColor: attributes['backgroundColor'],
@@ -339,7 +339,7 @@ class FloatingActionButton_smallInflater extends Inflater {
     FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
         return FloatingActionButton.small(
             key: attributes['key'],
-            child: getOnlyChild('FloatingActionButton.small', children, null),
+            child: XWidgetUtils.getOnlyChild('FloatingActionButton.small', children, null),
             tooltip: attributes['tooltip'],
             foregroundColor: attributes['foregroundColor'],
             backgroundColor: attributes['backgroundColor'],
@@ -406,7 +406,7 @@ class FloatingActionButton_largeInflater extends Inflater {
     FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
         return FloatingActionButton.large(
             key: attributes['key'],
-            child: getOnlyChild('FloatingActionButton.large', children, null),
+            child: XWidgetUtils.getOnlyChild('FloatingActionButton.large', children, null),
             tooltip: attributes['tooltip'],
             foregroundColor: attributes['foregroundColor'],
             backgroundColor: attributes['backgroundColor'],

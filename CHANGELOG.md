@@ -1,3 +1,8 @@
+### 0.0.8 (Jun 5, 2023)
+
+* Fixed inflater builder getOnlyChild function call.
+* Fixed example inflaters.
+
 ### 0.0.7 (Jun 4, 2023)
 
 * Renamed logging class from Log to CommonLog.

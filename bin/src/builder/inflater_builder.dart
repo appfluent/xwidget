@@ -165,7 +165,7 @@ class InflaterBuilder extends SpecBuilder {
       code.write("[...children, ...?attributes['children']]");
     } else if (param.name == "child") {
       final defaultValue = param.isRequired ? "const SizedBox()" : "null";
-      code.write("getOnlyChild('$constructorName', children, $defaultValue)");
+      code.write("XWidgetUtils.getOnlyChild('$constructorName', children, $defaultValue)");
     } else {
       final attributeValue = "attributes['${privateAccess ? "_" : "" }${param.name}']";
       final defaultValue = inflaterConfig.findConstructorArgDefault(constructorName, param.name, param.defaultValueCode);
