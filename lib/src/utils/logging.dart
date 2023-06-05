@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 
 
-class Log {
+class CommonLog {
   static const black = "{{black}}";
   static const red = "{{red}}";
   static const green = "{{green}}";
@@ -30,7 +30,7 @@ class Log {
   static final _colorRegExp = RegExp("\\{\\{(black|red|green|yellow|blue|magenta|cyan|white|bold|reset)\\}\\}");
 
   static Logger _logger = _defaultLogger;
-  static LoggerCallback? _callback;
+  static CommonLogCallback? _callback;
 
   static final _defaultLogger = Logger(
     filter: null, // Use the default LogFilter (-> only log in debug mode)
@@ -46,7 +46,7 @@ class Log {
 
   // constructors and initializers
 
-  static initialize({Logger? logger, LoggerCallback? callback}) {
+  static initialize({Logger? logger, CommonLogCallback? callback}) {
     if (logger != null) {
       _logger = logger;
     }
@@ -55,7 +55,7 @@ class Log {
     }
   }
 
-  const Log([this.tag = ""]);
+  const CommonLog([this.tag = ""]);
 
   // public methods
 
@@ -116,7 +116,7 @@ class Log {
   }
 }
 
-class LoggerCallback {
+class CommonLogCallback {
   onDebug(dynamic message) {}
   onInfo(dynamic message) {}
   onWarn(dynamic message, [dynamic error, StackTrace? stackTrace]) {}

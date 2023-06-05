@@ -5,7 +5,7 @@ import '../xwidget.dart';
 
 
 class DebugTag implements Tag {
-  static const _log = Log("DebugTag");
+  static const _log = CommonLog("DebugTag");
 
   @override
   String get name => "debug";

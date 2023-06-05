@@ -29,7 +29,7 @@ class ValueListener extends StatefulWidget {
 }
 
 class ValueListenerState extends State<ValueListener> {
-  static const _log = Log("ValueListener");
+  static const _log = CommonLog("ValueListener");
 
   late ValueNotifier _notifier;
 
@@ -52,7 +52,7 @@ class ValueListenerState extends State<ValueListener> {
       builder: (context, value, _) {
         _log.debug("building with varName=${widget.varName}, initialValue=${widget.initialValue}, defaultValue=${widget.defaultValue}");
         final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies);
-        return getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
+        return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
       }
     );
   }

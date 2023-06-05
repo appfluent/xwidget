@@ -1,3 +1,11 @@
+### 0.0.7 (Jun 4, 2023)
+
+* Renamed logging class from Log to CommonLog.
+* Created XWidgetUtils to hold XWidget helper functions.
+* Created CommonUtils to hold common helper functions.
+* Cleaned up messy exports.
+* Documentation updates
+
 ### 0.0.6 (Jun 4, 2023)
 
 * Added example folder.

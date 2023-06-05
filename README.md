@@ -1,3 +1,5 @@
+### *Note: This document is very much still a work in progress.* 
+
 # What is XWidget?
 
 XWidget is a not-so-opinionated framework for building dynamic UIs in Flutter using an expressive, 
@@ -8,12 +10,13 @@ use XWidget in any particular way. You can use as much or as little of the frame
 whatever makes sense for your project. There are, however, a few [Best Practices] that you should
 follow to help keep your code organized and your final build size down to a minimum.
 
-An XWidget UI is defined in XML and parsed at runtime. You have access to all the Flutter
-widgets and objects you are used to working with, including widgets from 3rd libraries and even your
-own custom widgets. This is achieved through code generation. You specify which widgets you want 
-to use and XWidget will generate the appropriate classes and functions and make them available
-via XML. You'll have access to all of the Widgets' constructors just as if you were writing Dart code.
-You'll even have code completion and access to Widgets' documentation, if provided by the author.
+An XWidget UI is defined in XML and parsed at runtime. You have access to all the Flutter widgets
+and classes you are used to working with, including widgets from 3rd party libraries and even your
+own custom widgets. This is achieved through code generation. You specify which widgets you want to
+use and XWidget will generate the appropriate classes and functions and make them available via XML.
+You'll have access to all of the Widgets' constructors just as if you were writing Dart code. You'll
+even have code completion and access to Widgets' documentation, if provided by the author, when you
+register the generated XSD with your IDE.
 
 For example:
 
@@ -26,9 +29,9 @@ For example:
 </Column>
 ```
 
-**Important:** Only specify widgets that you actually use in your UI. Specifying unused widgets or 
-objects in your configuration will bloat your app size. This is because code is generated for every 
-widget you specify and thus neutralizes Flutter's tree-shaking.
+**Important:** Only specify widgets that you actually use in your UI. Specifying unused widgets and 
+helper classes in your configuration will bloat your app size. This is because code is generated for
+every component you specify and thus neutralizes Flutter's tree-shaking.
 
 ## Installation
 
@@ -38,15 +41,27 @@ $ flutter pub add xwidget
 
 ## Configuration
 
+*Add documentation here.*
+
 ### Inflaters
+
+*Add documentation here.*
 
 ### Schema
 
+*Add documentation here.*
+
 ### Controllers
+
+*Add documentation here.*
 
 ### Icons
 
+*Add documentation here.*
+
 ## Code Generation
+
+*Add documentation here.*
 
 ```shell
 $ flutter pub run xwidget:generate 
@@ -57,6 +72,9 @@ $ flutter pub run xwidget:generate --help
 ```
 
 ## Simple Example
+
+Please see the example folder of this package. It contains an XWidget version of Flutter's classic
+starter app. It only scratches the surface of XWidget's capabilities.
 
 # Core Concepts
 
@@ -74,7 +92,7 @@ old maps.
    are handled automatically. If the underlying collection does not exist, reads will resolve to
    null and writes will create the appropriate collections and store the data.<br><br>
 
-   Dart:
+   Dart example:
    ```dart
    final index = 0;
    final dependencies = Dependencies();
@@ -83,7 +101,7 @@ old maps.
    print(dependencies.getValue("users[$index].email"));
    ```
    
-   Markup:
+   Markup example:
    ```xml
    <Text data="${user[index].email}"/>
    ```
@@ -91,7 +109,7 @@ old maps.
    without a lot of fuss. Global data are accessible across all ```Dependencies``` instances by adding a
    ```global``` prefix to the key notation.<br><br>
 
-   Dart:
+   Dart example:
    ```dart
    final index = 0;
    final dependencies = Dependencies();
@@ -99,7 +117,7 @@ old maps.
    dependencies.setValue("global.users[$index].email", "name@example.com");
    ```
    
-   Markup:
+   Markup example:
    ```xml
    <Text data="${global.user[index].email}"/>
    ```
@@ -149,6 +167,9 @@ Dart. The specification is very simple and its sole purpose is to tell the code 
 widgets to generate code for. Once the code has been generated, the widgets can be referenced in
 your markup.
 
+You can create inflaters for basically anything that' is a class and has a public constructor. For
+example, [BoxDecoration] and [TextStyle] are not widgets, they're helper classes that style widgets.
+
 ```Dart
 // a very simple inflater specification
 import 'package:flutter/material.dart';
@@ -159,64 +180,92 @@ const TextStyle? _textStyle = null;
 ```
 
 You can add as many widgets as required by your application; however, you should only specify 
-widgets that you actually need. Specifying unused widgets or objects in your configuration will 
-unnecessarily increase your app size. This is because code is generated for every widget you specify
-and thus neutralizes Flutter's tree-shaking.  
+widgets that you actually need. Specifying unused widgets and classes in your configuration will 
+unnecessarily increase your app size. This is because code is generated for every component you
+specify and thus neutralizes Flutter's tree-shaking.
 
-## Parsers
+There are four built-in inflaters: ```<Controller>```, ```<DynamicBuilder>```, ```<ListOf>```, and
+```ValueListener```. You can read more about them in the [Custom Inflaters] section.
 
-// Add documentation
+### Parsers
+
+*Add documentation here.*
+
+### Custom Inflaters
+
+*Add documentation here.*
+
+### XML Schema
+
+*Add documentation here.*
 
 # Features
 
 ## Fragments
 
-// Add documentation
+*Add documentation here.*
 
 ## Controllers
 
-// Add documentation
+*Add documentation here.*
 
 ## Expression Language (EL)
 
+*Add documentation here.*
+
 ### Static Functions
+
+*Add documentation here.*
 
 #### Built-In
 
+*Add documentation here.*
+
 #### Custom
+
+*Add documentation here.*
 
 ### Dynamic Functions
 
-// Add documentation
+*Add documentation here.*
 
 ## Resource Management
 
+*Add documentation here.*
+
 ### Strings
+
+*Add documentation here.*
 
 ### Ints
 
+*Add documentation here.*
+
 ### Doubles
+
+*Add documentation here.*
 
 ### Bools
 
+*Add documentation here.*
+
 ### Colors
+
+*Add documentation here.*
 
 ### Fragments
 
-// Add documentation
-
-## Custom Widgets
-
-// Add documentation
+*Add documentation here.*
 
 ## Tags
 
 Tags are XML elements that do not, themselves, add components to the widget tree. They provide 
 common structure control elements for constructing the UI such as conditionals, iteration, fragment
-inclusion, etc. They are always represented in lowercase to distinguish them from Widgets and 
-objects. 
+inclusion, etc. They are always represented in lowercase to distinguish them from inflaters. 
 
 ### ```<attribute>```
+
+*Add documentation here.*
 
 | Attribute | Description | Required | Default |
 |-----------|-------------|----------|---------|
@@ -229,6 +278,8 @@ objects.
 ```
 
 ### ```<builder>```
+
+*Add documentation here.*
 
 | Attribute        | Description | Required | Default |
 |------------------|-------------|----------|---------|
@@ -246,6 +297,8 @@ objects.
 
 ### ```<debug>```
 
+*Add documentation here.*
+
 | Attribute | Description | Required | Default |
 |-----------|-------------|----------|---------|
 | message   |             | no       | null    |
@@ -255,6 +308,8 @@ objects.
 ```
 
 ### ```<forEach>```
+
+*Add documentation here.*
 
 | Attribute        | Description | Required | Default |
 |------------------|-------------|----------|---------|
@@ -273,6 +328,8 @@ objects.
 
 ### ```<forLoop>```
 
+*Add documentation here.*
+
 | Attribute        | Description | Required | Default |
 |------------------|-------------|----------|---------|
 | begin            |             | no       | 0       |
@@ -289,6 +346,8 @@ objects.
 
 ### ```<fragment>```
 
+*Add documentation here.*
+
 | Attribute | Description | Required | Default |
 |-----------|-------------|----------|---------|
 | for       |             | no       | null    |
@@ -301,6 +360,8 @@ objects.
 ```
 
 ### ```<handler>```
+
+*Add documentation here.*
 
 | Attribute        | Description | Required | Default |
 |------------------|-------------|----------|---------|
@@ -316,6 +377,8 @@ objects.
 ```
 
 ### ```<if>```/```<else>```
+
+*Add documentation here.*
 
 | Attribute | Description | Required | Default |
 |-----------|-------------|----------|---------|
@@ -333,6 +396,8 @@ objects.
 
 ### ```<variable>```
 
+*Add documentation here.*
+
 | Attribute | Description | Required | Default |
 |-----------|-------------|----------|---------|
 | name      |             | yes      | null    |
@@ -342,27 +407,37 @@ objects.
 <variable name="" value=""/>
 ```
 
-## Value Listeners
-
 ## Code Completion and In-Editor Documentation
 
-// Add documentation
+*Add documentation here.*
+
+# Logging
+
+*Add documentation here.*
 
 # Best Practices
 
 ## Do use fragment folders
 
+*Add documentation here.*
+
 ## Don't specify unused widgets
+
+*Add documentation here.*
 
 ## Do check-in generated files into source control
 
-The generated dart code is 
+*Add documentation here.* 
 
 # Tips and Tricks
 
 ## Regenerate artifacts after upgrading Flutter
- 
+
+*Add documentation here.*
+
 ## Wrap your fragment in a controller to provide reusable functionality
+
+*Add documentation here.*
 
 # To Do
 

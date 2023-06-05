@@ -80,7 +80,7 @@ class ControllerWidgetState extends State<ControllerWidget> {
     if (_controller.shouldBuild()) {
       _controller.bindDependencies();
       final children = XWidget.inflateXmlElementChildren(widget.element, dependencies);
-      return getOnlyChild("Controller", children.objects, const SizedBox.shrink());
+      return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
     }
     return const SizedBox.shrink();
   }

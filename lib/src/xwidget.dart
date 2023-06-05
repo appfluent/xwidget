@@ -25,7 +25,7 @@ import 'utils/resources.dart';
 
 
 class XWidget {
-  static const _log = Log("XWidget");
+  static const _log = CommonLog("XWidget");
 
   static final _controllerInflater = ControllerWidgetInflater();
   static final _dynamicBuilderInflater = DynamicBuilderInflater();

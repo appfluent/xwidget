@@ -16,9 +16,9 @@ class ForLoopTag implements Tag {
     if (varName == null || varName.isEmpty) throw Exception("<$name> 'var' attribute is required.");
 
     final copyDeps = parseBool(element.getAttribute("copyDependencies")) ?? false;
-    final begin = tryParseInt(element.getAttribute("begin")) ?? 0;
-    final end = tryParseInt(element.getAttribute("end")) ?? 0;
-    final step = tryParseInt(element.getAttribute("step")) ?? 1;
+    final begin = CommonUtils.tryParseInt(element.getAttribute("begin")) ?? 0;
+    final end = CommonUtils.tryParseInt(element.getAttribute("end")) ?? 0;
+    final step = CommonUtils.tryParseInt(element.getAttribute("step")) ?? 1;
     if (step == 0) throw Exception("<$name> 'step' cannot be zero.");
 
     final children = Children();

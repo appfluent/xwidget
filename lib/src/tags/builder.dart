@@ -42,7 +42,7 @@ class BuilderTag implements Tag {
         }
       }
       final children = XWidget.inflateXmlElementChildren(element, deps).objects;
-      return multiChild ? children : getOnlyChild("<$name> tag", children);
+      return multiChild ? children : XWidgetUtils.getOnlyChild("<$name> tag", children);
     }
 
     List<Widget> multiWidgetBuilder([p0, p1, p2, p3, p4]) {

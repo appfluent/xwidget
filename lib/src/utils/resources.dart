@@ -229,7 +229,7 @@ class FragmentResources extends ResourceBundle {
     if (_fragments.containsKey(name)) {
       return name;
     }
-    if (isNotBlank(relativeTo)) {
+    if (CommonUtils.isNotBlank(relativeTo)) {
       final relativeName = Path.parseRelativeTo(name, relativeTo).toString();
       if (_fragments.containsKey(relativeName)) return relativeName;
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwidget/xwidget.dart';
+
 import 'package:xwidget_example/xwidget/generated/controllers.g.dart';
 import 'package:xwidget_example/xwidget/generated/icons.g.dart';
 import 'package:xwidget_example/xwidget/generated/inflaters.g.dart';

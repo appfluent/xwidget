@@ -10,7 +10,7 @@ class Path {
   Path(this._path, this._fileName);
 
   static Path parse(String? path) {
-    if (isBlank(path)) return Path([], "");
+    if (CommonUtils.isBlank(path)) return Path([], "");
 
     String fileName = "";
     final parsedPath = <String>[];
@@ -18,7 +18,7 @@ class Path {
 
     for (int index = 0; index < segments.length; index++) {
       final segment = segments[index];
-      if (isNotBlank(segment) && segment != ".") {
+      if (CommonUtils.isNotBlank(segment) && segment != ".") {
         if (segment == "..") {
           if (parsedPath.isNotEmpty) {
             parsedPath.removeLast();
@@ -38,7 +38,7 @@ class Path {
   static parseRelativeTo(String? path, String? relativeTo) {
     if (path == null) return Path.parse("");
     final relativePath = Path.parse(relativeTo).pathToString();
-    final separator = isNotBlank(relativePath) && isNotBlank(path) ? _separator : "";
+    final separator = CommonUtils.isNotBlank(relativePath) && CommonUtils.isNotBlank(path) ? _separator : "";
     return Path.parse("$relativePath$separator$path");
   }
 
@@ -49,7 +49,7 @@ class Path {
   @override
   toString() {
     final pathStr = pathToString();
-    final separator = isNotBlank(pathStr) && isNotBlank(_fileName) ? _separator : "";
+    final separator = CommonUtils.isNotBlank(pathStr) && CommonUtils.isNotBlank(_fileName) ? _separator : "";
     return "$pathStr$separator$_fileName";
   }
 }

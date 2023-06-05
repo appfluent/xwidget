@@ -39,7 +39,7 @@ class DynamicBuilder<T> extends StatefulWidget {
 }
 
 class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
-  static const _log = Log("DynamicBuilderState");
+  static const _log = CommonLog("DynamicBuilderState");
 
   late final dynamic _initValue;
 
