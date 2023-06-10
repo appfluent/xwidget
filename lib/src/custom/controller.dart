@@ -32,23 +32,23 @@ class ControllerWidget extends StatefulWidget {
 }
 
 class ControllerWidgetState extends State<ControllerWidget> {
-  late final Controller _controller;
   late final dynamic _initValue;
+  final List<Controller> _controllers = [];
 
   @override
   void initState() {
     super.initState();
-    _controller = XWidget.createController(widget.name);
-    _controller._mountedProvider = _getMounted;
-    _controller._contextProvider = _getContext;
-    _controller._dependenciesProvider = _getDependencies;
-    _controller._setStateProvider = setState;
-    _initValue = _controller.initialize();
+    final names = widget.name.trim().split(",");
+    if (names.length > 1) {
+      _initStateForMultipleControllers(names);
+    } else {
+      _initStateForSingleController(names[0]);
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _disposeOfControllers();
     super.dispose();
   }
 
@@ -67,6 +67,54 @@ class ControllerWidgetState extends State<ControllerWidget> {
   // Private Methods
   //===================================
 
+  void _initStateForSingleController(String name) {
+    final controller = XWidget.createController(name);
+    controller._mountedProvider = _getMounted;
+    controller._contextProvider = _getContext;
+    controller._dependenciesProvider = _getDependencies;
+    controller._setStateProvider = setState;
+    _controllers.add(controller);
+    _initValue = controller.initialize();
+  }
+
+  void _initStateForMultipleControllers(List<String> names) {
+    final initValues = <dynamic>[];
+    final futures = <int>[];
+    final streams = <int>[];
+    final others = <int>[];
+
+    var index = 0;
+    for (final name in names) {
+      final controller = XWidget.createController(name.trim());
+      controller._mountedProvider = _getMounted;
+      controller._contextProvider = _getContext;
+      controller._dependenciesProvider = _getDependencies;
+      controller._setStateProvider = setState;
+      _controllers.add(controller);
+
+      final initValue = controller.initialize();
+      if (initValue is Future) futures.add(index);
+      else if (initValue is Stream) streams.add(index);
+      else if (initValue != null) others.add(index);
+      initValues.add(initValue);
+      index++;
+    }
+
+    if (streams.length > 1) {
+      throw Exception("Initialization of multiple streams in the same ControllerWidget not allowed.");
+    } else if (streams.isNotEmpty && futures.isNotEmpty) {
+      throw Exception("Initialization of streams and futures in the same ControllerWidget is not allowed");
+    } else if (streams.isNotEmpty && others.isNotEmpty) {
+      throw Exception("Initialization of streams and other values in the same ControllerWidget is not allowed");
+    } else if (streams.isNotEmpty) {
+      _initValue = initValues[streams[0]];
+    } else if (futures.isEmpty) {
+      _initValue = initValues;
+    } else {
+      _initValue = Future.wait(initValues.map((value) => (value is Future) ? value : Future.value(value)));
+    }
+  }
+
   /// Returns the initValue received from [Controller.initialize].
   ///
   /// [Controller.initialize] is called in [setState] instead of being passed directly to [DynamicBuilder]
@@ -77,12 +125,31 @@ class ControllerWidgetState extends State<ControllerWidget> {
   }
 
   Widget _builder(BuildContext context, Dependencies dependencies, dynamic initValue) {
-    if (_controller.shouldBuild()) {
-      _controller.bindDependencies();
+    if (_shouldBuild()) {
+      _bindDependencies();
       final children = XWidget.inflateXmlElementChildren(widget.element, dependencies);
       return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
     }
     return const SizedBox.shrink();
+  }
+
+  void _bindDependencies() {
+    for (final controller in _controllers) {
+      controller.bindDependencies();
+    }
+  }
+
+  bool _shouldBuild() {
+    for (final controller in _controllers) {
+      if (!controller.shouldBuild()) return false;
+    }
+    return true;
+  }
+
+  void _disposeOfControllers() {
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
   }
 
   bool _getMounted() => mounted;

@@ -1,6 +1,9 @@
 import 'package:logger/logger.dart';
 
 
+typedef OnMessage = Function(String);
+typedef OnError = Function(String, [dynamic, StackTrace?]);
+
 class CommonLog {
   static const black = "{{black}}";
   static const red = "{{red}}";
@@ -30,7 +33,10 @@ class CommonLog {
   static final _colorRegExp = RegExp("\\{\\{(black|red|green|yellow|blue|magenta|cyan|white|bold|reset)\\}\\}");
 
   static Logger _logger = _defaultLogger;
-  static CommonLogCallback? _callback;
+  static OnMessage? _onDebug;
+  static OnMessage? _onInfo;
+  static OnError? _onWarn;
+  static OnError? _onError;
 
   static final _defaultLogger = Logger(
     filter: null, // Use the default LogFilter (-> only log in debug mode)
@@ -46,13 +52,20 @@ class CommonLog {
 
   // constructors and initializers
 
-  static initialize({Logger? logger, CommonLogCallback? callback}) {
+  static initialize({
+    Logger? logger,
+    OnMessage? onDebug,
+    OnMessage? onInfo,
+    OnError? onWarn,
+    OnError? onError,
+  }) {
     if (logger != null) {
       _logger = logger;
     }
-    if (_callback != null) {
-      _callback = callback;
-    }
+    _onDebug = onDebug;
+    _onInfo = onInfo;
+    _onWarn = onWarn;
+    _onError = onError;
   }
 
   const CommonLog([this.tag = ""]);
@@ -62,32 +75,32 @@ class CommonLog {
   debug(dynamic message) {
     var msg = _buildMessage(message);
     _logger.d(msg);
-    if (_callback != null) {
-      _callback!.onDebug(msg);
+    if (_onDebug != null) {
+      _onDebug!(msg);
     }
   }
 
   info(dynamic message) {
     var msg = _buildMessage(message);
     _logger.i(msg);
-    if (_callback != null) {
-      _callback!.onInfo(msg);
+    if (_onInfo != null) {
+      _onInfo!(msg);
     }
   }
 
   warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     var msg = _buildMessage(message);
     _logger.w(msg, error, stackTrace);
-    if (_callback != null) {
-      _callback!.onWarn(msg, error, stackTrace);
+    if (_onWarn != null) {
+      _onWarn!(msg, error, stackTrace);
     }
   }
 
   error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     var msg = _buildMessage(message);
     _logger.e(msg, error, stackTrace);
-    if (_callback != null) {
-      _callback!.onError(msg, error, stackTrace);
+    if (_onError != null) {
+      _onError!(msg, error, stackTrace);
     }
   }
 
@@ -114,11 +127,4 @@ class CommonLog {
     });
     return "$tag: $msg";
   }
-}
-
-class CommonLogCallback {
-  onDebug(dynamic message) {}
-  onInfo(dynamic message) {}
-  onWarn(dynamic message, [dynamic error, StackTrace? stackTrace]) {}
-  onError(dynamic message, [dynamic error, StackTrace? stackTrace]) {}
 }

@@ -1,3 +1,11 @@
+### 0.0.9 (Jun 10, 2023)
+
+* ControllerWidget now supports multiple controllers.
+* Initialize CommonLog with callback functions instead of class instance.
+* EL parser now capable of referencing global dependencies.
+* Improved Dependencies toString() format.
+* Added more unit tests.
+
 ### 0.0.8 (Jun 5, 2023)
 
 * Fixed inflater builder getOnlyChild function call.

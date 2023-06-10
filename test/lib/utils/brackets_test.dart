@@ -20,6 +20,15 @@ main() {
     expect(data.getValue("topicsFollowed.top_news"), true);
   });
 
+  test('Assert ValueNotifier again', () {
+    final notifier = ValueNotifier<dynamic>("5");
+    final data = <String, dynamic>{};
+    data.setValue("topicsFollowed.top_news.test", notifier);
+    data.setValue("topicsFollowed.top_news.test", true);
+    expect(data.getValue("topicsFollowed.top_news.test"), true);
+  });
+
+
   test('Assert replace', () {
     final data = <String, dynamic>{};
     data.setValue("topicsFollowed", []);

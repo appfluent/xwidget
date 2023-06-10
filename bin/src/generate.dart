@@ -7,7 +7,7 @@ import 'builder/inflater_builder.dart';
 import 'utils/cli_log.dart';
 
 
-const String version = "0.0.8";
+const String version = "0.0.9";
 
 void main(List<String> unparsedArgs) async {
   CliLog.info("XWidget Code Generator (version $version)");

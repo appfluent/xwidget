@@ -272,10 +272,7 @@
         <xs:annotation>
             <xs:documentation xml:lang="en">
 <p>Creates a Material Design app bar.</p><br/>
-<p>The arguments [primary], [toolbarOpacity], [bottomOpacity],
-[backwardsCompatibility], and [automaticallyImplyLeading] must
-not be null. Additionally, if [elevation] is specified, it must
-be non-negative.</p><br/>
+<p>If [elevation] is specified, it must be non-negative.</p><br/>
 <p>Typically used in the [Scaffold.appBar] property.</p><br/>
 
             </xs:documentation>
@@ -604,7 +601,7 @@ The fill color to use for an app bar's [Material].</p><br/>
 <p>If null, then the [AppBarTheme.backgroundColor] is used. If that value is also
 null, then [AppBar] uses the overall theme's [ColorScheme.primary] if the
 overall theme's brightness is [Brightness.light], and [ColorScheme.surface]
-if the overall theme's [brightness] is [Brightness.dark].</p><br/>
+if the overall theme's brightness is [Brightness.dark].</p><br/>
 <p>If this color is a [MaterialStateColor] it will be resolved against
 [MaterialState.scrolledUnder] when the content of the app's
 primary scrollable overlaps the app bar.
@@ -633,7 +630,7 @@ The default color for [Text] and [Icon]s within the app bar.</p><br/>
 value is also null, then [AppBar] uses the overall theme's
 [ColorScheme.onPrimary] if the overall theme's brightness is
 [Brightness.light], and [ColorScheme.onSurface] if the overall
-theme's [brightness] is [Brightness.dark].</p><br/>
+theme's brightness is [Brightness.dark].</p><br/>
 <p>This color is used to configure [DefaultTextStyle] that contains
 the toolbar's children, and the default [IconTheme] widgets that
 are created if [iconTheme] and [actionsIconTheme] are null.
@@ -652,36 +649,6 @@ is light or dark.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="brightness">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@template flutter.material.appbar.brightness}
-This property is deprecated, please use [systemOverlayStyle] instead.</p><br/>
-<p>Determines the brightness of the [SystemUiOverlayStyle]: for
-[Brightness.dark], [SystemUiOverlayStyle.light] is used and for
-[Brightness.light], [SystemUiOverlayStyle.dark] is used.</p><br/>
-<p>If this value is null then [AppBarTheme.brightness] is used
-and if that's null then overall theme's brightness is used.</p><br/>
-<p>The AppBar is built within a <code>AnnotatedRegion&lt;SystemUiOverlayStyle&gt;</code>
-which causes [SystemChrome.setSystemUIOverlayStyle] to be called
-automatically. Apps should not enclose the AppBar with
-their own [AnnotatedRegion].
-{@endtemplate}</p><br/>
-<p>See also:</p><br/>
-<ul>
-<li>[Theme.of], which returns the current overall Material theme as
-a [ThemeData].</li>
-<li>[ThemeData.colorScheme], the thirteen colors that most Material widget
-default colors are based on.</li>
-<li>[ColorScheme.brightness], which indicates if the overall [Theme]
-is light or dark.</li>
-<li>[backwardsCompatibility], which forces AppBar to use this
-obsolete property.</li>
-</ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="iconTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -694,7 +661,7 @@ app bar's [foregroundColor].
 <p>See also:</p><br/>
 <ul>
 <li>[actionsIconTheme], which defines the appearance of icons in
-in the [actions] list.</li>
+the [actions] list.</li>
 </ul>
 
                             </xs:documentation>
@@ -717,22 +684,6 @@ widget.</p><br/>
 <ul>
 <li>[iconTheme], which defines the appearance of all of the toolbar icons.</li>
 </ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="textTheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@template flutter.material.appbar.textTheme}
-This property is deprecated, please use [toolbarTextStyle] and
-[titleTextStyle] instead.</p><br/>
-<p>The typographic styles to use for text in the app bar. Typically this is
-set along with [backgroundColor], [iconTheme].</p><br/>
-<p>If this property is null, then [AppBarTheme.textTheme] of
-[ThemeData.appBarTheme] is used. If that is also null, then
-[ThemeData.primaryTextTheme] is used.
-{@endtemplate}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -839,26 +790,6 @@ Defines the width of [leading] widget.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="backwardsCompatibility" type="boolAttributeType">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@template flutter.material.appbar.backwardsCompatibility}
-This property is deprecated and is false by default.</p><br/>
-<p>If true, preserves the original defaults for the [backgroundColor],
-[iconTheme], [actionsIconTheme] properties, and the original use of
-the [textTheme] and [brightness] properties.</p><br/>
-<p>If this property is null, then [AppBarTheme.backwardsCompatibility] of
-[ThemeData.appBarTheme] is used. If that is also null, the default
-value is false.</p><br/>
-<p>This is a temporary property and it has been deprecated. App
-developers are encouraged to opt into the new features by
-leaving it default (false) and using the [foregroundColor] and
-[systemOverlayStyle] properties as needed.
-{@endtemplate}</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="toolbarTextStyle">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -874,7 +805,7 @@ value is a copy of the overall theme's [TextTheme.bodyMedium]
 <ul>
 <li>[titleTextStyle], which overrides the default text style for the [title].</li>
 <li>[DefaultTextStyle], which overrides the default text style for all of the
-the widgets in a subtree.</li>
+widgets in a subtree.</li>
 </ul>
 
                             </xs:documentation>
@@ -896,7 +827,7 @@ value is a copy of the overall theme's [TextTheme.titleLarge]
 [title], [leading], and [actions] widgets, also known as the
 AppBar's &quot;toolbar&quot;.</li>
 <li>[DefaultTextStyle], which overrides the default text style for all of the
-the widgets in a subtree.</li>
+widgets in a subtree.</li>
 </ul>
 
                             </xs:documentation>
@@ -906,8 +837,8 @@ the widgets in a subtree.</li>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@template flutter.material.appbar.systemOverlayStyle}
-Specifies the style to use for the system overlays that overlap the AppBar.</p><br/>
-<p>This property is only used if [backwardsCompatibility] is false (the default).</p><br/>
+Specifies the style to use for the system overlays (e.g. the status bar on
+Android or iOS, the system navigation bar on Android).</p><br/>
 <p>If this property is null, then [AppBarTheme.systemOverlayStyle] of
 [ThemeData.appBarTheme] is used. If that is also null, an appropriate
 [SystemUiOverlayStyle] is calculated based on the [backgroundColor].</p><br/>
@@ -919,8 +850,35 @@ own [AnnotatedRegion].
 {@endtemplate}
 See also:</p><br/>
 <ul>
-<li>[SystemChrome.setSystemUIOverlayStyle]</li>
+<li>[AnnotatedRegion], for placing [SystemUiOverlayStyle] in the layer tree.</li>
+<li>[SystemChrome.setSystemUIOverlayStyle], the imperative API for setting
+system overlays style.</li>
 </ul>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="forceMaterialTransparency" type="boolAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@template flutter.material.appbar.forceMaterialTransparency}
+Forces the AppBar's Material widget type to be [MaterialType.transparency]
+(instead of Material's default type).</p><br/>
+<p>This will remove the visual display of [backgroundColor] and [elevation],
+and affect other characteristics of the AppBar's Material widget.</p><br/>
+<p>Provided for cases where the app bar is to be transparent, and gestures
+must pass through the app bar to widgets beneath the app bar (i.e. with
+[Scaffold.extendBodyBehindAppBar] set to true).</p><br/>
+<p>Defaults to false.
+{@endtemplate}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="clipBehavior">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@macro flutter.material.Material.clipBehavior}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -984,105 +942,6 @@ an explicit key.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="Color">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">
-<p>Construct a color from the lower 32 bits of an [int].</p><br/>
-<p>The bits are interpreted as follows:</p><br/>
-<ul>
-<li>Bits 24-31 are the alpha value.</li>
-<li>Bits 16-23 are the red value.</li>
-<li>Bits 8-15 are the green value.</li>
-<li>Bits 0-7 are the blue value.</li>
-</ul>
-<p>In other words, if AA is the alpha value in hex, RR the red value in hex,
-GG the green value in hex, and BB the blue value in hex, a color can be
-expressed as <code>const Color(0xAARRGGBB)</code>.</p><br/>
-<p>For example, to get a fully opaque orange, you would use <code>const Color(0xFFFF9000)</code> (<code>FF</code> for the alpha, <code>FF</code> for the red, <code>90</code> for the
-green, and <code>00</code> for the blue).</p><br/>
-
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="objectType">
-                    <xs:attribute name="value">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A 32 bit value representing this color.</p><br/>
-<p>The bits are assigned as follows:</p><br/>
-<ul>
-<li>Bits 24-31 are the alpha value.</li>
-<li>Bits 16-23 are the red value.</li>
-<li>Bits 8-15 are the green value.</li>
-<li>Bits 0-7 are the blue value.</li>
-</ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="Color.fromARGB">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">
-<p>Construct a color from the lower 8 bits of four integers.</p><br/>
-<ul>
-<li><code>a</code> is the alpha value, with 0 being transparent and 255 being fully
-opaque.</li>
-<li><code>r</code> is [red], from 0 to 255.</li>
-<li><code>g</code> is [green], from 0 to 255.</li>
-<li><code>b</code> is [blue], from 0 to 255.</li>
-</ul>
-<p>Out of range values are brought into range using modulo 255.</p><br/>
-<p>See also [fromRGBO], which takes the alpha value as a floating point
-value.</p><br/>
-
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="objectType">
-                    <xs:attribute name="a"/>
-                    <xs:attribute name="r"/>
-                    <xs:attribute name="g"/>
-                    <xs:attribute name="b"/>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="Color.fromRGBO">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">
-<p>Create a color from red, green, blue, and opacity, similar to <code>rgba()</code> in CSS.</p><br/>
-<ul>
-<li><code>r</code> is [red], from 0 to 255.</li>
-<li><code>g</code> is [green], from 0 to 255.</li>
-<li><code>b</code> is [blue], from 0 to 255.</li>
-<li><code>opacity</code> is alpha channel of this color as a double, with 0.0 being
-transparent and 1.0 being fully opaque.</li>
-</ul>
-<p>Out of range values are brought into range using modulo 255.</p><br/>
-<p>See also [fromARGB], which takes the opacity as an integer value.</p><br/>
-
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="objectType">
-                    <xs:attribute name="r"/>
-                    <xs:attribute name="g"/>
-                    <xs:attribute name="b"/>
-                    <xs:attribute name="opacity"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -4241,11 +4100,11 @@ is also null, then it defaults to [Colors.black54].</p><br/>
 <p>The width of the area within which a horizontal swipe will open the
 drawer.</p><br/>
 <p>By default, the value used is 20.0 added to the padding edge of
-<code>MediaQuery.of(context).padding</code> that corresponds to the surrounding
+<code>MediaQuery.paddingOf(context)</code> that corresponds to the surrounding
 [TextDirection]. This ensures that the drag area for notched devices is
 not obscured. For example, if <code>TextDirection.of(context)</code> is set to
 [TextDirection.ltr], 20.0 will be added to
-<code>MediaQuery.of(context).padding.left</code>.</p><br/>
+<code>MediaQuery.paddingOf(context).left</code>.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5238,7 +5097,7 @@ conventions.</p><br/>
 to determine the current platform for the purpose of emulating the
 platform behavior (e.g. scrolling or haptic effects). Widgets and render
 objects at lower layers that try to emulate the underlying platform
-platform can depend on [defaultTargetPlatform] directly, or may require
+can depend on [defaultTargetPlatform] directly, or may require
 that the target platform be provided as an argument. The
 [dart:io.Platform] object should only be used directly when it's critical
 to actually know the current platform, without any overrides possible (for
@@ -5296,10 +5155,10 @@ true by default. After that change has landed on stable, we will deprecate
 this flag and remove all uses of it. At that point, the <code>material</code> library
 will aim to only support Material 3.</p><br/>
 <h2>Defaults</h2>
-<p>If a [ThemeData] is constructed with [useMaterial3] set to true, then
-some properties will get updated defaults. Please note that
-[ThemeData.copyWith] with [useMaterial3] set to true will
-not change any of these properties in the resulting [ThemeData].</p><br/>
+<p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
+some properties will get updated defaults. However, the
+[ThemeData.copyWith] method with [useMaterial3] set to true will <em>not</em>
+change any of these properties in the resulting [ThemeData].</p><br/>
 <style>table,td,th { border-collapse: collapse; padding: 0.45em; } td { border: 1px solid }</style>
 <p>| Property        | Material 3 default             | Material 2 default             |
 | :-------------- | :----------------------------- | :----------------------------- |
@@ -5321,19 +5180,19 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 <h3>Components</h3>
 <ul>
-<li>Badges: [Badge]</li>
+<li>Badges: [Badge] (<em>new</em>)</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton], [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
 <li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton]</li>
+<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
-<li>Checkbox: [Checkbox]</li>
+<li>Checkbox: [Checkbox], [CheckboxListTile]</li>
 <li>Chips:
 <ul>
 <li>[ActionChip] (used for Assist and Suggestion chips),</li>
@@ -5341,21 +5200,23 @@ scheme depending on [useMaterial3].</p><br/>
 <li>[InputChip]</li>
 </ul>
 </li>
-<li>Dialogs: [Dialog], [AlertDialog]</li>
-<li>Divider: [Divider]</li>
+<li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuBar], [DropdownMenu]</li>
-<li>Navigation bar: [NavigationBar] (new, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer]</li>
+<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
+<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
-<li>Radio button: [Radio]</li>
+<li>Radio button: [Radio], [RadioListTile]</li>
 <li>Snack bar: [SnackBar]</li>
-<li>Slider: [Slider]</li>
-<li>Switch: [Switch]</li>
+<li>Slider: [Slider], [RangeSlider]</li>
+<li>Switch: [Switch], [SwitchListTile]</li>
 <li>Tabs: [TabBar]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
-<li>Top app bar: [AppBar]</li>
+<li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -5423,13 +5284,12 @@ use [ThemeData.iconButtonTheme] instead.
                     <xs:attribute name="colorScheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A set of twelve colors that can be used to configure the
-color properties of most components.</p><br/>
-<p>This property was added much later than the theme's set of highly
-specific colors, like [cardColor], [buttonColor], [canvasColor] etc.
-New components can be defined exclusively in terms of [colorScheme].
-Existing components will gradually migrate to it, to the extent
-that is possible without significant backwards compatibility breaks.</p><br/>
+<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
+<p>This property was added much later than the theme's set of highly specific
+colors, like [cardColor], [canvasColor] etc. New components can be defined
+exclusively in terms of [colorScheme]. Existing components will gradually
+migrate to it, to the extent that is possible without significant
+backwards compatibility breaks.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5632,6 +5492,15 @@ state. For example, an unchecked checkbox. See also [disabledColor].</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="actionIconTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing icons of [BackButtonIcon], [CloseButtonIcon],
+[DrawerButtonIcon], or [EndDrawerButtonIcon].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="appBarTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -5729,6 +5598,15 @@ and [ButtonBar].</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>A theme for customizing the appearance and layout of [DataTable]
+widgets.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="datePickerTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of [DatePickerDialog]
 widgets.</p><br/>
 
                             </xs:documentation>
@@ -5907,6 +5785,22 @@ popup menus.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="searchBarTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of [SearchBar] widgets.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="searchViewTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of search views created by [SearchAnchor] widgets.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="segmentedButtonTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -5990,11 +5884,6 @@ popup menus.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="accentColor"/>
-                    <xs:attribute name="accentColorBrightness"/>
-                    <xs:attribute name="accentTextTheme"/>
-                    <xs:attribute name="accentIconTheme"/>
-                    <xs:attribute name="buttonColor"/>
                     <xs:attribute name="fixTextFieldOutlineLabel" type="boolAttributeType"/>
                     <xs:attribute name="primaryColorBrightness"/>
                     <xs:attribute name="androidOverscrollIndicator">
@@ -6157,7 +6046,7 @@ conventions.</p><br/>
 to determine the current platform for the purpose of emulating the
 platform behavior (e.g. scrolling or haptic effects). Widgets and render
 objects at lower layers that try to emulate the underlying platform
-platform can depend on [defaultTargetPlatform] directly, or may require
+can depend on [defaultTargetPlatform] directly, or may require
 that the target platform be provided as an argument. The
 [dart:io.Platform] object should only be used directly when it's critical
 to actually know the current platform, without any overrides possible (for
@@ -6215,10 +6104,10 @@ true by default. After that change has landed on stable, we will deprecate
 this flag and remove all uses of it. At that point, the <code>material</code> library
 will aim to only support Material 3.</p><br/>
 <h2>Defaults</h2>
-<p>If a [ThemeData] is constructed with [useMaterial3] set to true, then
-some properties will get updated defaults. Please note that
-[ThemeData.copyWith] with [useMaterial3] set to true will
-not change any of these properties in the resulting [ThemeData].</p><br/>
+<p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
+some properties will get updated defaults. However, the
+[ThemeData.copyWith] method with [useMaterial3] set to true will <em>not</em>
+change any of these properties in the resulting [ThemeData].</p><br/>
 <style>table,td,th { border-collapse: collapse; padding: 0.45em; } td { border: 1px solid }</style>
 <p>| Property        | Material 3 default             | Material 2 default             |
 | :-------------- | :----------------------------- | :----------------------------- |
@@ -6240,19 +6129,19 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 <h3>Components</h3>
 <ul>
-<li>Badges: [Badge]</li>
+<li>Badges: [Badge] (<em>new</em>)</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton], [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
 <li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton]</li>
+<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
-<li>Checkbox: [Checkbox]</li>
+<li>Checkbox: [Checkbox], [CheckboxListTile]</li>
 <li>Chips:
 <ul>
 <li>[ActionChip] (used for Assist and Suggestion chips),</li>
@@ -6260,21 +6149,23 @@ scheme depending on [useMaterial3].</p><br/>
 <li>[InputChip]</li>
 </ul>
 </li>
-<li>Dialogs: [Dialog], [AlertDialog]</li>
-<li>Divider: [Divider]</li>
+<li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuBar], [DropdownMenu]</li>
-<li>Navigation bar: [NavigationBar] (new, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer]</li>
+<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
+<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
-<li>Radio button: [Radio]</li>
+<li>Radio button: [Radio], [RadioListTile]</li>
 <li>Snack bar: [SnackBar]</li>
-<li>Slider: [Slider]</li>
-<li>Switch: [Switch]</li>
+<li>Slider: [Slider], [RangeSlider]</li>
+<li>Switch: [Switch], [SwitchListTile]</li>
 <li>Tabs: [TabBar]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
-<li>Top app bar: [AppBar]</li>
+<li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -6341,13 +6232,12 @@ use [ThemeData.iconButtonTheme] instead.
                     <xs:attribute name="colorScheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A set of twelve colors that can be used to configure the
-color properties of most components.</p><br/>
-<p>This property was added much later than the theme's set of highly
-specific colors, like [cardColor], [buttonColor], [canvasColor] etc.
-New components can be defined exclusively in terms of [colorScheme].
-Existing components will gradually migrate to it, to the extent
-that is possible without significant backwards compatibility breaks.</p><br/>
+<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
+<p>This property was added much later than the theme's set of highly specific
+colors, like [cardColor], [canvasColor] etc. New components can be defined
+exclusively in terms of [colorScheme]. Existing components will gradually
+migrate to it, to the extent that is possible without significant
+backwards compatibility breaks.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -6545,6 +6435,15 @@ state. For example, an unchecked checkbox. See also [disabledColor].</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="actionIconTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing icons of [BackButtonIcon], [CloseButtonIcon],
+[DrawerButtonIcon], or [EndDrawerButtonIcon].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="appBarTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6642,6 +6541,15 @@ and [ButtonBar].</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>A theme for customizing the appearance and layout of [DataTable]
+widgets.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="datePickerTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of [DatePickerDialog]
 widgets.</p><br/>
 
                             </xs:documentation>
@@ -6820,6 +6728,22 @@ popup menus.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="searchBarTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of [SearchBar] widgets.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="searchViewTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of search views created by [SearchAnchor] widgets.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="segmentedButtonTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6903,11 +6827,6 @@ popup menus.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="accentColor"/>
-                    <xs:attribute name="accentColorBrightness"/>
-                    <xs:attribute name="accentTextTheme"/>
-                    <xs:attribute name="accentIconTheme"/>
-                    <xs:attribute name="buttonColor"/>
                     <xs:attribute name="fixTextFieldOutlineLabel" type="boolAttributeType"/>
                     <xs:attribute name="primaryColorBrightness"/>
                     <xs:attribute name="androidOverscrollIndicator">
@@ -6973,13 +6892,12 @@ more discussion on how to pick the right colors.</p><br/>
                     <xs:attribute name="colorScheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A set of twelve colors that can be used to configure the
-color properties of most components.</p><br/>
-<p>This property was added much later than the theme's set of highly
-specific colors, like [cardColor], [buttonColor], [canvasColor] etc.
-New components can be defined exclusively in terms of [colorScheme].
-Existing components will gradually migrate to it, to the extent
-that is possible without significant backwards compatibility breaks.</p><br/>
+<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
+<p>This property was added much later than the theme's set of highly specific
+colors, like [cardColor], [canvasColor] etc. New components can be defined
+exclusively in terms of [colorScheme]. Existing components will gradually
+migrate to it, to the extent that is possible without significant
+backwards compatibility breaks.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7008,10 +6926,10 @@ true by default. After that change has landed on stable, we will deprecate
 this flag and remove all uses of it. At that point, the <code>material</code> library
 will aim to only support Material 3.</p><br/>
 <h2>Defaults</h2>
-<p>If a [ThemeData] is constructed with [useMaterial3] set to true, then
-some properties will get updated defaults. Please note that
-[ThemeData.copyWith] with [useMaterial3] set to true will
-not change any of these properties in the resulting [ThemeData].</p><br/>
+<p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
+some properties will get updated defaults. However, the
+[ThemeData.copyWith] method with [useMaterial3] set to true will <em>not</em>
+change any of these properties in the resulting [ThemeData].</p><br/>
 <style>table,td,th { border-collapse: collapse; padding: 0.45em; } td { border: 1px solid }</style>
 <p>| Property        | Material 3 default             | Material 2 default             |
 | :-------------- | :----------------------------- | :----------------------------- |
@@ -7033,19 +6951,19 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 <h3>Components</h3>
 <ul>
-<li>Badges: [Badge]</li>
+<li>Badges: [Badge] (<em>new</em>)</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton], [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
 <li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton]</li>
+<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
-<li>Checkbox: [Checkbox]</li>
+<li>Checkbox: [Checkbox], [CheckboxListTile]</li>
 <li>Chips:
 <ul>
 <li>[ActionChip] (used for Assist and Suggestion chips),</li>
@@ -7053,21 +6971,23 @@ scheme depending on [useMaterial3].</p><br/>
 <li>[InputChip]</li>
 </ul>
 </li>
-<li>Dialogs: [Dialog], [AlertDialog]</li>
-<li>Divider: [Divider]</li>
+<li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuBar], [DropdownMenu]</li>
-<li>Navigation bar: [NavigationBar] (new, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer]</li>
+<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
+<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
-<li>Radio button: [Radio]</li>
+<li>Radio button: [Radio], [RadioListTile]</li>
 <li>Snack bar: [SnackBar]</li>
-<li>Slider: [Slider]</li>
-<li>Switch: [Switch]</li>
+<li>Slider: [Slider], [RangeSlider]</li>
+<li>Switch: [Switch], [SwitchListTile]</li>
 <li>Tabs: [TabBar]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
-<li>Top app bar: [AppBar]</li>
+<li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7115,10 +7035,10 @@ true by default. After that change has landed on stable, we will deprecate
 this flag and remove all uses of it. At that point, the <code>material</code> library
 will aim to only support Material 3.</p><br/>
 <h2>Defaults</h2>
-<p>If a [ThemeData] is constructed with [useMaterial3] set to true, then
-some properties will get updated defaults. Please note that
-[ThemeData.copyWith] with [useMaterial3] set to true will
-not change any of these properties in the resulting [ThemeData].</p><br/>
+<p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
+some properties will get updated defaults. However, the
+[ThemeData.copyWith] method with [useMaterial3] set to true will <em>not</em>
+change any of these properties in the resulting [ThemeData].</p><br/>
 <style>table,td,th { border-collapse: collapse; padding: 0.45em; } td { border: 1px solid }</style>
 <p>| Property        | Material 3 default             | Material 2 default             |
 | :-------------- | :----------------------------- | :----------------------------- |
@@ -7140,19 +7060,19 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 <h3>Components</h3>
 <ul>
-<li>Badges: [Badge]</li>
+<li>Badges: [Badge] (<em>new</em>)</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton], [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
 <li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton]</li>
+<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
-<li>Checkbox: [Checkbox]</li>
+<li>Checkbox: [Checkbox], [CheckboxListTile]</li>
 <li>Chips:
 <ul>
 <li>[ActionChip] (used for Assist and Suggestion chips),</li>
@@ -7160,21 +7080,23 @@ scheme depending on [useMaterial3].</p><br/>
 <li>[InputChip]</li>
 </ul>
 </li>
-<li>Dialogs: [Dialog], [AlertDialog]</li>
-<li>Divider: [Divider]</li>
+<li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuBar], [DropdownMenu]</li>
-<li>Navigation bar: [NavigationBar] (new, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer]</li>
+<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
+<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
-<li>Radio button: [Radio]</li>
+<li>Radio button: [Radio], [RadioListTile]</li>
 <li>Snack bar: [SnackBar]</li>
-<li>Slider: [Slider]</li>
-<li>Switch: [Switch]</li>
+<li>Slider: [Slider], [RangeSlider]</li>
+<li>Switch: [Switch], [SwitchListTile]</li>
 <li>Tabs: [TabBar]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
-<li>Top app bar: [AppBar]</li>
+<li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7222,10 +7144,10 @@ true by default. After that change has landed on stable, we will deprecate
 this flag and remove all uses of it. At that point, the <code>material</code> library
 will aim to only support Material 3.</p><br/>
 <h2>Defaults</h2>
-<p>If a [ThemeData] is constructed with [useMaterial3] set to true, then
-some properties will get updated defaults. Please note that
-[ThemeData.copyWith] with [useMaterial3] set to true will
-not change any of these properties in the resulting [ThemeData].</p><br/>
+<p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
+some properties will get updated defaults. However, the
+[ThemeData.copyWith] method with [useMaterial3] set to true will <em>not</em>
+change any of these properties in the resulting [ThemeData].</p><br/>
 <style>table,td,th { border-collapse: collapse; padding: 0.45em; } td { border: 1px solid }</style>
 <p>| Property        | Material 3 default             | Material 2 default             |
 | :-------------- | :----------------------------- | :----------------------------- |
@@ -7247,19 +7169,19 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 <h3>Components</h3>
 <ul>
-<li>Badges: [Badge]</li>
+<li>Badges: [Badge] (<em>new</em>)</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton], [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
 <li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton]</li>
+<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
-<li>Checkbox: [Checkbox]</li>
+<li>Checkbox: [Checkbox], [CheckboxListTile]</li>
 <li>Chips:
 <ul>
 <li>[ActionChip] (used for Assist and Suggestion chips),</li>
@@ -7267,21 +7189,23 @@ scheme depending on [useMaterial3].</p><br/>
 <li>[InputChip]</li>
 </ul>
 </li>
-<li>Dialogs: [Dialog], [AlertDialog]</li>
-<li>Divider: [Divider]</li>
+<li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuBar], [DropdownMenu]</li>
-<li>Navigation bar: [NavigationBar] (new, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer]</li>
+<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
+<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
-<li>Radio button: [Radio]</li>
+<li>Radio button: [Radio], [RadioListTile]</li>
 <li>Snack bar: [SnackBar]</li>
-<li>Slider: [Slider]</li>
-<li>Switch: [Switch]</li>
+<li>Slider: [Slider], [RangeSlider]</li>
+<li>Switch: [Switch], [SwitchListTile]</li>
 <li>Tabs: [TabBar]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
-<li>Top app bar: [AppBar]</li>
+<li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7332,10 +7256,10 @@ true by default. After that change has landed on stable, we will deprecate
 this flag and remove all uses of it. At that point, the <code>material</code> library
 will aim to only support Material 3.</p><br/>
 <h2>Defaults</h2>
-<p>If a [ThemeData] is constructed with [useMaterial3] set to true, then
-some properties will get updated defaults. Please note that
-[ThemeData.copyWith] with [useMaterial3] set to true will
-not change any of these properties in the resulting [ThemeData].</p><br/>
+<p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
+some properties will get updated defaults. However, the
+[ThemeData.copyWith] method with [useMaterial3] set to true will <em>not</em>
+change any of these properties in the resulting [ThemeData].</p><br/>
 <style>table,td,th { border-collapse: collapse; padding: 0.45em; } td { border: 1px solid }</style>
 <p>| Property        | Material 3 default             | Material 2 default             |
 | :-------------- | :----------------------------- | :----------------------------- |
@@ -7357,19 +7281,19 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 <h3>Components</h3>
 <ul>
-<li>Badges: [Badge]</li>
+<li>Badges: [Badge] (<em>new</em>)</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton], [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
 <li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton]</li>
+<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
-<li>Checkbox: [Checkbox]</li>
+<li>Checkbox: [Checkbox], [CheckboxListTile]</li>
 <li>Chips:
 <ul>
 <li>[ActionChip] (used for Assist and Suggestion chips),</li>
@@ -7377,21 +7301,23 @@ scheme depending on [useMaterial3].</p><br/>
 <li>[InputChip]</li>
 </ul>
 </li>
-<li>Dialogs: [Dialog], [AlertDialog]</li>
-<li>Divider: [Divider]</li>
+<li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuBar], [DropdownMenu]</li>
-<li>Navigation bar: [NavigationBar] (new, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer]</li>
+<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
+<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
-<li>Radio button: [Radio]</li>
+<li>Radio button: [Radio], [RadioListTile]</li>
 <li>Snack bar: [SnackBar]</li>
-<li>Slider: [Slider]</li>
-<li>Switch: [Switch]</li>
+<li>Slider: [Slider], [RangeSlider]</li>
+<li>Switch: [Switch], [SwitchListTile]</li>
 <li>Tabs: [TabBar]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
-<li>Top app bar: [AppBar]</li>
+<li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart' hide Stack;
 import 'package:petitparser/context.dart';
 import 'package:petitparser/core.dart';
@@ -87,7 +89,11 @@ class XWidget {
   }
 
   static void registerControllerFactory<T extends Controller>(XWidgetControllerFactory<T> factory) {
-    _controllerFactories[T.toString()] = factory;
+    registerControllerFactoryForName(T.toString(), factory);
+  }
+
+  static void registerControllerFactoryForName(String name, XWidgetControllerFactory factory) {
+    _controllerFactories[name] = factory;
   }
 
   static Controller createController(String name) {
@@ -376,45 +382,47 @@ class Dependencies {
   final _data = <String, dynamic>{};
 
   Dependencies([Map<String, dynamic>? data]) {
-    if (data != null) _data.addAll(data);
+    if (data != null) addAll(data);
   }
 
   void addAll(Map<String, dynamic> data) {
-    _data.addAll(data);
+    for (final entry in data.entries) {
+      setValue(entry.key, entry.value);
+    }
   }
 
   dynamic operator [](String key) {
-    final resolved = _resolvePath(key);
+    final resolved = _getDataStore(key);
     return resolved.value[resolved.key];
   }
 
   void operator []=(String key, dynamic value) {
-    final resolved = _resolvePath(key);
+    final resolved = _getDataStore(key);
     resolved.value[resolved.key] = value;
   }
 
   void setValue(String path, dynamic value) {
-    final resolved = _resolvePath(path);
+    final resolved = _getDataStore(path);
     resolved.value.setValue(resolved.key, value);
   }
 
   dynamic getValue(String path) {
-    final resolved = _resolvePath(path);
+    final resolved = _getDataStore(path);
     return resolved.value.getValue(resolved.key);
   }
 
   dynamic remove(String key) {
-    final resolved = _resolvePath(key);
+    final resolved = _getDataStore(key);
     return resolved.value.remove(resolved.key);
   }
 
   ValueNotifier listenForChanges(String path, dynamic initialValue, dynamic defaultValue) {
-    final resolved = _resolvePath(path);
-    return resolved.value.listenForChanges(path, initialValue, defaultValue);
+    final resolved = _getDataStore(path);
+    return resolved.value.listenForChanges(resolved.key, initialValue, defaultValue);
   }
 
   void putIfAbsent(String key, dynamic value) {
-    final resolved = _resolvePath(key);
+    final resolved = _getDataStore(key);
     if (!resolved.value.containsKey(resolved.key)) {
       resolved.value[resolved.key] = value;
     }
@@ -423,7 +431,7 @@ class Dependencies {
   Parser getExpressionParser() {
     var parser = _data[_expressionParser];
     if (parser == null) {
-      final definition = ELParserDefinition(data: _data);
+      final definition = ELParserDefinition(data: _data, globalData: _globalData);
       parser = definition.build(start: definition.expression);
       _data[_expressionParser] = parser;
     }
@@ -447,11 +455,18 @@ class Dependencies {
 
   @override
   String toString() {
-    return "id: $id, data:\n $_data";
+    return  JsonEncoder.withIndent('  ', (value) => value?.toString()).convert({
+      "id": id,
+      "data": _data,
+      "global": _globalData
+    });
   }
 
-  MapEntry<String, Map<String, dynamic>> _resolvePath(String key) {
-    return key.startsWith("global.") ? MapEntry(key.substring(7), _globalData) : MapEntry(key, _data);
+  /// Gets local or global data depending on the key prefix
+  MapEntry<String, Map<String, dynamic>> _getDataStore(String key) {
+    if (key == "global") return MapEntry("", _globalData);
+    if (key.startsWith("global.")) return MapEntry(key.substring(7), _globalData);
+    return MapEntry(key, _data);
   }
 }
 

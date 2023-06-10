@@ -137,8 +137,8 @@ ordinary map.
 ## Inflaters
 
 Inflaters are the heart of XWidget. They are responsible for building the UI at runtime by parsing
-attribute values and constructing the widgets defined in fragments. In other words, they are the
-primary mechanism by which your XML markup get transformed from this:
+attribute values and constructing the components defined in fragments. In other words, they are the
+primary mechanism by which your XML markup gets transformed from this:
 
 ```XML
 <Container height="50" width="50">
@@ -179,8 +179,8 @@ const Text? _text = null;
 const TextStyle? _textStyle = null;
 ```
 
-You can add as many widgets as required by your application; however, you should only specify 
-widgets that you actually need. Specifying unused widgets and classes in your configuration will 
+You can add as many components as required by your application; however, you should only specify 
+components that you actually need. Specifying unused components in your configuration will 
 unnecessarily increase your app size. This is because code is generated for every component you
 specify and thus neutralizes Flutter's tree-shaking.
 

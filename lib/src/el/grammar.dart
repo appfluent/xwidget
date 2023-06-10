@@ -15,7 +15,7 @@ class ELGrammarDefinition extends GrammarDefinition {
 
   Parser fail() => any();
 
-  Parser letterOrSpecialChar() =>
+  Parser letterOrUnderscore() =>
       ref0(letter) | ref1(token, '_');
 
   Parser doubleNumber() =>
@@ -43,8 +43,8 @@ class ELGrammarDefinition extends GrammarDefinition {
       ref0(singleLineString));
 
   Parser identifier() =>
-      (ref0(letterOrSpecialChar) &
-      (ref0(letterOrSpecialChar) | ref0(digit)).star()).flatten();
+      (ref0(letterOrUnderscore) &
+      (ref0(letterOrUnderscore) | ref0(digit)).star()).flatten();
 
   Parser reference() =>
       ref0(identifier) &

@@ -35,10 +35,8 @@ class AppBarInflater extends Inflater {
             shape: attributes['shape'],
             backgroundColor: attributes['backgroundColor'],
             foregroundColor: attributes['foregroundColor'],
-            brightness: attributes['brightness'],
             iconTheme: attributes['iconTheme'],
             actionsIconTheme: attributes['actionsIconTheme'],
-            textTheme: attributes['textTheme'],
             primary: attributes['primary'] ?? true,
             centerTitle: attributes['centerTitle'],
             excludeHeaderSemantics: attributes['excludeHeaderSemantics'] ?? false,
@@ -47,10 +45,11 @@ class AppBarInflater extends Inflater {
             bottomOpacity: attributes['bottomOpacity'] ?? 1.0,
             toolbarHeight: attributes['toolbarHeight'],
             leadingWidth: attributes['leadingWidth'],
-            backwardsCompatibility: attributes['backwardsCompatibility'],
             toolbarTextStyle: attributes['toolbarTextStyle'],
             titleTextStyle: attributes['titleTextStyle'],
             systemOverlayStyle: attributes['systemOverlayStyle'],
+            forceMaterialTransparency: attributes['forceMaterialTransparency'] ?? false,
+            clipBehavior: attributes['clipBehavior'],
         );
     }
 
@@ -72,10 +71,8 @@ class AppBarInflater extends Inflater {
             case 'shape': break;
             case 'backgroundColor': return parseColor(value);
             case 'foregroundColor': return parseColor(value);
-            case 'brightness': return parseEnum(Brightness.values, value);
             case 'iconTheme': break;
             case 'actionsIconTheme': break;
-            case 'textTheme': break;
             case 'primary': return parseBool(value);
             case 'centerTitle': return parseBool(value);
             case 'excludeHeaderSemantics': return parseBool(value);
@@ -84,10 +81,11 @@ class AppBarInflater extends Inflater {
             case 'bottomOpacity': return double.parse(value);
             case 'toolbarHeight': return double.parse(value);
             case 'leadingWidth': return double.parse(value);
-            case 'backwardsCompatibility': return parseBool(value);
             case 'toolbarTextStyle': break;
             case 'titleTextStyle': break;
             case 'systemOverlayStyle': break;
+            case 'forceMaterialTransparency': return parseBool(value);
+            case 'clipBehavior': return parseEnum(Clip.values, value);
         }
     }
 }
@@ -119,96 +117,6 @@ class CenterInflater extends Inflater {
             case 'key': return parseKey(value);
             case 'widthFactor': return double.parse(value);
             case 'heightFactor': return double.parse(value);
-        }
-    }
-}
-
-class ColorInflater extends Inflater {
-
-    @override
-    String get type => 'Color';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    Color? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
-        return Color(
-            attributes['value'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'value': return int.parse(value);
-        }
-    }
-}
-
-class Color_fromARGBInflater extends Inflater {
-
-    @override
-    String get type => 'Color.fromARGB';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    Color? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
-        return Color.fromARGB(
-            attributes['a'],
-            attributes['r'],
-            attributes['g'],
-            attributes['b'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'a': return int.parse(value);
-            case 'r': return int.parse(value);
-            case 'g': return int.parse(value);
-            case 'b': return int.parse(value);
-        }
-    }
-}
-
-class Color_fromRGBOInflater extends Inflater {
-
-    @override
-    String get type => 'Color.fromRGBO';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    Color? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
-        return Color.fromRGBO(
-            attributes['r'],
-            attributes['g'],
-            attributes['b'],
-            attributes['opacity'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'r': return int.parse(value);
-            case 'g': return int.parse(value);
-            case 'b': return int.parse(value);
-            case 'opacity': return double.parse(value);
         }
     }
 }
@@ -1085,6 +993,7 @@ class ThemeDataInflater extends Inflater {
             primaryTextTheme: attributes['primaryTextTheme'],
             textTheme: attributes['textTheme'],
             typography: attributes['typography'],
+            actionIconTheme: attributes['actionIconTheme'],
             appBarTheme: attributes['appBarTheme'],
             badgeTheme: attributes['badgeTheme'],
             bannerTheme: attributes['bannerTheme'],
@@ -1097,6 +1006,7 @@ class ThemeDataInflater extends Inflater {
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
+            datePickerTheme: attributes['datePickerTheme'],
             dialogTheme: attributes['dialogTheme'],
             dividerTheme: attributes['dividerTheme'],
             drawerTheme: attributes['drawerTheme'],
@@ -1117,6 +1027,8 @@ class ThemeDataInflater extends Inflater {
             popupMenuTheme: attributes['popupMenuTheme'],
             progressIndicatorTheme: attributes['progressIndicatorTheme'],
             radioTheme: attributes['radioTheme'],
+            searchBarTheme: attributes['searchBarTheme'],
+            searchViewTheme: attributes['searchViewTheme'],
             segmentedButtonTheme: attributes['segmentedButtonTheme'],
             sliderTheme: attributes['sliderTheme'],
             snackBarTheme: attributes['snackBarTheme'],
@@ -1127,11 +1039,6 @@ class ThemeDataInflater extends Inflater {
             timePickerTheme: attributes['timePickerTheme'],
             toggleButtonsTheme: attributes['toggleButtonsTheme'],
             tooltipTheme: attributes['tooltipTheme'],
-            accentColor: attributes['accentColor'],
-            accentColorBrightness: attributes['accentColorBrightness'],
-            accentTextTheme: attributes['accentTextTheme'],
-            accentIconTheme: attributes['accentIconTheme'],
-            buttonColor: attributes['buttonColor'],
             fixTextFieldOutlineLabel: attributes['fixTextFieldOutlineLabel'],
             primaryColorBrightness: attributes['primaryColorBrightness'],
             androidOverscrollIndicator: attributes['androidOverscrollIndicator'],
@@ -1187,6 +1094,7 @@ class ThemeDataInflater extends Inflater {
             case 'primaryTextTheme': break;
             case 'textTheme': break;
             case 'typography': break;
+            case 'actionIconTheme': break;
             case 'appBarTheme': break;
             case 'badgeTheme': break;
             case 'bannerTheme': break;
@@ -1199,6 +1107,7 @@ class ThemeDataInflater extends Inflater {
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
+            case 'datePickerTheme': break;
             case 'dialogTheme': break;
             case 'dividerTheme': break;
             case 'drawerTheme': break;
@@ -1219,6 +1128,8 @@ class ThemeDataInflater extends Inflater {
             case 'popupMenuTheme': break;
             case 'progressIndicatorTheme': break;
             case 'radioTheme': break;
+            case 'searchBarTheme': break;
+            case 'searchViewTheme': break;
             case 'segmentedButtonTheme': break;
             case 'sliderTheme': break;
             case 'snackBarTheme': break;
@@ -1229,11 +1140,6 @@ class ThemeDataInflater extends Inflater {
             case 'timePickerTheme': break;
             case 'toggleButtonsTheme': break;
             case 'tooltipTheme': break;
-            case 'accentColor': return parseColor(value);
-            case 'accentColorBrightness': return parseEnum(Brightness.values, value);
-            case 'accentTextTheme': break;
-            case 'accentIconTheme': break;
-            case 'buttonColor': return parseColor(value);
             case 'fixTextFieldOutlineLabel': return parseBool(value);
             case 'primaryColorBrightness': return parseEnum(Brightness.values, value);
             case 'androidOverscrollIndicator': return parseEnum(AndroidOverscrollIndicator.values, value);
@@ -1295,6 +1201,7 @@ class ThemeData_rawInflater extends Inflater {
             primaryTextTheme: attributes['primaryTextTheme'],
             textTheme: attributes['textTheme'],
             typography: attributes['typography'],
+            actionIconTheme: attributes['actionIconTheme'],
             appBarTheme: attributes['appBarTheme'],
             badgeTheme: attributes['badgeTheme'],
             bannerTheme: attributes['bannerTheme'],
@@ -1307,6 +1214,7 @@ class ThemeData_rawInflater extends Inflater {
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
+            datePickerTheme: attributes['datePickerTheme'],
             dialogTheme: attributes['dialogTheme'],
             dividerTheme: attributes['dividerTheme'],
             drawerTheme: attributes['drawerTheme'],
@@ -1327,6 +1235,8 @@ class ThemeData_rawInflater extends Inflater {
             popupMenuTheme: attributes['popupMenuTheme'],
             progressIndicatorTheme: attributes['progressIndicatorTheme'],
             radioTheme: attributes['radioTheme'],
+            searchBarTheme: attributes['searchBarTheme'],
+            searchViewTheme: attributes['searchViewTheme'],
             segmentedButtonTheme: attributes['segmentedButtonTheme'],
             sliderTheme: attributes['sliderTheme'],
             snackBarTheme: attributes['snackBarTheme'],
@@ -1337,11 +1247,6 @@ class ThemeData_rawInflater extends Inflater {
             timePickerTheme: attributes['timePickerTheme'],
             toggleButtonsTheme: attributes['toggleButtonsTheme'],
             tooltipTheme: attributes['tooltipTheme'],
-            accentColor: attributes['accentColor'],
-            accentColorBrightness: attributes['accentColorBrightness'],
-            accentTextTheme: attributes['accentTextTheme'],
-            accentIconTheme: attributes['accentIconTheme'],
-            buttonColor: attributes['buttonColor'],
             fixTextFieldOutlineLabel: attributes['fixTextFieldOutlineLabel'],
             primaryColorBrightness: attributes['primaryColorBrightness'],
             androidOverscrollIndicator: attributes['androidOverscrollIndicator'],
@@ -1391,6 +1296,7 @@ class ThemeData_rawInflater extends Inflater {
             case 'primaryTextTheme': break;
             case 'textTheme': break;
             case 'typography': break;
+            case 'actionIconTheme': break;
             case 'appBarTheme': break;
             case 'badgeTheme': break;
             case 'bannerTheme': break;
@@ -1403,6 +1309,7 @@ class ThemeData_rawInflater extends Inflater {
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
+            case 'datePickerTheme': break;
             case 'dialogTheme': break;
             case 'dividerTheme': break;
             case 'drawerTheme': break;
@@ -1423,6 +1330,8 @@ class ThemeData_rawInflater extends Inflater {
             case 'popupMenuTheme': break;
             case 'progressIndicatorTheme': break;
             case 'radioTheme': break;
+            case 'searchBarTheme': break;
+            case 'searchViewTheme': break;
             case 'segmentedButtonTheme': break;
             case 'sliderTheme': break;
             case 'snackBarTheme': break;
@@ -1433,11 +1342,6 @@ class ThemeData_rawInflater extends Inflater {
             case 'timePickerTheme': break;
             case 'toggleButtonsTheme': break;
             case 'tooltipTheme': break;
-            case 'accentColor': return parseColor(value);
-            case 'accentColorBrightness': return parseEnum(Brightness.values, value);
-            case 'accentTextTheme': break;
-            case 'accentIconTheme': break;
-            case 'buttonColor': return parseColor(value);
             case 'fixTextFieldOutlineLabel': return parseBool(value);
             case 'primaryColorBrightness': return parseEnum(Brightness.values, value);
             case 'androidOverscrollIndicator': return parseEnum(AndroidOverscrollIndicator.values, value);
@@ -1561,9 +1465,6 @@ class ThemeData_fallbackInflater extends Inflater {
 void registerXWidgetInflaters() {
     XWidget.registerInflater(AppBarInflater());
     XWidget.registerInflater(CenterInflater());
-    XWidget.registerInflater(ColorInflater());
-    XWidget.registerInflater(Color_fromARGBInflater());
-    XWidget.registerInflater(Color_fromRGBOInflater());
     XWidget.registerInflater(ColumnInflater());
     XWidget.registerInflater(FloatingActionButtonInflater());
     XWidget.registerInflater(FloatingActionButton_smallInflater());

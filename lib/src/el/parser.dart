@@ -1,4 +1,5 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:xwidget/src/xwidget.dart';
 
 import '../utils/brackets.dart';
 import 'expressions/conditional_expression.dart';
@@ -29,11 +30,13 @@ import 'grammar.dart';
 
 class ELParserDefinition extends ELGrammarDefinition {
   final Map<String, dynamic> data;
+  final Map<String, dynamic> globalData;
   final Map<String, FunctionFactory> _functionFactories;
   late Parser _parser;
 
   ELParserDefinition({
     required this.data,
+    required this.globalData,
     List<FunctionFactory> customFunctionFactories = const [],
   }) : _functionFactories = {
     for (final factory in customFunctionFactories) factory.functionName: factory,
@@ -191,19 +194,22 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   @override
   Parser reference() => super.reference().map((values) {
-    var value = data[values[0]];
+    final resolved = _getDataStore(values[0]);
+    var value = resolved.key != "" ? resolved.value[resolved.key] : resolved.value;
     if (value != null) {
+      value = value is DataValueNotifier ? value.value : value;
       for (final next in values[1]) {
         if (next[1] != null) {
-          // TODO: handle out of range index gracefully and provide better error messages
+          // TODO: handle index out of range errors gracefully and provide better error messages
           value = value[next[1] is Expression ? next[1].evaluate() : next[1]];
+          value = value is DataValueNotifier ? value.value : value;
         } else {
           value = null;
           break;
         }
       }
     }
-    return value is DataValueNotifier ? ValueNotifierExpression(value) : ConstantExpression(value);
+    return ConstantExpression(value);
   });
 
   @override
@@ -315,16 +321,18 @@ class ELParserDefinition extends ELGrammarDefinition {
     if (_functionFactories.containsKey(functionName)) {
       return _functionFactories[functionName]!.createExpression(_parser, parameters);
     }
-    if (data.containsKey(functionName)) {
-      final func = data[functionName];
-      if (func is Function) {
-        return DynamicFunction(func, parameters);
-      }
+    final resolved = _getDataStore(functionName);
+    final func = resolved.value[resolved.key];
+    if (func is Function) {
+      return DynamicFunction(func, parameters);
     }
     throw Exception('Unknown function name $functionName');
   }
-}
 
-extension ParserExt<R> on Parser<R> {
-
+  /// Gets local or global data depending on the key prefix
+  MapEntry<String, Map<String, dynamic>> _getDataStore(String key) {
+    if (key == "global") return MapEntry("", globalData);
+    if (key.startsWith("global.")) return MapEntry(key.substring(7), globalData);
+    return MapEntry(key, data);
+  }
 }
