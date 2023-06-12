@@ -49,6 +49,6 @@ class ToDateTimeFunction extends Expression<DateTime> {
     if (value is DateTime) return value;
     if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
     if (value is String) return DateTime.parse(value);
-    return throw Exception('Invalid DateTime value: $value');;
+    return throw Exception('Invalid DateTime value: $value');
   }
 }

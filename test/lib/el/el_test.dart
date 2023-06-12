@@ -41,7 +41,6 @@ main() {
     final definition = ELParserDefinition(data: data, globalData: globalData);
     final parser = definition.build(start: definition.expression);
     final result = parser.parse('global.users[indexes[2]].123.name');
-    print("failure=${result.isFailure}");
     expect(result.value.evaluate(), "Sally");
   });
 

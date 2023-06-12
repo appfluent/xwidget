@@ -11,7 +11,6 @@ class MutableExpression<T> extends Expression<T> {
     return value;
   }
 
-  @override
   Type getType() {
     return value.runtimeType;
   }

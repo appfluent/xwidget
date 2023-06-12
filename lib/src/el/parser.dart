@@ -1,5 +1,4 @@
 import 'package:petitparser/petitparser.dart';
-import 'package:xwidget/src/xwidget.dart';
 
 import '../utils/brackets.dart';
 import 'expressions/conditional_expression.dart';
@@ -11,7 +10,6 @@ import 'expressions/less_than.dart';
 import 'expressions/factories/default_functions.dart';
 import 'expressions/factories/function_factory.dart';
 import 'expressions/nullable_to_non_nullable.dart';
-import 'expressions/value_notifier.dart';
 import 'expressions/addition.dart';
 import 'expressions/constant_expression.dart';
 import 'expressions/division.dart';
