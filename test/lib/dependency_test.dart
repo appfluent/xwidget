@@ -12,6 +12,14 @@ void main() {
     expect(deps.getValue("users"), [{"name":"chris"}] );
   });
 
+  test('Test bracket operator with dot notation', () {
+    final deps = Dependencies();
+    deps["user.id"] = 123;
+    deps["user.name"] = "chris";
+    expect(deps["user"], null);
+    expect(deps["user.id"], 123);
+  });
+
   test('Test map create from individual calls', () {
     final deps = Dependencies();
     deps.setValue("user.id", 123);
@@ -52,7 +60,6 @@ void main() {
     final deps = Dependencies();
     deps.setValue("user.id", 123);
     deps.setValue("user.name", "chris");
-    print(deps.toString());
     expect(deps.toString(), {"id":123, "name":"chris"});
   });
 

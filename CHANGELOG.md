@@ -1,3 +1,8 @@
+### 0.0.10 (Jun 12, 2023)
+
+* Continued work on documentation
+* Added license
+
 ### 0.0.9 (Jun 10, 2023)
 
 * ControllerWidget now supports multiple controllers.

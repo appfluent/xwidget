@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-// Define constants for all widgets and objects we want to generate inflaters for.
+// Define constants for all widgets and objects you want to generate inflaters for.
 // Used by the builder to generate inflaters.
 
 // Best Practice: Keep declarations in alphabetical order. It makes it much easier to
-// quickly determine what has been added or is missing.
+// quickly determine what has been added and what is missing.
 
 // ignore_for_file: unused_element
 

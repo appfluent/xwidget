@@ -12,7 +12,8 @@ class HomePageController extends Controller {
 
   onPressed() {
     // Important: Use setValue to set the value and trigger the onChange listeners.
-    // Assignment using the brackets operator [] will not work.
+    // Assignment using the brackets operator [] will overwrite the ValueNotifier created in
+    // the <ValueListener> component.
     dependencies.setValue("count", ++count);
   }
 }
