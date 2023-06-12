@@ -31,7 +31,7 @@ class SourceAnalyzer {
     return libraryElements;
   }
 
-  Future<SourceManifest> getSourceManifest(Iterable<String> sources) async {
+  Future<SourceManifest> getSourceManifest(Iterable<String> sources, [List<String> noFilesOk = const []]) async {
     final files = <File>[];
     final paths = <String>{};
     for (final source in sources) {
@@ -51,8 +51,8 @@ class SourceAnalyzer {
                 "Add a file name or use globs (**.dart) to match specific files or file patterns.");
           }
         }
-      } else {
-       CliLog.warn("No files found for glob '$source'.");
+      } else if (!noFilesOk.contains(source)) {
+        CliLog.warn("No files found for glob '$source'.");
       }
     }
     return SourceManifest(files, paths);

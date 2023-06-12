@@ -60,12 +60,12 @@ class InflaterBuilder extends SpecBuilder {
                   }
                 }
               } else {
-                CliLog.error("InvalidType for property '$element' in ${basename(path)}");
+                CliLog.error("InvalidType for property '$element' in '${basename(path)}'");
               }
             }
           }
         } else {
-          CliLog.warn("Library element not found for path $path.");
+          CliLog.warn("Library element not found for path '$path'");
         }
       }
 

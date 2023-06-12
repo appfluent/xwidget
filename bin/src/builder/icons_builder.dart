@@ -49,15 +49,19 @@ class IconsBuilder extends SpecBuilder {
         }
       }
 
-      // build icon registration method
-      output.write(_buildRegisterIconsMethod(registrations.toString()));
+      if (registrations.isNotEmpty) {
+        // build icon registration method
+        output.write(_buildRegisterIconsMethod(registrations.toString()));
 
-      // write output to target
-      final targetUri = await PathResolver.relativeToAbsolute(iconConfig.target);
-      final targetFile = await File(targetUri.path).create(recursive: true);
-      await targetFile.writeAsString(output.toString());
-      result.outputs.add(targetFile);
-      CliLog.success("Icons output to '${iconConfig.target}'");
+        // write output to target
+        final targetUri = await PathResolver.relativeToAbsolute(iconConfig.target);
+        final targetFile = await File(targetUri.path).create(recursive: true);
+        await targetFile.writeAsString(output.toString());
+        result.outputs.add(targetFile);
+        CliLog.success("Icons output to '${iconConfig.target}'");
+      } else {
+        CliLog.success("Skipping icons. No icons found in sources.");
+      }
     }
     return result;
   }

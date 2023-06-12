@@ -20,7 +20,8 @@ class ControllerBuilder extends SpecBuilder {
       final imports = StringBuffer();
       final registrations = StringBuffer();
       final analyzer = SourceAnalyzer();
-      final sourceManifest = await analyzer.getSourceManifest(controllerConfig.sources);
+      final defaultSources = ["lib/xwidget/controllers/**.dart"]; // a hack
+      final sourceManifest = await analyzer.getSourceManifest(controllerConfig.sources, defaultSources);
       final libraryElements = await analyzer.getLibraryElements(sourceManifest.paths);
 
       output.write(buildFileComments());
@@ -45,16 +46,20 @@ class ControllerBuilder extends SpecBuilder {
         }
       }
 
-      output.write(imports.toString());
-      output.writeln();
-      output.write(_buildRegisterControllersMethod(registrations.toString()));
+      if (registrations.isNotEmpty) {
+        output.write(imports.toString());
+        output.writeln();
+        output.write(_buildRegisterControllersMethod(registrations.toString()));
 
-      // write output to target
-      final targetUri = await PathResolver.relativeToAbsolute(controllerConfig.target);
-      final targetFile = await File(targetUri.path).create(recursive: true);
-      await targetFile.writeAsString(output.toString());
-      result.outputs.add(targetFile);
-      CliLog.success("Controllers output to '${controllerConfig.target}'");
+        // write output to target
+        final targetUri = await PathResolver.relativeToAbsolute(controllerConfig.target);
+        final targetFile = await File(targetUri.path).create(recursive: true);
+        await targetFile.writeAsString(output.toString());
+        result.outputs.add(targetFile);
+        CliLog.success("Controllers output to '${controllerConfig.target}'");
+      } else {
+        CliLog.success("Skipping controllers. No controllers found in sources.");
+      }
     }
     return result;
   }

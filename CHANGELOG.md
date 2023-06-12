@@ -1,3 +1,8 @@
+### 0.0.11 (Jun 12, 2023)
+
+* Improved log messages from code generator
+* Replaced deprecated commands in documentation
+
 ### 0.0.10 (Jun 12, 2023)
 
 * Continued work on documentation

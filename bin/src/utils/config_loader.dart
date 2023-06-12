@@ -41,7 +41,7 @@ class ConfigLoader {
           if (entry.value is String) {
             map[entry.key] = entry.value;
           } else {
-            CliLog.warn("'$key' has invalid item '$value'");
+            CliLog.warn("'$key' has invalid item '$value'.");
           }
         }
       } else if (value is Map<String, String>) {

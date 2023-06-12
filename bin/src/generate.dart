@@ -9,7 +9,7 @@ import 'utils/cli_log.dart';
 // TODO: Add a build function to scan fragments and create a list of all active widgets and then compare
 //       it to the spec to see which widgets can be dropped from the spec.
 
-const String version = "0.0.10";
+const String version = "0.0.11";
 
 void main(List<String> unparsedArgs) async {
   CliLog.info("XWidget Code Generator (version $version)");

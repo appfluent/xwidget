@@ -75,7 +75,7 @@ below.
    See [Code Generation](#code-generation) for more. 
 
     ```shell
-    $ flutter pub run xwidget:generate 
+    $ dart run xwidget:generate 
     ```
    
 5. Register the generated schema file with your IDE under the namespace 
@@ -278,19 +278,19 @@ icons:
 *Add documentation here.*
 
 ```shell
-$ flutter pub run xwidget:generate 
+$ dart run xwidget:generate 
 ```
 
 ```shell
-$ flutter pub run xwidget:generate --help 
+$ dart run xwidget:generate --help 
 ```
 
 ```shell
-$ flutter pub run xwidget:generate --config "my_config.yaml" 
+$ dart run xwidget:generate --config "my_config.yaml" 
 ```
 
 ```shell
-$ flutter pub run xwidget:generate --only inflaters,controllers,icons 
+$ dart run xwidget:generate --only inflaters,controllers,icons 
 ```
 
 # Inflaters
