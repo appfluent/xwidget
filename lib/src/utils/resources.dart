@@ -112,11 +112,11 @@ class ValueResources extends ResourceBundle {
         for (final element in root.childElements) {
           final resourceType = element.name.qualified;
           final resourceName = element.getAttribute("name");
-          final resourceValue = element.text.trim();
+          final resourceValue = element.innerText.trim();
           if (resourceName != null && resourceValue.isNotEmpty) {
             switch (resourceType) {
               case "string":
-                _strings[resourceName] = element.text;
+                _strings[resourceName] = element.innerText;
                 break;
               case "bool":
                 _bools[resourceName] = resourceValue.parseBool();

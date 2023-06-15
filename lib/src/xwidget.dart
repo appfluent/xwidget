@@ -190,8 +190,8 @@ class XWidget {
     final children = Children();
     for (final child in element.children) {
       if ((child is XmlText || child is XmlCDATA) && !excludeText) {
-        final text = child.text.trim();
-        if (text.isNotEmpty) {
+        final text = child.value?.trim();
+        if (text != null && text.isNotEmpty) {
           children.text.add(text);
         }
       } else if (child is XmlElement) {
@@ -432,7 +432,7 @@ class Dependencies {
     var parser = _data[_expressionParser];
     if (parser == null) {
       final definition = ELParserDefinition(data: _data, globalData: _globalData);
-      parser = definition.build(start: definition.expression);
+      parser = definition.build();
       _data[_expressionParser] = parser;
     }
     return parser as Parser;

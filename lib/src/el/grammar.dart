@@ -4,10 +4,10 @@ class ELGrammarDefinition extends GrammarDefinition {
   @override
   Parser start() => (ref0(expression).end()).or(ref0(failureState));
 
-  Parser FALSE() =>
+  Parser boolFalse() =>
       ref1(token, 'false');
 
-  Parser TRUE() =>
+  Parser boolTrue() =>
       ref1(token, 'true');
 
   Parser failureState() =>
@@ -38,8 +38,8 @@ class ELGrammarDefinition extends GrammarDefinition {
       token,
       ref0(doubleNumber) |
       ref0(integerNumber) |
-      ref0(TRUE) |
-      ref0(FALSE) |
+      ref0(boolTrue) |
+      ref0(boolFalse) |
       ref0(singleLineString));
 
   Parser identifier() =>
@@ -131,8 +131,8 @@ class ELGrammarDefinition extends GrammarDefinition {
       return input.token().trim();
     } else if (input is String) {
       return token(input.length == 1 ? char(input) : string(input));
-    } else if (input is Function) {
-      return token(ref(input));
+    } else if (input is Parser Function()) {
+      return token(ref0(input));
     }
     throw ArgumentError.value(input, 'invalid token parser');
   }

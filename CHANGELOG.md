@@ -1,12 +1,19 @@
+### 0.0.12 (Jun 15, 2023)
+
+* Improved CommonLog callback feature. Callback now returns a bool to continue or skip logging.
+* Updated xwidget dependency in example 'pubspec.yaml' to point to pub.dev.
+* Fixed invalid identifier parsing error.
+* Fixed deprecated usages.
+
 ### 0.0.11 (Jun 12, 2023)
 
-* Improved log messages from code generator
-* Replaced deprecated commands in documentation
+* Improved log messages from code generator.
+* Replaced deprecated commands in documentation.
 
 ### 0.0.10 (Jun 12, 2023)
 
-* Continued work on documentation
-* Added license
+* Continued work on documentation.
+* Added license.
 
 ### 0.0.9 (Jun 10, 2023)
 
@@ -27,7 +34,7 @@
 * Created XWidgetUtils to hold XWidget helper functions.
 * Created CommonUtils to hold common helper functions.
 * Cleaned up messy exports.
-* Documentation updates
+* Documentation updates.
 
 ### 0.0.6 (Jun 4, 2023)
 

@@ -31,7 +31,7 @@ class IconsBuilder extends SpecBuilder {
         if (library != null) {
           for (final element in library.topLevelElements) {
             if (element is PropertyAccessorElement) {
-              final returnElement = element.returnType.element2;
+              final returnElement = element.returnType.element;
               if (returnElement is ClassElement) {
                 for (final fieldElement in returnElement.fields) {
                   if (fieldElement.isConst) {

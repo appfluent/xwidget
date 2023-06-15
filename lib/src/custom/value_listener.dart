@@ -50,7 +50,7 @@ class ValueListenerState extends State<ValueListener> {
     return ValueListenableBuilder(
       valueListenable: _notifier,
       builder: (context, value, _) {
-        _log.debug("building with varName=${widget.varName}, initialValue=${widget.initialValue}, defaultValue=${widget.defaultValue}");
+        _log.debug("building with varName=${widget.varName}, value=$value");
         final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies);
         return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
       }

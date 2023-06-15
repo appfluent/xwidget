@@ -1,9 +1,15 @@
 import 'package:logger/logger.dart';
 
+typedef CommonLogCallback = bool Function(LogLevel, dynamic, [dynamic, StackTrace?]);
 
-typedef OnMessage = Function(String);
-typedef OnError = Function(String, [dynamic, StackTrace?]);
-
+enum LogLevel { debug, info, warn, error }
+/// A simple wrapper around [Logger].
+///
+/// Adds these features:
+/// 1. Custom styling by parsing predefined style tags in the message.
+/// 2. Adds a callback BEFORE calling the filter's shouldLog method. This allows the callback
+///    to decide if the message should be logged. The specific use case in mind is with Firebase.
+///    In production, you may want to continue to log to Crashlytics, but not to the console.
 class CommonLog {
   static const black = "{{black}}";
   static const red = "{{red}}";
@@ -33,14 +39,9 @@ class CommonLog {
   static final _colorRegExp = RegExp("\\{\\{(black|red|green|yellow|blue|magenta|cyan|white|bold|reset)\\}\\}");
 
   static Logger _logger = _defaultLogger;
-  static OnMessage? _onDebug;
-  static OnMessage? _onInfo;
-  static OnError? _onWarn;
-  static OnError? _onError;
+  static CommonLogCallback? _callback;
 
   static final _defaultLogger = Logger(
-    filter: null, // Use the default LogFilter (-> only log in debug mode)
-    output: null, // Use the default LogOutput (-> send everything to console)
     printer: PrettyPrinter(
       methodCount: 0,
       printEmojis: false,
@@ -52,55 +53,55 @@ class CommonLog {
 
   // constructors and initializers
 
+  /// Initializes CommonLog with a preconfigured [Logger] and callback function.
   static initialize({
     Logger? logger,
-    OnMessage? onDebug,
-    OnMessage? onInfo,
-    OnError? onWarn,
-    OnError? onError,
+    CommonLogCallback? callback
   }) {
     if (logger != null) {
       _logger = logger;
     }
-    _onDebug = onDebug;
-    _onInfo = onInfo;
-    _onWarn = onWarn;
-    _onError = onError;
+    if (callback != null) {
+      _callback = callback;
+    }
   }
 
+  /// Creates an instance of CommonLog with an optional tag
+  ///
+  /// The tag is prepended to all log messages.
   const CommonLog([this.tag = ""]);
 
   // public methods
 
+  /// Log a message at level [LogLevel.debug].
   debug(dynamic message) {
-    var msg = _buildMessage(message);
-    _logger.d(msg);
-    if (_onDebug != null) {
-      _onDebug!(msg);
+    final msg = _buildMessage(message);
+    if (_callback == null || _callback!(LogLevel.debug, msg)) {
+      _logger.d(msg);
     }
   }
 
+  /// Log a message at level [LogLevel.info].
   info(dynamic message) {
-    var msg = _buildMessage(message);
-    _logger.i(msg);
-    if (_onInfo != null) {
-      _onInfo!(msg);
+    final msg = _buildMessage(message);
+    if (_callback == null || _callback!(LogLevel.info, msg)) {
+      _logger.i(msg);
     }
   }
 
+  /// Log a message at level [LogLevel.warn].
   warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
-    var msg = _buildMessage(message);
-    _logger.w(msg, error, stackTrace);
-    if (_onWarn != null) {
-      _onWarn!(msg, error, stackTrace);
+    final msg = _buildMessage(message);
+    if (_callback == null || _callback!(LogLevel.warn, msg, error, stackTrace)) {
+      _logger.w(msg, error, stackTrace);
     }
   }
 
+  /// Log a message at level [LogLevel.error].
   error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
-    var msg = _buildMessage(message);
-    _logger.e(msg, error, stackTrace);
-    if (_onError != null) {
-      _onError!(msg, error, stackTrace);
+    final msg = _buildMessage(message);
+    if (_callback == null || _callback!(LogLevel.error, msg, error, stackTrace)) {
+      _logger.e(msg, error, stackTrace);
     }
   }
 

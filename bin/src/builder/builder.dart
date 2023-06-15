@@ -91,7 +91,7 @@ abstract class SpecBuilder {
     for (final elementAnnotation in metadata) {
       final element = elementAnnotation.element;
       if (element is ConstructorElement) {
-        final returnElement = element.returnType.element2;
+        final returnElement = element.returnType.element;
         if (returnElement is ClassElement) {
           final annotationName = returnElement.displayName;
           final fieldValues = <String, dynamic>{};

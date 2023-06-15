@@ -47,7 +47,7 @@ class InflaterBuilder extends SpecBuilder {
             if (element is PropertyAccessorElement) {
               final returnType = element.returnType;
               if (returnType.toString() != "InvalidType") {
-                final returnElement = returnType.element2;
+                final returnElement = returnType.element;
                 if (returnElement is ClassElement) {
                   final annotations = decodeMetadata(returnElement.metadata);
                   for (final constructor in returnElement.constructors) {
@@ -191,8 +191,8 @@ class InflaterBuilder extends SpecBuilder {
     code.write("            case '${param.name}': ");
     if (parser != null) {
       code.write("return $parser");
-    } else if (param.type.element2 is EnumElement) {
-      code.write("return parseEnum(${param.type.element2?.name}.values, value)");
+    } else if (param.type.element is EnumElement) {
+      code.write("return parseEnum(${param.type.element?.name}.values, value)");
     } else {
       code.write("break");
     }
@@ -293,7 +293,7 @@ class InflaterBuilder extends SpecBuilder {
 
   String _buildSchemaAttribute(ClassElement type, ParameterElement param) {
     final code = StringBuffer();
-    final schemaType = schemaConfig.findAttributeType(param.type.element2?.name);
+    final schemaType = schemaConfig.findAttributeType(param.type.element?.name);
     final paramDocs = getParameterDocumentation(type, param);
     code.write('                    <xs:attribute name="${param.name}"');
     if (schemaType != null) {

@@ -726,7 +726,4 @@ concentrate on testing.
 
 # Known Issues
 
-* The expression language does not properly recognize invalid identifiers and just terminates parsing
-  without an error. Identifiers must begin with an underscore or an uppercase or lowercase letter.
-  For example, `${items[0].123.name}` contains the invalid identifier `123`, so the parser
-  terminates evaluation early and returns the data referenced by `${items[0]}`.
+None at the moment :)

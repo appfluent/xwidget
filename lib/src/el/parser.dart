@@ -42,10 +42,19 @@ class ELParserDefinition extends ELGrammarDefinition {
   };
 
   @override
-  Parser<T> build<T>({Function? start, List<Object> arguments = const []}) {
-    final parser = super.build<T>(start: start, arguments: arguments);
-    _parser = parser;
-    return parser;
+  Parser<T> build<T>({
+    @Deprecated("Use 'buildFrom(parser)'") Function? start,
+    @Deprecated("Use 'buildFrom(parser)'") List<Object> arguments = const []
+  }) {
+    if (start != null || arguments.isNotEmpty) {
+      throw Exception("Build arguments 'start' and 'arguments' not used. Use 'buildFrom(parser)' instead.");
+    }
+    return _parser = super.build<T>();
+  }
+
+  @override
+  Parser<T> buildFrom<T>(Parser<T> parser) {
+    return _parser = super.buildFrom<T>(parser);
   }
 
   @override
@@ -244,10 +253,10 @@ class ELParserDefinition extends ELGrammarDefinition {
   });
 
   @override
-  Parser TRUE() => super.TRUE().map((c) => ConstantExpression<bool>(c.value == 'true'));
+  Parser boolTrue() => super.boolTrue().map((c) => ConstantExpression<bool>(c.value == 'true'));
 
   @override
-  Parser FALSE() => super.FALSE().map((c) => ConstantExpression<bool>(c.value != 'false'));
+  Parser boolFalse() => super.boolFalse().map((c) => ConstantExpression<bool>(c.value != 'false'));
 
   //===================================
   // private methods

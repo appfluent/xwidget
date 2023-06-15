@@ -93,9 +93,14 @@ class ControllerWidgetState extends State<ControllerWidget> {
       _controllers.add(controller);
 
       final initValue = controller.initialize();
-      if (initValue is Future) futures.add(index);
-      else if (initValue is Stream) streams.add(index);
-      else if (initValue != null) others.add(index);
+      if (initValue is Future) {
+        futures.add(index);
+      } else if (initValue is Stream) {
+        streams.add(index);
+      } else if (initValue != null) {
+        others.add(index);
+      }
+
       initValues.add(initValue);
       index++;
     }
