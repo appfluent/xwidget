@@ -206,7 +206,7 @@ class Data extends MapBase<String, dynamic> {
 
 /// A [ValueNotifier] that holds a single value.
 ///
-/// The primary purpose of this class is to allow Brackets distinguish it's own ValueNotifiers from
+/// The sole purpose of this class is to allow Brackets distinguish it's own ValueNotifiers from
 /// others so that it doesn't access the wrapped value by unintentionally.
 class DataValueNotifier extends ValueNotifier {
   DataValueNotifier(super.value);

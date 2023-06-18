@@ -1,4 +1,4 @@
-import 'package:logger/logger.dart';
+import 'package:logger/logger.dart' hide FileOutput;
 
 typedef CommonLogCallback = bool Function(LogLevel, dynamic, [dynamic, StackTrace?]);
 
@@ -10,6 +10,18 @@ enum LogLevel { debug, info, warn, error }
 /// 2. Adds a callback BEFORE calling the filter's shouldLog method. This allows the callback
 ///    to decide if the message should be logged. The specific use case in mind is with Firebase.
 ///    In production, you may want to continue to log to Crashlytics, but not to the console.
+///
+/// Style tags:
+///   black: {{black}}
+///   red: {{red}}
+///   green: {{green}}
+///   yellow: {{yellow}}
+///   blue: {{blue}}
+///   magenta: {{magenta}}
+///   cyan: {{cyan}}
+///   white: {{white}}
+///   bold: {{bold}}
+///   reset: {{reset}}
 class CommonLog {
   static const black = "{{black}}";
   static const red = "{{red}}";
@@ -73,7 +85,7 @@ class CommonLog {
 
   // public methods
 
-  /// Log a message at level [LogLevel.debug].
+  /// Log a [message] at level [LogLevel.debug].
   debug(dynamic message) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.debug, msg)) {
@@ -81,7 +93,7 @@ class CommonLog {
     }
   }
 
-  /// Log a message at level [LogLevel.info].
+  /// Log a [message] at level [LogLevel.info].
   info(dynamic message) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.info, msg)) {
@@ -89,7 +101,7 @@ class CommonLog {
     }
   }
 
-  /// Log a message at level [LogLevel.warn].
+  /// Log a [message] at level [LogLevel.warn].
   warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.warn, msg, error, stackTrace)) {
@@ -97,7 +109,7 @@ class CommonLog {
     }
   }
 
-  /// Log a message at level [LogLevel.error].
+  /// Log a [message] at level [LogLevel.error].
   error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.error, msg, error, stackTrace)) {

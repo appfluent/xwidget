@@ -1,3 +1,9 @@
+### 0.0.13 (Jun 18, 2023)
+
+* Removed unnecessary import that was causing a web compatibility issue. 
+* Updated `var` tag to allow dot/bracket notation in name attribute.
+* Continued work on documentation.
+
 ### 0.0.12 (Jun 15, 2023)
 
 * Improved CommonLog callback feature. Callback now returns a bool to continue or skip logging.

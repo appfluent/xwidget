@@ -338,8 +338,13 @@ class XWidget {
 //===================================
 
 class Children {
+  /// Holds all parsed lines of text
   final text = <String>[];
+
+  /// Holds all inflated classes.
   final objects = <dynamic>[];
+
+  /// Holds all parsed attributes
   final attributes = <String, dynamic>{};
 
   addAll(Children? children) {
@@ -359,15 +364,26 @@ class Children {
   }
 }
 
-// class InflaterInfo {
-//   final String type;
-//
-//   const InflaterInfo({required this.type});
-// }
-
+/// A class annotation for custom widget inflaters.
+///
+/// Use this class annotation to configure inflaters for custom widgets and helpers.
+/// ```dart
+/// @InflaterDef(inflaterType: 'MyTitle', inflatesOwnChildren: true)
+/// class MyTitleWidget {
+/// ...
+/// }
+/// ```
+/// Create a null `const` variable in your inflater spec Dart file.
+/// ```dart
+/// const MyTitleWidget? _myTitleWidget = null;
+/// ```
 class InflaterDef {
+  /// The XML element name for the inflater.
+  ///
+  /// When 'null', XWidget will use the class name as the default.
   final String? inflaterType;
 
+  /// Whether the class is responsible for calling XWidget.inflateXmlElementChildren to build its children.
   final bool inflatesOwnChildren;
 
   const InflaterDef({this.inflaterType, required this.inflatesOwnChildren});
@@ -385,42 +401,70 @@ class Dependencies {
     if (data != null) addAll(data);
   }
 
+  /// Adds all key/value dependency pairs of [data] to this instance.
+  ///
+  /// Supports dot/bracket notation and global references in keys.
   void addAll(Map<String, dynamic> data) {
     for (final entry in data.entries) {
       setValue(entry.key, entry.value);
     }
   }
 
+  /// Returns the dependency references by [key] or null.
+  ///
+  /// Supports global references, but does not support dot/bracket notation in keys.
   dynamic operator [](String key) {
     final resolved = _getDataStore(key);
     return resolved.value[resolved.key];
   }
 
+  /// Adds or replaces a dependency referenced by [key].
+  ///
+  /// Supports global references, but does not support dot/bracket notation in keys.
   void operator []=(String key, dynamic value) {
     final resolved = _getDataStore(key);
     resolved.value[resolved.key] = value;
   }
 
+  /// Adds or replaces a dependency referenced by [path].
+  ///
+  /// Supports dot/bracket notation and global references.
+  /// For example, `dependencies.setValue('user.email[0]', 'name@example.com');`
   void setValue(String path, dynamic value) {
     final resolved = _getDataStore(path);
     resolved.value.setValue(resolved.key, value);
   }
 
+  /// Returns the dependency referenced by [path] or null.
+  ///
+  /// Supports dot/bracket notation and global references in keys.
+  /// For example, `dependencies.getValue('user.email[0]');`
   dynamic getValue(String path) {
     final resolved = _getDataStore(path);
     return resolved.value.getValue(resolved.key);
   }
 
+  /// Removes the dependency referenced by [key].
+  ///
+  /// Returns the removed dependency or null.
+  ///
+  /// Supports global references, but does not support dot/bracket notation in keys.
   dynamic remove(String key) {
     final resolved = _getDataStore(key);
     return resolved.value.remove(resolved.key);
   }
 
+  /// Creates or returns the existing [ValueNotifier] for the dependency referenced by [path].
+  ///
+  /// Sets the notifier's value to [initialValue], if provided, otherwise it's set
+  /// to the existing dependency value. If both are null, then the notifier's value is set to
+  /// [defaultValue].
   ValueNotifier listenForChanges(String path, dynamic initialValue, dynamic defaultValue) {
     final resolved = _getDataStore(path);
     return resolved.value.listenForChanges(resolved.key, initialValue, defaultValue);
   }
 
+  /// Adds the [value] as a dependency for the specified [key] if it doesn't already exist.
   void putIfAbsent(String key, dynamic value) {
     final resolved = _getDataStore(key);
     if (!resolved.value.containsKey(resolved.key)) {
@@ -428,6 +472,7 @@ class Dependencies {
     }
   }
 
+  /// Gets the expression parser bound to this instance, or creates and binds a new one if one doesn't exist.
   Parser getExpressionParser() {
     var parser = _data[_expressionParser];
     if (parser == null) {
@@ -438,8 +483,12 @@ class Dependencies {
     return parser as Parser;
   }
 
-  // TODO: figure out a way to automatically dispose of copies
+  /// Creates a shallow copy.
+  ///
+  /// The copy excludes the expression parser, if there is one, because the parser can only be bound
+  /// to one [Dependencies] instance. A new parser is created and bound to the copy when needed.
   Dependencies copy({Map<String, dynamic>? addData, List<String>? preserveData}) {
+    // TODO: figure out a way to automatically dispose of copies. Update: maybe not needed.
     final copy = Dependencies(_data);
     copy._data.remove(_expressionParser);
     if (addData != null) {
@@ -454,6 +503,7 @@ class Dependencies {
   }
 
   @override
+  /// Returns a formatted JSON string representation of this instance.
   String toString() {
     return  JsonEncoder.withIndent('  ', (value) => value?.toString()).convert({
       "id": id,
@@ -462,7 +512,7 @@ class Dependencies {
     });
   }
 
-  /// Gets local or global data depending on the key prefix
+  /// Gets local or global data depending on the key's prefix
   MapEntry<String, Map<String, dynamic>> _getDataStore(String key) {
     if (key == "global") return MapEntry("", _globalData);
     if (key.startsWith("global.")) return MapEntry(key.substring(7), _globalData);
@@ -474,25 +524,44 @@ class Dependencies {
 // Abstract Classes
 //===================================
 
+/// The base class for all inflaters.
+///
+/// While it's possible to manually create an inflater by implementing this class, the best practice is
+/// to use the @InflaterDef annotation on your class and let XWidget generate the inflater by running
+/// `dart run xwidget:generate`.
 abstract class Inflater<T> {
-  /// the inflater identifier (tag name)
+  /// The XML element name for the inflater.
   String get type;
 
-  // if true, the widget is responsible for calling XWidget.inflateXmlElementChildren to build its children
+  /// Whether the class is responsible for calling XWidget.inflateXmlElementChildren to build its children.
   bool get inflatesOwnChildren;
 
-  // if true, special private objects are added to the attributes passed to the inflate method
+  /// Whether special private objects are added to the attribute map passed to the inflate method
+  ///
+  /// An object is considered 'private' if its key begins with an underscore (_). Schema attributes are not
+  /// generated for these keys.
+  ///
+  /// There are two:
+  /// - _element
+  /// - _dependencies
   bool get inflatesCustomWidget;
 
-  /// inflate the xml element into a flutter object.
+  /// Inflates an xml element into a flutter object.
   T? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text);
 
+  /// Parses an XML attribute into a constructor argument
   dynamic parseAttribute(String name, String value);
 }
 
+/// The base class for all tags.
+///
+/// All tags must implement this class and then register themselves using `XWidget.registerTag(...);
 abstract class Tag {
-  /// the tag identifier
+  /// The XML element name for the tag.
   String get name;
 
+  /// Executes the tag's implementation.
+  ///
+  /// If the tag creates any children, they are return in a [Children] instance.
   Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies);
 }

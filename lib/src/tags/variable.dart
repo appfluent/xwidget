@@ -17,10 +17,16 @@ class VariableTag implements Tag {
     if (element.getAttribute("value") == null) throw Exception("<$name> 'value' attribute is required.");
 
     // set data value and exit
+    final value = attributes["value"];
     if (varName == "...") {
-      dependencies.addAll(attributes["value"]);
+      if (value is Map<String, dynamic>) {
+        dependencies.addAll(value);
+      } else {
+        throw Exception("Invalid type '${value.runtimeType}' for spread operator. "
+            "Expected 'Data' or 'Map<String, dynamic>'.");
+      }
     } else {
-      dependencies[varName] = attributes["value"];
+      dependencies.setValue(varName, value);
     }
 
     return null;

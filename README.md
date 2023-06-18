@@ -513,29 +513,41 @@ fragment inclusion, etc. They are always represented in lowercase to distinguish
 
 ## ```<builder>```
 
-*Add documentation here.*
+A tag that wraps its children in a builder function.
 
-| Attribute        | Description | Required | Default |
-|------------------|-------------|----------|---------|
-| copyDependencies |             | no       | false   |
-| for              |             | yes      | null    |
-| multiChild       |             | no       | false   |
-| nullable         |             | no       | false   |
-| vars             |             | no       | null    |
+This tag is extremely useful when the parent requires a builder function, such as [PageView.builder].
+Configure the `vars`, `multiChild`, and `nullable` attributes to match the signature of the parent's
+builder function. The values of named arguments listed in `vars` are added to the current
+`Dependencies` instance. You can use a placeholder (_) as a substitute for the name, if you don't
+want a particular value added to `Dependencies`. The `BuildContext` is never added to `Dependencies`, 
+even if explicitly named, because this would cause a memory leak.
 
+| Attribute        | Description                                                                                                                                     | Required | Default |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| copyDependencies | Creates a copy of the current dependencies to use in rendering its children. All named `vars` are added to the copy.                            | no       | false   |
+| for              | The name of the parent attribute that will be assigned the return value of this tag.                                                            | yes      | null    |
+| multiChild       | Whether the builder function should return an array or a single widget.                                                                         | no       | false   |
+| nullable         | Whether the builder function can return null.                                                                                                   | no       | false   |
+| vars             | A comma separated list of named and placeholder function arguments. Named arguments are added to `Dependencies`. Supports up to five arguments. | no       | null    |
+
+Example usage:
 ```xml
-<builder for="builder" vars="_,_">
-   
-</builder>
+<PageView.builder>
+    <builder for="itemBuilder" vars="_,index" nullable="true">
+        <Container>
+          <Text data="${index}"/>
+        </Container>
+    </builder>
+</PageView.builder>
 ```
 
 ## ```<debug>```
 
-*Add documentation here.*
+A simple tag that logs a debug message
 
-| Attribute | Description | Required | Default |
-|-----------|-------------|----------|---------|
-| message   |             | no       | null    |
+| Attribute | Description         | Required | Default |
+|-----------|---------------------|----------|---------|
+| message   | The message to log. | no       | null    |
 
 ```xml
 <debug message="Hello world!"/>
@@ -580,7 +592,7 @@ fragment inclusion, etc. They are always represented in lowercase to distinguish
 
 ## ```<fragment>```
 
-*Add documentation here.*
+A tag that renders a UI fragment
 
 | Attribute | Description | Required | Default |
 |-----------|-------------|----------|---------|
@@ -588,9 +600,9 @@ fragment inclusion, etc. They are always represented in lowercase to distinguish
 | name      |             | yes      | null    |
 
 ```xml
-<fragment name="profile">
-   
-</fragment>
+<AppBar>
+  <fragment for="leading" name="profile/icon"/>
+</AppBar>
 ```
 
 ## ```<handler>```

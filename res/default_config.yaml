@@ -91,6 +91,8 @@ schema:
     "AlignmentGeometry": "AlignmentAttributeType"
     "Axis": "AxisAttributeType"
     "CrossAxisAlignment": "CrossAxisAlignmentAttributeType"
+    "Curve": "CurveAttributeType"
+    "FontWeight": "FontWeightAttributeType"
     "MainAxisAlignment": "MainAxisAlignmentAttributeType"
     "MainAxisSize": "MainAxisSizeAttributeType"
     "TextAlign": "TextAlignAttributeType"

@@ -5,7 +5,34 @@ import '../utils/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 
-
+/// A tag that wraps its children in a builder function.
+///
+/// This tag is extremely useful when the parent requires a builder function, such as [PageView.builder].
+/// Configure the `vars`, `multiChild`, and `nullable` attributes to match the signature of the parent's
+/// builder function. The values of named arguments listed in `vars` are added to the current
+/// `Dependencies` instance. You can use a placeholder (_) as a substitute for the name, if you don't
+/// want a particular value added to `Dependencies`. The `BuildContext` is never added to `Dependencies`,
+/// even if explicitly named, because this would cause a memory leak.
+///
+/// Attribute:
+/// - for (required): The name of the parent attribute that will be assigned the return value of this tag.
+/// - vars (optional): A comma separated list of named and placeholder function arguments. Named arguments are added to
+///       `Dependencies`. Supports up to five arguments.
+/// - multiChild (optional): Whether the builder function should return an array or a single widget. Defaults to `false`.
+/// - nullable (optional): Whether the builder function can return null. Defaults to `false`.
+/// - copyDependencies (optional): Creates a copy of the current dependencies to use in rendering its children.
+///       All named `vars` are added to the copy. Defaults to false.
+///
+/// Example:
+/// ```xml
+/// <PageView.builder>
+///     <builder for="itemBuilder" vars="_,index" nullable="true">
+///         <Container>
+///           <Text data="${index}"/>
+///         </Container>
+///     </builder>
+/// </PageView.builder>
+/// ```
 class BuilderTag implements Tag {
   @override
   String get name => "builder";

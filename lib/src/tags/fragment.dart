@@ -2,7 +2,17 @@ import 'package:xml/xml.dart';
 
 import '../xwidget.dart';
 
-
+/// A tag that renders a UI fragment
+///
+/// Attributes:
+/// - name (required): name of the fragment to render i.e 'profile/login' or 'profile/login.xml' where 'profile'
+///         is the path and 'login' is the name of the fragment file.
+/// - for (optional): name of parent attribute to render the fragment into.
+///         ```dart
+///         <AppBar>
+///             <fragment for="leading" name="profile/login"/>
+///         </AppBar>
+///         ```
 class FragmentTag implements Tag {
   @override
   String get name => "fragment";

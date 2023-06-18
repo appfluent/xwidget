@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -135,10 +134,6 @@ extension ListExt<E> on List<E> {
     }
     return List.unmodifiable(list);
   }
-}
-
-extension PlatformExt on Platform {
-  static String get languageCode => Platform.localeName.substring(0, 2);
 }
 
 extension ColorExt on Color {

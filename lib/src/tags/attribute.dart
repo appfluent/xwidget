@@ -2,7 +2,9 @@ import 'package:xml/xml.dart';
 
 import '../xwidget.dart';
 
-
+/// A tag that renders it's children to an attribute of its parent.
+///
+/// @deprecated Use the 'for' attribute on each inflater element instead.
 class AttributeTag implements Tag {
   @override
   String get name => "attribute";
