@@ -51,7 +51,7 @@ class InflaterBuilder extends SpecBuilder {
                 if (returnElement is ClassElement) {
                   final annotations = decodeMetadata(returnElement.metadata);
                   for (final constructor in returnElement.constructors) {
-                    if (!constructor.isPrivate) {
+                    if (!constructor.isPrivate && (!constructor.hasDeprecated || config.allowDeprecated)) {
                       final inflater = _buildInflaterClass(returnElement, constructor, annotations);
                       inflaters.write(inflater[0]);
                       initializers.write(inflater[1]);
@@ -132,17 +132,19 @@ class InflaterBuilder extends SpecBuilder {
     final inflatesOwnChildren = annotations[inflaterDefAnnotation]?[inflatesOwnChildrenParam] ?? false;
 
     for (final param in constructor.parameters) {
-      final paramType = param.type.getDisplayString(withNullability: false);
-      if (paramType != "InvalidType") {
-        if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name)) {
-          final privateAccess = isPrivateAccessParam(param, isCustomWidget);
-          constructorArgs.write(_buildConstructorArg(constructorName, param, privateAccess));
-          if (schemaConfig.isNotExcludedAttribute(constructorName, param.name) && !privateAccess) {
-            parseCases.write(_buildInflaterParseCase(constructorName, param));
+      if (!param.hasDeprecated || config.allowDeprecated) {
+        final paramType = param.type.getDisplayString(withNullability: false);
+        if (paramType != "InvalidType") {
+          if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name)) {
+            final privateAccess = isPrivateAccessParam(param, isCustomWidget);
+            constructorArgs.write(_buildConstructorArg(constructorName, param, privateAccess));
+            if (schemaConfig.isNotExcludedAttribute(constructorName, param.name) && !privateAccess) {
+              parseCases.write(_buildInflaterParseCase(constructorName, param));
+            }
           }
+        } else {
+          CliLog.error("InvalidType for param '$param' of class '$type'");
         }
-      } else {
-        CliLog.error("InvalidType for param '$param' of class '$type'");
       }
     }
     code.write("class $className extends Inflater {\n\n");
@@ -222,6 +224,7 @@ class InflaterBuilder extends SpecBuilder {
     code.write("    dynamic parseAttribute(String name, String value) {\n");
     code.write("        switch (name) {\n");
     code.write(parseCases);
+    code.write("            default: return value;\n");
     code.write("        }\n");
     code.write("    }\n");
     return code.toString();
@@ -258,7 +261,8 @@ class InflaterBuilder extends SpecBuilder {
     final inflaterType = annotations[inflaterDefAnnotation]?[inflaterTypeParam] ?? constructorName;
 
     for (final param in constructor.parameters) {
-      if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name) &&
+      if ((!param.hasDeprecated || config.allowDeprecated) &&
+          inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name) &&
           schemaConfig.isNotExcludedAttribute(constructorName, param.name) &&
           !isPrivateAccessParam(param, isCustomWidget)) {
         attributes.write(_buildSchemaAttribute(type, param));

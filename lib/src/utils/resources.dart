@@ -58,13 +58,14 @@ class Resources {
     }
   }
 
-  Future<void> loadResources(String rootPath) async {
+  Future<void> loadResources(String rootPath, [AssetBundle? assetBundle]) async {
     final resRegExp = RegExp(
         r'^' '$rootPath' r'/((?<res>([a-zA-Z0-9_]+))/){0,1}(?<path>([a-zA-Z0-9_]+/)*)'
         r'(?<name>[a-zA-Z0-9_]+).(?<ext>[a-zA-Z0-9_]+)'
     );
-    final manifest = await rootBundle.loadString('AssetManifest.json');
-    final Map<String, dynamic> manifestMap = json.decode(manifest);
+    final activeAssetBundle = assetBundle ?? rootBundle;
+    final manifest = await activeAssetBundle.loadString("AssetManifest.json");
+    final manifestMap = json.decode(manifest);
     for (final fileName in manifestMap.keys) {
       final match = resRegExp.firstMatch(fileName);
       if (match != null) {
@@ -72,9 +73,9 @@ class Resources {
         final resPath = match.namedGroup("path") ?? "";
         final resName = match.namedGroup("name") ?? "";
         final resExt = match.namedGroup("ext") ?? "";
-        final bundle = _resourceBundlesByPath[res];
-        if (bundle != null) {
-          await bundle.loadResources(fileName, resPath, resName, resExt);
+        final resBundle = _resourceBundlesByPath[res];
+        if (resBundle != null) {
+          await resBundle.loadResources(fileName, resPath, resName, resExt, activeAssetBundle);
         }
       }
     }
@@ -86,7 +87,7 @@ abstract class ResourceBundle {
 
   ResourceBundle(this.pathSegment);
 
-  Future<void> loadResources(String fileName, String resPath, String resName, String resExt);
+  Future<void> loadResources(String fileName, String resPath, String resName, String resExt, AssetBundle assetBundle);
 }
 
 //=====================================
@@ -103,9 +104,9 @@ class ValueResources extends ResourceBundle {
   ValueResources(super.pathSegment);
 
   @override
-  Future<void> loadResources(String fileName, String resPath, String resName, String resExt) async {
+  Future<void> loadResources(String fileName, String resPath, String resName, String resExt, AssetBundle assetBundle) async {
     if (resExt == "xml") {
-      final xml = await rootBundle.loadString(fileName);
+      final xml = await assetBundle.loadString(fileName);
       final document = XmlDocument.parse(xml);
       final root = document.getElement("resources");
       if (root != null) {
@@ -199,9 +200,9 @@ class FragmentResources extends ResourceBundle {
   FragmentResources(super.pathSegment);
 
   @override
-  Future<void> loadResources(String fileName, String resPath, String resName, String resExt) async {
+  Future<void> loadResources(String fileName, String resPath, String resName, String resExt, AssetBundle assetBundle) async {
     if (resExt == "xml") {
-      final xml = await rootBundle.loadString(fileName);
+      final xml = await assetBundle.loadString(fileName);
       _fragments["$resPath$resName.$resExt"] = xml;
     }
   }

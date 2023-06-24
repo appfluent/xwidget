@@ -9,7 +9,7 @@ import 'utils/cli_log.dart';
 // TODO: Add a build function to scan fragments and create a list of all active widgets and then compare
 //       it to the spec to see which widgets can be dropped from the spec.
 
-const String version = "0.0.13";
+const String version = "0.0.14";
 
 void main(List<String> unparsedArgs) async {
   CliLog.info("XWidget Code Generator (version $version)");
@@ -17,6 +17,11 @@ void main(List<String> unparsedArgs) async {
   final ArgParser parser = ArgParser();
   parser.addFlag("help", abbr: "h", help: "Usage help", negatable: false);
   parser.addOption("config", abbr: "c", help: "Path to config file", defaultsTo: "xwidget_config.yaml");
+  parser.addFlag("allow-deprecated",
+      abbr: "d",
+      help: "Allow deprecated constructors and constructor arguments.",
+      negatable: false
+  );
   parser.addMultiOption("only",
       help: "Comma separated list of components to generate. Defaults to all components.",
       allowed: ["inflaters", "icons", "controllers"],
@@ -31,7 +36,7 @@ void main(List<String> unparsedArgs) async {
   }
 
   // load config files
-  final config = BuilderConfig();
+  final config = BuilderConfig(allowDeprecated: args["allow-deprecated"] == true);
   await config.loadConfig("xwidget|res/default_config.yaml");
   await config.loadConfig(args["config"]);
 

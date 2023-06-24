@@ -7,15 +7,16 @@ import '../xwidget.dart';
 
 /// A tag that wraps its children in a builder function.
 ///
-/// This tag is extremely useful when the parent requires a builder function, such as [PageView.builder].
-/// Configure the `vars`, `multiChild`, and `nullable` attributes to match the signature of the parent's
-/// builder function. The values of named arguments listed in `vars` are added to the current
-/// `Dependencies` instance. You can use a placeholder (_) as a substitute for the name, if you don't
-/// want a particular value added to `Dependencies`. The `BuildContext` is never added to `Dependencies`,
-/// even if explicitly named, because this would cause a memory leak.
+/// This tag is extremely useful when the parent requires a builder function, such as
+/// [PageView.builder](https://api.flutter.dev/flutter/widgets/PageView/PageView.builder.html).
+/// Use `vars`, `multiChild`, and `nullable` attributes to configure the builder function's signature.
+/// When the builder function executes, the values of named arguments defined in `vars` are stored
+/// as dependencies in the current `Dependencies` instance. The values of placeholder arguments (_) are
+/// simply ignored. The `BuildContext` is never stored as a dependency, even if explicitly named,
+/// because it would cause a memory leak.
 ///
 /// Attribute:
-/// - for (required): The name of the parent attribute that will be assigned the return value of this tag.
+/// - for (required): The name of the parent attribute that will be assigned the builder function.
 /// - vars (optional): A comma separated list of named and placeholder function arguments. Named arguments are added to
 ///       `Dependencies`. Supports up to five arguments.
 /// - multiChild (optional): Whether the builder function should return an array or a single widget. Defaults to `false`.

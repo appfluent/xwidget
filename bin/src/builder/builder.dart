@@ -138,10 +138,13 @@ class BuilderResult {
 }
 
 class BuilderConfig {
+  final bool allowDeprecated;
   final iconConfig = IconConfig();
   final schemaConfig = SchemaConfig();
   final inflaterConfig = InflaterConfig();
   final controllerConfig = ControllerConfig();
+
+  BuilderConfig({this.allowDeprecated = false});
 
   Future<void> loadConfig(String path) async {
     final uri = await PathResolver.relativeToAbsolute(path);

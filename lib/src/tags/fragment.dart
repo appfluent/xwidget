@@ -4,9 +4,12 @@ import '../xwidget.dart';
 
 /// A tag that renders a UI fragment
 ///
+/// Supports folders, inherited attributes, and HTML style query parameters. Parameters are stored as dependencies.
+///
+///
 /// Attributes:
-/// - name (required): name of the fragment to render i.e 'profile/login' or 'profile/login.xml' where 'profile'
-///         is the path and 'login' is the name of the fragment file.
+/// - name (required): name of the fragment to render i.e 'login' or 'login.xml'. You can prepend a path if
+///         if you're using fragment folders i.e. 'profile/login'.
 /// - for (optional): name of parent attribute to render the fragment into.
 ///         ```dart
 ///         <AppBar>
@@ -14,6 +17,8 @@ import '../xwidget.dart';
 ///         </AppBar>
 ///         ```
 class FragmentTag implements Tag {
+  static const attributeNames = ["for", "name"];
+
   @override
   String get name => "fragment";
 
@@ -27,14 +32,14 @@ class FragmentTag implements Tag {
     }
 
     // inflate named fragment
-    final inheritedAttributes = element.attributes.where((attribute) => attribute.localName != "name");
+    final inheritedAttributes = element.attributes.where((attribute) => !attributeNames.contains(attribute.localName));
     final object = XWidget.inflateFragment(fragmentName, dependencies, inheritedAttributes: inheritedAttributes);
     if (object == null) return null;
 
     final children = Children();
-    final attributeName = element.getAttribute("for");
-    if (attributeName != null && attributeName.isNotEmpty) {
-      children.attributes[attributeName] = object;
+    final forAttribute = element.getAttribute("for");
+    if (forAttribute != null && forAttribute.isNotEmpty) {
+      children.attributes[forAttribute] = object;
     } else {
       children.objects.add(object);
     }

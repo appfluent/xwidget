@@ -5,10 +5,17 @@
 
     <!-- simple types -->
 
-    <xs:simpleType name="boolAttributeType">
+    <xs:simpleType name="AlignmentAttributeType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="true"/>
-            <xs:enumeration value="false"/>
+            <xs:enumeration value="topLeft"/>
+            <xs:enumeration value="topCenter"/>
+            <xs:enumeration value="topRight"/>
+            <xs:enumeration value="centerLeft"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="centerRight"/>
+            <xs:enumeration value="bottomLeft"/>
+            <xs:enumeration value="bottomCenter"/>
+            <xs:enumeration value="bottomRight"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -16,6 +23,13 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="horizontal"/>
             <xs:enumeration value="vertical"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="boolAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -31,20 +45,6 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="AlignmentAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="topLeft"/>
-            <xs:enumeration value="topCenter"/>
-            <xs:enumeration value="topRight"/>
-            <xs:enumeration value="centerLeft"/>
-            <xs:enumeration value="center"/>
-            <xs:enumeration value="centerRight"/>
-            <xs:enumeration value="bottomLeft"/>
-            <xs:enumeration value="bottomCenter"/>
-            <xs:enumeration value="bottomRight"/>
-        </xs:restriction>
-    </xs:simpleType>
-
     <xs:simpleType name="CrossAxisAlignmentAttributeType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="start"/>
@@ -52,6 +52,76 @@
             <xs:enumeration value="center"/>
             <xs:enumeration value="stretch"/>
             <xs:enumeration value="baseline"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CurveAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="bounceIn"/>
+            <xs:enumeration value="bounceInOut"/>
+            <xs:enumeration value="bounceOut"/>
+            <xs:enumeration value="decelerate"/>
+            <xs:enumeration value="ease"/>
+            <xs:enumeration value="easeIn"/>
+            <xs:enumeration value="easeInBack"/>
+            <xs:enumeration value="easeInCirc"/>
+            <xs:enumeration value="easeInCubic"/>
+            <xs:enumeration value="easeInExpo"/>
+            <xs:enumeration value="easeInOut"/>
+            <xs:enumeration value="easeInOutBack"/>
+            <xs:enumeration value="easeInOutCirc"/>
+            <xs:enumeration value="easeInOutCubic"/>
+            <xs:enumeration value="easeInOutCubicEmphasized"/>
+            <xs:enumeration value="easeInOutExpo"/>
+            <xs:enumeration value="easeInOutQuad"/>
+            <xs:enumeration value="easeInOutQuart"/>
+            <xs:enumeration value="easeInOutQuint"/>
+            <xs:enumeration value="easeInOutSine"/>
+            <xs:enumeration value="easeInQuad"/>
+            <xs:enumeration value="easeInQuart"/>
+            <xs:enumeration value="easeInQuint"/>
+            <xs:enumeration value="easeInSine"/>
+            <xs:enumeration value="easeInToLinear"/>
+            <xs:enumeration value="easeOut"/>
+            <xs:enumeration value="easeOutBack"/>
+            <xs:enumeration value="easeOutCirc"/>
+            <xs:enumeration value="easeOutCubic"/>
+            <xs:enumeration value="easeOutExpo"/>
+            <xs:enumeration value="easeOutQuad"/>
+            <xs:enumeration value="easeOutQuart"/>
+            <xs:enumeration value="easeOutQuint"/>
+            <xs:enumeration value="easeOutSine"/>
+            <xs:enumeration value="elasticIn"/>
+            <xs:enumeration value="elasticInOut"/>
+            <xs:enumeration value="elasticOut"/>
+            <xs:enumeration value="fastLinearToSlowEaseIn"/>
+            <xs:enumeration value="fastOutSlowIn"/>
+            <xs:enumeration value="linear"/>
+            <xs:enumeration value="linearToEaseOut"/>
+            <xs:enumeration value="slowMiddle"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FontWeightAttributeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="100"/>
+            <xs:enumeration value="200"/>
+            <xs:enumeration value="300"/>
+            <xs:enumeration value="400"/>
+            <xs:enumeration value="500"/>
+            <xs:enumeration value="600"/>
+            <xs:enumeration value="700"/>
+            <xs:enumeration value="800"/>
+            <xs:enumeration value="900"/>
+            <xs:enumeration value="thin"/>
+            <xs:enumeration value="extraLight"/>
+            <xs:enumeration value="light"/>
+            <xs:enumeration value="normal"/>
+            <xs:enumeration value="medium"/>
+            <xs:enumeration value="semiBold"/>
+            <xs:enumeration value="bold"/>
+            <xs:enumeration value="extraBold"/>
+            <xs:enumeration value="black"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -121,6 +191,12 @@
     <!-- helper elements -->
 
     <xs:element name="attribute">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                <p>A tag that renders it's children to an attribute of its parent.</p>
+                <p>@deprecated Use the 'for' attribute on each inflater element instead.</p>
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType >
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -130,6 +206,10 @@
     </xs:element>
 
     <xs:element name="builder">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType >
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -142,6 +222,10 @@
     </xs:element>
 
     <xs:element name="debug">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -151,6 +235,10 @@
     </xs:element>
 
     <xs:element name="forEach">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -165,6 +253,10 @@
     </xs:element>
 
     <xs:element name="forLoop">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -178,6 +270,10 @@
     </xs:element>
 
     <xs:element name="fragment">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -189,6 +285,10 @@
     </xs:element>
 
     <xs:element name="if">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -198,6 +298,10 @@
     </xs:element>
 
     <xs:element name="else">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -206,6 +310,10 @@
     </xs:element>
 
     <xs:element name="var">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:any namespace="##targetNamespace"/>
@@ -218,6 +326,10 @@
     <!-- inflater elements -->
 
     <xs:element name="Controller">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
@@ -231,6 +343,10 @@
     </xs:element>
 
     <xs:element name="DynamicBuilder">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
@@ -247,6 +363,10 @@
     </xs:element>
 
     <xs:element name="ListOf">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
@@ -257,6 +377,10 @@
     </xs:element>
 
     <xs:element name="ValueListener">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
@@ -2904,7 +3028,7 @@ The [themeAnimationDuration] determines how long this animation takes.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="themeAnimationCurve">
+                    <xs:attribute name="themeAnimationCurve" type="CurveAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The curve to apply when animating theme changes.</p><br/>
@@ -3202,14 +3326,6 @@ an application, and manage [Scrollable] decorations like [Scrollbar]s and
 <li>[ScrollConfiguration], which controls how [Scrollable] widgets behave
 in a subtree.</li>
 </ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="useInheritedMediaQuery" type="boolAttributeType">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@macro flutter.widgets.widgetsApp.useInheritedMediaQuery}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3467,7 +3583,7 @@ The [themeAnimationDuration] determines how long this animation takes.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="themeAnimationCurve">
+                    <xs:attribute name="themeAnimationCurve" type="CurveAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The curve to apply when animating theme changes.</p><br/>
@@ -3765,14 +3881,6 @@ an application, and manage [Scrollable] decorations like [Scrollbar]s and
 <li>[ScrollConfiguration], which controls how [Scrollable] widgets behave
 in a subtree.</li>
 </ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="useInheritedMediaQuery" type="boolAttributeType">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@macro flutter.widgets.widgetsApp.useInheritedMediaQuery}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -4646,7 +4754,7 @@ isn't specified here.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="fontWeight">
+                    <xs:attribute name="fontWeight" type="FontWeightAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The typeface thickness to use when painting the text (e.g., bold).</p><br/>
@@ -5884,33 +5992,6 @@ popup menus.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="fixTextFieldOutlineLabel" type="boolAttributeType"/>
-                    <xs:attribute name="primaryColorBrightness"/>
-                    <xs:attribute name="androidOverscrollIndicator">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>Specifies which overscroll indicator to use on [TargetPlatform.android].</p><br/>
-<p>When null, the default value of
-[MaterialScrollBehavior.androidOverscrollIndicator] is
-[AndroidOverscrollIndicator.glow].</p><br/>
-<p>This property is deprecated. Use the [useMaterial3] flag instead, or
-override [ScrollBehavior.buildOverscrollIndicator].</p><br/>
-<p>See also:</p><br/>
-<ul>
-<li>[StretchingOverscrollIndicator], a Material Design edge effect
-that transforms the contents of a scrollable when overscrolled.</li>
-<li>[GlowingOverscrollIndicator], an edge effect that paints a glow
-over the contents of a scrollable when overscrolled.</li>
-</ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="toggleableActiveColor"/>
-                    <xs:attribute name="selectedRowColor"/>
-                    <xs:attribute name="errorColor"/>
-                    <xs:attribute name="backgroundColor"/>
-                    <xs:attribute name="bottomAppBarColor"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -6827,33 +6908,6 @@ popup menus.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="fixTextFieldOutlineLabel" type="boolAttributeType"/>
-                    <xs:attribute name="primaryColorBrightness"/>
-                    <xs:attribute name="androidOverscrollIndicator">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>Specifies which overscroll indicator to use on [TargetPlatform.android].</p><br/>
-<p>When null, the default value of
-[MaterialScrollBehavior.androidOverscrollIndicator] is
-[AndroidOverscrollIndicator.glow].</p><br/>
-<p>This property is deprecated. Use the [useMaterial3] flag instead, or
-override [ScrollBehavior.buildOverscrollIndicator].</p><br/>
-<p>See also:</p><br/>
-<ul>
-<li>[StretchingOverscrollIndicator], a Material Design edge effect
-that transforms the contents of a scrollable when overscrolled.</li>
-<li>[GlowingOverscrollIndicator], an edge effect that paints a glow
-over the contents of a scrollable when overscrolled.</li>
-</ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="toggleableActiveColor"/>
-                    <xs:attribute name="selectedRowColor"/>
-                    <xs:attribute name="errorColor"/>
-                    <xs:attribute name="backgroundColor"/>
-                    <xs:attribute name="bottomAppBarColor"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

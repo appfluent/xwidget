@@ -1,3 +1,14 @@
+### 0.0.14 (Jun 23, 2023)
+
+* Inflater parsers now return the unparsed value if there's no attribute name match.
+* Inflater builder now skips deprecated elements by default.
+* [Resources](https://github.com/appfluent/xwidget/blob/main/lib/src/utils/resources.dart) 
+  can now use an alternate [AssetBundle](https://api.flutter.dev/flutter/services/AssetBundle-class.html),
+  when passed to `loadResources` method. Otherwise, it uses
+  [rootBundle](https://api.flutter.dev/flutter/services/rootBundle.html).
+* Documentation updates
+* Added <fragment> tag unit tests
+
 ### 0.0.13 (Jun 18, 2023)
 
 * Removed unnecessary import that was causing a web compatibility issue. 
