@@ -1,4 +1,3 @@
-/// TODO: refactor code until we no long need expression classes
 
 abstract class Expression<T> {
   T evaluate();

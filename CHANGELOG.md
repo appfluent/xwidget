@@ -1,3 +1,12 @@
+### 0.0.15 (Jul 2, 2023)
+
+* Overhauled EL functions to simplify implementation.
+* Renamed `handler` tag to `callback`.
+* Fixed `action` attribute evaluation in `callback` tag.
+* Added `returnVar` attribute to `callback` tag.
+* Deleted deprecated `attribute` tag. Use `ListOf` inflater instead.
+* Documentation updates and additions.
+
 ### 0.0.14 (Jun 23, 2023)
 
 * Inflater parsers now return the unparsed value if there's no attribute name match.
@@ -6,8 +15,8 @@
   can now use an alternate [AssetBundle](https://api.flutter.dev/flutter/services/AssetBundle-class.html),
   when passed to `loadResources` method. Otherwise, it uses
   [rootBundle](https://api.flutter.dev/flutter/services/rootBundle.html).
-* Documentation updates
-* Added <fragment> tag unit tests
+* Documentation updates.
+* Added `fragment` tag unit tests.
 
 ### 0.0.13 (Jun 18, 2023)
 

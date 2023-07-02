@@ -3,12 +3,10 @@ import 'package:petitparser/petitparser.dart';
 import '../utils/brackets.dart';
 import 'expressions/conditional_expression.dart';
 import 'expressions/equal_to.dart';
-import 'expressions/function_expressions/dynamic.dart';
+import 'expressions/dynamic.dart';
 import 'expressions/if_null.dart';
 import 'expressions/less_than.dart';
 
-import 'expressions/factories/default_functions.dart';
-import 'expressions/factories/function_factory.dart';
 import 'expressions/nullable_to_non_nullable.dart';
 import 'expressions/addition.dart';
 import 'expressions/constant_expression.dart';
@@ -23,24 +21,23 @@ import 'expressions/modulo.dart';
 import 'expressions/multiplication.dart';
 import 'expressions/negation.dart';
 import 'expressions/subtraction.dart';
+import 'functions.dart';
 import 'grammar.dart';
 
 
 class ELParserDefinition extends ELGrammarDefinition {
   final Map<String, dynamic> data;
   final Map<String, dynamic> globalData;
-  final Map<String, FunctionFactory> _functionFactories;
+  late final BuiltInFunctions _builtInFunctions;
   late Parser _parser;
 
   ELParserDefinition({
     required this.data,
     required this.globalData,
-    List<FunctionFactory> customFunctionFactories = const [],
-  }) : _functionFactories = {
-    for (final factory in customFunctionFactories) factory.functionName: factory,
-    for (final factory in getDefaultFunctionFactories()) factory.functionName: factory
-  };
-
+  }) {
+    _builtInFunctions = BuiltInFunctions(_getParser);
+  }
+  
   @override
   Parser<T> build<T>({
     @Deprecated("Use 'buildFrom(parser)'") Function? start,
@@ -54,7 +51,7 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   @override
   Parser<T> buildFrom<T>(Parser<T> parser) {
-    return _parser = super.buildFrom<T>(parser);
+    return _parser = buildFrom<T>(parser);
   }
 
   @override
@@ -325,15 +322,12 @@ class ELParserDefinition extends ELGrammarDefinition {
   }
 
   Expression _createFunctionExpression(String functionName, List<Expression> parameters) {
-    if (_functionFactories.containsKey(functionName)) {
-      return _functionFactories[functionName]!.createExpression(_parser, parameters);
-    }
     final resolved = _getDataStore(functionName);
-    final func = resolved.value[resolved.key];
+    final func = resolved.value[resolved.key] ?? _builtInFunctions[functionName];
     if (func is Function) {
       return DynamicFunction(func, parameters);
     }
-    throw Exception('Unknown function name $functionName');
+    throw Exception("Unknown function: '$functionName'");
   }
 
   /// Gets local or global data depending on the key prefix
@@ -342,4 +336,6 @@ class ELParserDefinition extends ELGrammarDefinition {
     if (key.startsWith("global.")) return MapEntry(key.substring(7), globalData);
     return MapEntry(key, data);
   }
+
+  Parser _getParser() => _parser;
 }

@@ -871,6 +871,101 @@ class Text_richInflater extends Inflater {
     }
 }
 
+class TextButtonInflater extends Inflater {
+
+    @override
+    String get type => 'TextButton';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    TextButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+        return TextButton(
+            key: attributes['key'],
+            onPressed: attributes['onPressed'],
+            onLongPress: attributes['onLongPress'],
+            onHover: attributes['onHover'],
+            onFocusChange: attributes['onFocusChange'],
+            style: attributes['style'],
+            focusNode: attributes['focusNode'],
+            autofocus: attributes['autofocus'] ?? false,
+            clipBehavior: attributes['clipBehavior'] ?? Clip.none,
+            statesController: attributes['statesController'],
+            child: XWidgetUtils.getOnlyChild('TextButton', children, const SizedBox()),
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'onPressed': break;
+            case 'onLongPress': break;
+            case 'onHover': break;
+            case 'onFocusChange': break;
+            case 'style': break;
+            case 'focusNode': break;
+            case 'autofocus': return parseBool(value);
+            case 'clipBehavior': return parseEnum(Clip.values, value);
+            case 'statesController': break;
+            default: return value;
+        }
+    }
+}
+
+class TextButton_iconInflater extends Inflater {
+
+    @override
+    String get type => 'TextButton.icon';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    TextButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+        return TextButton.icon(
+            key: attributes['key'],
+            onPressed: attributes['onPressed'],
+            onLongPress: attributes['onLongPress'],
+            onHover: attributes['onHover'],
+            onFocusChange: attributes['onFocusChange'],
+            style: attributes['style'],
+            focusNode: attributes['focusNode'],
+            autofocus: attributes['autofocus'],
+            clipBehavior: attributes['clipBehavior'],
+            statesController: attributes['statesController'],
+            icon: attributes['icon'],
+            label: attributes['label'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'onPressed': break;
+            case 'onLongPress': break;
+            case 'onHover': break;
+            case 'onFocusChange': break;
+            case 'style': break;
+            case 'focusNode': break;
+            case 'autofocus': return parseBool(value);
+            case 'clipBehavior': return parseEnum(Clip.values, value);
+            case 'statesController': break;
+            case 'icon': return parseIcon(value);
+            case 'label': break;
+            default: return value;
+        }
+    }
+}
+
 class TextStyleInflater extends Inflater {
 
     @override
@@ -1460,6 +1555,8 @@ void registerXWidgetInflaters() {
     XWidget.registerInflater(ScaffoldInflater());
     XWidget.registerInflater(TextInflater());
     XWidget.registerInflater(Text_richInflater());
+    XWidget.registerInflater(TextButtonInflater());
+    XWidget.registerInflater(TextButton_iconInflater());
     XWidget.registerInflater(TextStyleInflater());
     XWidget.registerInflater(ThemeDataInflater());
     XWidget.registerInflater(ThemeData_rawInflater());

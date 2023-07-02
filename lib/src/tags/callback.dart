@@ -4,10 +4,9 @@ import 'package:xml/xml.dart';
 import '../utils/parsers.dart';
 import '../xwidget.dart';
 
-
-class HandlerTag implements Tag {
+class CallbackTag implements Tag {
   @override
-  String get name => "handler";
+  String get name => "callback";
 
   @override
   Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
@@ -24,9 +23,13 @@ class HandlerTag implements Tag {
     final action = element.getAttribute("action");
     if (action == null || action.isEmpty) throw Exception("<$name> 'action' attribute is required");
 
+    // 'returnVar' is optional
+    final returnVar = element.getAttribute("returnVar");
+
+    // 'copyDependencies' is optional
     final copyDependencies = parseBool(attributes["copyDependencies"]) ?? false;
 
-    dynamic handler([p0, p1, p2, p3, p4]) {
+    dynamic callback([p0, p1, p2, p3, p4]) {
       final deps = copyDependencies ?  dependencies.copy() : dependencies;
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
@@ -42,12 +45,19 @@ class HandlerTag implements Tag {
           }
         }
       }
-      final parser = deps.getExpressionParser();
-      return parser.parse(action);
+      final result = XWidget.parseExpression(dependencies, action);
+      if (result.isSuccess) {
+        final value = result.value.evaluate();
+        if (returnVar != null && returnVar.isNotEmpty) {
+          deps.setValue(returnVar, value);
+        }
+      } else {
+        throw Exception("Failed to parse callback action: '$action'. ${result.message}");
+      }
     }
 
     final children = Children();
-    children.attributes[forAttribute] = handler;
+    children.attributes[forAttribute] = callback;
     return children;
   }
 }

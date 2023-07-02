@@ -5,7 +5,7 @@ import 'package:xwidget/xwidget.dart';
 
 
 main() {
-    final data = <String, dynamic>{
+  final data = <String, dynamic>{
     "size" : {
       "width": 300.0,
       "height": 200
@@ -170,4 +170,35 @@ main() {
     final parser = definition.build();
     expect(parser.parse('item1 ?? item2 ?? item3').value.evaluate(), "String3");
   });
+
+  test("Assert built-in function 'contains' returns true", () {
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(parser.parse("contains('Sand on the beach', 'on')").value.evaluate(), true);
+  });
+
+  test("Assert built-in function 'isNull' returns true", () {
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(parser.parse("isNull(value)").value.evaluate(), true);
+  });
+
+  test("Assert built-in function 'isNull' returns false", () {
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(parser.parse("isNull('value')").value.evaluate(), false);
+  });
+
+  test("Assert custom function 'addNumbers' returns correct value", () {
+    int addNumbers(int n1, [int n2 = 0, int n3 = 0, int n4 = 0, int n5 = 0]) {
+      return n1 + n2 + n3 + n4 + n5;
+    }
+    final data = <String, dynamic>{
+      "addNumbers": addNumbers,
+    };
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(parser.parse("addNumbers(3,10,4)").value.evaluate(), 17);
+  });
+
 }

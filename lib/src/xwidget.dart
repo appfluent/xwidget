@@ -11,13 +11,12 @@ import 'custom/controller.dart';
 import 'custom/list_of.dart';
 import 'custom/value_listener.dart';
 import 'el/parser.dart';
-import 'tags/attribute.dart';
 import 'tags/builder.dart';
 import 'tags/debug.dart';
 import 'tags/for_each.dart';
 import 'tags/for_loop.dart';
 import 'tags/fragment.dart';
-import 'tags/handler.dart';
+import 'tags/callback.dart';
 import 'tags/if_else.dart';
 import 'tags/variable.dart';
 import 'utils/brackets.dart';
@@ -34,15 +33,14 @@ class XWidget {
   static final _listOfInflater = ListOfInflater();
   static final _valueListenerInflater = ValueListenerInflater();
 
-  static final _attributeTag = AttributeTag();
   static final _builderTag = BuilderTag();
-  static final _dataTag = VariableTag();
+  static final _callbackTag = CallbackTag();
   static final _debugTag = DebugTag();
   static final _forEachTag = ForEachTag();
   static final _forLoopTag = ForLoopTag();
   static final _fragmentTag = FragmentTag();
-  static final _handlerTag = HandlerTag();
   static final _ifElseTag = IfElseTag();
+  static final _variableTag = VariableTag();
 
   static final _inflaters = <String, Inflater>{
     _controllerInflater.type: _controllerInflater,
@@ -52,15 +50,14 @@ class XWidget {
   };
 
   static final _tags = <String, Tag>{
-    _attributeTag.name: _attributeTag,
     _builderTag.name: _builderTag,
-    _dataTag.name: _dataTag,
+    _callbackTag.name: _callbackTag,
     _debugTag.name: _debugTag,
     _forEachTag.name: _forEachTag,
     _forLoopTag.name: _forLoopTag,
     _fragmentTag.name: _fragmentTag,
-    _handlerTag.name: _handlerTag,
     _ifElseTag.name: _ifElseTag,
+    _variableTag.name: _variableTag,
   };
 
   static final _icons = <String, IconData>{};

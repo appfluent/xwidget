@@ -170,7 +170,7 @@ icons:
 There are four top-level mappings that configure each of the four generated
 outputs: `inflaters`, `schema`, `controllers`, and `icons`.
 
-### Inflaters
+### Inflaters Configuration
 
 ```yaml
 # Responsible for configuring inputs and outputs to generate inflaters.
@@ -214,7 +214,7 @@ inflaters:
     "<constructor_argument_type | * for any>(: <constructor_argument_name>)": "<parser_function_call>"
 ```
 
-### Schema
+### Schema Configuration
 
 ```yaml
 # Responsible for configuring inputs and outputs to generate the inflater schema. Register the
@@ -243,7 +243,7 @@ schema:
   ]
 ```
 
-### Controllers
+### Controllers Configuration
 
 ```yaml
 controllers:
@@ -258,7 +258,7 @@ controllers:
   sources: [ ]
 ```
 
-### Icons
+### Icons Configuration
 
 ```yaml
 icons:
@@ -291,6 +291,10 @@ $ dart run xwidget:generate --config "my_config.yaml"
 
 ```shell
 $ dart run xwidget:generate --only inflaters,controllers,icons 
+```
+
+```shell
+$ dart run xwidget:generate --allow-deprecated 
 ```
 
 # Inflaters
@@ -461,22 +465,77 @@ ordinary map.
 
 *Add documentation here.*
 
-### Static Functions
+### Operators
 
-*Add documentation here.*
+Below is the operator precedence and associativity table. Operators are executed according
+to their precedence level. If two operators share an operand, the operator with higher precedence
+will be executed first. If the operators have the same precedence level, it depends on the
+associativity. Both the precedence level and associativity can be seen in the table below.
 
-#### Built-In
+| Level | Operator                   | Category                                  | Associativity |
+|-------|----------------------------|-------------------------------------------|---------------|
+| 10    | `()`<br>`[]`<br>`.`        | Function call, scope, array/member access |               |
+| 9     | `-expr`<br>`!expr`         | Unary Prefix                              |               |
+| 8     | `*`<br>`/`<br>`~/`<br>`%`  | Multiplicative                            | Left-to-right |
+| 7     | `+`<br>`-`                 | Additive                                  | Left-to-right |
+| 6     | `<`<br>`>`<br>`<=`<br>`>=` | Relational                                |               |
+| 5     | `==`  <br>`!=`             | Equality                                  |               |
+| 4     | `&&`                       | Logical AND                               | Left-to-right |
+| 3     | `&#124;&#124;`             | Logical OR                                | Left-to-right |
+| 2     | `expr1 ?? expr2`           | If null                                   | Left-to-right |
+| 1     | `expr ? expr1 : expr2`     | Conditional (ternary)                     | Right-to-left |
 
-*Add documentation here.*
 
-#### Custom
+### Built-In Functions
 
-*Add documentation here.*
+| Name              | Arguments                                     | Returns  | Description | Examples                                                                          |
+|-------------------|-----------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
+| contains          | dynamic value<br/>dynamic searchValue         | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
+| containsKey       | Map? map<br/>dynamic searchKey                | bool     |             |                                                                                   |
+| containsValue     | Map? map<br/>dynamic searchValue              | bool     |             |                                                                                   |
+| diffDateTime      | DateTime left<br/>DateTime right              | Duration |             |                                                                                   |
+| durationInDays    | Duration value                                | int      |             |                                                                                   |
+| durationInHours   | Duration value                                | int      |             |                                                                                   |
+| durationInMinutes | Duration value                                | int      |             |                                                                                   |
+| durationInSeconds | Duration value                                | int      |             |                                                                                   |
+| durationInMills   | Duration value                                | int      |             |                                                                                   |
+| endsWith          | String value<br/>String searchValue           | bool     |             |                                                                                   |
+| eval              | String? value                                 | dynamic  |             |                                                                                   |
+| formatDateTime    | String format<br/>DateTime dateTime           | String   |             |                                                                                   |
+| isEmpty           | dynamic value                                 | bool     |             |                                                                                   |
+| isNotEmpty        | dynamic value                                 | bool     |             |                                                                                   |
+| isNotNull         | dynamic value                                 | bool     |             |                                                                                   |
+| isNull            | dynamic value                                 | bool     |             |                                                                                   |
+| length            | dynamic value                                 | length   |             |                                                                                   |
+| matches           | String value<br/>String regExp                | bool     |             |                                                                                   |
+| now               | none                                          | DateTime |             |                                                                                   |
+| nowInUtc          | none                                          | DateTime |             |                                                                                   |
+| startsWith        | String value<br/>String searchValue           | bool     |             |                                                                                   |
+| substring         | String value<br/>int start<br/>[int end = -1] | String   |             |                                                                                   |
+| toDateTime        | dynamic value                                 | DateTime |             |                                                                                   |
+| toDuration        | String value                                  | Duration |             |                                                                                   |
+| toString          | dynamic value                                 | String   |             |                                                                                   |
 
-### Dynamic Functions
+### Custom Functions
 
-*Add documentation here.*
+Custom functions are functions that you define and add to your `Dependencies`. They behave exactly
+like built-in functions. You can also override the built-in functions with your custom function, 
+if needed. You can have up to 10 required and optional arguments.
 
+For example:
+
+```dart
+dependencies["addNumbers"] = addNumbers
+
+int addNumbers(int n1, [int n2 = 0, int n3 = 0, int n4 = 0, int n5 = 0]) {
+   return n1 + n2 + n3 + n4 + n5;
+}
+```
+
+Example usage:
+```xml
+<Text data="${addNumbers(2,8,4}"/>
+```
 # Resources
 
 *Add documentation here.*
@@ -517,7 +576,7 @@ A tag that wraps its children in a builder function.
 
 This tag is extremely useful when the parent requires a builder function, such as 
 [PageView.builder](https://api.flutter.dev/flutter/widgets/PageView/PageView.builder.html).
-Use `vars`, `multiChild`, and `nullable` attributes to configure the builder function's signature.
+Use `vars`, `multiChild`, and `nullable` attributes to define the builder function signature.
 When the builder function executes, the values of named arguments defined in `vars` are stored 
 as dependencies in the current `Dependencies` instance. The values of placeholder arguments (_) are
 simply ignored. The `BuildContext` is never stored as a dependency, even if explicitly named,
@@ -540,6 +599,42 @@ Example usage:
         </Container>
     </builder>
 </PageView.builder>
+```
+
+## ```<callback>```
+
+This tag allows you to bind an event handler with custom arguments. If you don't need to pass any
+arguments, then just bind the handler using EL, like so: `<TextButton onPressed="${onPressed}"/>`.
+This is sufficient in most cases.
+
+The `callback` tag creates an event handler function for you and executes the `action` when the 
+event is triggered. `action` is an EL expression that is evaluated at the time of the event. Do not
+enclose the expression in curly braces `${...}`, otherwise it will be evaluated immediately upon
+creation instead of when the event is fired.
+
+If the handler function defines arguments in its signature, you must declare those arguments using
+the `vars` attribute. This attribute takes a comma separated list of argument names. When the 
+handler is triggered, argument values are added to `Dependencies` using the specified name as the
+key, and can be referenced in the `action` EL expression, if needed. They're also accessible
+anywhere else that instance of `Dependencies` is available. If you don't need the values, then use
+and underscore (_) in place of the name. This will ignore those value and they won't be added to 
+`Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never added to `Dependencies` even
+when named, because this would cause a memory leak.
+
+| Attribute        | Description                                                                                                                                | Required | Default |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| action           | The El expression to evaluate when the event handler is triggered.                                                                         | yes      | null    |
+| copyDependencies | Creates a copy of the current dependencies when the event handler is created. All named `vars` are added to the copy.                      | no       | false   |
+| for              | The name of the parent attribute that will be assigned the event handler.                                                                  | yes      | null    |
+| returnVar        | The storage destination within `Dependencies` for the return value of `action`.                                                            | no       | null    |
+| vars             | A comma separated list of handler function arguments. Values of named arguments are stored as dependencies. Supports up to five arguments. | no       | null    |
+
+```xml
+<TextButton>
+   <callback for="onPressed" action="doSomething('Hello World')"/>
+   <Text>Press Me</Text>
+</TextButton>
+
 ```
 
 ## ```<debug>```
@@ -606,22 +701,7 @@ A tag that renders a UI fragment
 </AppBar>
 ```
 
-## ```<handler>```
 
-*Add documentation here.*
-
-| Attribute        | Description | Required | Default |
-|------------------|-------------|----------|---------|
-| action           |             | yes      | null    |
-| copyDependencies |             | no       | false   |
-| for              |             | yes      | null    |
-| vars             |             | no       | null    |
-
-```xml
-<handler for="leading">
-   
-</handler>
-```
 
 ## ```<if>```/```<else>```
 
@@ -723,7 +803,7 @@ concentrate on testing.
 
 ### 0.0.x Releases (2023)
 
-* Write usage and code documentation
+* Write README and API documentation
 * Critical bug fixes
 * Minor improvements
 
@@ -731,7 +811,7 @@ concentrate on testing.
 
 * Write unit, widget, UI, and performance tests
 * Critical and major bug fixes
-* Refine documentation as needed
+* Refine and add documentation as needed
 
 ### 1.0.0 Release (mid 2024)
 
