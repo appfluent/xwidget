@@ -79,7 +79,11 @@ abstract class SpecBuilder {
   }
 
   String? documentationToMarkdown(String? docComment) {
-    final filtered = docComment?.replaceAll(RegExp("///[ ]?"), "");
+    String? filtered = docComment?.replaceAll(RegExp("///[ ]?"), "");
+    filtered = filtered?.replaceAllMapped(
+        RegExp(r"\[([a-zA-Z]+)<([a-zA-Z, ]*)>\]"),
+        (Match m) => "[${m[1]}&lt;${m[2]}&gt;]"
+    );
     if (filtered != null && filtered.isNotEmpty) {
       return markdownToHtml(filtered).replaceAll("</p>", "</p><br/>");
     }

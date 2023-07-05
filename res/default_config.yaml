@@ -86,19 +86,11 @@ schema:
 
   types:
     "bool": "boolAttributeType"
-    "BoxFit": "BoxFitAttributeType"
     "Alignment": "AlignmentAttributeType"
     "AlignmentGeometry": "AlignmentAttributeType"
-    "Axis": "AxisAttributeType"
-    "CrossAxisAlignment": "CrossAxisAlignmentAttributeType"
-    "Curve": "CurveAttributeType"
+    "Curve": "CurvesAttributeType"
     "FontWeight": "FontWeightAttributeType"
-    "MainAxisAlignment": "MainAxisAlignmentAttributeType"
-    "MainAxisSize": "MainAxisSizeAttributeType"
-    "TextAlign": "TextAlignAttributeType"
-    "TextOverflow": "TextOverflowAttributeType"
     "TextDecoration": "TextDecorationAttributeType"
-    "TextDirection": "TextDirectionAttributeType"
 
   attribute_exclusions: [
     "*:child",

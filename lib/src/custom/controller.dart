@@ -164,7 +164,7 @@ class ControllerWidgetState extends State<ControllerWidget> {
   Dependencies _getDependencies() => widget.dependencies;
 }
 
-abstract class Controller extends WidgetsBindingObserver {
+abstract class Controller {
 
   @nonVirtual
   bool get mounted => _mountedProvider();

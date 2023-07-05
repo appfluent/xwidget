@@ -1,3 +1,12 @@
+### 0.0.16 (Jul 4, 2023)
+
+* Improved fragment XML validation.
+* Auto generate inflater attribute restrictions for enum types.
+* Removed ability to override built-in functions.
+* Controller no longer extends `WidgetsBindingObserver`. Subclasses can added it as a mixin, if needed.
+* Added `callback` schema element.
+* Updated documentation
+
 ### 0.0.15 (Jul 2, 2023)
 
 * Overhauled EL functions to simplify implementation.

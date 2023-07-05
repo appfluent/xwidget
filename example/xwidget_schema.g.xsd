@@ -1,209 +1,375 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.appfluent.us/xwidget"
     targetNamespace="http://www.appfluent.us/xwidget">
 
     <!-- simple types -->
 
-    <xs:simpleType name="AlignmentAttributeType">
+    <xs:simpleType name="expressionAttributeType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="topLeft"/>
-            <xs:enumeration value="topCenter"/>
-            <xs:enumeration value="topRight"/>
-            <xs:enumeration value="centerLeft"/>
-            <xs:enumeration value="center"/>
-            <xs:enumeration value="centerRight"/>
-            <xs:enumeration value="bottomLeft"/>
-            <xs:enumeration value="bottomCenter"/>
-            <xs:enumeration value="bottomRight"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="AxisAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="horizontal"/>
-            <xs:enumeration value="vertical"/>
+            <xs:pattern value="\$\{.*\}" />
         </xs:restriction>
     </xs:simpleType>
 
     <xs:simpleType name="boolAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="true"/>
-            <xs:enumeration value="false"/>
-        </xs:restriction>
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="true"/>
+                    <xs:enumeration value="false"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
 
-    <xs:simpleType name="BoxFitAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="fill"/>
-            <xs:enumeration value="contain"/>
-            <xs:enumeration value="cover"/>
-            <xs:enumeration value="fitWidth"/>
-            <xs:enumeration value="fitHeight"/>
-            <xs:enumeration value="none"/>
-            <xs:enumeration value="scaleDown"/>
-        </xs:restriction>
+    <xs:simpleType name="integerAttributeType">
+        <xs:union memberTypes="expressionAttributeType xs:integer"/>
     </xs:simpleType>
 
-    <xs:simpleType name="CrossAxisAlignmentAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="start"/>
-            <xs:enumeration value="end"/>
-            <xs:enumeration value="center"/>
-            <xs:enumeration value="stretch"/>
-            <xs:enumeration value="baseline"/>
-        </xs:restriction>
+    <xs:simpleType name="AlignmentAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="topLeft"/>
+                    <xs:enumeration value="topCenter"/>
+                    <xs:enumeration value="topRight"/>
+                    <xs:enumeration value="centerLeft"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="centerRight"/>
+                    <xs:enumeration value="bottomLeft"/>
+                    <xs:enumeration value="bottomCenter"/>
+                    <xs:enumeration value="bottomRight"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
 
-    <xs:simpleType name="CurveAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="bounceIn"/>
-            <xs:enumeration value="bounceInOut"/>
-            <xs:enumeration value="bounceOut"/>
-            <xs:enumeration value="decelerate"/>
-            <xs:enumeration value="ease"/>
-            <xs:enumeration value="easeIn"/>
-            <xs:enumeration value="easeInBack"/>
-            <xs:enumeration value="easeInCirc"/>
-            <xs:enumeration value="easeInCubic"/>
-            <xs:enumeration value="easeInExpo"/>
-            <xs:enumeration value="easeInOut"/>
-            <xs:enumeration value="easeInOutBack"/>
-            <xs:enumeration value="easeInOutCirc"/>
-            <xs:enumeration value="easeInOutCubic"/>
-            <xs:enumeration value="easeInOutCubicEmphasized"/>
-            <xs:enumeration value="easeInOutExpo"/>
-            <xs:enumeration value="easeInOutQuad"/>
-            <xs:enumeration value="easeInOutQuart"/>
-            <xs:enumeration value="easeInOutQuint"/>
-            <xs:enumeration value="easeInOutSine"/>
-            <xs:enumeration value="easeInQuad"/>
-            <xs:enumeration value="easeInQuart"/>
-            <xs:enumeration value="easeInQuint"/>
-            <xs:enumeration value="easeInSine"/>
-            <xs:enumeration value="easeInToLinear"/>
-            <xs:enumeration value="easeOut"/>
-            <xs:enumeration value="easeOutBack"/>
-            <xs:enumeration value="easeOutCirc"/>
-            <xs:enumeration value="easeOutCubic"/>
-            <xs:enumeration value="easeOutExpo"/>
-            <xs:enumeration value="easeOutQuad"/>
-            <xs:enumeration value="easeOutQuart"/>
-            <xs:enumeration value="easeOutQuint"/>
-            <xs:enumeration value="easeOutSine"/>
-            <xs:enumeration value="elasticIn"/>
-            <xs:enumeration value="elasticInOut"/>
-            <xs:enumeration value="elasticOut"/>
-            <xs:enumeration value="fastLinearToSlowEaseIn"/>
-            <xs:enumeration value="fastOutSlowIn"/>
-            <xs:enumeration value="linear"/>
-            <xs:enumeration value="linearToEaseOut"/>
-            <xs:enumeration value="slowMiddle"/>
-        </xs:restriction>
+    <xs:simpleType name="CurvesAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="bounceIn"/>
+                    <xs:enumeration value="bounceInOut"/>
+                    <xs:enumeration value="bounceOut"/>
+                    <xs:enumeration value="decelerate"/>
+                    <xs:enumeration value="ease"/>
+                    <xs:enumeration value="easeIn"/>
+                    <xs:enumeration value="easeInBack"/>
+                    <xs:enumeration value="easeInCirc"/>
+                    <xs:enumeration value="easeInCubic"/>
+                    <xs:enumeration value="easeInExpo"/>
+                    <xs:enumeration value="easeInOut"/>
+                    <xs:enumeration value="easeInOutBack"/>
+                    <xs:enumeration value="easeInOutCirc"/>
+                    <xs:enumeration value="easeInOutCubic"/>
+                    <xs:enumeration value="easeInOutCubicEmphasized"/>
+                    <xs:enumeration value="easeInOutExpo"/>
+                    <xs:enumeration value="easeInOutQuad"/>
+                    <xs:enumeration value="easeInOutQuart"/>
+                    <xs:enumeration value="easeInOutQuint"/>
+                    <xs:enumeration value="easeInOutSine"/>
+                    <xs:enumeration value="easeInQuad"/>
+                    <xs:enumeration value="easeInQuart"/>
+                    <xs:enumeration value="easeInQuint"/>
+                    <xs:enumeration value="easeInSine"/>
+                    <xs:enumeration value="easeInToLinear"/>
+                    <xs:enumeration value="easeOut"/>
+                    <xs:enumeration value="easeOutBack"/>
+                    <xs:enumeration value="easeOutCirc"/>
+                    <xs:enumeration value="easeOutCubic"/>
+                    <xs:enumeration value="easeOutExpo"/>
+                    <xs:enumeration value="easeOutQuad"/>
+                    <xs:enumeration value="easeOutQuart"/>
+                    <xs:enumeration value="easeOutQuint"/>
+                    <xs:enumeration value="easeOutSine"/>
+                    <xs:enumeration value="elasticIn"/>
+                    <xs:enumeration value="elasticInOut"/>
+                    <xs:enumeration value="elasticOut"/>
+                    <xs:enumeration value="fastLinearToSlowEaseIn"/>
+                    <xs:enumeration value="fastOutSlowIn"/>
+                    <xs:enumeration value="linear"/>
+                    <xs:enumeration value="linearToEaseOut"/>
+                    <xs:enumeration value="slowMiddle"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
 
     <xs:simpleType name="FontWeightAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="100"/>
-            <xs:enumeration value="200"/>
-            <xs:enumeration value="300"/>
-            <xs:enumeration value="400"/>
-            <xs:enumeration value="500"/>
-            <xs:enumeration value="600"/>
-            <xs:enumeration value="700"/>
-            <xs:enumeration value="800"/>
-            <xs:enumeration value="900"/>
-            <xs:enumeration value="thin"/>
-            <xs:enumeration value="extraLight"/>
-            <xs:enumeration value="light"/>
-            <xs:enumeration value="normal"/>
-            <xs:enumeration value="medium"/>
-            <xs:enumeration value="semiBold"/>
-            <xs:enumeration value="bold"/>
-            <xs:enumeration value="extraBold"/>
-            <xs:enumeration value="black"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="MainAxisAlignmentAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="start"/>
-            <xs:enumeration value="end"/>
-            <xs:enumeration value="center"/>
-            <xs:enumeration value="spaceBetween"/>
-            <xs:enumeration value="spaceAround"/>
-            <xs:enumeration value="spaceEvenly"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="MainAxisSizeAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="min"/>
-            <xs:enumeration value="max"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="TextAlignAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="left"/>
-            <xs:enumeration value="right"/>
-            <xs:enumeration value="center"/>
-            <xs:enumeration value="justify"/>
-            <xs:enumeration value="end"/>
-            <xs:enumeration value="start"/>
-        </xs:restriction>
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="100"/>
+                    <xs:enumeration value="200"/>
+                    <xs:enumeration value="300"/>
+                    <xs:enumeration value="400"/>
+                    <xs:enumeration value="500"/>
+                    <xs:enumeration value="600"/>
+                    <xs:enumeration value="700"/>
+                    <xs:enumeration value="800"/>
+                    <xs:enumeration value="900"/>
+                    <xs:enumeration value="thin"/>
+                    <xs:enumeration value="extraLight"/>
+                    <xs:enumeration value="light"/>
+                    <xs:enumeration value="normal"/>
+                    <xs:enumeration value="medium"/>
+                    <xs:enumeration value="semiBold"/>
+                    <xs:enumeration value="bold"/>
+                    <xs:enumeration value="extraBold"/>
+                    <xs:enumeration value="black"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
 
     <xs:simpleType name="TextDecorationAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="lineThrough"/>
-            <xs:enumeration value="overline"/>
-            <xs:enumeration value="underline"/>
-            <xs:enumeration value="none"/>
-        </xs:restriction>
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="lineThrough"/>
+                    <xs:enumeration value="overline"/>
+                    <xs:enumeration value="underline"/>
+                    <xs:enumeration value="none"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <!-- generated enum types -->
+
+    <xs:simpleType name="ClipAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="hardEdge"/>
+                    <xs:enumeration value="antiAlias"/>
+                    <xs:enumeration value="antiAliasWithSaveLayer"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="MainAxisAlignmentAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="start"/>
+                    <xs:enumeration value="end"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="spaceBetween"/>
+                    <xs:enumeration value="spaceAround"/>
+                    <xs:enumeration value="spaceEvenly"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="MainAxisSizeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="min"/>
+                    <xs:enumeration value="max"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="CrossAxisAlignmentAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="start"/>
+                    <xs:enumeration value="end"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="stretch"/>
+                    <xs:enumeration value="baseline"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
 
     <xs:simpleType name="TextDirectionAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="ltr"/>
-            <xs:enumeration value="rtl"/>
-        </xs:restriction>
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="rtl"/>
+                    <xs:enumeration value="ltr"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="VerticalDirectionAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="up"/>
+                    <xs:enumeration value="down"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextBaselineAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="alphabetic"/>
+                    <xs:enumeration value="ideographic"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="MaterialTapTargetSizeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="padded"/>
+                    <xs:enumeration value="shrinkWrap"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="ThemeModeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="system"/>
+                    <xs:enumeration value="light"/>
+                    <xs:enumeration value="dark"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="DragStartBehaviorAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="down"/>
+                    <xs:enumeration value="start"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextAlignAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="left"/>
+                    <xs:enumeration value="right"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="justify"/>
+                    <xs:enumeration value="start"/>
+                    <xs:enumeration value="end"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
 
     <xs:simpleType name="TextOverflowAttributeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="ellipsis"/>
-            <xs:enumeration value="clip"/>
-            <xs:enumeration value="fade"/>
-        </xs:restriction>
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="clip"/>
+                    <xs:enumeration value="fade"/>
+                    <xs:enumeration value="ellipsis"/>
+                    <xs:enumeration value="visible"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
     </xs:simpleType>
+
+    <xs:simpleType name="TextWidthBasisAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="parent"/>
+                    <xs:enumeration value="longestLine"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="FontStyleAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="normal"/>
+                    <xs:enumeration value="italic"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextLeadingDistributionAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="proportional"/>
+                    <xs:enumeration value="even"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextDecorationStyleAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="solid"/>
+                    <xs:enumeration value="double"/>
+                    <xs:enumeration value="dotted"/>
+                    <xs:enumeration value="dashed"/>
+                    <xs:enumeration value="wavy"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TargetPlatformAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="android"/>
+                    <xs:enumeration value="fuchsia"/>
+                    <xs:enumeration value="iOS"/>
+                    <xs:enumeration value="linux"/>
+                    <xs:enumeration value="macOS"/>
+                    <xs:enumeration value="windows"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="BrightnessAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="dark"/>
+                    <xs:enumeration value="light"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
 
     <!-- complex types -->
 
-    <xs:complexType name="objectType">
+    <xs:complexType name="objectType" mixed="true">
         <xs:sequence>
             <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="for" type="xs:string"/>
-        <xs:attribute name="visible" type="xs:string"/>
+        <xs:attribute name="visible" type="boolAttributeType"/>
     </xs:complexType>
 
-    <!-- helper elements -->
-
-    <xs:element name="attribute">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">
-                <p>A tag that renders it's children to an attribute of its parent.</p>
-                <p>@deprecated Use the 'for' attribute on each inflater element instead.</p>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:complexType >
-            <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
-            </xs:sequence>
-            <xs:attribute name="name" use="required"/>
-        </xs:complexType>
-    </xs:element>
+    <!-- built-in tag elements -->
 
     <xs:element name="builder">
         <xs:annotation>
@@ -212,11 +378,25 @@
         </xs:annotation>
         <xs:complexType >
             <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
+                <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="for" type="xs:string" use="required"/>
-            <xs:attribute name="multiChild" type="xs:string"/>
-            <xs:attribute name="copyDependencies" type="xs:string"/>
+            <xs:attribute name="multiChild" type="boolAttributeType"/>
+            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
+            <xs:attribute name="vars" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="callback">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType >
+            <xs:attribute name="action" type="xs:string" use="required"/>
+            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
+            <xs:attribute name="for" type="xs:string" use="required"/>
+            <xs:attribute name="returnVar" type="xs:string"/>
             <xs:attribute name="vars" type="xs:string"/>
         </xs:complexType>
     </xs:element>
@@ -227,9 +407,6 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
-            </xs:sequence>
             <xs:attribute name="message" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
@@ -241,13 +418,13 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
+                <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="var" type="xs:string" use="required"/>
-            <xs:attribute name="indexVar" type="xs:integer"/>
+            <xs:attribute name="indexVar" type="xs:string"/>
             <xs:attribute name="items" type="xs:string" use="required"/>
-            <xs:attribute name="start" type="xs:integer"/>
-            <xs:attribute name="end" type="xs:integer"/>
+            <xs:attribute name="start" type="integerAttributeType"/>
+            <xs:attribute name="end" type="integerAttributeType"/>
             <xs:attribute name="copyDependencies" type="boolAttributeType"/>
         </xs:complexType>
     </xs:element>
@@ -259,12 +436,12 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
+                <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="var" type="xs:string" use="required"/>
-            <xs:attribute name="begin" type="xs:integer"/>
-            <xs:attribute name="end" type="xs:integer"/>
-            <xs:attribute name="step" type="xs:integer"/>
+            <xs:attribute name="begin" type="integerAttributeType"/>
+            <xs:attribute name="end" type="integerAttributeType"/>
+            <xs:attribute name="step" type="integerAttributeType"/>
             <xs:attribute name="copyDependencies" type="boolAttributeType"/>
         </xs:complexType>
     </xs:element>
@@ -275,9 +452,6 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
-            </xs:sequence>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:anyAttribute/>
@@ -291,7 +465,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
+                <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="test" type="xs:string" use="required"/>
         </xs:complexType>
@@ -304,7 +478,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
+                <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -315,15 +489,12 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:sequence>
-                <xs:any namespace="##targetNamespace"/>
-            </xs:sequence>
             <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="value" type="xs:integer" use="required"/>
+            <xs:attribute name="value" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
 
-    <!-- inflater elements -->
+    <!-- built-in inflater elements -->
 
     <xs:element name="Controller">
         <xs:annotation>
@@ -392,6 +563,9 @@
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
+
+    <!-- generated inflater elements -->
+
     <xs:element name="AppBar">
         <xs:annotation>
             <xs:documentation xml:lang="en">
@@ -999,7 +1173,7 @@ must pass through the app bar to widgets beneath the app bar (i.e. with
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="clipBehavior">
+                    <xs:attribute name="clipBehavior" type="ClipAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
@@ -1179,7 +1353,7 @@ either [CrossAxisAlignment.start] or [CrossAxisAlignment.end], then the
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="verticalDirection">
+                    <xs:attribute name="verticalDirection" type="VerticalDirectionAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Determines the order to lay children out vertically and how to interpret
@@ -1201,7 +1375,7 @@ either [CrossAxisAlignment.start] or [CrossAxisAlignment.end], then the
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="textBaseline">
+                    <xs:attribute name="textBaseline" type="TextBaselineAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>If aligning items according to their baseline, which baseline to use.</p><br/>
@@ -1516,7 +1690,7 @@ shape as well.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="clipBehavior">
+                    <xs:attribute name="clipBehavior" type="ClipAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
@@ -1541,7 +1715,7 @@ shape as well.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="materialTapTargetSize">
+                    <xs:attribute name="materialTapTargetSize" type="MaterialTapTargetSizeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Configures the minimum size of the tap target.</p><br/>
@@ -1826,7 +2000,7 @@ shape as well.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="clipBehavior">
+                    <xs:attribute name="clipBehavior" type="ClipAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
@@ -1851,7 +2025,7 @@ shape as well.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="materialTapTargetSize">
+                    <xs:attribute name="materialTapTargetSize" type="MaterialTapTargetSizeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Configures the minimum size of the tap target.</p><br/>
@@ -2122,7 +2296,7 @@ shape as well.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="clipBehavior">
+                    <xs:attribute name="clipBehavior" type="ClipAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
@@ -2147,7 +2321,7 @@ shape as well.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="materialTapTargetSize">
+                    <xs:attribute name="materialTapTargetSize" type="MaterialTapTargetSizeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Configures the minimum size of the tap target.</p><br/>
@@ -2434,7 +2608,7 @@ floating action buttons are scaled and faded in.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="materialTapTargetSize">
+                    <xs:attribute name="materialTapTargetSize" type="MaterialTapTargetSizeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Configures the minimum size of the tap target.</p><br/>
@@ -2447,7 +2621,7 @@ floating action buttons are scaled and faded in.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="clipBehavior">
+                    <xs:attribute name="clipBehavior" type="ClipAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
@@ -2986,7 +3160,7 @@ desire to increase contrast.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="themeMode">
+                    <xs:attribute name="themeMode" type="ThemeModeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Determines which theme will be used by the application if both [theme]
@@ -3028,7 +3202,7 @@ The [themeAnimationDuration] determines how long this animation takes.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="themeAnimationCurve" type="CurveAttributeType">
+                    <xs:attribute name="themeAnimationCurve" type="CurvesAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The curve to apply when animating theme changes.</p><br/>
@@ -3080,8 +3254,8 @@ adding translations for a language not already supported by
 <p>Delegates that produce [WidgetsLocalizations] and [MaterialLocalizations]
 are included automatically. Apps can provide their own versions of these
 localizations by creating implementations of
-[LocalizationsDelegate<WidgetsLocalizations>] or
-[LocalizationsDelegate<MaterialLocalizations>] whose load methods return
+[LocalizationsDelegate&lt;WidgetsLocalizations&gt;] or
+[LocalizationsDelegate&lt;MaterialLocalizations&gt;] whose load methods return
 custom versions of [WidgetsLocalizations] or [MaterialLocalizations].</p><br/>
 <p>For example: to add support to [MaterialLocalizations] for a locale it
 doesn't already support, say <code>const Locale('foo', 'BR')</code>, one first
@@ -3541,7 +3715,7 @@ desire to increase contrast.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="themeMode">
+                    <xs:attribute name="themeMode" type="ThemeModeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Determines which theme will be used by the application if both [theme]
@@ -3583,7 +3757,7 @@ The [themeAnimationDuration] determines how long this animation takes.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="themeAnimationCurve" type="CurveAttributeType">
+                    <xs:attribute name="themeAnimationCurve" type="CurvesAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The curve to apply when animating theme changes.</p><br/>
@@ -3635,8 +3809,8 @@ adding translations for a language not already supported by
 <p>Delegates that produce [WidgetsLocalizations] and [MaterialLocalizations]
 are included automatically. Apps can provide their own versions of these
 localizations by creating implementations of
-[LocalizationsDelegate<WidgetsLocalizations>] or
-[LocalizationsDelegate<MaterialLocalizations>] whose load methods return
+[LocalizationsDelegate&lt;WidgetsLocalizations&gt;] or
+[LocalizationsDelegate&lt;MaterialLocalizations&gt;] whose load methods return
 custom versions of [WidgetsLocalizations] or [MaterialLocalizations].</p><br/>
 <p>For example: to add support to [MaterialLocalizations] for a locale it
 doesn't already support, say <code>const Locale('foo', 'BR')</code>, one first
@@ -4143,7 +4317,7 @@ of the screen's status bar, i.e. the top padding for [MediaQuery].</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="drawerDragStartBehavior">
+                    <xs:attribute name="drawerDragStartBehavior" type="DragStartBehaviorAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.DrawerController.dragStartBehavior}</p><br/>
@@ -4434,7 +4608,7 @@ text value:</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="textWidthBasis">
+                    <xs:attribute name="textWidthBasis" type="TextWidthBasisAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.painting.textPainter.textWidthBasis}</p><br/>
@@ -4641,7 +4815,7 @@ text value:</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="textWidthBasis">
+                    <xs:attribute name="textWidthBasis" type="TextWidthBasisAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.painting.textPainter.textWidthBasis}</p><br/>
@@ -4762,7 +4936,7 @@ isn't specified here.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="fontStyle">
+                    <xs:attribute name="fontStyle" type="FontStyleAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The typeface variant to use when drawing the letters (e.g., italics).</p><br/>
@@ -4789,7 +4963,7 @@ bring the words closer.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="textBaseline">
+                    <xs:attribute name="textBaseline" type="TextBaselineAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The common baseline that should be aligned between this text span and its
@@ -4822,7 +4996,7 @@ height at the paragraph level.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="leadingDistribution">
+                    <xs:attribute name="leadingDistribution" type="TextLeadingDistributionAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>How the vertical space added by the [height] multiplier should be
@@ -4951,7 +5125,7 @@ may have a weight axis that can be set to a value between 1 and 1000.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="decorationStyle">
+                    <xs:attribute name="decorationStyle" type="TextDecorationStyleAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The style in which to paint the text decorations (e.g., dashed).</p><br/>
@@ -5172,7 +5346,7 @@ and [TextFormField] are based on this theme.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="materialTapTargetSize">
+                    <xs:attribute name="materialTapTargetSize" type="MaterialTapTargetSizeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Configures the hit test size of certain Material widgets.</p><br/>
@@ -5194,7 +5368,7 @@ whose platform is null is used.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="platform">
+                    <xs:attribute name="platform" type="TargetPlatformAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The platform the material widgets should adapt to target.</p><br/>
@@ -5372,7 +5546,7 @@ use [ThemeData.iconButtonTheme] instead.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="brightness"/>
+                    <xs:attribute name="brightness" type="BrightnessAttributeType"/>
                     <xs:attribute name="canvasColor">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6094,7 +6268,7 @@ and [TextFormField] are based on this theme.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="materialTapTargetSize">
+                    <xs:attribute name="materialTapTargetSize" type="MaterialTapTargetSizeAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Configures the hit test size of certain Material widgets.</p><br/>
@@ -6116,7 +6290,7 @@ whose platform is null is used.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="platform">
+                    <xs:attribute name="platform" type="TargetPlatformAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The platform the material widgets should adapt to target.</p><br/>
@@ -7390,7 +7564,6 @@ scheme depending on [useMaterial3].</p><br/>
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
-
 
 
 </xs:schema>

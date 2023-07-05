@@ -479,9 +479,9 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | 8     | `*`<br>`/`<br>`~/`<br>`%`  | Multiplicative                            | Left-to-right |
 | 7     | `+`<br>`-`                 | Additive                                  | Left-to-right |
 | 6     | `<`<br>`>`<br>`<=`<br>`>=` | Relational                                |               |
-| 5     | `==`  <br>`!=`             | Equality                                  |               |
+| 5     | `==`<br>`!=`               | Equality                                  |               |
 | 4     | `&&`                       | Logical AND                               | Left-to-right |
-| 3     | `&#124;&#124;`             | Logical OR                                | Left-to-right |
+| 3     | <code>&#124;&#124;</code>  | Logical OR                                | Left-to-right |
 | 2     | `expr1 ?? expr2`           | If null                                   | Left-to-right |
 | 1     | `expr ? expr1 : expr2`     | Conditional (ternary)                     | Right-to-left |
 
@@ -518,9 +518,9 @@ associativity. Both the precedence level and associativity can be seen in the ta
 
 ### Custom Functions
 
-Custom functions are functions that you define and add to your `Dependencies`. They behave exactly
-like built-in functions. You can also override the built-in functions with your custom function, 
-if needed. You can have up to 10 required and optional arguments.
+Custom functions are functions that you define and add to your `Dependencies`. They behave like
+built-in functions except that they are bound to a single `Dependencies` instance. Custom functions
+can have up to 10 required and/or optional arguments.
 
 For example:
 
@@ -643,7 +643,7 @@ A simple tag that logs a debug message
 
 | Attribute | Description         | Required | Default |
 |-----------|---------------------|----------|---------|
-| message   | The message to log. | no       | null    |
+| message   | The message to log. | yes      | null    |
 
 ```xml
 <debug message="Hello world!"/>

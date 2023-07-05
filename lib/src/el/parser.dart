@@ -323,7 +323,7 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   Expression _createFunctionExpression(String functionName, List<Expression> parameters) {
     final resolved = _getDataStore(functionName);
-    final func = resolved.value[resolved.key] ?? _builtInFunctions[functionName];
+    final func = _builtInFunctions[functionName] ?? resolved.value[resolved.key];
     if (func is Function) {
       return DynamicFunction(func, parameters);
     }

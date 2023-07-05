@@ -15,6 +15,7 @@ class InflaterBuilder extends SpecBuilder {
 
   final InflaterConfig inflaterConfig;
   final SchemaConfig schemaConfig;
+  final Map<String, SchemaType> schemaTypes = {};
 
   InflaterBuilder(super.config):
     inflaterConfig = config.inflaterConfig,
@@ -247,9 +248,19 @@ class InflaterBuilder extends SpecBuilder {
   Future<String> _buildSchema(String elements) async {
     final templateUri = await PathResolver.relativeToAbsolute(schemaConfig.template);
     final templateFile = File(templateUri.path);
-    final template = templateFile.readAsStringSync();
+    final templateLines = templateFile.readAsLinesSync();
     final code = StringBuffer();
-    code.write(template.replaceFirst(RegExp("[ \t]*<!--@@inflaters@@-->"), elements));
+    for (final line in templateLines) {
+      if (line.contains("<!--@@enumTypes@@-->")) {
+        for (final schemaType in schemaTypes.values) {
+          code.write(schemaType.code);
+        }
+      } else if (line.contains("<!--@@inflaters@@-->")) {
+        code.write(elements);
+      } else {
+        code.write("$line\n");
+      }
+    }
     return code.toString();
   }
 
@@ -265,6 +276,10 @@ class InflaterBuilder extends SpecBuilder {
           inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name) &&
           schemaConfig.isNotExcludedAttribute(constructorName, param.name) &&
           !isPrivateAccessParam(param, isCustomWidget)) {
+        final paramType = param.type.element;
+        if (paramType is EnumElement && !schemaTypes.containsKey(paramType.name)) {
+          _buildSchemaAttributeType(paramType);
+        }
         attributes.write(_buildSchemaAttribute(type, param));
       }
     }
@@ -297,7 +312,7 @@ class InflaterBuilder extends SpecBuilder {
 
   String _buildSchemaAttribute(ClassElement type, ParameterElement param) {
     final code = StringBuffer();
-    final schemaType = schemaConfig.findAttributeType(param.type.element?.name);
+    final schemaType = _getSchemaAttributeType(param);
     final paramDocs = getParameterDocumentation(type, param);
     code.write('                    <xs:attribute name="${param.name}"');
     if (schemaType != null) {
@@ -312,4 +327,39 @@ class InflaterBuilder extends SpecBuilder {
     }
     return code.toString();
   }
+
+  void _buildSchemaAttributeType(EnumElement enumElement) {
+    final enumName = enumElement.name;
+    final schemaTypeName = "${enumName}AttributeType";
+    final code = StringBuffer();
+    code.write('    <xs:simpleType name="${schemaTypeName}">\n');
+    code.write('        <xs:union memberTypes="expressionAttributeType">\n');
+    code.write('            <xs:simpleType>\n');
+    code.write('                <xs:restriction base="xs:string">\n');
+    final values = enumElement.getField("values")?.computeConstantValue()?.toListValue();
+    if (values != null) {
+      for (final enumItem in values) {
+        final enumItemName = enumItem.variable?.name;
+        code.write('                    <xs:enumeration value="$enumItemName"/>\n');
+      }
+    }
+    code.write('                </xs:restriction>\n');
+    code.write('            </xs:simpleType>\n');
+    code.write('        </xs:union>\n');
+    code.write('    </xs:simpleType>\n\n');
+    schemaTypes[enumElement.name] = SchemaType(schemaTypeName, code.toString());
+  }
+
+  String? _getSchemaAttributeType(ParameterElement param) {
+    final paramType = param.type.element;
+    final paramTypeName = paramType?.name;
+    return schemaConfig.findAttributeType(paramTypeName) ?? schemaTypes[paramTypeName]?.name;
+  }
+}
+
+class SchemaType {
+  final String name;
+  final String code;
+
+  SchemaType(this.name, this.code);
 }
