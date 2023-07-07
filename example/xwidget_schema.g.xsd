@@ -11,6 +11,18 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="dependenciesScopeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="copy"/>
+                    <xs:enumeration value="inherit"/>
+                    <xs:enumeration value="new"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="boolAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -21,6 +33,7 @@
             </xs:simpleType>
         </xs:union>
     </xs:simpleType>
+
 
     <xs:simpleType name="integerAttributeType">
         <xs:union memberTypes="expressionAttributeType xs:integer"/>
@@ -381,9 +394,9 @@
                 <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="for" type="xs:string" use="required"/>
-            <xs:attribute name="multiChild" type="boolAttributeType"/>
-            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
             <xs:attribute name="vars" type="xs:string"/>
+            <xs:attribute name="multiChild" type="boolAttributeType"/>
+            <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
         </xs:complexType>
     </xs:element>
 
@@ -393,11 +406,11 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType >
-            <xs:attribute name="action" type="xs:string" use="required"/>
-            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
             <xs:attribute name="for" type="xs:string" use="required"/>
+            <xs:attribute name="action" type="xs:string" use="required"/>
             <xs:attribute name="returnVar" type="xs:string"/>
             <xs:attribute name="vars" type="xs:string"/>
+            <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
         </xs:complexType>
     </xs:element>
 
@@ -425,7 +438,7 @@
             <xs:attribute name="items" type="xs:string" use="required"/>
             <xs:attribute name="start" type="integerAttributeType"/>
             <xs:attribute name="end" type="integerAttributeType"/>
-            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
+            <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
         </xs:complexType>
     </xs:element>
 
@@ -442,7 +455,7 @@
             <xs:attribute name="begin" type="integerAttributeType"/>
             <xs:attribute name="end" type="integerAttributeType"/>
             <xs:attribute name="step" type="integerAttributeType"/>
-            <xs:attribute name="copyDependencies" type="boolAttributeType"/>
+            <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
         </xs:complexType>
     </xs:element>
 
@@ -454,6 +467,7 @@
         <xs:complexType>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
             <xs:anyAttribute/>
         </xs:complexType>
     </xs:element>

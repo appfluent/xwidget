@@ -1,9 +1,18 @@
+### 0.0.17 (Jul 7, 2023)
+
+* Substantially increased attribute value parsing performance.
+* Added embedded expression parsing to attribute values i.e. `<Text data="Dear ${name},"/>`
+* Removed `@fragment` attribute directive. Use the `fragment` tag accompanied with the `for` attribute instead.
+* Replaced `copyDependencies` option with `dependenciesScope`. Can be `new`, `copy`, or `inherit`.
+* Added `dependenciesScope` option to `frgament` tag.
+* Updated documentation.
+
 ### 0.0.16 (Jul 4, 2023)
 
 * Improved fragment XML validation.
 * Auto generate inflater attribute restrictions for enum types.
 * Removed ability to override built-in functions.
-* Controller no longer extends `WidgetsBindingObserver`. Subclasses can added it as a mixin, if needed.
+* Controller no longer extends `WidgetsBindingObserver`. Subclasses can add it as a mixin, if needed.
 * Added `callback` schema element.
 * Updated documentation
 

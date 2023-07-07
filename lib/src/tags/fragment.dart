@@ -6,10 +6,11 @@ import '../xwidget.dart';
 ///
 /// Supports folders, inherited attributes, and HTML style query parameters. Parameters are stored as dependencies.
 ///
-///
 /// Attributes:
 /// - name (required): name of the fragment to render i.e 'login' or 'login.xml'. You can prepend a path if
 ///         if you're using fragment folders i.e. 'profile/login'.
+/// - dependenciesScope (optional): Defines the method for passing Dependencies to immediate children. Valid
+///         values are `new`, `copy`, and `inherit`. The default is `inherit`.
 /// - for (optional): name of parent attribute to render the fragment into.
 ///         ```dart
 ///         <AppBar>
@@ -31,9 +32,13 @@ class FragmentTag implements Tag {
       throw Exception("<$name> 'name' attribute is required. $dump");
     }
 
+    // 'dependenciesScope' is optional
+    final dependenciesScope = attributes["dependenciesScope"];
+
     // inflate named fragment
+    final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
     final inheritedAttributes = element.attributes.where((attribute) => !attributeNames.contains(attribute.localName));
-    final object = XWidget.inflateFragment(fragmentName, dependencies, inheritedAttributes: inheritedAttributes);
+    final object = XWidget.inflateFragment(fragmentName, deps, inheritedAttributes: inheritedAttributes);
     if (object == null) return null;
 
     final children = Children();

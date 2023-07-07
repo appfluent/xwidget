@@ -57,6 +57,10 @@ class PathResolution {
   final dynamic path;
   final dynamic collection;
 
+  static final _mapPathRegExp = RegExp(r"^([a-zA-Z0-9_]+[?!]?)(?:\.?)(.*)");
+  static final _listPathRegExp = RegExp(r"^\[([0-9]+)\](?:\.?)(.*)");
+  static final _nullSafetyRegExp = RegExp("[?!]*");
+
   PathResolution(this.path, this.collection);
 
   static PathResolution resolvePath(String? path, bool createPath, dynamic data) {
@@ -95,14 +99,13 @@ class PathResolution {
 
   static PathResolution _resolveMapPath(String? path, bool createPath, dynamic data) {
     if (path != null) {
-      final regex = RegExp(r"^([a-zA-Z0-9_]+[?!]?)(?:\.?)(.*)");
-      final matches = regex.firstMatch(path);
+      final matches = _mapPathRegExp.firstMatch(path);
       if (matches != null) {
         final nextPath = matches.group(2);
         final nextPathIsList = nextPath?.startsWith("[") ?? false;
         final nextPathIsEmpty = nextPath == null || nextPath.isEmpty;
         final group1 = matches.group(1)!;
-        final currPath = group1.replaceAll(RegExp("[?!]*"), "");
+        final currPath = group1.replaceAll(_nullSafetyRegExp, "");
         final valueIsNullable = group1.endsWith("?") || (nextPathIsEmpty && !group1.endsWith("!"));
         var value = data[currPath];
 
@@ -130,8 +133,7 @@ class PathResolution {
 
   static PathResolution _resolveListPath(String? path, bool createPath, List data) {
     if (path != null) {
-      final regex = RegExp(r"^\[([0-9]+)\](?:\.?)(.*)");
-      final matches = regex.firstMatch(path);
+      final matches = _listPathRegExp.firstMatch(path);
       if (matches != null) {
         final index = int.tryParse(matches.group(1) ?? "");
         if (index != null && index > -1) {

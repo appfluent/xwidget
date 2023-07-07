@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../xwidget.dart';
 
+final _parseDurationRegExp = RegExp(r'^(\d+)(ms|s)$');
+final _parseColorRegExp = RegExp("^(#|0x)*");
 
 double? parseHeight(String? value) {
   if (value == null || value.isEmpty) return null;
@@ -30,8 +32,7 @@ bool? parseBool(dynamic value) {
 
 Duration? parseDuration(String? value) {
   if (value != null && value.isNotEmpty) {
-    final regex = RegExp(r'^(\d+)(ms|s)$');
-    final match = regex.firstMatch(value);
+    final match = _parseDurationRegExp.firstMatch(value);
     if (match != null) {
       final digits = int.parse(match.group(1)!);
       final unit = match.group(2);
@@ -118,7 +119,7 @@ Alignment? parseAlignment(String? value) {
 Color? parseColor(String? value) {
   if (value == null || value.isEmpty) return null;
 
-  var argb = value.replaceAll(RegExp("^(#|0x)*"), "");
+  var argb = value.replaceAll(_parseColorRegExp, "");
   if (argb.length == 6) {
     argb = "FF$argb";
   }

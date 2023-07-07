@@ -332,7 +332,7 @@ class InflaterBuilder extends SpecBuilder {
     final enumName = enumElement.name;
     final schemaTypeName = "${enumName}AttributeType";
     final code = StringBuffer();
-    code.write('    <xs:simpleType name="${schemaTypeName}">\n');
+    code.write('    <xs:simpleType name="$schemaTypeName">\n');
     code.write('        <xs:union memberTypes="expressionAttributeType">\n');
     code.write('            <xs:simpleType>\n');
     code.write('                <xs:restriction base="xs:string">\n');

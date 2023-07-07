@@ -1,6 +1,5 @@
 import 'package:xml/xml.dart';
 
-import '../utils/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 
@@ -15,7 +14,7 @@ class ForLoopTag implements Tag {
     final varName = attributes["var"];
     if (varName == null || varName.isEmpty) throw Exception("<$name> 'var' attribute is required.");
 
-    final copyDeps = parseBool(element.getAttribute("copyDependencies")) ?? false;
+    final dependenciesScope = attributes["dependenciesScope"];
     final begin = CommonUtils.tryParseInt(element.getAttribute("begin")) ?? 0;
     final end = CommonUtils.tryParseInt(element.getAttribute("end")) ?? 0;
     final step = CommonUtils.tryParseInt(element.getAttribute("step")) ?? 1;
@@ -23,18 +22,12 @@ class ForLoopTag implements Tag {
 
     final children = Children();
     for (var index = begin; step > 0 ? index < end : index > end; index += step) {
-      dependencies[varName] = index;
-      final tagChildren = XWidget.inflateXmlElementChildren(
-        element,
-        copyDeps ? dependencies.copy() : dependencies
-      );
-
-      // TODO: dispose of Dependencies copies - wrap in 'DisposeOf' widget
+      final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
+      deps[varName] = index;
+      final tagChildren = XWidget.inflateXmlElementChildren(element, deps);
       children.addAll(tagChildren);
     }
 
-    // cleanup scope and return results
-    dependencies.remove(varName);
     return children;
   }
 }

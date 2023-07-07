@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide Stack;
-import 'package:petitparser/context.dart';
 import 'package:petitparser/core.dart';
 import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
@@ -62,8 +61,7 @@ class XWidget {
 
   static final _icons = <String, IconData>{};
   static final _controllerFactories = <String, XWidgetControllerFactory>{};
-  static final _attributeDirective = RegExp(r'^(@[a-z]+/)(.+)$');
-  static final _attributeExpression = RegExp(r'^\$\{(.*)\}$');
+  static final _attributeContainsExpressions = RegExp(r"\$\{(.*?)}");
 
   //===================================
   // Public Methods
@@ -251,41 +249,47 @@ class XWidget {
     required Dependencies dependencies,
     Inflater? inflater,
   }) {
-    if (attributeValue != null && attributeValue.isNotEmpty) {
-      final directiveMatch = _attributeDirective.firstMatch(attributeValue);
-      if (directiveMatch != null) {
-        // the attribute value contains a directive that needs to be resolved
-        final directive = directiveMatch.group(1)!;
-        final key = directiveMatch.group(2)!;
-        switch (directive) {
-          case "@fragment/": return inflateFragment(key, dependencies);
-          case "@string/": return Resources.instance.getString(key);
-          case "@bool/": return Resources.instance.getBool(key);
-          case "@int/":  return Resources.instance.getInt(key);
-          case "@double/": return Resources.instance.getDouble(key);
-          default:
-            // validation check failed - unknown directive used
-            throw Exception("Unknown attribute directive: '$directive'");
-        }
-      }
-      final expressionMatch = _attributeExpression.firstMatch(attributeValue);
-      if (expressionMatch != null) {
-        // the attribute value contains an expression that needs to be parsed
-        final expression = expressionMatch.group(1);
-        if (expression != null && expression.isNotEmpty) {
-          final result = parseExpression(dependencies, expression);
-          if (result.isSuccess) {
-            final value = result.value.evaluate();
-            return (inflater != null && value is String) ? inflater.parseAttribute(attributeName, value) : value;
-          } else {
-            throw Exception("Failed to parse '$expression' of attribute '$attributeName'. ${result.message}");
-          }
-        }
-        return null;
-      }
-      return inflater?.parseAttribute(attributeName, attributeValue) ?? attributeValue;
+    // IMPORTANT: startsWith and endsWith are much faster than RegExp with numerous iterations
+
+    if (attributeValue == null) return null;
+    if (attributeValue.startsWith("@string/")) {
+      return Resources.instance.getString(attributeValue.substring(8, attributeValue.length));
     }
-    return null;
+    if (attributeValue.startsWith("@bool/")) {
+      return Resources.instance.getBool(attributeValue.substring(6, attributeValue.length));
+    }
+    if (attributeValue.startsWith("@int/")) {
+      return Resources.instance.getInt(attributeValue.substring(5, attributeValue.length));
+    }
+    if (attributeValue.startsWith("@double/")) {
+      return Resources.instance.getDouble(attributeValue.substring(8, attributeValue.length));
+    }
+    if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
+      // the attribute value is an expression that needs to be parsed
+      final value = parseExpression(attributeValue.substring(2, attributeValue.length - 1), dependencies);
+      return (inflater != null && value is String) ? inflater.parseAttribute(attributeName, value) : value;
+    }
+
+    final value = parseAllExpressions(attributeValue, dependencies);
+    return (inflater != null) ? inflater.parseAttribute(attributeName, value) : value;
+  }
+
+  static String parseAllExpressions(String input, Dependencies dependencies) {
+    return input.replaceAllMapped(_attributeContainsExpressions, (Match match) {
+      // parse embedded expression
+      final value = parseExpression(match[1]!, dependencies);
+      return value != null ? value.toString() : "";
+    });
+  }
+
+  static dynamic parseExpression(String expression, Dependencies dependencies) {
+    if (expression.isEmpty) return expression;
+
+    final parser = dependencies.getExpressionParser();
+    final result = parser.parse(expression);
+    if (result.isSuccess) return result.value.evaluate();
+
+    throw Exception("Failed to parse EL expression '$expression'. ${result.message}");
   }
 
   static Iterable<XmlAttribute> mergeXmlAttributes(Iterable<XmlAttribute> list1, Iterable<XmlAttribute>? list2) {
@@ -302,31 +306,18 @@ class XWidget {
     return attributes.values;
   }
 
-  static dump(XmlElement element, Dependencies dependencies) {
-    return "\n------- XML Element --------\n${element.toXmlString(pretty: true)}"
-           "\n------- Dependencies -------\n$dependencies";
-  }
-
-  static Result parseExpression(Dependencies dependencies, String expression) {
-    try {
-      final parser = dependencies.getExpressionParser();
-      dependencies["_dependencies"] = dependencies;
-      return parser.parse(expression);
-    } finally {
-      dependencies.remove("_dependencies");
+  static Dependencies scopeDependencies(Dependencies dependencies, String? scope, [String defaultScope = "inherit"]) {
+    switch(scope ?? defaultScope) {
+      case "new": return Dependencies();
+      case "copy": return dependencies.copy();
+      case "inherit": return dependencies;
+      default: throw Exception("Invalid Dependencies scope '$scope'");
     }
   }
 
-  static String parseDocument(String input, Dependencies dependencies) {
-    final parser = dependencies.getExpressionParser();
-    final regExp = RegExp(r"\$\{(.*?)\}");
-    return input.replaceFirstMapped(regExp, (match) {
-      final result = parser.parse(match.group(1) ?? "");
-      if (result.isSuccess) {
-        return result.value.evaluate() ?? "";
-      }
-      throw Exception("Failed to parse '${match.group(0)}' in document '$input'. ${result.message}");
-    });
+  static dump(XmlElement element, Dependencies dependencies) {
+    return "\n------- XML Element --------\n${element.toXmlString(pretty: true)}"
+        "\n------- Dependencies -------\n$dependencies";
   }
 }
 

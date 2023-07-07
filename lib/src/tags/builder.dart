@@ -15,14 +15,14 @@ import '../xwidget.dart';
 /// simply ignored. The `BuildContext` is never stored as a dependency, even if explicitly named,
 /// because it would cause a memory leak.
 ///
-/// Attribute:
+/// Attributes:
 /// - for (required): The name of the parent attribute that will be assigned the builder function.
 /// - vars (optional): A comma separated list of named and placeholder function arguments. Named arguments are added to
 ///       `Dependencies`. Supports up to five arguments.
 /// - multiChild (optional): Whether the builder function should return an array or a single widget. Defaults to `false`.
 /// - nullable (optional): Whether the builder function can return null. Defaults to `false`.
-/// - copyDependencies (optional): Creates a copy of the current dependencies to use in rendering its children.
-///       All named `vars` are added to the copy. Defaults to false.
+/// - dependenciesScope (optional): Defines the method for passing Dependencies to immediate children. Valid
+///       values are `new`, `copy`, and `inherit`. The default is `inherit`.
 ///
 /// Example:
 /// ```xml
@@ -51,10 +51,10 @@ class BuilderTag implements Tag {
 
     final multiChild = parseBool(attributes["multiChild"]) ?? false;
     final nullable = parseBool(attributes["nullable"]) ?? false;
-    final copyDependencies = parseBool(attributes["copyDependencies"]) ?? false;
+    final dependenciesScope = attributes["dependenciesScope"];
 
     dynamic builder([p0, p1, p2, p3, p4]) {
-      final deps = copyDependencies ?  dependencies.copy() : dependencies;
+      final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
           final varName = vars[paramIndex];

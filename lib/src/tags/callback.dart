@@ -4,6 +4,23 @@ import 'package:xml/xml.dart';
 import '../utils/parsers.dart';
 import '../xwidget.dart';
 
+/// This tag allows you to bind an event handler with custom arguments. If you don't need to pass any
+/// arguments, then just bind the handler using EL, like so: `<TextButton onPressed="${onPressed}"/>`.
+/// This is sufficient in most cases.
+///
+/// The `callback` tag creates an event handler function for you and executes the `action` when the
+/// event is triggered. `action` is an EL expression that is evaluated at the time of the event. Do not
+/// enclose the expression in curly braces `${...}`, otherwise it will be evaluated immediately upon
+/// creation instead of when the event is fired.
+///
+/// If the handler function defines arguments in its signature, you must declare those arguments using
+/// the `vars` attribute. This attribute takes a comma separated list of argument names. When the
+/// handler is triggered, argument values are added to `Dependencies` using the specified name as the
+/// key, and can be referenced in the `action` EL expression, if needed. They're also accessible
+/// anywhere else that instance of `Dependencies` is available. If you don't need the values, then use
+/// and underscore (_) in place of the name. This will ignore those value and they won't be added to
+/// `Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never added to `Dependencies` even
+/// when named, because this would cause a memory leak.
 class CallbackTag implements Tag {
   @override
   String get name => "callback";
@@ -26,11 +43,11 @@ class CallbackTag implements Tag {
     // 'returnVar' is optional
     final returnVar = element.getAttribute("returnVar");
 
-    // 'copyDependencies' is optional
-    final copyDependencies = parseBool(attributes["copyDependencies"]) ?? false;
+    // 'dependenciesScope' is optional
+    final dependenciesScope = attributes["dependenciesScope"];
 
     dynamic callback([p0, p1, p2, p3, p4]) {
-      final deps = copyDependencies ?  dependencies.copy() : dependencies;
+      final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
           final varName = vars[paramIndex];
@@ -45,14 +62,9 @@ class CallbackTag implements Tag {
           }
         }
       }
-      final result = XWidget.parseExpression(dependencies, action);
-      if (result.isSuccess) {
-        final value = result.value.evaluate();
-        if (returnVar != null && returnVar.isNotEmpty) {
-          deps.setValue(returnVar, value);
-        }
-      } else {
-        throw Exception("Failed to parse callback action: '$action'. ${result.message}");
+      final value = XWidget.parseExpression(action, dependencies);
+      if (returnVar != null && returnVar.isNotEmpty) {
+        deps.setValue(returnVar, value);
       }
     }
 

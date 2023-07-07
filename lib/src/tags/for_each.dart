@@ -1,6 +1,5 @@
 import 'package:xml/xml.dart';
 
-import '../utils/parsers.dart';
 import '../xwidget.dart';
 
 
@@ -25,28 +24,21 @@ class ForEachTag implements Tag {
     // 'indexVar' is an optional attribute
     final indexVarName = attributes["indexVar"];
 
-    // 'copyDependencies' is an optional attribute
-    final copyDeps = parseBool(element.getAttribute("copyDependencies")) ?? false;
+    // 'dependenciesScope' is an optional attribute
+    final dependenciesScope = attributes["dependenciesScope"];
 
     var indexVar = 0;
     final children = Children();
     for (final item in iterable) {
-      dependencies[varName] = item is MapEntry ? {"key": item.key, "value": item.value} : item;
+      final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
+      deps[varName] = item is MapEntry ? {"key": item.key, "value": item.value} : item;
       if (indexVarName != null && indexVarName.isNotEmpty) {
-        dependencies[indexVarName] = indexVar;
+        deps[indexVarName] = indexVar;
       }
-      final tagChildren = XWidget.inflateXmlElementChildren(
-        element,
-        copyDeps ? dependencies.copy() : dependencies
-      );
-
-      // TODO: dispose of Dependencies copies - wrap in 'DisposeOf' widget
+      final tagChildren = XWidget.inflateXmlElementChildren(element, deps);
       children.addAll(tagChildren);
       indexVar++;
     }
-
-    // cleanup scope and return results
-    dependencies.remove(varName);
     return children;
   }
 }
