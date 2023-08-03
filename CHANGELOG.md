@@ -1,3 +1,9 @@
+### 0.0.18 (Aug 3, 2023)
+
+* Added support for a simplified inflater and icon specification format. See the 
+  'Inflaters Configuration' and 'Icons Configuration' README sections.
+* Updated documentation.
+
 ### 0.0.17 (Jul 7, 2023)
 
 * Substantially increased attribute value parsing performance.

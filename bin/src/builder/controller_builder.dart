@@ -20,7 +20,7 @@ class ControllerBuilder extends SpecBuilder {
       final imports = StringBuffer();
       final registrations = StringBuffer();
       final analyzer = SourceAnalyzer();
-      final defaultSources = ["lib/xwidget/controllers/**.dart"]; // a hack
+      final defaultSources = ["lib/xwidget/controllers/**.dart"]; // hardcoding the path here is a hack
       final sourceManifest = await analyzer.getSourceManifest(controllerConfig.sources, defaultSources);
       final libraryElements = await analyzer.getLibraryElements(sourceManifest.paths);
 

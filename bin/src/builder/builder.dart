@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:markdown/markdown.dart';
-import 'package:yaml/yaml.dart';
 
 import '../utils/cli_log.dart';
 import '../utils/config_loader.dart';
-import '../utils/path_resolver.dart';
 import '../utils/utils.dart';
 
 
@@ -151,12 +149,9 @@ class BuilderConfig {
   BuilderConfig({this.allowDeprecated = false});
 
   Future<void> loadConfig(String path) async {
-    final uri = await PathResolver.relativeToAbsolute(path);
-    final file = File.fromUri(uri);
-    if (file.existsSync()) {
+    final doc = await ConfigLoader.loadYamlDocument(path);
+    if (doc != null) {
       CliLog.success("Found config at '$path'");
-      final yaml = await file.readAsString();
-      final doc = loadYaml(yaml);
 
       // icon config
       iconConfig.target = ConfigLoader.loadToString(doc, "icons.target", iconConfig.target);
@@ -253,7 +248,7 @@ class SchemaConfig with ConfigMixin {
   }
 }
 
-class InflaterConfig with ConfigMixin{
+class InflaterConfig with ConfigMixin {
   String target = "";
   Set<String> imports = {};
   Set<String> sources = {};

@@ -5,13 +5,14 @@ import 'builder/controller_builder.dart';
 import 'builder/icons_builder.dart';
 import 'builder/inflater_builder.dart';
 import 'utils/cli_log.dart';
+import 'utils/config_loader.dart';
 
 // TODO: Add a build function to scan fragments and create a list of all active widgets and then compare
 //       it to the spec to see which widgets can be dropped from the spec.
 
-const String version = "0.0.17";
-
 void main(List<String> unparsedArgs) async {
+  final pubspec = await ConfigLoader.loadYamlDocument("xwidget|pubspec.yaml");
+  final version = ConfigLoader.loadToString(pubspec, "version", "<unknown>");
   CliLog.info("XWidget Code Generator (version $version)");
 
   final ArgParser parser = ArgParser();

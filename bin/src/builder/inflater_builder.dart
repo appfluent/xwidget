@@ -48,15 +48,32 @@ class InflaterBuilder extends SpecBuilder {
             if (element is PropertyAccessorElement) {
               final returnType = element.returnType;
               if (returnType.toString() != "InvalidType") {
-                final returnElement = returnType.element;
-                if (returnElement is ClassElement) {
-                  final annotations = decodeMetadata(returnElement.metadata);
-                  for (final constructor in returnElement.constructors) {
+                // has a known return type
+                final classElements = <ClassElement>[];
+                if (element.name == "inflaters") {
+                  // found a list of inflaters
+                  final inflaterTypes = element.variable.computeConstantValue()?.toListValue();
+                  if (inflaterTypes != null) {
+                    for (final inflaterType in inflaterTypes) {
+                      final element = inflaterType.toTypeValue()?.element;
+                      if (element is ClassElement) classElements.add(element);
+                    }
+                  }
+                } else {
+                  // found individual inflater const
+                  final returnElement = returnType.element;
+                  if (returnElement is ClassElement) classElements.add(returnElement);
+                }
+
+                // process all class elements
+                for (final classElement in classElements) {
+                  final annotations = decodeMetadata(classElement.metadata);
+                  for (final constructor in classElement.constructors) {
                     if (!constructor.isPrivate && (!constructor.hasDeprecated || config.allowDeprecated)) {
-                      final inflater = _buildInflaterClass(returnElement, constructor, annotations);
+                      final inflater = _buildInflaterClass(classElement, constructor, annotations);
                       inflaters.write(inflater[0]);
                       initializers.write(inflater[1]);
-                      schemaElements.write(_buildSchemaElement(returnElement, constructor, annotations));
+                      schemaElements.write(_buildSchemaElement(classElement, constructor, annotations));
                     }
                   }
                 }
@@ -87,6 +104,9 @@ class InflaterBuilder extends SpecBuilder {
       await schemaTargetFile.writeAsString(schema);
       result.outputs.add(schemaTargetFile);
       CliLog.success("Schema output to '${schemaConfig.target}'");
+
+      result.errors = CliLog.errors;
+      result.warnings = CliLog.warnings;
     }
     return result;
   }

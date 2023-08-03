@@ -34,7 +34,6 @@
         </xs:union>
     </xs:simpleType>
 
-
     <xs:simpleType name="integerAttributeType">
         <xs:union memberTypes="expressionAttributeType xs:integer"/>
     </xs:simpleType>

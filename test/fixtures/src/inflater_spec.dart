@@ -15,3 +15,16 @@ const Scaffold? _scaffold = null;
 const Text? _text = null;
 const TextStyle? _textStyle = null;
 const ThemeData? _themeData = null;
+
+const inflaters = [
+  AppBar,
+  Center,
+  Column,
+  FloatingActionButton,
+  Icon,
+  MaterialApp,
+  Scaffold,
+  Text,
+  TextStyle,
+  ThemeData,
+];

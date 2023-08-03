@@ -105,7 +105,7 @@ class CommonLog {
   warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.warn, msg, error, stackTrace)) {
-      _logger.w(msg, error, stackTrace);
+      _logger.w(msg, error: error, stackTrace: stackTrace);
     }
   }
 
@@ -113,7 +113,7 @@ class CommonLog {
   error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.error, msg, error, stackTrace)) {
-      _logger.e(msg, error, stackTrace);
+      _logger.e(msg, error: error, stackTrace: stackTrace);
     }
   }
 

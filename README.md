@@ -53,10 +53,12 @@ below.
     // lib/xwidget/inflater_spec.dart
     import 'package:flutter/material.dart';
     
-    const Column? _column = null;
-    const Container? _container = null;
-    const Text? _text = null;
-    const TextStyle? _textStyle = null;
+    const inflaters = [
+      Column,   
+      Container,
+      Text,
+      TextStyle, 
+    ];
     ```
    
 3. Create a custom configuration file. This is an XML document that configures the inputs and 
@@ -142,6 +144,18 @@ Please see the [example](https://github.com/appfluent/xwidget/tree/main/example)
 package. It contains an XWidget version of Flutter's classic starter app. It only scratches the
 surface of XWidget's capabilities.
 
+
+
+# Setup
+
+## Specification
+
+### Inflater specification
+
+### Icon Specification
+
+## Includes
+
 # Configuration
 
 By default, XWidget's code generator looks for a custom configuration file named `xwidget_config.yaml`
@@ -191,6 +205,9 @@ inflaters:
   # DEFAULT: [ "package:xwidget/xwidget.dart" ]
   imports: [ ]
 
+  # List of list inflater specification source files. Specifications tell XWidget which objects
+  # to create inflaters for.
+  #
   # DEFAULT: none
   sources: [ ]
 
@@ -212,6 +229,27 @@ inflaters:
      # - "Alignment": "parseAlignment(value)"
      # - "*:width": "parseWidth(value)"
     "<constructor_argument_type | * for any>(: <constructor_argument_name>)": "<parser_function_call>"
+```
+
+```dart
+// example inflater specification.
+import 'package:flutter/material.dart';
+
+// Best Practice: Keep declarations in alphabetical order. It makes it much easier to
+// quickly determine what has been added and what is missing.
+
+const inflaters = [
+  AppBar,
+  Center,
+  Column,
+  FloatingActionButton,
+  Icon,
+  MaterialApp,
+  Scaffold,
+  Text,
+  TextStyle,
+  ThemeData,
+];
 ```
 
 ### Schema Configuration
@@ -269,10 +307,31 @@ icons:
   # DEFAULT: [ "package:xwidget/xwidget.dart" ]
   imports: [ ]
 
+  # List of list icon specification source files. Specifications tell XWidget which icons
+  # to register.
+  #
   # DEFAULT: none
   sources: [ ]
 ```
 
+```dart
+// example icon specification
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+// List icons individually to reduce app size.
+const icons = [
+  Icons.add,
+  Icons.delete,
+];
+
+// You can also include the entire icon set by simply referencing the
+// enclosing class. This assumes that each icon is a declared as a static
+// field of type IconData.
+const iconSets = [
+  CupertinoIcons,
+];
+```
 # Code Generation
 
 *Add documentation here.*
@@ -339,9 +398,11 @@ they're helper classes that style widgets.
 // a very simple inflater specification
 import 'package:flutter/material.dart';
 
-const Container? _container = null;
-const Text? _text = null;
-const TextStyle? _textStyle = null;
+const inflaters = [
+  Container,
+  Text,
+  TextStyle, 
+];
 ```
 
 You can add as many components as required by your application; however, you should only specify
@@ -536,6 +597,7 @@ Example usage:
 ```xml
 <Text data="${addNumbers(2,8,4}"/>
 ```
+ 
 # Resources
 
 *Add documentation here.*
@@ -586,7 +648,7 @@ because it would cause a memory leak.
 |-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------|
 | dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`.                          | no       | `inherit` |
 | for               | The name of the parent's attribute that will be assigned the builder function.                                                             | yes      | null      |
-| multiChild        | Whether the builder function should return an array or a single widget.                                                                    | no       | false     |
+| multiChild        | Whether the builder function should return an array of widgets or a single widget.                                                         | no       | false     |
 | nullable          | Whether the builder function can return null.                                                                                              | no       | false     |
 | vars              | A comma separated list of builder function arguments. Values of named arguments are stored as dependencies. Supports up to five arguments. | no       | null      |
 
@@ -617,7 +679,7 @@ the `vars` attribute. This attribute takes a comma separated list of argument na
 handler is triggered, argument values are added to `Dependencies` using the specified name as the
 key, and can be referenced in the `action` EL expression, if needed. They're also accessible
 anywhere else that instance of `Dependencies` is available. If you don't need the values, then use
-and underscore (_) in place of the name. This will ignore those value and they won't be added to 
+and underscore (_) in place of the name. Doing so will ignore the values and they won't be added to 
 `Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never added to `Dependencies` even
 when named, because this would cause a memory leak.
 

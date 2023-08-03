@@ -1,8 +1,22 @@
+import 'dart:io';
+
 import 'package:yaml/yaml.dart';
 
 import 'cli_log.dart';
+import 'path_resolver.dart';
 
 class ConfigLoader {
+
+  static Future<dynamic> loadYamlDocument(String path) async {
+    final uri = await PathResolver.relativeToAbsolute(path);
+    final file = File.fromUri(uri);
+    if (file.existsSync()) {
+      final yaml = await file.readAsString();
+      return loadYaml(yaml);
+    }
+    return null;
+  }
+
   static String loadToString(dynamic doc, String key, String defaultValue) {
     final value = getValue(doc, key);
     if (value != null) {
