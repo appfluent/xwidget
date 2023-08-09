@@ -22,6 +22,8 @@ import '../xwidget.dart';
 /// `Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never added to `Dependencies` even
 /// when named, because this would cause a memory leak.
 class CallbackTag implements Tag {
+  static final RegExp _ignoreVar = RegExp(r"^_*$");
+
   @override
   String get name => "callback";
 
@@ -51,7 +53,7 @@ class CallbackTag implements Tag {
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
           final varName = vars[paramIndex];
-          if (varName.isNotEmpty && !RegExp(r"^_*$").hasMatch(varName)) {
+          if (varName.isNotEmpty && !_ignoreVar.hasMatch(varName)) {
             switch (paramIndex) {
               case 0: if (p0 is! BuildContext) deps[varName] = p0; break;
               case 1: if (p1 is! BuildContext) deps[varName] = p1; break;

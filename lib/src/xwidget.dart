@@ -93,8 +93,8 @@ class XWidget {
 
   static Controller createController(String name) {
     final factory = _controllerFactories[name];
-    if (factory == null) throw Exception("XWidget controller factory for '$name' not found");
-    return factory();
+    if (factory != null) return factory();
+    throw Exception("XWidget controller factory for '$name' not found");
   }
 
   static T? inflateFragment<T>(
@@ -114,26 +114,23 @@ class XWidget {
     final queryParams = queryPart != null && queryPart.isNotEmpty ? Uri.splitQueryString(queryPart) : {};
     queryParams.forEach((key, value) => dependencies[key] = value);
 
-    final results = inflateFromXml(
+    return inflateFromXml(
       xml: fragment,
       dependencies: dependencies,
       inheritedAttributes: inheritedAttributes,
     );
-    return results;
   }
 
   static T? inflateFromXml<T>({
     required String xml,
     required Dependencies dependencies,
     Iterable<XmlAttribute>? inheritedAttributes,
-
   }) {
     final document = XmlDocument.parse(xml);
-    final results = inflateFromXmlElement(
+    return inflateFromXmlElement(
         document.rootElement,
         dependencies,
         inheritedAttributes: inheritedAttributes);
-    return results;
   }
 
   static T? inflateFromXmlElement<T>(
@@ -184,7 +181,7 @@ class XWidget {
   }) {
     final children = Children();
     for (final child in element.children) {
-      if ((child is XmlText || child is XmlCDATA) && !excludeText) {
+      if (!excludeText && (child is XmlText || child is XmlCDATA)) {
         final text = child.value?.trim();
         if (text != null && text.isNotEmpty) {
           children.text.add(text);
@@ -237,7 +234,7 @@ class XWidget {
         );
         attributes[attributeName] = attributeValue;
       } catch (e, stacktrace) {
-       _log.error("Problem parsing XML element attribute '${attribute.qualifiedName}'. ${dump(element, dependencies)}", e, stacktrace);
+        _log.error("Problem parsing XML element attribute '${attribute.qualifiedName}'. ${dump(element, dependencies)}", e, stacktrace);
       }
     }
     return attributes;
@@ -249,25 +246,29 @@ class XWidget {
     required Dependencies dependencies,
     Inflater? inflater,
   }) {
-    // IMPORTANT: startsWith and endsWith are much faster than RegExp with numerous iterations
+    // IMPORTANT: startsWith and endsWith are much faster than RegExp with numerous iterations.
+    // Since parsing is called 1000s of times, it needs to be as efficient as possible.
 
     if (attributeValue == null) return null;
-    if (attributeValue.startsWith("@string/")) {
-      return Resources.instance.getString(attributeValue.substring(8, attributeValue.length));
-    }
-    if (attributeValue.startsWith("@bool/")) {
-      return Resources.instance.getBool(attributeValue.substring(6, attributeValue.length));
-    }
-    if (attributeValue.startsWith("@int/")) {
-      return Resources.instance.getInt(attributeValue.substring(5, attributeValue.length));
-    }
-    if (attributeValue.startsWith("@double/")) {
-      return Resources.instance.getDouble(attributeValue.substring(8, attributeValue.length));
-    }
     if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
       // the attribute value is an expression that needs to be parsed
       final value = parseExpression(attributeValue.substring(2, attributeValue.length - 1), dependencies);
       return (inflater != null && value is String) ? inflater.parseAttribute(attributeName, value) : value;
+    }
+    if (attributeValue.startsWith("@")) {
+      // possible directive
+      if (attributeValue.startsWith("@string/")) {
+        return Resources.instance.getString(attributeValue.substring(8, attributeValue.length));
+      }
+      if (attributeValue.startsWith("@bool/")) {
+        return Resources.instance.getBool(attributeValue.substring(6, attributeValue.length));
+      }
+      if (attributeValue.startsWith("@int/")) {
+        return Resources.instance.getInt(attributeValue.substring(5, attributeValue.length));
+      }
+      if (attributeValue.startsWith("@double/")) {
+        return Resources.instance.getDouble(attributeValue.substring(8, attributeValue.length));
+      }
     }
 
     final value = parseAllExpressions(attributeValue, dependencies);
@@ -275,11 +276,16 @@ class XWidget {
   }
 
   static String parseAllExpressions(String input, Dependencies dependencies) {
-    return input.replaceAllMapped(_attributeContainsExpressions, (Match match) {
-      // parse embedded expression
-      final value = parseExpression(match[1]!, dependencies);
-      return value != null ? value.toString() : "";
-    });
+    // for performance reasons, check input for possible expressions before using a regexp
+    if (input.contains("\${")) {
+      // possible embedded expression
+      return input.replaceAllMapped(_attributeContainsExpressions, (Match match) {
+        // parse embedded expression
+        final value = parseExpression(match[1]!, dependencies);
+        return value != null ? value.toString() : "";
+      });
+    }
+    return input;
   }
 
   static dynamic parseExpression(String expression, Dependencies dependencies) {

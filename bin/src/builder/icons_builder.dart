@@ -121,7 +121,7 @@ class IconsBuilder extends SpecBuilder {
   }
 
   String _buildRegisterIconCall(String className, String fieldName) {
-    final key = "${className}.${fieldName}";
+    final key = "$className.$fieldName";
     final value = key;
     return "  XWidget.registerIcon('$key', $value);\n";
   }

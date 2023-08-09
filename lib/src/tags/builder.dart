@@ -35,6 +35,8 @@ import '../xwidget.dart';
 /// </PageView.builder>
 /// ```
 class BuilderTag implements Tag {
+  static final RegExp _ignoreVar = RegExp(r"^_*$");
+
   @override
   String get name => "builder";
 
@@ -58,7 +60,7 @@ class BuilderTag implements Tag {
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
           final varName = vars[paramIndex];
-          if (varName.isNotEmpty && !RegExp(r"^_*$").hasMatch(varName)) {
+          if (varName.isNotEmpty && !_ignoreVar.hasMatch(varName)) {
             switch (paramIndex) {
               case 0: if (p0 is! BuildContext) deps[varName] = p0; break;
               case 1: if (p1 is! BuildContext) deps[varName] = p1; break;

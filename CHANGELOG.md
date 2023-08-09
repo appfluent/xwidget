@@ -1,3 +1,9 @@
+### 0.0.19 (Aug 9, 2023)
+
+* Attribute parsing performance improvements.
+* Documentation updates and additions.
+* Minor code cleanup.
+
 ### 0.0.18 (Aug 3, 2023)
 
 * Added support for a simplified inflater and icon specification format. See the 

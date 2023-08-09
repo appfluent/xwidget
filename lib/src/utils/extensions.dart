@@ -137,8 +137,10 @@ extension ListExt<E> on List<E> {
 }
 
 extension ColorExt on Color {
+  static RegExp colorPrefixRegExp = RegExp("^(#|0x)*");
+
   static Color parse(String value) {
-    var argb = value.replaceAll(RegExp("^(#|0x)*"), "");
+    var argb = value.replaceAll(colorPrefixRegExp, "");
     if (argb.length == 6) {
       argb = "FF$argb";
     }

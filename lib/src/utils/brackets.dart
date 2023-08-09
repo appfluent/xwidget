@@ -59,7 +59,7 @@ class PathResolution {
 
   static final _mapPathRegExp = RegExp(r"^([a-zA-Z0-9_]+[?!]?)(?:\.?)(.*)");
   static final _listPathRegExp = RegExp(r"^\[([0-9]+)\](?:\.?)(.*)");
-  static final _nullSafetyRegExp = RegExp("[?!]*");
+  static final _nullSafetyRegExp = RegExp("[?!]");
 
   PathResolution(this.path, this.collection);
 

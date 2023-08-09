@@ -144,18 +144,6 @@ Please see the [example](https://github.com/appfluent/xwidget/tree/main/example)
 package. It contains an XWidget version of Flutter's classic starter app. It only scratches the
 surface of XWidget's capabilities.
 
-
-
-# Setup
-
-## Specification
-
-### Inflater specification
-
-### Icon Specification
-
-## Includes
-
 # Configuration
 
 By default, XWidget's code generator looks for a custom configuration file named `xwidget_config.yaml`
@@ -190,23 +178,23 @@ outputs: `inflaters`, `schema`, `controllers`, and `icons`.
 # Responsible for configuring inputs and outputs to generate inflaters.
 inflaters:
    
-  # The file path to save the generated code. The output contains all inflater classes and
-  # a library function to to register them. The default value can be overwritten.
+  # The file path to save the generated code. The output contains all inflater classes
+  # and a library function to to register them. The default value can be overwritten.
   # 
   # DEFAULT: "lib/xwidget/generated/inflaters.g.dart"
   target:
 
   # A list of additional imports to include in the generated output. Sometimes the code
-  # generator can't determine all the required imports. This happens because of a current
-  # limitation in dealing with default values for constructor arguments. This option
-  # allows manual configuration when needed. Custom imports are appended to XWidget's
-  # default list.
+  # generator can't determine all the required imports. This happens because of a
+  # current limitation in dealing with default values for constructor arguments. This
+  # option allows manual configuration when needed. Custom imports are appended to
+  # XWidget's default list.
   #
   # DEFAULT: [ "package:xwidget/xwidget.dart" ]
   imports: [ ]
 
-  # List of list inflater specification source files. Specifications tell XWidget which objects
-  # to create inflaters for.
+  # List of list inflater specification source files. Specifications tell XWidget which 
+  # objects to create inflaters for.
   #
   # DEFAULT: none
   sources: [ ]
@@ -235,8 +223,8 @@ inflaters:
 // example inflater specification.
 import 'package:flutter/material.dart';
 
-// Best Practice: Keep declarations in alphabetical order. It makes it much easier to
-// quickly determine what has been added and what is missing.
+// Best Practice: Keep declarations in alphabetical order. It makes it much easier
+// to quickly determine what has been added and what is missing.
 
 const inflaters = [
   AppBar,
@@ -255,8 +243,9 @@ const inflaters = [
 ### Schema Configuration
 
 ```yaml
-# Responsible for configuring inputs and outputs to generate the inflater schema. Register the
-# generated schema with your IDE to get code completion and documentation while editing UI markup. 
+# Responsible for configuring inputs and outputs to generate the inflater schema.
+# Register the generated schema with your IDE to get code completion and documentation
+# while editing UI markup. 
 schema:
    
   # DEFAULT: "xwidget_schema.g.xsd"
@@ -307,8 +296,8 @@ icons:
   # DEFAULT: [ "package:xwidget/xwidget.dart" ]
   imports: [ ]
 
-  # List of list icon specification source files. Specifications tell XWidget which icons
-  # to register.
+  # List of list icon specification source files. Specifications tell XWidget
+  # which icons to register.
   #
   # DEFAULT: none
   sources: [ ]
@@ -325,9 +314,9 @@ const icons = [
   Icons.delete,
 ];
 
-// You can also include the entire icon set by simply referencing the
-// enclosing class. This assumes that each icon is a declared as a static
-// field of type IconData.
+// Not recommended, but you can also include the entire icon set by simply
+// referencing the enclosing class. This assumes that each icon is declared
+// as a static field of type IconData.
 const iconSets = [
   CupertinoIcons,
 ];
@@ -784,7 +773,7 @@ A tag that renders a UI fragment
 </if>
 ```
 
-## ```<variable>```
+## ```<var>```
 
 *Add documentation here.*
 
@@ -794,7 +783,7 @@ A tag that renders a UI fragment
 | value     |             | yes      | null    |
 
 ```xml
-<variable name="" value=""/>
+<var name="" value=""/>
 ```
 
 # Logging

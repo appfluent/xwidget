@@ -30,9 +30,8 @@ class IfElseTag implements Tag {
   }
 
   XmlElement? _findElseElement(XmlElement element) {
-    final children = element.childElements;
-    for (final child in children) {
-      if (child.localName == "else") {
+    for (final child in element.children) {
+      if (child is XmlElement && child.localName == "else") {
         return child;
       }
     }

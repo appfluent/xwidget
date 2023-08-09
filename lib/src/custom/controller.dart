@@ -38,11 +38,10 @@ class ControllerWidgetState extends State<ControllerWidget> {
   @override
   void initState() {
     super.initState();
-    final names = widget.name.trim().split(",");
-    if (names.length > 1) {
-      _initStateForMultipleControllers(names);
+    if (widget.name.contains(",")) {
+      _initStateForMultipleControllers(widget.name.split(","));
     } else {
-      _initStateForSingleController(names[0]);
+      _initStateForSingleController(widget.name);
     }
   }
 
@@ -68,7 +67,7 @@ class ControllerWidgetState extends State<ControllerWidget> {
   //===================================
 
   void _initStateForSingleController(String name) {
-    final controller = XWidget.createController(name);
+    final controller = XWidget.createController(name.trim());
     controller._mountedProvider = _getMounted;
     controller._contextProvider = _getContext;
     controller._dependenciesProvider = _getDependencies;
