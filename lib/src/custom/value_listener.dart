@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/logging.dart';
 import '../utils/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
@@ -29,8 +28,6 @@ class ValueListener extends StatefulWidget {
 }
 
 class ValueListenerState extends State<ValueListener> {
-  static const _log = CommonLog("ValueListener");
-
   late ValueNotifier _notifier;
 
   @override
@@ -50,7 +47,6 @@ class ValueListenerState extends State<ValueListener> {
     return ValueListenableBuilder(
       valueListenable: _notifier,
       builder: (context, value, _) {
-        _log.debug("building with varName=${widget.varName}, value=$value");
         final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies);
         return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
       }
@@ -82,7 +78,7 @@ class ValueListenerInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  ValueListener? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+  ValueListener? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     return ValueListener(
       key: attributes['key'],
       element: attributes['_element'],

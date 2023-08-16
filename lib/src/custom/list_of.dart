@@ -67,7 +67,7 @@ class ListOfInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  List? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+  List? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     return ListOf(
       [...children, ...?attributes['children']],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:xml/xml.dart';
 import 'package:xwidget/xwidget.dart';
 
 import '../../fixtures/src/inflaters.g.dart';
@@ -29,8 +30,8 @@ main() {
   });
 
   test('test fragment inherited attributes', () {
-    const xml = '<Column><fragment name="text" maxLines="3"/></Column>';
-    final Column widget = XWidget.inflateFromXml(xml: xml, dependencies: Dependencies({
+    final xml = XmlDocument.parse('<Column><fragment name="text" maxLines="3"/></Column>');
+    final Column widget = XWidget.inflateFromXmlElement(xml.rootElement, Dependencies({
       "title": "Hello world!"
     }));
     expect(widget.children.toString(), '[Text("Hello world!", maxLines: 3)]');

@@ -1,3 +1,20 @@
+### 0.0.20 (Aug 16, 2023)
+
+* BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+* Changed `Inflater.inflate` signature to pass a list of unprocessed child strings instead of a 
+  single preprocessed string. The inflater's implementation now determines how to process the 
+  strings i.e. `Text` inflater uses `XWidgetUtils.joinStrings(text)`.
+* Removed `includeAttributes` argument from `XWidget.inflateXmlElementChildren` signature. Use
+  `excludeAttributes` argument instead.
+* Removed `XWidget.inflateFromXml` convenience method. Use `XWidget.inflateFromXmlElement` instead.
+* Added an `excution` option to the `Controller` inflater that specifies its inflation method, either
+  asynchronous or synchronous. Valid values are `async` and `sync`. The default is `sync`.
+* Minor performance improvements when setting or retrieving `Dependencies` values and parsing
+  certain attribute types.
+* Added `XWidgetUtils.joinStrings` utility function.
+* Added fragment XML caching to improve inflater performance. Use `XWidget.xmlCacheEnabled`
+  to enable or disable the cache. Enabled by default.
+
 ### 0.0.19 (Aug 9, 2023)
 
 * Attribute parsing performance improvements.

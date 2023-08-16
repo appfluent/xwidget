@@ -56,6 +56,17 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="BuildExecutionAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="async"/>
+                    <xs:enumeration value="sync"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="CurvesAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -301,6 +312,7 @@
                     <xs:attribute name="name"/>
                     <xs:attribute name="errorWidget"/>
                     <xs:attribute name="progressWidget"/>
+                    <xs:attribute name="execution" type="BuildExecutionAttributeType"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

@@ -18,7 +18,7 @@ import '../xwidget.dart';
 ///         </AppBar>
 ///         ```
 class FragmentTag implements Tag {
-  static const attributeNames = ["for", "name"];
+  static const attributeNames = {"for", "name"};
 
   @override
   String get name => "fragment";

@@ -227,7 +227,7 @@ class InflaterBuilder extends SpecBuilder {
     final code = StringBuffer();
     code.write("    @override\n");
     code.write("    $returnType? ");
-    code.write("inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {\n");
+    code.write("inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {\n");
     if (constructorArgs.isNotEmpty) {
       code.write("        return $constructorName(\n");
       code.write(constructorArgs);

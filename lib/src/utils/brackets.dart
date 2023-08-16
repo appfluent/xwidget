@@ -57,10 +57,6 @@ class PathResolution {
   final dynamic path;
   final dynamic collection;
 
-  static final _mapPathRegExp = RegExp(r"^([a-zA-Z0-9_]+[?!]?)(?:\.?)(.*)");
-  static final _listPathRegExp = RegExp(r"^\[([0-9]+)\](?:\.?)(.*)");
-  static final _nullSafetyRegExp = RegExp("[?!]");
-
   PathResolution(this.path, this.collection);
 
   static PathResolution resolvePath(String? path, bool createPath, dynamic data) {
@@ -99,68 +95,52 @@ class PathResolution {
 
   static PathResolution _resolveMapPath(String? path, bool createPath, dynamic data) {
     if (path != null) {
-      final matches = _mapPathRegExp.firstMatch(path);
-      if (matches != null) {
-        final nextPath = matches.group(2);
-        final nextPathIsList = nextPath?.startsWith("[") ?? false;
-        final nextPathIsEmpty = nextPath == null || nextPath.isEmpty;
-        final group1 = matches.group(1)!;
-        final currPath = group1.replaceAll(_nullSafetyRegExp, "");
-        final valueIsNullable = group1.endsWith("?") || (nextPathIsEmpty && !group1.endsWith("!"));
-        var value = data[currPath];
-
-        if (value == null) {
-          if (createPath && !nextPathIsEmpty) {
-            value = data[currPath] = nextPathIsList ? <dynamic>[] : <String, dynamic>{};
-          } else if (valueIsNullable) {
-            return PathResolution(currPath, data);
-          } else {
-            throw Exception("Value at path '$path' is null. Use the '?' null-safety operator to access '$currPath'");
-          }
-        } else if (nextPathIsEmpty) {
-          return PathResolution(currPath, data);
+      final pathInfo = PathInfo.parsePath(path);
+      var value = data[pathInfo.currPath];
+      if (value == null) {
+        if (createPath && pathInfo.nextPath.isNotEmpty) {
+          value = data[pathInfo.currPath] = pathInfo.isNextPathList ? <dynamic>[] : <String, dynamic>{};
+        } else if (pathInfo.isValueNullable) {
+          return PathResolution(pathInfo.currPath, data);
+        } else {
+          throw Exception("Value at path '$path' is null. Use the '?' null-safety operator to access '${pathInfo.currPath}'");
         }
-
-        if (value is DataValueNotifier) {
-          // unwrap notifier value
-          value = value.value;
-        }
-        return _continuePathResolution(path, nextPath, nextPathIsList, value, createPath);
+      } else if (pathInfo.nextPath.isEmpty) {
+        return PathResolution(pathInfo.currPath, data);
       }
+      if (value is DataValueNotifier) {
+        // unwrap notifier value
+        value = value.value;
+      }
+      return _continuePathResolution(path, pathInfo.nextPath, pathInfo.isNextPathList, value, createPath);
     }
-    return PathResolution(path ,null);
+    return PathResolution(path, null);
   }
 
   static PathResolution _resolveListPath(String? path, bool createPath, List data) {
     if (path != null) {
-      final matches = _listPathRegExp.firstMatch(path);
-      if (matches != null) {
-        final index = int.tryParse(matches.group(1) ?? "");
-        if (index != null && index > -1) {
-          final nextPath = matches.group(2);
-          final nextPathIsList = nextPath?.startsWith("[") ?? false;
-          var value = index < data.length ? data[index] : null;
-
-          if (nextPath == null || nextPath.isEmpty) {
-            return PathResolution(index, data);
-          } else if (value == null && createPath) {
-            value = nextPath.startsWith("[") ? [] : <String, dynamic>{};
-            data.setValueAt(index, value);
-          }
-
-          if (value is DataValueNotifier) {
-            // unwrap notifier value
-            value = value.value;
-          }
-          return _continuePathResolution(path, nextPath, nextPathIsList, value, createPath);
+      final pathInfo = PathInfo.parsePath(path);
+      final index = pathInfo.currPathListIndex;
+      if (index != null && index > -1) {
+        var value = index < data.length ? data[index] : null;
+        if (pathInfo.nextPath.isEmpty) {
+          return PathResolution(index, data);
+        } else if (value == null && createPath) {
+          value = pathInfo.isNextPathList ? [] : <String, dynamic>{};
+          data.setValueAt(index, value);
         }
+        if (value is DataValueNotifier) {
+          // unwrap notifier value
+          value = value.value;
+        }
+        return _continuePathResolution(path, pathInfo.nextPath, pathInfo.isNextPathList, value, createPath);
       }
     }
-    return PathResolution(path ,null);
+    return PathResolution(path, null);
   }
 
-  static _continuePathResolution(String path, String nextPath, bool nextPathIsList, dynamic value, bool createPath) {
-    if (nextPathIsList) {
+  static _continuePathResolution(String path, String nextPath, bool isNextPathList, dynamic value, bool createPath) {
+    if (isNextPathList) {
       if (value is List<dynamic>) return PathResolution._resolveListPath(nextPath, createPath, value);
       throw Exception("Path '$path' implies a [List], but found a [${value.runtimeType}] at '$nextPath' instead.");
     } else if (value is Map<String, dynamic> || value is Keyed) {
@@ -170,6 +150,47 @@ class PathResolution {
     }
     throw Exception("Path '$path' implies a keyed or indexed value such as [Data], [Map], [List] or [Keyed],"
         " but found a [${value.runtimeType}] at '$nextPath' instead.");
+  }
+}
+
+class PathInfo {
+  final String currPath;
+  final String nextPath;
+  final int? currPathListIndex;
+  final bool isNextPathList;
+  final bool isValueNullable;
+
+  PathInfo(this.currPath, this.nextPath, this.isNextPathList, this.currPathListIndex, this.isValueNullable);
+
+  factory PathInfo.parsePath(String path) {
+    String currPath = "";
+    String nextPath = "";
+    int? currPathListIndex;
+    bool isValueNullable = false;
+
+    final splitIndex = path.indexOf(".");
+    if (splitIndex > -1) {
+      currPath = path.substring(0, splitIndex);
+      nextPath = path.substring(splitIndex + 1, path.length);
+    } else {
+      currPath = path;
+    }
+
+    if (currPath.startsWith("[")) {
+      currPathListIndex = int.parse(currPath.substring(1, currPath.length - 1));
+    }
+
+    if (currPath.endsWith("?")) {
+      isValueNullable = true;
+      currPath = currPath.substring(0, currPath.length - 1);
+    } else if (currPath.endsWith("!")) {
+      currPath = currPath.substring(0, currPath.length - 1);
+    } else if (nextPath.isEmpty) {
+      isValueNullable = true;
+    }
+
+    final isNextPathList = nextPath.isNotEmpty && nextPath.startsWith("[");
+    return PathInfo(currPath, nextPath, isNextPathList, currPathListIndex, isValueNullable);
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:xml/xml.dart';
 import 'package:xwidget/xwidget.dart';
 
 import '../../fixtures/src/inflaters.g.dart';
@@ -17,7 +18,7 @@ main() {
   });
 
   testWidgets('Assert callback action on TextButton fires', (tester) async {
-    const xml = '''
+    final xml = XmlDocument.parse('''
       <MaterialApp>
         <Scaffold for="home">
           <Column for="body">
@@ -28,13 +29,13 @@ main() {
           </Column>
         </Scaffold>
       </MaterialApp>
-    ''';
+    ''');
 
     final dependencies = Dependencies({
       "doSomething": (msg)  => "Your message: $msg"
     });
 
-    final testApp = XWidget.inflateFromXml(xml: xml, dependencies: dependencies);
+    final testApp = XWidget.inflateFromXmlElement(xml.rootElement, dependencies);
     await tester.pumpWidget(testApp);
     await tester.tap(find.byType(TextButton));
     expect(dependencies["result"], "Your message: Hello world!");

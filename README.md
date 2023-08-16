@@ -1,4 +1,4 @@
-### *Note: This document is very much still a work in progress.* 
+### *Note: This document is very much still a work in progress.*
 
 # What is XWidget?
 
@@ -6,7 +6,7 @@ XWidget is a not-so-opinionated library for building dynamic UIs in Flutter usin
 XML based markup language.
 
 That was a mouth full, so let's break it down. "Not-so-opinionated" means that you're not forced to
-use XWidget in any particular way. You can use as much or as little of the framework as you want - 
+use XWidget in any particular way. You can use as much or as little of the framework as you want -
 whatever makes sense for your project. There are, however, a few [Best Practices](#best-practices)
 that you should follow to help keep your code organized and your final build size down to a minimum.
 
@@ -30,9 +30,47 @@ For example:
 </Column>
 ```
 
-**Important:** Only specify widgets that you actually use in your UI. Specifying unused widgets and 
+**Important:** Only specify widgets that you actually use in your UI. Specifying unused widgets and
 helper classes in your configuration will bloat your app size. This is because code is generated for
 every component you specify and thus neutralizes Flutter's tree-shaking.
+
+# Table of Contents
+
+1. [Quick Start](#quick-start)
+2. [Example](#example)
+3. [Configuration](#configuration)
+4. [Code Generation](#code-generation)
+5. [Inflaters](#inflaters)
+6. [Dependencies](#dependencies)
+7. [Fragments](#fragments)
+8. [Controllers](#controllers)
+9. [Expression Language (EL)](#expression-language-el)
+    1. [Operators](#operators)
+    2. [Built-In Functions](#built-in-functions)
+    3. [Custom Functions](#custom-functions)
+10. [Resources](#resources)
+    1. [Strings](#strings)
+    2. [Ints](#ints)
+    3. [Doubles](#doubles)
+    4. [Bools](#bools)
+    5. [Colors](#colors)
+    6. [Fragments](#fragments-1)
+11. [Tags](#tags)
+    1. [```<builder>```](#builder)
+    2. [```<callback>```](#callback)
+    3. [```<debug>```](#debug)
+    4. [```<forEach>```](#foreach)
+    5. [```<forLoop>```](#forloop)
+    6. [```<fragment>```](#fragment)
+    7. [```<if>/<else>```](#ifelse)
+    8. [```<var>```](#var)
+12. [Tips and Tricks](#tips-and-tricks)
+13. [FAQ](#faq)
+14. [Roadmap](#roadmap)
+    1. [0.0.x Releases (2023)](#00x-releases-2023)
+    2. [0.x Releases (2024)](#0x-releases-2024)
+    3. [1.0.0 Release (mid 2024)](#100-release-mid-2024)
+15. [Known Issues](#known-issues)
 
 # Quick Start
 
@@ -45,7 +83,7 @@ below.
     ```shell
     $ flutter pub add xwidget 
     ```
-   
+
 2. Create an inflater specification file. This is a Dart file that tells XWidget which widgets and
    helper classes you're planning on using in your fragments. See [Inflaters](#inflaters) for more.
 
@@ -60,9 +98,9 @@ below.
       TextStyle, 
     ];
     ```
-   
-3. Create a custom configuration file. This is an XML document that configures the inputs and 
-   outputs of XWidget's code generator. By default, XWidget looks for a file named 
+
+3. Create a custom configuration file. This is an XML document that configures the inputs and
+   outputs of XWidget's code generator. By default, XWidget looks for a file named
    `xwidget_config.yaml` in the project's root folder. Make sure that `sources` contains the
    location of the inflater spec you created in step #2. See [Configuration](#configuration)
    for more.
@@ -72,15 +110,15 @@ below.
     inflaters:
        sources: [ "lib/xwidget/inflater_spec.dart" ]
     ```
-4. Generate inflaters and fragment schema. By default, all generated Dart files are written to 
+4. Generate inflaters and fragment schema. By default, all generated Dart files are written to
    `lib/xwidget/generated`. The schema file is written to the project root as `xwidget_schema.g.xsd`.
-   See [Code Generation](#code-generation) for more. 
+   See [Code Generation](#code-generation) for more.
 
     ```shell
     $ dart run xwidget:generate 
     ```
-   
-5. Register the generated schema file with your IDE under the namespace 
+
+5. Register the generated schema file with your IDE under the namespace
    `http://www.appfluent.us/xwidget`. This will provide validation, code completion, and tooltip
    documentation while editing your fragments.<br><br>
 
@@ -102,7 +140,7 @@ below.
       ...
    }
    ```
-   
+
 7. Modify your project's `pubspec.yaml` and add `resources/fragments/` to `assets`. There's no need
    to add each individual fragment; however, if you use fragment folders, you'll need to add each
    folder here. See [Resources](#resources) for more.
@@ -127,8 +165,8 @@ below.
         <Text>Welcome to XWidget!</Text>
     </Column>
     ```
-   
-9. Inflate your fragment. Where ever you want to render your fragment, simply call 
+
+9. Inflate your fragment. Where ever you want to render your fragment, simply call
    *XWidget.inflateFragment(...)* with the name of your fragment and `Dependencies`. See
    [Dependencies](#dependencies) for more.
 
@@ -152,21 +190,21 @@ which handles most of the configuration burden. See `package:xwidget/res/default
 details.
 
 Since the default config does most of the heavy lifting, the typical config can be relatively simple
-like this example: 
+like this example:
 
 ```yaml
 # custom config - xwidget_config.yaml
 inflaters:
-   imports: [
-      "dart:ui",
-      "package:flutter/foundation.dart",
-      "package:flutter/gestures.dart",
-   ]
-   sources: [ "lib/xwidget/inflater_spec.dart" ]
-   includes: [ "lib/xwidget/inflater_spec_includes.dart" ]
+  imports: [
+    "dart:ui",
+    "package:flutter/foundation.dart",
+    "package:flutter/gestures.dart",
+  ]
+  sources: [ "lib/xwidget/inflater_spec.dart" ]
+  includes: [ "lib/xwidget/inflater_spec_includes.dart" ]
 
 icons:
-   sources: [ "lib/xwidget/icon_spec.dart" ]
+  sources: [ "lib/xwidget/icon_spec.dart" ]
 ```
 
 There are four top-level mappings that configure each of the four generated
@@ -177,7 +215,7 @@ outputs: `inflaters`, `schema`, `controllers`, and `icons`.
 ```yaml
 # Responsible for configuring inputs and outputs to generate inflaters.
 inflaters:
-   
+
   # The file path to save the generated code. The output contains all inflater classes
   # and a library function to to register them. The default value can be overwritten.
   # 
@@ -211,11 +249,11 @@ inflaters:
 
   # DEFAULT: See 'package:xwidget/res/default_config.yaml'
   constructor_arg_parsers:
-  
-     # EXAMPLES:
-     # - "double": "double.parse(value)"
-     # - "Alignment": "parseAlignment(value)"
-     # - "*:width": "parseWidth(value)"
+
+    # EXAMPLES:
+    # - "double": "double.parse(value)"
+    # - "Alignment": "parseAlignment(value)"
+    # - "*:width": "parseWidth(value)"
     "<constructor_argument_type | * for any>(: <constructor_argument_name>)": "<parser_function_call>"
 ```
 
@@ -247,23 +285,23 @@ const inflaters = [
 # Register the generated schema with your IDE to get code completion and documentation
 # while editing UI markup. 
 schema:
-   
+
   # DEFAULT: "xwidget_schema.g.xsd"
   target:
-     
+
   # DEFAULT: "xwidget|res/schema_template.xsd"   
-  template: 
+  template:
 
   # DEFAULT: See 'package:xwidget/res/default_config.yaml'
   types:
-     # EXAMPLES
-     # - "bool": "boolAttributeType"
-     # - "BoxFit": "BoxFitAttributeType"
+    # EXAMPLES
+    # - "bool": "boolAttributeType"
+    # - "BoxFit": "BoxFitAttributeType"
     "<constructor_argument_type>": "<schema_defined_type>"
 
   # DEFAULT: See 'package:xwidget/res/default_config.yaml'
   attribute_exclusions: [
-                           
+
     # EXAMPLES:
     # - "*:child"                       
     "<class_name | * for any>:<constructor_argument_name | * for any>",
@@ -274,7 +312,7 @@ schema:
 
 ```yaml
 controllers:
-   
+
   # DEFAULT: "lib/xwidget/generated/controllers.g.dart" 
   target:
 
@@ -353,7 +391,7 @@ primary mechanism by which your XML markup gets transformed from this:
 
 ```XML
 <Container height="50" width="50">
-   <Text data="Hello world!"/>
+    <Text data="Hello world!"/>
 </Container>
 ```
 
@@ -361,9 +399,9 @@ into the widget tree represented by this:
 
 ```Dart
 Container({
-   height: 50,
-   width: 50,
-   child: Text("Hello world!")
+  height: 50,
+  width: 50,
+  child: Text("Hello world!")
 });
 ```
 
@@ -390,7 +428,7 @@ import 'package:flutter/material.dart';
 const inflaters = [
   Container,
   Text,
-  TextStyle, 
+  TextStyle,
 ];
 ```
 
@@ -464,7 +502,7 @@ old maps.
    </forEach>
    ```
 2. Supports global data. Sometimes you just need to access data from multiple parts of an
-   application without a lot of fuss. Global data are accessible across all ```Dependencies``` 
+   application without a lot of fuss. Global data are accessible across all ```Dependencies```
    instances by adding a ```global``` prefix to the key notation.<br><br>
 
    Dart example:
@@ -478,7 +516,7 @@ old maps.
     print(dependencies.getValue("global.users[0].name"));
     print(dependencies.getValue("global.users[0].email"));
     ```
-   
+
    Markup usage example:
    ```xml
    <!-- example iterating over a global collection -->
@@ -499,7 +537,7 @@ old maps.
        <Text data="${user.email}"/>
    </ValueListener>
    ```
-   
+
 **Note:** ```Dependencies``` also supports the bracket operator []; however, it behaves like an
 ordinary map.
 
@@ -578,7 +616,7 @@ For example:
 dependencies["addNumbers"] = addNumbers
 
 int addNumbers(int n1, [int n2 = 0, int n3 = 0, int n4 = 0, int n5 = 0]) {
-   return n1 + n2 + n3 + n4 + n5;
+  return n1 + n2 + n3 + n4 + n5;
 }
 ```
 
@@ -586,7 +624,7 @@ Example usage:
 ```xml
 <Text data="${addNumbers(2,8,4}"/>
 ```
- 
+
 # Resources
 
 *Add documentation here.*
@@ -617,7 +655,7 @@ Example usage:
 
 # Tags
 
-Tags are XML elements that do not, themselves, add components to the widget tree. They provide 
+Tags are XML elements that do not, themselves, add components to the widget tree. They provide
 common structure and control elements for constructing the UI such as conditionals, iteration,
 fragment inclusion, etc. They are always represented in lowercase to distinguish them from inflaters.
 
@@ -625,10 +663,10 @@ fragment inclusion, etc. They are always represented in lowercase to distinguish
 
 A tag that wraps its children in a builder function.
 
-This tag is extremely useful when the parent requires a builder function, such as 
+This tag is extremely useful when the parent requires a builder function, such as
 [PageView.builder](https://api.flutter.dev/flutter/widgets/PageView/PageView.builder.html).
 Use `vars`, `multiChild`, and `nullable` attributes to define the builder function signature.
-When the builder function executes, the values of named arguments defined in `vars` are stored 
+When the builder function executes, the values of named arguments defined in `vars` are stored
 as dependencies in the current `Dependencies` instance. The values of placeholder arguments (_) are
 simply ignored. The `BuildContext` is never stored as a dependency, even if explicitly named,
 because it would cause a memory leak.
@@ -646,7 +684,7 @@ Example usage:
 <PageView.builder>
     <builder for="itemBuilder" vars="_,index" nullable="true">
         <Container>
-          <Text data="${index}"/>
+            <Text data="${index}"/>
         </Container>
     </builder>
 </PageView.builder>
@@ -658,17 +696,17 @@ This tag allows you to bind an event handler with custom arguments. If you don't
 arguments, then just bind the handler using EL, like so: `<TextButton onPressed="${onPressed}"/>`.
 This is sufficient in most cases.
 
-The `callback` tag creates an event handler function for you and executes the `action` when the 
+The `callback` tag creates an event handler function for you and executes the `action` when the
 event is triggered. `action` is an EL expression that is evaluated at the time of the event. Do not
 enclose the expression in curly braces `${...}`, otherwise it will be evaluated immediately upon
 creation instead of when the event is fired.
 
 If the handler function defines arguments in its signature, you must declare those arguments using
-the `vars` attribute. This attribute takes a comma separated list of argument names. When the 
+the `vars` attribute. This attribute takes a comma separated list of argument names. When the
 handler is triggered, argument values are added to `Dependencies` using the specified name as the
 key, and can be referenced in the `action` EL expression, if needed. They're also accessible
 anywhere else that instance of `Dependencies` is available. If you don't need the values, then use
-and underscore (_) in place of the name. Doing so will ignore the values and they won't be added to 
+and underscore (_) in place of the name. Doing so will ignore the values and they won't be added to
 `Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never added to `Dependencies` even
 when named, because this would cause a memory leak.
 
@@ -682,8 +720,8 @@ when named, because this would cause a memory leak.
 
 ```xml
 <TextButton>
-   <callback for="onPressed" action="doSomething('Hello World')"/>
-   <Text>Press Me</Text>
+    <callback for="onPressed" action="doSomething('Hello World')"/>
+    <Text>Press Me</Text>
 </TextButton>
 
 ```
@@ -715,7 +753,7 @@ A simple tag that logs a debug message
 
 ```xml
 <forEach var="user" items="${users}">
-   
+
 </forEach>
 ```
 
@@ -733,7 +771,7 @@ A simple tag that logs a debug message
 
 ```xml
 <forLoop var="index" begin="1" end="5">
-   
+
 </forLoop>
 ```
 
@@ -749,7 +787,7 @@ A tag that renders a UI fragment
 
 ```xml
 <AppBar>
-  <fragment for="leading" name="profile/icon"/>
+    <fragment for="leading" name="profile/icon"/>
 </AppBar>
 ```
 
@@ -766,9 +804,9 @@ A tag that renders a UI fragment
 
 ```xml
 <if test="${}">
-    <fragnent name=""/>    
+    <fragnent name=""/>
     <else>
-       <fragnent name=""/>
+        <fragnent name=""/>
     </else>
 </if>
 ```
@@ -815,8 +853,8 @@ project
 │       ├── controllers  # holds all custom controllers
 │       └── generated    # holds all generated .g.dart files
 └── resources
-    ├── fragments  # holds all fragments
-    └── values     # holds all resource values i.e strings.xml, bools.xml, colors.xml, etc.
+├── fragments  # holds all fragments
+└── values     # holds all resource values i.e strings.xml, bools.xml, colors.xml, etc.
 ```
 
 # Tips and Tricks
@@ -834,7 +872,7 @@ project
 ### 1. What problems does XWidget solve?
 
 The first and most obvious answer is that it gives applications the flexibility to create and modify
-its UI at runtime. An app might want to give its users the ability to download a different 
+its UI at runtime. An app might want to give its users the ability to download a different
 look-and-feel or create dynamic forms all without a redeployment. You're only limited by the
 existing functionality of your custom controllers, since they're static Dart code.
 
@@ -849,7 +887,7 @@ read. The experience should only get better as we improve IDE integration.
 # Roadmap
 
 The primary focus right now is documentation, critical bug fixes, more documentation, minor
-improvements, and oh, even more documentation. The implementation is already fairly stable, but 
+improvements, and oh, even more documentation. The implementation is already fairly stable, but
 lacks test coverage. Once the documentation is complete, we'll bump the minor version and
 concentrate on testing.
 

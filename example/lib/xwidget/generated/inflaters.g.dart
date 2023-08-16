@@ -18,7 +18,7 @@ class AppBarInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    AppBar? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    AppBar? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return AppBar(
             key: attributes['key'],
             leading: attributes['leading'],
@@ -103,7 +103,7 @@ class CenterInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    Center? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    Center? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Center(
             key: attributes['key'],
             widthFactor: attributes['widthFactor'],
@@ -135,7 +135,7 @@ class ColumnInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    Column? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    Column? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Column(
             key: attributes['key'],
             mainAxisAlignment: attributes['mainAxisAlignment'] ?? MainAxisAlignment.start,
@@ -176,7 +176,7 @@ class FloatingActionButtonInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return FloatingActionButton(
             key: attributes['key'],
             child: XWidgetUtils.getOnlyChild('FloatingActionButton', children, null),
@@ -248,7 +248,7 @@ class FloatingActionButton_smallInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return FloatingActionButton.small(
             key: attributes['key'],
             child: XWidgetUtils.getOnlyChild('FloatingActionButton.small', children, null),
@@ -316,7 +316,7 @@ class FloatingActionButton_largeInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return FloatingActionButton.large(
             key: attributes['key'],
             child: XWidgetUtils.getOnlyChild('FloatingActionButton.large', children, null),
@@ -384,7 +384,7 @@ class FloatingActionButton_extendedInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    FloatingActionButton? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return FloatingActionButton.extended(
             key: attributes['key'],
             tooltip: attributes['tooltip'],
@@ -463,7 +463,7 @@ class IconInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    Icon? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    Icon? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Icon(
             attributes['icon'],
             key: attributes['key'],
@@ -510,7 +510,7 @@ class MaterialAppInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    MaterialApp? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    MaterialApp? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return MaterialApp(
             key: attributes['key'],
             navigatorKey: attributes['navigatorKey'],
@@ -607,7 +607,7 @@ class MaterialApp_routerInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    MaterialApp? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    MaterialApp? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return MaterialApp.router(
             key: attributes['key'],
             scaffoldMessengerKey: attributes['scaffoldMessengerKey'],
@@ -698,7 +698,7 @@ class ScaffoldInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    Scaffold? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    Scaffold? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Scaffold(
             key: attributes['key'],
             appBar: attributes['appBar'],
@@ -773,9 +773,9 @@ class TextInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    Text? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    Text? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Text(
-            attributes['data'] ?? text,
+            attributes['data'] ?? XWidgetUtils.joinStrings(text),
             key: attributes['key'],
             style: attributes['style'],
             strutStyle: attributes['strutStyle'],
@@ -828,7 +828,7 @@ class Text_richInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    Text? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    Text? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Text.rich(
             attributes['textSpan'],
             key: attributes['key'],
@@ -883,7 +883,7 @@ class TextStyleInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    TextStyle? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    TextStyle? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return TextStyle(
             inherit: attributes['inherit'] ?? true,
             color: attributes['color'],
@@ -960,7 +960,7 @@ class ThemeDataInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData(
             applyElevationOverlayColor: attributes['applyElevationOverlayColor'],
             cupertinoOverrideTheme: attributes['cupertinoOverrideTheme'],
@@ -1159,7 +1159,7 @@ class ThemeData_rawInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.raw(
             applyElevationOverlayColor: attributes['applyElevationOverlayColor'],
             cupertinoOverrideTheme: attributes['cupertinoOverrideTheme'],
@@ -1346,7 +1346,7 @@ class ThemeData_fromInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.from(
             colorScheme: attributes['colorScheme'],
             textTheme: attributes['textTheme'],
@@ -1377,7 +1377,7 @@ class ThemeData_lightInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.light(
             useMaterial3: attributes['useMaterial3'],
         );
@@ -1404,7 +1404,7 @@ class ThemeData_darkInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.dark(
             useMaterial3: attributes['useMaterial3'],
         );
@@ -1431,7 +1431,7 @@ class ThemeData_fallbackInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+    ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.fallback(
             useMaterial3: attributes['useMaterial3'],
         );

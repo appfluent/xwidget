@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../xwidget.dart';
 
 final _parseDurationRegExp = RegExp(r'^(\d+)(ms|s)$');
-final _parseColorRegExp = RegExp("^(#|0x)*");
 
 double? parseHeight(String? value) {
   if (value == null || value.isEmpty) return null;
@@ -119,7 +118,12 @@ Alignment? parseAlignment(String? value) {
 Color? parseColor(String? value) {
   if (value == null || value.isEmpty) return null;
 
-  var argb = value.replaceAll(_parseColorRegExp, "");
+  var argb = value;
+  if (argb.startsWith("#")) {
+    argb = argb.substring(1, argb.length);
+  } else if (argb.startsWith("0x")) {
+    argb = argb.substring(2, argb.length);
+  }
   if (argb.length == 6) {
     argb = "FF$argb";
   }
@@ -160,13 +164,15 @@ EdgeInsetsGeometry? parseEdgeInsetsGeometry(String? value) {
 }
 
 BorderRadius? parseBorderRadius(String? value) {
-  if (value != null && value.isNotEmpty) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    return BorderRadius.all(parseRadius(value) ?? Radius.zero);
+  } else {
     final values = value.split(',');
     switch (values.length) {
-      case 1:
-        return BorderRadius.all(parseRadius(values[0]) ?? Radius.zero);
       case 2:
-        return BorderRadius.vertical(
+          return BorderRadius.vertical(
           top: parseRadius(values[0]) ?? Radius.zero,
           bottom: parseRadius(values[1]) ?? Radius.zero,
         );
@@ -177,25 +183,29 @@ BorderRadius? parseBorderRadius(String? value) {
           bottomRight: parseRadius(values[2]) ?? Radius.zero,
           bottomLeft: parseRadius(values[3]) ?? Radius.zero,
         );
+      default:
+        throw Exception("Invalid border radius '$value'");
     }
   }
-  return null;
 }
 
 Radius? parseRadius(String? value) {
-  if (value != null && value.isNotEmpty) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    final x = double.parse(value.trim());
+    return Radius.elliptical(x, x);
+  } else {
     final values = value.split(':');
     switch (values.length) {
-      case 1:
-        final x = double.parse(values[0].trim());
-        return Radius.elliptical(x, x);
       case 2:
         final x = double.parse(values[0].trim());
         final y = double.parse(values[1].trim());
         return Radius.elliptical(x, y);
+      default:
+        throw Exception("Invalid radius '$value'");
     }
   }
-  return null;
 }
 
 FontWeight? parseFontWeight(String? value) {
@@ -241,13 +251,14 @@ Key? parseKey(String? value) {
 }
 
 Locale? parseLocale(String? value) {
-  if (value != null && value.isNotEmpty) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains("_")) {
+    return Locale(value.toLowerCase(), null);
+  } else {
     final parts = value.split("_");
-    final languageCode = parts[0].toLowerCase();
-    final countryCode = parts.length > 1 ? parts[1].toUpperCase() : null;
-    return Locale(languageCode, countryCode);
+    return Locale(parts[0].toLowerCase(), parts[1].toUpperCase());
   }
-  return null;
 }
 
 VisualDensity? parseVisualDensity(String? value) {
@@ -275,17 +286,26 @@ Offset? parseOffset(String? value) {
 }
 
 List<String>? parseListOfStrings(String? value) {
-  if (value == null) return null;
-  final strings = <String>[];
-  final values = value.split(',');
-  for (final string in values) {
-    strings.add(string.trim());
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    return [value.trim()];
+  } else {
+    final strings = <String>[];
+    final values = value.split(',');
+    for (final string in values) {
+      strings.add(string.trim());
+    }
+    return strings;
   }
-  return strings;
 }
 
 List<double>? parseListOfDoubles(String? value) {
-  if (value != null && value.isNotEmpty) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    return [double.parse(value.trim())];
+  } else {
     final doubles = <double>[];
     final values = value.split(',');
     for (final val in values) {
@@ -293,11 +313,14 @@ List<double>? parseListOfDoubles(String? value) {
     }
     return doubles;
   }
-  return null;
 }
 
 List<int>? parseListOfInts(String? value) {
-  if (value != null && value.isNotEmpty) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    return [int.parse(value.trim())];
+  } else {
     final ints = <int>[];
     final values = value.split(',');
     for (final val in values) {
@@ -305,21 +328,17 @@ List<int>? parseListOfInts(String? value) {
     }
     return ints;
   }
-  return null;
 }
 
 IconData? parseIcon(String? value) {
-  if (value != null && value.isNotEmpty) {
-    final icon = XWidget.getIcon(value);
-    if (icon == null) throw Exception("Invalid icon '$value'.");
-    return icon;
-  }
-  return null;
+  if (value == null || value.isEmpty) return null;
+  final icon = XWidget.getIcon(value);
+  if (icon != null) return icon;
+  throw Exception("Invalid icon '$value'.");
 }
 
 Enum? parseEnum<T>(List<Enum> values, String? value) {
   if (value == null || value.isEmpty) return null;
-
   for (final type in values) {
     if (type.name == value) {
       return type;
@@ -336,7 +355,9 @@ MaterialStateProperty<Color>? parseMaterialStateColor(String? value) {
 //=====================================
 
 Rect? parseRect(String? fromLTRBString) {
-  if (fromLTRBString == null) return null;
+  if (fromLTRBString == null) {
+    return null;
+  }
   var strings = fromLTRBString.split(',');
   return Rect.fromLTRB(
       double.parse(strings[0]),

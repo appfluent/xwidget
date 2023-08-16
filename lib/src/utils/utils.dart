@@ -9,6 +9,19 @@ class XWidgetUtils {
     if (children.length > 1) throw Exception("'$widgetName' cannot have multiple children");
     return children[0];
   }
+
+  static String joinStrings(List<String> strings, {
+    bool trimEachLine = true,
+    bool trimResult = true,
+    String separator = " ",
+  }) {
+    final text = StringBuffer();
+    for (var i = 0; i < strings.length; i++) {
+      text.write(trimEachLine ? strings[i].trim() : strings[i]);
+      if (separator.isNotEmpty && i < strings.length) text.write(separator);
+    }
+    return trimResult ? text.toString().trim() : text.toString();
+  }
 }
 
 class CommonUtils {

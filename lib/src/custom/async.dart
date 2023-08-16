@@ -109,7 +109,7 @@ class DynamicBuilderInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  DynamicBuilder? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+  DynamicBuilder? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     return DynamicBuilder(
       key: attributes['key'],
       builder: attributes['builder'],

@@ -12,18 +12,13 @@ void main() {
   });
 
   test('test inherited attributes', () {
-    const xml = '''
-    <Text data="\${title}" maxLines="2"/>
-    ''';
-    final textWidget = XWidget.inflateFromXml(
-      xml: xml,
-      inheritedAttributes: [
-        XmlAttribute(XmlName("maxLines"), "3"),
-      ],
-      dependencies: Dependencies({
-        "title": "My Test"
-      }),
-    );
+    final xml = XmlDocument.parse('<Text data="\${title}" maxLines="2"/>');
+    final deps = Dependencies({
+      "title": "My Test"
+    });
+    final textWidget = XWidget.inflateFromXmlElement(xml.rootElement, deps, inheritedAttributes: [
+      XmlAttribute(XmlName("maxLines"), "3"),
+    ]);
     expect(textWidget.toString(), 'Text("My Test", maxLines: 3)');
   });
 }

@@ -39,7 +39,7 @@ inflaters:
     "SlidableAction:flex": "1"
     "SliverAppBar.medium:toolbarHeight": "64.0"
     "SliverAppBar.large:toolbarHeight": "64.0"
-    "Text:data": "text"
+    "Text:data": "XWidgetUtils.joinStrings(text)"
     "WidgetSpan:alignment": "PlaceholderAlignment.middle"
     "*:colorBlendMode": "BlendMode.srcIn"
     "*:selectionHeightStyle": "BoxHeightStyle.tight"

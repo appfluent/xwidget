@@ -10,6 +10,8 @@ import 'async.dart';
 
 typedef XWidgetControllerFactory<T extends Controller> = T Function();
 
+enum BuildExecution { async, sync }
+
 @InflaterDef(inflaterType: "Controller", inflatesOwnChildren: true)
 class ControllerWidget extends StatefulWidget {
   final String name;
@@ -17,6 +19,7 @@ class ControllerWidget extends StatefulWidget {
   final Dependencies dependencies;
   final Widget? errorWidget;
   final Widget? progressWidget;
+  final BuildExecution execution;
 
   @override
   ControllerWidgetState createState() => ControllerWidgetState();
@@ -28,6 +31,7 @@ class ControllerWidget extends StatefulWidget {
     required this.dependencies,
     this.errorWidget,
     this.progressWidget,
+    this.execution = BuildExecution.sync,
   }) : super(key: key);
 }
 
@@ -130,11 +134,22 @@ class ControllerWidgetState extends State<ControllerWidget> {
 
   Widget _builder(BuildContext context, Dependencies dependencies, dynamic initValue) {
     if (_shouldBuild()) {
-      _bindDependencies();
-      final children = XWidget.inflateXmlElementChildren(widget.element, dependencies);
-      return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
+      if (widget.execution == BuildExecution.async) {
+        return DynamicBuilder<Widget>(
+            initializer: (context, dependencies) => _inflateChildren(dependencies),
+            builder: (context, dependencies, widget) => widget,
+            dependencies: dependencies
+        );
+      }
+      return _inflateChildren(dependencies);
     }
     return const SizedBox.shrink();
+  }
+
+  Widget _inflateChildren(Dependencies dependencies) {
+    _bindDependencies();
+    final children = XWidget.inflateXmlElementChildren(widget.element, dependencies);
+    return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
   }
 
   void _bindDependencies() {
@@ -214,7 +229,7 @@ class ControllerWidgetInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  ControllerWidget? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text) {
+  ControllerWidget? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     return ControllerWidget(
       key: attributes['key'],
       name: attributes['name'],
@@ -222,6 +237,7 @@ class ControllerWidgetInflater extends Inflater {
       dependencies: attributes['_dependencies'],
       errorWidget: attributes['errorWidget'],
       progressWidget: attributes['progressWidget'],
+      execution: attributes["execution"] ?? BuildExecution.sync,
     );
   }
 
@@ -232,6 +248,7 @@ class ControllerWidgetInflater extends Inflater {
       case 'name': return value;
       case 'errorWidget': break;
       case 'progressWidget': break;
+      case "execution": return parseEnum(BuildExecution.values, value);
     }
   }
 }

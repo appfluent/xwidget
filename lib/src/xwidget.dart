@@ -62,6 +62,13 @@ class XWidget {
   static final _icons = <String, IconData>{};
   static final _controllerFactories = <String, XWidgetControllerFactory>{};
   static final _attributeContainsExpressions = RegExp(r"\$\{(.*?)}");
+  static final _xmlCache = <String, XmlDocument>{};
+
+  /// Enable or disable fragment XML caching
+  ///
+  /// If enabled, the fragment's parsed XML is cached until the cache is cleared.
+  /// DEFAULT: false
+  static bool xmlCacheEnabled = true;
 
   //===================================
   // Public Methods
@@ -97,6 +104,11 @@ class XWidget {
     throw Exception("XWidget controller factory for '$name' not found");
   }
 
+  /// Clear fragment XML cache
+  static void clearXmlCache() {
+    _xmlCache.clear();
+  }
+
   static T? inflateFragment<T>(
     String fragmentName,
     Dependencies dependencies, {
@@ -104,33 +116,17 @@ class XWidget {
     Map<String, String>? params
   }) {
     // TODO: Allow relative names. The problem lies with builders that inflate fragments, so creating a stack here doesn't work
-
     final splitIndex = fragmentName.indexOf("?");
     final namePart = splitIndex > -1 ? fragmentName.substring(0, splitIndex).trim() : fragmentName.trim();
-    final fragmentFqn = Resources.instance.getFragmentFqn(namePart);
-    final fragment = Resources.instance.getFragment(fragmentFqn);
-
     final queryPart = splitIndex > -1 ? fragmentName.substring(splitIndex + 1).trim() : null;
     final queryParams = queryPart != null && queryPart.isNotEmpty ? Uri.splitQueryString(queryPart) : {};
     queryParams.forEach((key, value) => dependencies[key] = value);
 
-    return inflateFromXml(
-      xml: fragment,
-      dependencies: dependencies,
+    return inflateFromXmlElement(
+      getFragmentXml(namePart).rootElement,
+      dependencies,
       inheritedAttributes: inheritedAttributes,
     );
-  }
-
-  static T? inflateFromXml<T>({
-    required String xml,
-    required Dependencies dependencies,
-    Iterable<XmlAttribute>? inheritedAttributes,
-  }) {
-    final document = XmlDocument.parse(xml);
-    return inflateFromXmlElement(
-        document.rootElement,
-        dependencies,
-        inheritedAttributes: inheritedAttributes);
   }
 
   static T? inflateFromXmlElement<T>(
@@ -159,11 +155,11 @@ class XWidget {
           attributes["_dependencies"] = dependencies;
         }
         if (inflater.inflatesOwnChildren) {
-          return inflater.inflate(attributes, [], null);
+          return inflater.inflate(attributes, [], []);
         } else {
           final children = inflateXmlElementChildren(element, dependencies);
           attributes.addAll(children.attributes);
-          return inflater.inflate(attributes, children.objects, children.text.join());
+          return inflater.inflate(attributes, children.objects, children.text);
         }
       }
     } catch(e, stacktrace) {
@@ -176,21 +172,18 @@ class XWidget {
       XmlElement element,
       Dependencies dependencies, {
       Set<String>? excludeElements,
-      Set<String>? includeElements,
       bool excludeText = false
   }) {
     final children = Children();
     for (final child in element.children) {
       if (!excludeText && (child is XmlText || child is XmlCDATA)) {
-        final text = child.value?.trim();
-        if (text != null && text.isNotEmpty) {
-          children.text.add(text);
+        if (child.value != null && child.value!.isNotEmpty) {
+          children.text.add(child.value!);
         }
       } else if (child is XmlElement) {
         // child is an element
         final elementName = child.localName;
-        if ((excludeElements == null || !excludeElements.contains(elementName)) &&
-            (includeElements == null || includeElements.contains(elementName))) {
+        if (excludeElements == null || excludeElements.isEmpty || !excludeElements.contains(elementName)) {
           final tag = _tags[elementName];
           if (tag != null) {
             // element is a tag
@@ -249,7 +242,7 @@ class XWidget {
     // IMPORTANT: startsWith and endsWith are much faster than RegExp with numerous iterations.
     // Since parsing is called 1000s of times, it needs to be as efficient as possible.
 
-    if (attributeValue == null) return null;
+    if (attributeValue == null || attributeValue.isEmpty) return null;
     if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
       // the attribute value is an expression that needs to be parsed
       final value = parseExpression(attributeValue.substring(2, attributeValue.length - 1), dependencies);
@@ -275,6 +268,20 @@ class XWidget {
     return (inflater != null) ? inflater.parseAttribute(attributeName, value) : value;
   }
 
+  static Iterable<XmlAttribute> mergeXmlAttributes(Iterable<XmlAttribute> list1, Iterable<XmlAttribute>? list2) {
+    // if list2 is null or empty then just return list1 for efficiency
+    if (list2 == null || list2.isEmpty) return list1;
+
+    final attributes = <String, XmlAttribute>{};
+    for (final attribute in list1) {
+      attributes[attribute.qualifiedName] = attribute;
+    }
+    for (final attribute in list2) {
+      attributes[attribute.qualifiedName] = attribute;
+    }
+    return attributes.values;
+  }
+
   static String parseAllExpressions(String input, Dependencies dependencies) {
     // for performance reasons, check input for possible expressions before using a regexp
     if (input.contains("\${")) {
@@ -298,18 +305,20 @@ class XWidget {
     throw Exception("Failed to parse EL expression '$expression'. ${result.message}");
   }
 
-  static Iterable<XmlAttribute> mergeXmlAttributes(Iterable<XmlAttribute> list1, Iterable<XmlAttribute>? list2) {
-    // if list2 is null or empty then just return list1 for efficiency
-    if (list2 == null || list2.isEmpty) return list1;
-
-    final attributes = <String, XmlAttribute>{};
-    for (final attribute in list1) {
-      attributes[attribute.qualifiedName] = attribute;
+  static XmlDocument getFragmentXml(String name) {
+    XmlDocument? xmlDocument;
+    if (xmlCacheEnabled) {
+      xmlDocument = _xmlCache[name];
     }
-    for (final attribute in list2) {
-      attributes[attribute.qualifiedName] = attribute;
+    if (xmlDocument == null) {
+      final fragmentFqn = Resources.instance.getFragmentFqn(name);
+      final xmlString = Resources.instance.getFragment(fragmentFqn);
+      xmlDocument = XmlDocument.parse(xmlString);
+      if (xmlCacheEnabled) {
+        _xmlCache[name] = xmlDocument;
+      }
     }
-    return attributes.values;
+    return xmlDocument;
   }
 
   static Dependencies scopeDependencies(Dependencies dependencies, String? scope, [String defaultScope = "inherit"]) {
@@ -541,7 +550,7 @@ abstract class Inflater<T> {
   bool get inflatesCustomWidget;
 
   /// Inflates an xml element into a flutter object.
-  T? inflate(Map<String, dynamic> attributes, List<dynamic> children, String? text);
+  T? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text);
 
   /// Parses an XML attribute into a constructor argument
   dynamic parseAttribute(String name, String value);
