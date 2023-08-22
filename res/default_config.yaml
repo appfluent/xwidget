@@ -16,16 +16,12 @@ inflaters:
     "CachedNetworkImage:imageRenderMethodForWeb",
   ]
 
-  # TODO: find a way to read private variable defaults from source
+  # TODO: find a way to read variable object defaults from source
+  # Unfortunately, the analyzer's public API is very limiting. The information is there, but
+  # we can't access it unless they make it public. For now we'll just have to maintain this map.
   constructor_arg_defaults:
-    "ActionPane:extentRatio": "0.5"
     "AnimatedCrossFade:layoutBuilder": "AnimatedCrossFade.defaultLayoutBuilder"
-    "BorderSide:strokeAlign": "-1.0"
-    "CupertinoActivityIndicator:radius": "10.0"
-    "CupertinoActivityIndicator.partiallyRevealed:radius": "10.0"
     "CupertinoSliverRefreshControl:builder": "CupertinoSliverRefreshControl.buildRefreshIndicator"
-    "CupertinoSliverRefreshControl:refreshIndicatorExtent": "60.0"
-    "CupertinoSliverRefreshControl:refreshTriggerPullDistance": "100.0"
     "CupertinoTextField:placeholderStyle": "const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText)"
     "CupertinoTextField.borderless:placeholderStyle": "const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText)"
     "Dialog:insetPadding": "const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0)"
@@ -33,12 +29,7 @@ inflaters:
     "FloatingActionButton.small:heroTag": "'<default FloatingActionButton hero tag>'"
     "FloatingActionButton.large:heroTag": "'<default FloatingActionButton hero tag>'"
     "FloatingActionButton.extended:heroTag": "'<default FloatingActionButton hero tag>'"
-    "PopupMenuDivider:height": "16.0"
-    "SlidableAction:autoClose": "true"
     "SlidableAction:backgroundColor": "Colors.white"
-    "SlidableAction:flex": "1"
-    "SliverAppBar.medium:toolbarHeight": "64.0"
-    "SliverAppBar.large:toolbarHeight": "64.0"
     "Text:data": "XWidgetUtils.joinStrings(text)"
     "WidgetSpan:alignment": "PlaceholderAlignment.middle"
     "*:colorBlendMode": "BlendMode.srcIn"

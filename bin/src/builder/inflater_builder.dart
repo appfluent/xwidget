@@ -191,7 +191,7 @@ class InflaterBuilder extends SpecBuilder {
       code.write("XWidgetUtils.getOnlyChild('$constructorName', children, $defaultValue)");
     } else {
       final attributeValue = "attributes['${privateAccess ? "_" : "" }${param.name}']";
-      final defaultValue = inflaterConfig.findConstructorArgDefault(constructorName, param.name, param.defaultValueCode);
+      final defaultValue = inflaterConfig.findConstructorArgDefault(constructorName, param.name) ?? _calcParamDefault(param);
       final paramTypeName = param.type.getDisplayString(withNullability: true);
       if (isTypeList(paramTypeName)) {
         final nullable = paramTypeName.endsWith("?");
@@ -206,6 +206,33 @@ class InflaterBuilder extends SpecBuilder {
     }
     code.write(",\n");
     return code.toString();
+  }
+
+  String? _calcParamDefault(ParameterElement param) {
+    String? defaultValueCode = param.defaultValueCode;
+    if (defaultValueCode != null) {
+      final constValue = param.computeConstantValue();
+      final constVariable = constValue?.variable;
+      if (constVariable != null) {
+        final constVariableValue = constVariable.computeConstantValue();
+        final constVariableValueType = constVariableValue?.type;
+        if (constVariableValueType != null) {
+          if (constVariableValueType.isDartCoreNull) {
+            defaultValueCode = null;
+          } else if (constVariableValueType.isDartCoreInt) {
+            defaultValueCode = constVariableValue!.toIntValue().toString();
+          } else if (constVariableValueType.isDartCoreDouble) {
+            final doubleValue = constVariableValue!.toDoubleValue();
+            defaultValueCode = doubleValue!.isInfinite ? "double.infinity" : doubleValue.toString();
+          } else if (constVariableValueType.isDartCoreBool) {
+            defaultValueCode = constVariableValue!.toBoolValue().toString();
+          } else if (constVariableValueType.isDartCoreString) {
+            defaultValueCode = constVariableValue!.toStringValue().toString();
+          }
+        }
+      }
+    }
+    return defaultValueCode;
   }
 
   String _buildInflaterParseCase(String constructorName, ParameterElement param) {

@@ -257,7 +257,7 @@ class InflaterConfig with ConfigMixin {
   Map<String, String> constructorArgDefaults = {};
   Map<String, String> constructorArgParsers = {};
 
-  String? findConstructorArgDefault(String? inflaterType, String? argName, String? defaultValue) {
+  String? findConstructorArgDefault(String? inflaterType, String? argName, [String? defaultValue = null]) {
     List<String> keys = _searchKeys(inflaterType, argName);
     for (final key in keys) {
       final value = constructorArgDefaults[key];

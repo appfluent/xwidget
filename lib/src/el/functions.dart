@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:petitparser/core.dart';
+import 'package:xwidget/src/utils/parsers.dart';
 
 class BuiltInFunctions {
   final Parser Function() _getParser;
@@ -37,6 +38,7 @@ class BuiltInFunctions {
       case "nowInUtc": return _nowInUtc;
       case "startsWith": return _startsWith;
       case "substring": return _substring;
+      case "toBool": return _toBool;
       case "toDateTime": return _toDateTime;
       case "toDuration": return _toDuration;
       case "toString": return _toString;
@@ -169,4 +171,6 @@ class BuiltInFunctions {
   }
 
   String _toString(dynamic value) => value.toString();
+  
+  bool _toBool(dynamic value) => parseBool(value) ?? false;
 }

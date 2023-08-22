@@ -1,3 +1,9 @@
+### 0.0.21 (Aug 22, 2023)
+
+* Improved inflater builder's generation of default values from variables.
+* Added new built-in EL function `toBool`.
+* Updated documentation.
+
 ### 0.0.20 (Aug 16, 2023)
 
 * BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.

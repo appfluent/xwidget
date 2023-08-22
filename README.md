@@ -45,32 +45,34 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
 7. [Fragments](#fragments)
 8. [Controllers](#controllers)
 9. [Expression Language (EL)](#expression-language-el)
-    1. [Operators](#operators)
-    2. [Built-In Functions](#built-in-functions)
-    3. [Custom Functions](#custom-functions)
+    - [Operators](#operators)
+    - [Built-In Functions](#built-in-functions)
+    - [Custom Functions](#custom-functions)
 10. [Resources](#resources)
-    1. [Strings](#strings)
-    2. [Ints](#ints)
-    3. [Doubles](#doubles)
-    4. [Bools](#bools)
-    5. [Colors](#colors)
-    6. [Fragments](#fragments-1)
+    - [Strings](#strings)
+    - [Ints](#ints)
+    - [Doubles](#doubles)
+    - [Bools](#bools)
+    - [Colors](#colors)
+    - [Fragments](#fragments-1)
 11. [Tags](#tags)
-    1. [```<builder>```](#builder)
-    2. [```<callback>```](#callback)
-    3. [```<debug>```](#debug)
-    4. [```<forEach>```](#foreach)
-    5. [```<forLoop>```](#forloop)
-    6. [```<fragment>```](#fragment)
-    7. [```<if>/<else>```](#ifelse)
-    8. [```<var>```](#var)
+    - [```<builder>```](#builder)
+    - [```<callback>```](#callback)
+    - [```<debug>```](#debug)
+    - [```<forEach>```](#foreach)
+    - [```<forLoop>```](#forloop)
+    - [```<fragment>```](#fragment)
+    - [```<if>/<else>```](#ifelse)
+    - [```<var>```](#var)
 12. [Tips and Tricks](#tips-and-tricks)
-13. [FAQ](#faq)
-14. [Roadmap](#roadmap)
-    1. [0.0.x Releases (2023)](#00x-releases-2023)
-    2. [0.x Releases (2024)](#0x-releases-2024)
-    3. [1.0.0 Release (mid 2024)](#100-release-mid-2024)
-15. [Known Issues](#known-issues)
+13. [Trouble Shooting](#trouble-shooting)
+    - [The generated inflater code has errors](#the-generated-inflater-code-has-errors)
+14. [FAQ](#faq)
+15. [Roadmap](#roadmap)
+    - [0.0.x Releases (2023)](#00x-releases-2023)
+    - [0.x Releases (2024)](#0x-releases-2024)
+    - [1.0.0 Release (mid 2024)](#100-release-mid-2024)
+16. [Known Issues](#known-issues)
 
 # Quick Start
 
@@ -600,6 +602,7 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | nowInUtc          | none                                          | DateTime |             |                                                                                   |
 | startsWith        | String value<br/>String searchValue           | bool     |             |                                                                                   |
 | substring         | String value<br/>int start<br/>[int end = -1] | String   |             |                                                                                   |
+| toBool            | dynamic value                                 | bool     |             |                                                                                   |
 | toDateTime        | dynamic value                                 | DateTime |             |                                                                                   |
 | toDuration        | String value                                  | Duration |             |                                                                                   |
 | toString          | dynamic value                                 | String   |             |                                                                                   |
@@ -867,9 +870,31 @@ project
 
 *Add documentation here.*
 
+# Trouble Shooting
+
+## The generated inflater code has errors
+
+The most common cause of errors in generated inflater code is due to constructor argument defaults 
+referencing undefined variables. If the referenced variable type is not a primitive, then XWidget
+can't infer how to generate the default value and will fallback to using the variable reference.
+
+The solution is to manually set the default value for the constructor argument in XWidget's
+configuration file under the `constructor_arg_defaults:` key.
+
+```yaml
+# xwidget_config.yaml
+inflaters:  
+  constructor_arg_defaults:
+    # example defaults
+    "WidgetSpan:alignment": "PlaceholderAlignment.middle",
+    "*:colorBlendMode": "BlendMode.srcIn"
+```
+
+See [Inflaters Configuration](#inflaters-configuration) for details.
+
 # FAQ
 
-### 1. What problems does XWidget solve?
+## 1. What problems does XWidget solve?
 
 The first and most obvious answer is that it gives applications the flexibility to create and modify
 its UI at runtime. An app might want to give its users the ability to download a different
@@ -891,19 +916,19 @@ improvements, and oh, even more documentation. The implementation is already fai
 lacks test coverage. Once the documentation is complete, we'll bump the minor version and
 concentrate on testing.
 
-### 0.0.x Releases (2023)
+## 0.0.x Releases (2023)
 
 * Write README and API documentation
 * Critical bug fixes
 * Minor improvements
 
-### 0.x Releases (2024)
+## 0.x Releases (2024)
 
 * Write unit, widget, UI, and performance tests
 * Critical and major bug fixes
 * Refine and add documentation as needed
 
-### 1.0.0 Release (mid 2024)
+## 1.0.0 Release (mid 2024)
 
 * Stable release
 

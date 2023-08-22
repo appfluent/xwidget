@@ -4943,12 +4943,16 @@ specified in one place, it will dominate [color] in another.</p><br/>
                     <xs:attribute name="fontSize">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The size of glyphs (in logical pixels) to use when painting the text.</p><br/>
+<p>The size of fonts (in logical pixels) to use when painting the text.</p><br/>
+<p>The value specified matches the dimension of the
+<a href="https://fonts.google.com/knowledge/glossary/em">em square</a> of the
+underlying font, and more often then not isn't exactly the height or the
+width of glyphs in the font.</p><br/>
 <p>During painting, the [fontSize] is multiplied by the current
 <code>textScaleFactor</code> to let users make it easier to read text by increasing
 its size.</p><br/>
-<p>[getParagraphStyle] will default to 14 logical pixels if the font size
-isn't specified here.</p><br/>
+<p>The [getParagraphStyle] method defaults to 14 logical pixels if [fontSize]
+is set to null.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5486,16 +5490,17 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
+<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
-<li>Badges: [Badge] (<em>new</em>)</li>
+<li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
@@ -5508,22 +5513,23 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 </li>
 <li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
-<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen]</li>
 <li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
-<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
+<li>Menus: [MenuAnchor], [DropdownMenu], [MenuBar]</li>
+<li>Navigation bar: [NavigationBar] (replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
+<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar]</li>
+<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
-<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -6408,16 +6414,17 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
+<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
-<li>Badges: [Badge] (<em>new</em>)</li>
+<li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
@@ -6430,22 +6437,23 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 </li>
 <li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
-<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen]</li>
 <li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
-<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
+<li>Menus: [MenuAnchor], [DropdownMenu], [MenuBar]</li>
+<li>Navigation bar: [NavigationBar] (replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
+<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar]</li>
+<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
-<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7203,16 +7211,17 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
+<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
-<li>Badges: [Badge] (<em>new</em>)</li>
+<li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
@@ -7225,22 +7234,23 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 </li>
 <li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
-<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen]</li>
 <li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
-<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
+<li>Menus: [MenuAnchor], [DropdownMenu], [MenuBar]</li>
+<li>Navigation bar: [NavigationBar] (replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
+<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar]</li>
+<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
-<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7312,16 +7322,17 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
+<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
-<li>Badges: [Badge] (<em>new</em>)</li>
+<li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
@@ -7334,22 +7345,23 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 </li>
 <li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
-<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen]</li>
 <li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
-<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
+<li>Menus: [MenuAnchor], [DropdownMenu], [MenuBar]</li>
+<li>Navigation bar: [NavigationBar] (replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
+<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar]</li>
+<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
-<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7421,16 +7433,17 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
+<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
-<li>Badges: [Badge] (<em>new</em>)</li>
+<li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
@@ -7443,22 +7456,23 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 </li>
 <li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
-<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen]</li>
 <li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
-<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
+<li>Menus: [MenuAnchor], [DropdownMenu], [MenuBar]</li>
+<li>Navigation bar: [NavigationBar] (replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
+<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar]</li>
+<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
-<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
@@ -7533,16 +7547,17 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
+<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
-<li>Badges: [Badge] (<em>new</em>)</li>
+<li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
 <li>Bottom sheets: [BottomSheet]</li>
 <li>Buttons
 <ul>
-<li>Common buttons: [ElevatedButton], [FilledButton] (<em>new</em>), FilledButton.tonal] (<em>new</em>), [OutlinedButton], [TextButton]</li>
+<li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton]</li>
-<li>Segmented buttons: [SegmentedButton] (<em>new</em>, replacing [ToggleButtons])</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
 <li>Cards: [Card]</li>
@@ -7555,22 +7570,23 @@ scheme depending on [useMaterial3].</p><br/>
 </ul>
 </li>
 <li>Date pickers: [showDatePicker], [showDateRangePicker], [DatePickerDialog], [DateRangePickerDialog], [InputDatePickerFormField]</li>
-<li>Dialogs: [AlertDialog], [Dialog.fullscreen] (<em>new</em>)</li>
+<li>Dialogs: [AlertDialog], [Dialog.fullscreen]</li>
 <li>Divider: [Divider], [VerticalDivider]</li>
 <li>Lists: [ListTile]</li>
-<li>Menus: [MenuAnchor] (<em>new</em>), [DropdownMenu] (<em>new</em>), [MenuBar] (<em>new</em>)</li>
-<li>Navigation bar: [NavigationBar] (<em>new</em>, replacing [BottomNavigationBar])</li>
-<li>Navigation drawer: [NavigationDrawer] (<em>new</em>, replacing [Drawer])</li>
+<li>Menus: [MenuAnchor], [DropdownMenu], [MenuBar]</li>
+<li>Navigation bar: [NavigationBar] (replacing [BottomNavigationBar])</li>
+<li>Navigation drawer: [NavigationDrawer] (replacing [Drawer])</li>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
+<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar]</li>
+<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
-<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium] (<em>new</em>), [SliverAppBar.large] (<em>new</em>)</li>
+<li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
 </ul>
 <p>In addition, this flag enables features introduced in Android 12.</p><br/>
 <ul>
