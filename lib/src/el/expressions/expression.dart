@@ -1,4 +1,3 @@
-
 abstract class Expression<T> {
   T evaluate();
 

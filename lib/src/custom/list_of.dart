@@ -56,7 +56,6 @@ class MapOf extends MapBase {
 }
 
 class ListOfInflater extends Inflater {
-
   @override
   String get type => 'ListOf';
 

@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class NegationExpression extends Expression<dynamic> {
   final dynamic value;
 

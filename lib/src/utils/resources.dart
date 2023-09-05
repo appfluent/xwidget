@@ -43,7 +43,6 @@ class Resources {
 
   void replaceResourceBundles(List<ResourceBundle> bundles) {
     for (final bundle in bundles) {
-
       // remove conflicting types
       final removedByType = _resourceBundlesByType.remove(bundles.runtimeType);
       if (removedByType != null) _resourceBundlesByPath.remove(removedByType.pathSegment);
@@ -60,7 +59,8 @@ class Resources {
 
   Future<void> loadResources(String rootPath, [AssetBundle? assetBundle]) async {
     final resRegExp = RegExp(
-        r'^' '$rootPath' r'/((?<res>([a-zA-Z0-9_]+))/){0,1}(?<path>([a-zA-Z0-9_]+/)*)'
+        r'^' '$rootPath'
+        r'/((?<res>([a-zA-Z0-9_]+))/){0,1}(?<path>([a-zA-Z0-9_]+/)*)'
         r'(?<name>[a-zA-Z0-9_]+).(?<ext>[a-zA-Z0-9_]+)'
     );
     final activeAssetBundle = assetBundle ?? rootBundle;
@@ -116,23 +116,12 @@ class ValueResources extends ResourceBundle {
           final resourceValue = element.innerText.trim();
           if (resourceName != null && resourceValue.isNotEmpty) {
             switch (resourceType) {
-              case "string":
-                _strings[resourceName] = element.innerText;
-                break;
-              case "bool":
-                _bools[resourceName] = resourceValue.parseBool();
-                break;
-              case "int":
-                _ints[resourceName] = int.parse(resourceValue);
-                break;
-              case "double":
-                _doubles[resourceName] = double.parse(resourceValue);
-                break;
-              case "color":
-                _colors[resourceName] = ColorExt.parse(resourceValue);
-                break;
-              default:
-                throw Exception("Unknown resource type '$resourceType'");
+              case "string": _strings[resourceName] = element.innerText; break;
+              case "bool": _bools[resourceName] = resourceValue.parseBool(); break;
+              case "int": _ints[resourceName] = int.parse(resourceValue); break;
+              case "double": _doubles[resourceName] = double.parse(resourceValue); break;
+              case "color": _colors[resourceName] = ColorExt.parse(resourceValue); break;
+              default: throw Exception("Unknown resource type '$resourceType'");
             }
           }
         }

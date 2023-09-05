@@ -3,6 +3,7 @@ import 'package:logger/logger.dart' hide FileOutput;
 typedef CommonLogCallback = bool Function(LogLevel, dynamic, [dynamic, StackTrace?]);
 
 enum LogLevel { debug, info, warn, error }
+
 /// A simple wrapper around [Logger].
 ///
 /// Adds these features:
@@ -66,10 +67,7 @@ class CommonLog {
   // constructors and initializers
 
   /// Initializes CommonLog with a preconfigured [Logger] and callback function.
-  static initialize({
-    Logger? logger,
-    CommonLogCallback? callback
-  }) {
+  static initialize({Logger? logger, CommonLogCallback? callback}) {
     if (logger != null) {
       _logger = logger;
     }

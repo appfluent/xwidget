@@ -11,7 +11,7 @@ import 'builder.dart';
 class IconsBuilder extends SpecBuilder {
   final IconConfig iconConfig;
 
-  IconsBuilder(super.config): iconConfig = config.iconConfig;
+  IconsBuilder(super.config) : iconConfig = config.iconConfig;
 
   @override
   Future<BuilderResult> build() async {

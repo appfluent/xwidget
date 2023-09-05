@@ -17,7 +17,7 @@ class InflaterBuilder extends SpecBuilder {
   final SchemaConfig schemaConfig;
   final Map<String, SchemaType> schemaTypes = {};
 
-  InflaterBuilder(super.config):
+  InflaterBuilder(super.config) :
     inflaterConfig = config.inflaterConfig,
     schemaConfig = config.schemaConfig;
 
@@ -190,7 +190,7 @@ class InflaterBuilder extends SpecBuilder {
       final defaultValue = param.isRequired ? "const SizedBox()" : "null";
       code.write("XWidgetUtils.getOnlyChild('$constructorName', children, $defaultValue)");
     } else {
-      final attributeValue = "attributes['${privateAccess ? "_" : "" }${param.name}']";
+      final attributeValue = "attributes['${privateAccess ? "_" : ""}${param.name}']";
       final defaultValue = inflaterConfig.findConstructorArgDefault(constructorName, param.name) ?? _calcParamDefault(param);
       final paramTypeName = param.type.getDisplayString(withNullability: true);
       if (isTypeList(paramTypeName)) {
@@ -223,7 +223,9 @@ class InflaterBuilder extends SpecBuilder {
             defaultValueCode = constVariableValue!.toIntValue().toString();
           } else if (constVariableValueType.isDartCoreDouble) {
             final doubleValue = constVariableValue!.toDoubleValue();
-            defaultValueCode = doubleValue!.isInfinite ? "double.infinity" : doubleValue.toString();
+            defaultValueCode = doubleValue!.isInfinite
+                ? "double.infinity"
+                : doubleValue.toString();
           } else if (constVariableValueType.isDartCoreBool) {
             defaultValueCode = constVariableValue!.toBoolValue().toString();
           } else if (constVariableValueType.isDartCoreString) {

@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class DynamicFunction extends Expression<dynamic> {
   final Function function;
   final List<dynamic> params;

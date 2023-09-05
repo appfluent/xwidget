@@ -36,11 +36,8 @@ class ELGrammarDefinition extends GrammarDefinition {
 
   Parser literal() => ref1(
       token,
-      ref0(doubleNumber) |
-      ref0(integerNumber) |
-      ref0(boolTrue) |
-      ref0(boolFalse) |
-      ref0(singleLineString));
+      ref0(doubleNumber) | ref0(integerNumber) | ref0(boolTrue) | ref0(boolFalse) | ref0(singleLineString)
+  );
 
   Parser identifier() =>
       (ref0(letterOrUnderscore) &

@@ -24,7 +24,6 @@ import 'expressions/subtraction.dart';
 import 'functions.dart';
 import 'grammar.dart';
 
-
 class ELParserDefinition extends ELGrammarDefinition {
   final Map<String, dynamic> data;
   final Map<String, dynamic> globalData;
@@ -37,7 +36,7 @@ class ELParserDefinition extends ELGrammarDefinition {
   }) {
     _builtInFunctions = BuiltInFunctions(_getParser);
   }
-  
+
   @override
   Parser<T> build<T>({
     @Deprecated("Use 'buildFrom(parser)'") Function? start,

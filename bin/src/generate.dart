@@ -17,20 +17,23 @@ void main(List<String> unparsedArgs) async {
 
   final ArgParser parser = ArgParser();
   parser.addFlag("help", abbr: "h", help: "Usage help", negatable: false);
-  parser.addOption("config", abbr: "c", help: "Path to config file", defaultsTo: "xwidget_config.yaml");
-  parser.addFlag("allow-deprecated",
+  parser.addOption(
+      "config",
+      abbr: "c",
+      help: "Path to config file",
+      defaultsTo: "xwidget_config.yaml");
+  parser.addFlag(
+      "allow-deprecated",
       abbr: "d",
       help: "Allow deprecated constructors and constructor arguments.",
-      negatable: false
-  );
-  parser.addMultiOption("only",
+      negatable: false);
+  parser.addMultiOption(
+      "only",
       help: "Comma separated list of components to generate. Defaults to all components.",
       allowed: ["inflaters", "icons", "controllers"],
-      defaultsTo: ["inflaters", "icons", "controllers"]
-  );
+      defaultsTo: ["inflaters", "icons", "controllers"]);
 
   final args = parser.parse(unparsedArgs);
-
   if (args["help"] == true) {
     CliLog.info(parser.usage);
     return;

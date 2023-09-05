@@ -1,4 +1,3 @@
-
 /// A very simple stack implementation using an array
 class Stack<E> {
   final _list = <E>[];

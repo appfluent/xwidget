@@ -10,7 +10,7 @@ import 'builder.dart';
 class ControllerBuilder extends SpecBuilder {
   final ControllerConfig controllerConfig;
 
-  ControllerBuilder(super.config): controllerConfig = config.controllerConfig;
+  ControllerBuilder(super.config) : controllerConfig = config.controllerConfig;
 
   @override
   Future<BuilderResult> build() async {

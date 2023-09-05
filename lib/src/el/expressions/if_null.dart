@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class IfNullExpression extends Expression {
   final Expression left;
   final Expression right;

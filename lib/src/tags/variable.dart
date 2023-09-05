@@ -2,7 +2,6 @@ import 'package:xml/xml.dart';
 
 import '../xwidget.dart';
 
-
 class VariableTag implements Tag {
   @override
   String get name => "var";

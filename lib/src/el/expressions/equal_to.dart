@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class EqualToExpression extends Expression<bool> {
   final dynamic left;
   final dynamic right;

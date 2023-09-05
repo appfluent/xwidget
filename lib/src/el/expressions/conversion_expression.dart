@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class ConversionExpression<TFrom, TTo extends TFrom> extends Expression<TTo> {
   final Expression<TFrom> value;
 

@@ -23,7 +23,6 @@ import 'utils/logging.dart';
 import 'utils/parsers.dart';
 import 'utils/resources.dart';
 
-
 class XWidget {
   static const _log = CommonLog("XWidget");
 
@@ -117,9 +116,13 @@ class XWidget {
   }) {
     // TODO: Allow relative names. The problem lies with builders that inflate fragments, so creating a stack here doesn't work
     final splitIndex = fragmentName.indexOf("?");
-    final namePart = splitIndex > -1 ? fragmentName.substring(0, splitIndex).trim() : fragmentName.trim();
+    final namePart = splitIndex > -1
+        ? fragmentName.substring(0, splitIndex).trim()
+        : fragmentName.trim();
     final queryPart = splitIndex > -1 ? fragmentName.substring(splitIndex + 1).trim() : null;
-    final queryParams = queryPart != null && queryPart.isNotEmpty ? Uri.splitQueryString(queryPart) : {};
+    final queryParams = queryPart != null && queryPart.isNotEmpty
+        ? Uri.splitQueryString(queryPart)
+        : {};
     queryParams.forEach((key, value) => dependencies[key] = value);
 
     return inflateFromXmlElement(
@@ -130,9 +133,9 @@ class XWidget {
   }
 
   static T? inflateFromXmlElement<T>(
-      XmlElement element,
-      Dependencies dependencies, {
-      Iterable<XmlAttribute>? inheritedAttributes
+    XmlElement element,
+    Dependencies dependencies, {
+    Iterable<XmlAttribute>? inheritedAttributes
   }) {
     try {
       final type = element.localName;
@@ -162,7 +165,7 @@ class XWidget {
           return inflater.inflate(attributes, children.objects, children.text);
         }
       }
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       _log.error("Problem inflating XML element.${dump(element, dependencies)}", e, stacktrace);
     }
     return null;
@@ -246,7 +249,9 @@ class XWidget {
     if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
       // the attribute value is an expression that needs to be parsed
       final value = parseExpression(attributeValue.substring(2, attributeValue.length - 1), dependencies);
-      return (inflater != null && value is String) ? inflater.parseAttribute(attributeName, value) : value;
+      return (inflater != null && value is String)
+          ? inflater.parseAttribute(attributeName, value)
+          : value;
     }
     if (attributeValue.startsWith("@")) {
       // possible directive
@@ -265,7 +270,9 @@ class XWidget {
     }
 
     final value = parseAllExpressions(attributeValue, dependencies);
-    return (inflater != null) ? inflater.parseAttribute(attributeName, value) : value;
+    return (inflater != null)
+        ? inflater.parseAttribute(attributeName, value)
+        : value;
   }
 
   static Iterable<XmlAttribute> mergeXmlAttributes(Iterable<XmlAttribute> list1, Iterable<XmlAttribute>? list2) {
@@ -322,7 +329,7 @@ class XWidget {
   }
 
   static Dependencies scopeDependencies(Dependencies dependencies, String? scope, [String defaultScope = "inherit"]) {
-    switch(scope ?? defaultScope) {
+    switch (scope ?? defaultScope) {
       case "new": return Dependencies();
       case "copy": return dependencies.copy();
       case "inherit": return dependencies;
@@ -506,9 +513,10 @@ class Dependencies {
   }
 
   @override
+
   /// Returns a formatted JSON string representation of this instance.
   String toString() {
-    return  JsonEncoder.withIndent('  ', (value) => value?.toString()).convert({
+    return JsonEncoder.withIndent('  ', (value) => value?.toString()).convert({
       "id": id,
       "data": _data,
       "global": _globalData

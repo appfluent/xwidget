@@ -10,10 +10,10 @@ class DebugTag implements Tag {
   @override
   String get name => "debug";
 
-  @override
   /// Logs a debug level message.
   ///
   /// Returns null (no children)
+  @override
   Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
     _log.debug(attributes["message"]);
     return null;

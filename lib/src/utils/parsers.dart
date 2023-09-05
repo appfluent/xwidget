@@ -172,7 +172,7 @@ BorderRadius? parseBorderRadius(String? value) {
     final values = value.split(',');
     switch (values.length) {
       case 2:
-          return BorderRadius.vertical(
+        return BorderRadius.vertical(
           top: parseRadius(values[0]) ?? Radius.zero,
           bottom: parseRadius(values[1]) ?? Radius.zero,
         );
@@ -246,7 +246,7 @@ FontWeight? parseFontWeight(String? value) {
 
 Key? parseKey(String? value) {
   if (value == null || value.isEmpty) return null;
-  if (value == "unique")  return UniqueKey();
+  if (value == "unique") return UniqueKey();
   return ValueKey(value);
 }
 

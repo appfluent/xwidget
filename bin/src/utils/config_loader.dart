@@ -6,7 +6,6 @@ import 'cli_log.dart';
 import 'path_resolver.dart';
 
 class ConfigLoader {
-
   static Future<dynamic> loadYamlDocument(String path) async {
     final uri = await PathResolver.relativeToAbsolute(path);
     final file = File.fromUri(uri);

@@ -29,7 +29,6 @@ class CallbackTag implements Tag {
 
   @override
   Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
-
     // 'for' is a required attribute.
     final forAttribute = element.getAttribute("for");
     if (forAttribute == null || forAttribute.isEmpty) throw Exception("<$name> 'for' attribute is required.");

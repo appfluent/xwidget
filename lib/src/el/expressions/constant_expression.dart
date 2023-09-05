@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class ConstantExpression<T> extends Expression<T> {
   final T value;
 

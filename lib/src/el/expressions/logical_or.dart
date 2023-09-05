@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class LogicalOrExpression extends Expression<bool> {
   final Expression left;
   final Expression right;

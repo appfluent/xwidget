@@ -4,7 +4,6 @@ import '../utils/logging.dart';
 import '../utils/parsers.dart';
 import '../xwidget.dart';
 
-
 typedef InitializerFunction = dynamic Function(BuildContext context, Dependencies dependencies);
 typedef BuilderFunction<T> = Widget Function(BuildContext context, Dependencies dependencies, T initValue);
 
@@ -58,10 +57,7 @@ class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
         builder: _asyncBuilder,
       );
     } else if (_initValue is Stream) {
-      return StreamBuilder(
-        stream: _initValue,
-        builder: _asyncBuilder
-      );
+      return StreamBuilder(stream: _initValue, builder: _asyncBuilder);
     } else {
       return widget.builder(context, widget.dependencies, _initValue);
     }
@@ -98,7 +94,6 @@ class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
 }
 
 class DynamicBuilderInflater extends Inflater {
-
   @override
   String get type => 'DynamicBuilder';
 

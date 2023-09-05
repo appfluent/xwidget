@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class ModuloExpression extends Expression<num> {
   final dynamic left;
   final dynamic right;

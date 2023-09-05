@@ -24,7 +24,7 @@ class FragmentTag implements Tag {
   String get name => "fragment";
 
   @override
-  Children? processTag( XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
+  Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
     // 'name' is a required attribute.
     final fragmentName = attributes["name"];
     if (fragmentName == null) {

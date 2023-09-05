@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class LessThanExpression extends Expression<bool> {
   final dynamic left;
   final dynamic right;

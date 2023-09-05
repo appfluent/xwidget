@@ -11,9 +11,7 @@ import 'package:path/path.dart';
 import 'cli_log.dart';
 import 'path_resolver.dart';
 
-
 class SourceAnalyzer {
-
   Future<Map<String, LibraryElement>> getLibraryElements(Iterable<String> sources) async {
     final libraryElements = <String, LibraryElement>{};
     final manifest = await getSourceManifest(sources);
@@ -46,7 +44,7 @@ class SourceAnalyzer {
               files.add(entity as File);
               paths.add(entityPath);
             }
-          } else if (basename(absolutePath) == basename(entityPath) ){
+          } else if (basename(absolutePath) == basename(entityPath)) {
             CliLog.warn("Glob '$source' matches a directory. "
                 "Add a file name or use globs (**.dart) to match specific files or file patterns.");
           }

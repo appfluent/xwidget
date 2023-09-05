@@ -15,7 +15,7 @@ class BuiltInFunctions {
   BuiltInFunctions(this._getParser);
 
   Function? operator [](String name) {
-    switch(name) {
+    switch (name) {
       case "contains": return _contains;
       case "containsKey": return _containsKey;
       case "containsValue": return _containsValue;
@@ -165,12 +165,17 @@ class BuiltInFunctions {
         values[i] = (matchedStrings[i] != null && matchedStrings.isNotEmpty)
             ? int.parse(matchedStrings[i]!.substring(0, matchedStrings[i]!.length - 1)) : 0;
       }
-      return Duration(days: values[0], hours: values[1], minutes: values[2], seconds: values[3]);
+      return Duration(
+        days: values[0],
+        hours: values[1],
+        minutes: values[2],
+        seconds: values[3]
+      );
     }
     throw Exception("Invalid duration format: $value");
   }
 
   String _toString(dynamic value) => value.toString();
-  
+
   bool _toBool(dynamic value) => parseBool(value) ?? false;
 }

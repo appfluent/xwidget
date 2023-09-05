@@ -7,7 +7,6 @@ import '../utils/cli_log.dart';
 import '../utils/config_loader.dart';
 import '../utils/utils.dart';
 
-
 abstract class SpecBuilder {
   final BuilderConfig config;
 
@@ -108,9 +107,9 @@ abstract class SpecBuilder {
                 if (fieldType != null) {
                   switch (fieldType) {
                     case "String": fieldValues[fieldName] = fieldValue.toStringValue(); break;
-                    case "Int":  fieldValues[fieldName] = fieldValue.toIntValue(); break;
-                    case "double":  fieldValues[fieldName] = fieldValue.toDoubleValue(); break;
-                    case "bool":  fieldValues[fieldName] = fieldValue.toBoolValue(); break;
+                    case "Int": fieldValues[fieldName] = fieldValue.toIntValue(); break;
+                    case "double": fieldValues[fieldName] = fieldValue.toDoubleValue(); break;
+                    case "bool": fieldValues[fieldName] = fieldValue.toBoolValue(); break;
                   }
                 }
               }
@@ -257,7 +256,7 @@ class InflaterConfig with ConfigMixin {
   Map<String, String> constructorArgDefaults = {};
   Map<String, String> constructorArgParsers = {};
 
-  String? findConstructorArgDefault(String? inflaterType, String? argName, [String? defaultValue = null]) {
+  String? findConstructorArgDefault(String? inflaterType, String? argName, [String? defaultValue]) {
     List<String> keys = _searchKeys(inflaterType, argName);
     for (final key in keys) {
       final value = constructorArgDefaults[key];

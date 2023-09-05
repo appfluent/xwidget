@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class MultiplicationExpression extends Expression<dynamic> {
   final dynamic left;
   final dynamic right;

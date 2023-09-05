@@ -2,3 +2,14 @@ include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+analyzer:
+  exclude:
+    - test/**
+    - build/**
+  errors:
+    lines_longer_than_80_chars: ignore
+
+linter:
+  rules:
+    - lines_longer_than_80_chars

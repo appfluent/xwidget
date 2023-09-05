@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:isolate';
 
 class PathResolver {
-
   static Future<Uri> get packageRoot async {
     final package = await Isolate.packageConfig;
     return package != null ? package.resolve("../") : Directory.current.uri;
@@ -32,8 +31,7 @@ class PathResolver {
       if (resolvedUri != null) {
         return Uri.parse((fromRoot)
             ? resolvedUri.toString().replaceFirst("/lib/", "/")
-            : resolvedUri.toString()
-        );
+            : resolvedUri.toString());
       }
       throw Exception("Invalid package path: '$path'");
     }

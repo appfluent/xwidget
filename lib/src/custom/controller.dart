@@ -7,7 +7,6 @@ import '../utils/utils.dart';
 import '../xwidget.dart';
 import 'async.dart';
 
-
 typedef XWidgetControllerFactory<T extends Controller> = T Function();
 
 enum BuildExecution { async, sync }
@@ -179,7 +178,6 @@ class ControllerWidgetState extends State<ControllerWidget> {
 }
 
 abstract class Controller {
-
   @nonVirtual
   bool get mounted => _mountedProvider();
 
@@ -218,7 +216,6 @@ abstract class Controller {
 }
 
 class ControllerWidgetInflater extends Inflater {
-
   @override
   String get type => 'Controller';
 

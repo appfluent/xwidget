@@ -42,7 +42,6 @@ class BuilderTag implements Tag {
 
   @override
   Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
-
     // 'vars' max length is 5
     final vars = parseListOfStrings(element.getAttribute("vars"));
     if (vars != null && vars.length > 5) throw Exception("<$name> 'vars' attribute only accepts up to 5 variables");

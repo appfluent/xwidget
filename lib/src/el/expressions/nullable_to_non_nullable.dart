@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class NullableToNonNullableExpression<T> extends Expression<T> {
   final Expression<T?> value;
 

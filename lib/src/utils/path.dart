@@ -1,6 +1,5 @@
 import 'utils.dart';
 
-
 class Path {
   static const _separator = "/";
 
@@ -38,7 +37,9 @@ class Path {
   static parseRelativeTo(String? path, String? relativeTo) {
     if (path == null) return Path.parse("");
     final relativePath = Path.parse(relativeTo).pathToString();
-    final separator = CommonUtils.isNotBlank(relativePath) && CommonUtils.isNotBlank(path) ? _separator : "";
+    final separator = CommonUtils.isNotBlank(relativePath) && CommonUtils.isNotBlank(path)
+        ? _separator
+        : "";
     return Path.parse("$relativePath$separator$path");
   }
 
@@ -49,7 +50,9 @@ class Path {
   @override
   toString() {
     final pathStr = pathToString();
-    final separator = CommonUtils.isNotBlank(pathStr) && CommonUtils.isNotBlank(_fileName) ? _separator : "";
+    final separator = CommonUtils.isNotBlank(pathStr) && CommonUtils.isNotBlank(_fileName)
+        ? _separator
+        : "";
     return "$pathStr$separator$_fileName";
   }
 }

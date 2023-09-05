@@ -3,7 +3,6 @@ import 'package:xml/xml.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 
-
 class ForLoopTag implements Tag {
   @override
   String get name => "forLoop";

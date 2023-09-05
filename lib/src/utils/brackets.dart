@@ -12,9 +12,7 @@ import 'package:flutter/material.dart';
 /// 3. Map keys may only contain upper/lower case letters, numbers and the underscore.
 /// 4. Array indexes must be int parsable numbers.
 
-
 extension MapBrackets on Map<String, dynamic> {
-
   dynamic getValue(String? path) {
     return PathResolution.resolvePath(path, false, this).getValue(true);
   }
@@ -28,8 +26,7 @@ extension MapBrackets on Map<String, dynamic> {
   }
 }
 
-extension ListBrackets on List<dynamic>  {
-
+extension ListBrackets on List<dynamic> {
   dynamic getValue(String? path) {
     return PathResolution.resolvePath(path, false, this).getValue(true);
   }
@@ -60,13 +57,17 @@ class PathResolution {
   PathResolution(this.path, this.collection);
 
   static PathResolution resolvePath(String? path, bool createPath, dynamic data) {
-    return data is List ? _resolveListPath(path, createPath, data) : _resolveMapPath(path, createPath, data);
+    return data is List
+        ? _resolveListPath(path, createPath, data)
+        : _resolveMapPath(path, createPath, data);
   }
 
   dynamic getValue(bool readValueNotifier) {
     if (collection == null) return null;
     final value = collection[path];
-    return value is DataValueNotifier && readValueNotifier ? value.value : value;
+    return value is DataValueNotifier && readValueNotifier
+        ? value.value
+        : value;
   }
 
   void setValue(dynamic newValue, bool writeToValueNotifier) {
@@ -236,7 +237,6 @@ class DataValueNotifier extends ValueNotifier {
 }
 
 class Keyed {
-
   dynamic operator [](String key) {
     throw UnimplementedError("[] operator not implement.");
   }

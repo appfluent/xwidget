@@ -5,7 +5,6 @@ import '../utils/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 
-
 @InflaterDef(inflaterType: "ValueListener", inflatesOwnChildren: true)
 class ValueListener extends StatefulWidget {
   final XmlElement element;
@@ -67,7 +66,6 @@ class ValueListenerState extends State<ValueListener> {
 }
 
 class ValueListenerInflater extends Inflater {
-
   @override
   String get type => 'ValueListener';
 

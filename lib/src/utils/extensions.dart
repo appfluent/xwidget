@@ -3,9 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-
 extension StringExt on String {
-
   List<String> chunk(int chunkSize) {
     var chunks = <String>[];
     var startIndex = 0;
@@ -27,7 +25,6 @@ extension StringExt on String {
 }
 
 extension UriExt on Uri {
-
   static String encodeQueryParameters(Map<String, String> params) {
     return params.entries
         .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
@@ -71,7 +68,9 @@ extension MapExt<K, V> on Map<K, V> {
     final map = {};
     for (final entry in entries) {
       final value = entry.value;
-      map[entry.key] = (value is Map) ? value.immutable() : ((value is List) ? value.immutable() : value);
+      map[entry.key] = (value is Map)
+          ? value.immutable()
+          : ((value is List) ? value.immutable() : value);
     }
     return Map.unmodifiable(map);
   }
@@ -130,7 +129,9 @@ extension ListExt<E> on List<E> {
   List<E> immutable() {
     final list = [];
     for (final value in this) {
-      list.add((value is Map) ? value.immutable() : ((value is List) ? value.immutable() : value));
+      list.add((value is Map)
+          ? value.immutable()
+          : ((value is List) ? value.immutable() : value));
     }
     return List.unmodifiable(list);
   }

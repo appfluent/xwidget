@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class MutableExpression<T> extends Expression<T> {
   T value;
 

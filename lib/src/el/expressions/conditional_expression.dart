@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class ConditionalExpression<T> extends Expression<T> {
   Expression<bool> condition;
   Expression<T> trueValue;

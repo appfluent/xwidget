@@ -1,6 +1,5 @@
 import 'expression.dart';
 
-
 class IntegerDivisionExpression extends Expression<int> {
   final dynamic left;
   final dynamic right;

@@ -1,3 +1,9 @@
+### 0.0.22 (Sep 5, 2023)
+
+* Updated analyzer and linter rules
+* Minor code formatting
+* Added publishing tool
+
 ### 0.0.21 (Aug 22, 2023)
 
 * Improved inflater builder's generation of default values from variables.
