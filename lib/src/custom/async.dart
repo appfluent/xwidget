@@ -15,7 +15,6 @@ class DynamicBuilder<T> extends StatefulWidget {
   final Widget? errorWidget;
   final Widget? progressWidget;
   final Dependencies dependencies;
-  final bool disposeOfDependencies;
 
   DynamicBuilder({
     Key? key,
@@ -25,7 +24,6 @@ class DynamicBuilder<T> extends StatefulWidget {
     this.progressWidget,
     this.initializer,
     this.initValue,
-    this.disposeOfDependencies = false,
   }) : super(key: key) {
     if (initializer != null && initValue != null) {
       throw Exception("XWidget DynamicBuilder can't have an [initializer] function and an [initValue]. "
@@ -113,7 +111,6 @@ class DynamicBuilderInflater extends Inflater {
       progressWidget: attributes['progressWidget'],
       initializer: attributes['initializer'],
       initValue: attributes['initValue'],
-      disposeOfDependencies: attributes['disposeOfDependencies'] ?? false,
     );
   }
 
@@ -128,5 +125,6 @@ class DynamicBuilderInflater extends Inflater {
       case 'initValue': break;
       case 'disposeOfDependencies': return parseBool(value);
     }
+    return value;
   }
 }

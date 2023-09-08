@@ -892,6 +892,16 @@ inflaters:
 
 See [Inflaters Configuration](#inflaters-configuration) for details.
 
+## Hot Reload/Restart clears dependency values
+
+Hot reload loads code changes into the VM and re-builds the widget tree, preserving the app state;
+it doesn't rerun `main()` or `initState()`.
+
+Make sure that you're not binding dependencies in `main()`, `initState()` or any other
+initialization function such as `Controller.initialize()`. Dependencies should be bound in the 
+build function of your widget. If you are using a Controller, simply override the
+`bindDependencies()` method with your implementation and XWidget will handle the rest.
+
 # FAQ
 
 ## 1. What problems does XWidget solve?

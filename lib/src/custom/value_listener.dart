@@ -95,5 +95,6 @@ class ValueListenerInflater extends Inflater {
       case 'initialValue': break;
       case 'defaultValue': break;
     }
+    return value;
   }
 }

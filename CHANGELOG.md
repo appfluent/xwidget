@@ -1,3 +1,8 @@
+### 0.0.23 (Sep 8, 2023)
+
+* Removed `disposeOfDependencies` argument from `DynamicBuilder` constructor.
+* `Inflater.parseAttribute` now returns the unparsed value if the value is not parsed. 
+
 ### 0.0.22 (Sep 5, 2023)
 
 * Updated analyzer and linter rules

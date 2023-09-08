@@ -86,8 +86,8 @@ class AppBarInflater extends Inflater {
             case 'systemOverlayStyle': break;
             case 'forceMaterialTransparency': return parseBool(value);
             case 'clipBehavior': return parseEnum(Clip.values, value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -118,8 +118,8 @@ class CenterInflater extends Inflater {
             case 'key': return parseKey(value);
             case 'widthFactor': return double.parse(value);
             case 'heightFactor': return double.parse(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -159,8 +159,8 @@ class ColumnInflater extends Inflater {
             case 'verticalDirection': return parseEnum(VerticalDirection.values, value);
             case 'textBaseline': return parseEnum(TextBaseline.values, value);
             case 'children': break;
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -231,8 +231,8 @@ class FloatingActionButtonInflater extends Inflater {
             case 'materialTapTargetSize': return parseEnum(MaterialTapTargetSize.values, value);
             case 'isExtended': return parseBool(value);
             case 'enableFeedback': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -299,8 +299,8 @@ class FloatingActionButton_smallInflater extends Inflater {
             case 'autofocus': return parseBool(value);
             case 'materialTapTargetSize': return parseEnum(MaterialTapTargetSize.values, value);
             case 'enableFeedback': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -367,8 +367,8 @@ class FloatingActionButton_largeInflater extends Inflater {
             case 'autofocus': return parseBool(value);
             case 'materialTapTargetSize': return parseEnum(MaterialTapTargetSize.values, value);
             case 'enableFeedback': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -446,8 +446,8 @@ class FloatingActionButton_extendedInflater extends Inflater {
             case 'icon': return parseIcon(value);
             case 'label': break;
             case 'enableFeedback': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -493,8 +493,8 @@ class IconInflater extends Inflater {
             case 'shadows': break;
             case 'semanticLabel': return value;
             case 'textDirection': return parseEnum(TextDirection.values, value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -590,8 +590,8 @@ class MaterialAppInflater extends Inflater {
             case 'actions': break;
             case 'restorationScopeId': return value;
             case 'scrollBehavior': break;
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -681,8 +681,8 @@ class MaterialApp_routerInflater extends Inflater {
             case 'actions': break;
             case 'restorationScopeId': return value;
             case 'scrollBehavior': break;
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -756,8 +756,8 @@ class ScaffoldInflater extends Inflater {
             case 'drawerEnableOpenDragGesture': return parseBool(value);
             case 'endDrawerEnableOpenDragGesture': return parseBool(value);
             case 'restorationId': return value;
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -811,8 +811,8 @@ class TextInflater extends Inflater {
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
             case 'selectionColor': return parseColor(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -866,8 +866,8 @@ class Text_richInflater extends Inflater {
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
             case 'selectionColor': return parseColor(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -943,8 +943,8 @@ class TextStyleInflater extends Inflater {
             case 'fontFamilyFallback': return parseListOfStrings(value);
             case 'package': return value;
             case 'overflow': return parseEnum(TextOverflow.values, value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1142,8 +1142,8 @@ class ThemeDataInflater extends Inflater {
             case 'timePickerTheme': break;
             case 'toggleButtonsTheme': break;
             case 'tooltipTheme': break;
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1329,8 +1329,8 @@ class ThemeData_rawInflater extends Inflater {
             case 'timePickerTheme': break;
             case 'toggleButtonsTheme': break;
             case 'tooltipTheme': break;
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1360,8 +1360,8 @@ class ThemeData_fromInflater extends Inflater {
             case 'colorScheme': break;
             case 'textTheme': break;
             case 'useMaterial3': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1387,8 +1387,8 @@ class ThemeData_lightInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'useMaterial3': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1414,8 +1414,8 @@ class ThemeData_darkInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'useMaterial3': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1441,8 +1441,8 @@ class ThemeData_fallbackInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'useMaterial3': return parseBool(value);
-            default: return value;
         }
+        return value;
     }
 }
 
@@ -1468,3 +1468,4 @@ void registerXWidgetInflaters() {
     XWidget.registerInflater(ThemeData_darkInflater());
     XWidget.registerInflater(ThemeData_fallbackInflater());
 }
+

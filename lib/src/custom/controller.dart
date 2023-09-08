@@ -247,5 +247,6 @@ class ControllerWidgetInflater extends Inflater {
       case 'progressWidget': break;
       case "execution": return parseEnum(BuildExecution.values, value);
     }
+    return value;
   }
 }

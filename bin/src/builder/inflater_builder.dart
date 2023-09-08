@@ -223,9 +223,7 @@ class InflaterBuilder extends SpecBuilder {
             defaultValueCode = constVariableValue!.toIntValue().toString();
           } else if (constVariableValueType.isDartCoreDouble) {
             final doubleValue = constVariableValue!.toDoubleValue();
-            defaultValueCode = doubleValue!.isInfinite
-                ? "double.infinity"
-                : doubleValue.toString();
+            defaultValueCode = doubleValue!.isInfinite ? "double.infinity" : doubleValue.toString();
           } else if (constVariableValueType.isDartCoreBool) {
             defaultValueCode = constVariableValue!.toBoolValue().toString();
           } else if (constVariableValueType.isDartCoreString) {
@@ -274,8 +272,8 @@ class InflaterBuilder extends SpecBuilder {
     code.write("    dynamic parseAttribute(String name, String value) {\n");
     code.write("        switch (name) {\n");
     code.write(parseCases);
-    code.write("            default: return value;\n");
     code.write("        }\n");
+    code.write("        return value;\n");
     code.write("    }\n");
     return code.toString();
   }
