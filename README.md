@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/docs/assets/xwidget_logo_full.png" height="100" alt="XWidget"/>
+    <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/doc/assets/xwidget_logo_full.png" height="100" alt="XWidget"/>
 </p>
 
 ### *Note: This document is very much still a work in progress.*
