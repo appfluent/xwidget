@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  xwidget: 0.0.23
+  xwidget: 0.0.24
 
 dev_dependencies:
   flutter_test:

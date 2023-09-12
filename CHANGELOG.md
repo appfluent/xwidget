@@ -1,3 +1,8 @@
+### 0.0.24 (Sep 12, 2023)
+
+* Added EL functions `isTrueOrNull` and `isFalseOrNull`.
+* Updated documentation.
+
 ### 0.0.23 (Sep 8, 2023)
 
 * Removed `disposeOfDependencies` argument from `DynamicBuilder` constructor.

@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/docs/assets/xwidget_logo_full.png" height="100" alt="XWidget"/>
+</p>
+
 ### *Note: This document is very much still a work in progress.*
 
 # What is XWidget?
@@ -67,6 +71,7 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
 12. [Tips and Tricks](#tips-and-tricks)
 13. [Trouble Shooting](#trouble-shooting)
     - [The generated inflater code has errors](#the-generated-inflater-code-has-errors)
+    - [Hot reload/restart clears dependency values](#hot-reloadrestart-clears-dependency-values)
 14. [FAQ](#faq)
 15. [Roadmap](#roadmap)
     - [0.0.x Releases (2023)](#00x-releases-2023)
@@ -444,11 +449,45 @@ There are four built-in inflaters: ```<Controller>```, ```<DynamicBuilder>```, `
 
 ### Parsers
 
-*Add documentation here.*
+Each `Inflater` has a `parseAttribute` method that is responsible for parsing attribute values.
+The parsed values are then passed to the `inflate` method during object construction.
 
-### Custom Inflaters
+XWidget already knows how to parse most of the common attribute types such as `bool`, `int`,
+`double`, `Alignment`, `Color`, `Curve`, `Duration`, and many more. Please see 
+[default_config.yaml](https://github.com/appfluent/xwidget/blob/main/res/default_config.yaml)
+for a complete list. It's also capable of dynamically parsing any enum type without any additional
+configuration.
 
-*Add documentation here.*
+You can also create your own parsers, if XWidget's built-in capabilities are not enough. The
+built-in parsers are good examples of how to construct an attribute parser i.e. `Alignment` parser:
+
+```dart
+// Alignment parser
+Alignment? parseAlignment(String? value) {
+  if (value != null && value.isNotEmpty) {
+    switch (value) {
+      case 'topLeft': return Alignment.topLeft;
+      case 'topCenter': return Alignment.topCenter;
+      case 'topRight': return Alignment.topRight;
+      case 'centerLeft': return Alignment.centerLeft;
+      case 'center': return Alignment.center;
+      case 'centerRight': return Alignment.centerRight;
+      case 'bottomLeft': return Alignment.bottomLeft;
+      case 'bottomCenter': return Alignment.bottomCenter;
+      case 'bottomRight': return Alignment.bottomRight;
+      default: throw Exception("Invalid alignment value: $value");
+    }
+  }
+  return null;
+}
+```
+
+Once you've created your parser, you'll need to register it inside your XWidget configuration file.
+Please see `constructor_arg_parsers:` under [Inflaters Configuration](#inflaters-configuration)
+for details.
+
+Next, you'll need to make sure you import the dart file that contains your parser. Please see
+`imports:` under [Inflaters Configuration](#inflaters-configuration) for details.
 
 ### XML Schema
 
@@ -578,34 +617,36 @@ associativity. Both the precedence level and associativity can be seen in the ta
 
 ### Built-In Functions
 
-| Name              | Arguments                                     | Returns  | Description | Examples                                                                          |
-|-------------------|-----------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
-| contains          | dynamic value<br/>dynamic searchValue         | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
-| containsKey       | Map? map<br/>dynamic searchKey                | bool     |             |                                                                                   |
-| containsValue     | Map? map<br/>dynamic searchValue              | bool     |             |                                                                                   |
-| diffDateTime      | DateTime left<br/>DateTime right              | Duration |             |                                                                                   |
-| durationInDays    | Duration value                                | int      |             |                                                                                   |
-| durationInHours   | Duration value                                | int      |             |                                                                                   |
-| durationInMinutes | Duration value                                | int      |             |                                                                                   |
-| durationInSeconds | Duration value                                | int      |             |                                                                                   |
-| durationInMills   | Duration value                                | int      |             |                                                                                   |
-| endsWith          | String value<br/>String searchValue           | bool     |             |                                                                                   |
-| eval              | String? value                                 | dynamic  |             |                                                                                   |
-| formatDateTime    | String format<br/>DateTime dateTime           | String   |             |                                                                                   |
-| isEmpty           | dynamic value                                 | bool     |             |                                                                                   |
-| isNotEmpty        | dynamic value                                 | bool     |             |                                                                                   |
-| isNotNull         | dynamic value                                 | bool     |             |                                                                                   |
-| isNull            | dynamic value                                 | bool     |             |                                                                                   |
-| length            | dynamic value                                 | length   |             |                                                                                   |
-| matches           | String value<br/>String regExp                | bool     |             |                                                                                   |
-| now               | none                                          | DateTime |             |                                                                                   |
-| nowInUtc          | none                                          | DateTime |             |                                                                                   |
-| startsWith        | String value<br/>String searchValue           | bool     |             |                                                                                   |
-| substring         | String value<br/>int start<br/>[int end = -1] | String   |             |                                                                                   |
-| toBool            | dynamic value                                 | bool     |             |                                                                                   |
-| toDateTime        | dynamic value                                 | DateTime |             |                                                                                   |
-| toDuration        | String value                                  | Duration |             |                                                                                   |
-| toString          | dynamic value                                 | String   |             |                                                                                   |
+| Name              | Arguments                                       | Returns  | Description | Examples                                                                          |
+|-------------------|-------------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
+| contains          | dynamic value<br/>dynamic searchValue           | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
+| containsKey       | Map? map<br/>dynamic searchKey                  | bool     |             |                                                                                   |
+| containsValue     | Map? map<br/>dynamic searchValue                | bool     |             |                                                                                   |
+| diffDateTime      | DateTime left<br/>DateTime right                | Duration |             |                                                                                   |
+| durationInDays    | Duration value                                  | int      |             |                                                                                   |
+| durationInHours   | Duration value                                  | int      |             |                                                                                   |
+| durationInMinutes | Duration value                                  | int      |             |                                                                                   |
+| durationInSeconds | Duration value                                  | int      |             |                                                                                   |
+| durationInMills   | Duration value                                  | int      |             |                                                                                   |
+| endsWith          | String value<br/>String searchValue             | bool     |             |                                                                                   |
+| eval              | String? value                                   | dynamic  |             |                                                                                   |
+| formatDateTime    | String format<br/>DateTime dateTime             | String   |             |                                                                                   |
+| isEmpty           | dynamic value                                   | bool     |             |                                                                                   |
+| isFalseOrNull     | dynamic value                                   | bool     |             |                                                                                   |
+| isNotEmpty        | dynamic value                                   | bool     |             |                                                                                   |
+| isNotNull         | dynamic value                                   | bool     |             |                                                                                   |
+| isNull            | dynamic value                                   | bool     |             |                                                                                   |
+| sTrueOrNull       | dynamic value                                   | bool     |             |                                                                                   |
+| length            | dynamic value                                   | length   |             |                                                                                   |
+| matches           | String value<br/>String regExp                  | bool     |             |                                                                                   |
+| now               | none                                            | DateTime |             |                                                                                   |
+| nowInUtc          | none                                            | DateTime |             |                                                                                   |
+| startsWith        | String value<br/>String searchValue             | bool     |             |                                                                                   |
+| substring         | String value<br/>int start<br/>[int end = -1]   | String   |             |                                                                                   |
+| toBool            | dynamic value                                   | bool     |             |                                                                                   |
+| toDateTime        | dynamic value                                   | DateTime |             |                                                                                   |
+| toDuration        | String value                                    | Duration |             |                                                                                   |
+| toString          | dynamic value                                   | String   |             |                                                                                   |
 
 ### Custom Functions
 
@@ -944,4 +985,4 @@ concentrate on testing.
 
 # Known Issues
 
-None at the moment :)
+None at the moment :smile:

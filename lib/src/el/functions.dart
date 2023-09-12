@@ -29,9 +29,11 @@ class BuiltInFunctions {
       case "eval": return _eval;
       case "formatDateTime": return _formatDateTime;
       case "isEmpty": return _isEmpty;
+      case "isFalseOrNull": return _isFalseOrNull;
       case "isNotEmpty": return _isNotEmpty;
       case "isNotNull": return _isNotNull;
       case "isNull": return _isNull;
+      case "isTrueOrNull": return _isTrueOrNull;
       case "length": return _length;
       case "matches": return _matches;
       case "now": return _now;
@@ -110,6 +112,10 @@ class BuiltInFunctions {
   bool _isNull(dynamic value) => value == null;
 
   bool _isNotNull(dynamic value) => value != null;
+
+  bool _isTrueOrNull(dynamic value) => value == null || _toBool(value);
+
+  bool _isFalseOrNull(dynamic value) => value == null || !_toBool(value);
 
   int _length(dynamic value) {
     if (value is String) return value.length;
