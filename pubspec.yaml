@@ -1,6 +1,6 @@
 name: xwidget
 description: A package for building dynamic UIs in Flutter using an expressive, XML based markup language.
-version: 0.0.25
+version: 0.0.26
 repository: https://github.com/appfluent/xwidget
 issue_tracker: https://github.com/appfluent/xwidget/issues
 
@@ -33,8 +33,7 @@ dependencies:
   logger: ^2.0.2
   markdown: ^7.1.1
   path: ^1.8.3
-  petitparser: ^5.1.0
-  uuid: ^3.0.7
+  petitparser: ">=5.4.0 <7.0.0"
   xml: ^6.3.0
   yaml: ^3.1.2
 

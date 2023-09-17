@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart' hide Stack;
 import 'package:petitparser/core.dart';
-import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
 
 import 'custom/async.dart';
@@ -402,9 +401,7 @@ class InflaterDef {
 class Dependencies {
   static const _expressionParser = "_expressionParser";
   static final _globalData = <String, dynamic>{};
-  static const _uuid = Uuid();
 
-  final id = _uuid.v4();
   final _data = <String, dynamic>{};
 
   Dependencies([Map<String, dynamic>? data]) {
@@ -517,7 +514,6 @@ class Dependencies {
   /// Returns a formatted JSON string representation of this instance.
   String toString() {
     return JsonEncoder.withIndent('  ', (value) => value?.toString()).convert({
-      "id": id,
       "data": _data,
       "global": _globalData
     });

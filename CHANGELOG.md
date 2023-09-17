@@ -1,3 +1,7 @@
+### 0.0.26 (Sep 17, 2023)
+
+* Updated dependencies.
+
 ### 0.0.25 (Sep 17, 2023)
 
 * Updated documentation.
