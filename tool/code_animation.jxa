@@ -1,0 +1,268 @@
+const KEY_CODE_ENTER = 76;
+const KEY_CODE_TAB = 48;
+const KEY_CODE_DOWN_ARROW = 125;
+
+const DEFAULT_KEYSTROKE_DELAY = 0.15;
+const DEFAULT_VISUAL_DELAY = 0.25;
+
+var se = Application("System Events");
+
+function run(input, parameters) {	
+	ThemeData();
+    Controller();
+    Scaffold();
+    AppBar();
+    Text1();
+
+    downArrow();
+	enter();
+
+    Center();
+    Column();
+    Text2();
+
+    downArrow();
+    downArrow();
+	enter();
+
+    FloatingActionButton();
+    Icon();
+
+    downArrow();
+    downArrow();
+    downArrow();
+    downArrow();
+	enter();
+	return input;
+}
+
+function ThemeData() {
+    // open tag
+	keystroke("<Th");
+    visualDelay();
+    enter();
+
+	// 'for'
+	keystroke(" f");
+    visualDelay();
+    enter();
+    keystroke('theme', 0.1);
+    tab();
+
+    // 'primarySwatch'
+  	keystroke(" pr");
+    visualDelay();
+    enter();
+    keystroke('${primarySwatch}', 0.1);
+    tab();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function Controller() {
+    // open tag
+	keystroke("<Con");
+    visualDelay();
+    enter();
+
+	// 'for'
+	keystroke(" f");
+    visualDelay();
+    enter();
+    keystroke('home', 0.1);
+    tab();
+
+    // 'name'
+  	keystroke(" na");
+    visualDelay();
+    enter();
+    keystroke('HomePageController', 0.1);
+    tab();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function Scaffold() {
+    // open tag
+	keystroke("<Sc");
+    visualDelay();
+    enter();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function AppBar() {
+    // open tag
+	keystroke("<Ap");
+    visualDelay();
+    enter();
+
+	// 'for'
+	keystroke(" f");
+    visualDelay();
+    enter();
+    keystroke('appBar', 0.1);
+    tab();
+
+    // 'centerTitle'
+  	keystroke(" cent");
+    visualDelay();
+    enter();
+	visualDelay();
+	enter();
+    tab();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function Text1() {
+    // open tag
+	keystroke("<Te");
+    visualDelay();
+    enter();
+
+	// 'for'
+	keystroke(" f");
+    visualDelay();
+    enter();
+    keystroke('title', 0.1);
+    tab();
+
+    // 'data'
+  	keystroke(" da");
+    visualDelay();
+    enter();
+    keystroke('${title}', 0.1);
+    tab();
+
+    // close tag
+    keystroke('/');
+}
+
+function Center() {
+    // open tag
+	keystroke("<Ce");
+    visualDelay();
+    enter();
+
+	// 'for'
+	keystroke(" f");
+    visualDelay();
+    enter();
+    keystroke('body', 0.1);
+    tab();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function Column() {
+    // open tag
+	keystroke("<Col");
+    visualDelay();
+    enter();
+
+    // 'mainAxisAlignment'
+  	keystroke(" mai");
+    visualDelay();
+    enter();
+	visualDelay();
+	enter();
+    tab();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function Text2() {
+    // open tag
+	keystroke("<Te");
+    visualDelay();
+    enter();
+
+    // close tag
+    keystroke('>');
+    
+    // text
+	keystroke("You have pushed the button this many times:", 0.05);
+}
+
+function FloatingActionButton() {
+    // open tag
+	keystroke("<Fl");
+    visualDelay();
+    enter();
+
+	// 'for'
+	keystroke(" f");
+    visualDelay();
+    enter();
+    keystroke('floatingActionButton', 0.07);
+    tab();
+
+    // 'onPressed'
+  	keystroke(" onP");
+    visualDelay();
+    enter();
+    keystroke('${onPressed}', 0.1);
+    tab();
+
+    // close tag
+    keystroke('>');
+    enter();
+}
+
+function Icon() {
+    // open tag
+	keystroke("<Ic");
+    visualDelay();
+    enter();
+
+    // 'icons'
+  	keystroke(" ic");
+    visualDelay();
+    enter();
+    keystroke('Icons.add', 0.1);
+    tab();
+
+    // close tag
+    keystroke('/');
+}
+
+function visualDelay(delayMillis) {
+    delay(delayMillis ?? DEFAULT_VISUAL_DELAY);
+}
+
+function downArrow() {
+    keyCode(KEY_CODE_DOWN_ARROW);
+}
+
+function enter() {
+    keyCode(KEY_CODE_ENTER);
+}
+
+function tab() {
+     keyCode(KEY_CODE_TAB);
+}
+
+function keyCode(code, delayMillis) {
+	se.keyCode(code);
+	delay(delayMillis ?? DEFAULT_KEYSTROKE_DELAY);
+}
+
+function keystroke(str, delayMillis) {
+    for (let i = 0; i < str.length; i++) {
+      	se.keystroke(str[i]);
+    	delay(delayMillis ?? DEFAULT_KEYSTROKE_DELAY);
+    }
+}

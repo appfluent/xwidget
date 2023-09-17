@@ -1,3 +1,7 @@
+### 0.0.25 (Sep 17, 2023)
+
+* Updated documentation.
+
 ### 0.0.24 (Sep 12, 2023)
 
 * Added EL functions `isTrueOrNull` and `isFalseOrNull`.
