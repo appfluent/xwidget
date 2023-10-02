@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/parsers.dart';
-import '../utils/utils.dart';
-import '../xwidget.dart';
+import '../../xwidget.dart';
+
+typedef ValueListenerCallback = void Function(BuildContext, dynamic);
 
 @InflaterDef(inflaterType: "ValueListener", inflatesOwnChildren: true)
 class ValueListener extends StatefulWidget {
   final XmlElement element;
   final Dependencies dependencies;
   final String varName;
+  final VariableDisposal varDisposal;
   final dynamic initialValue;
   final dynamic defaultValue;
+  final ValueListenerCallback? onChange;
 
   @override
   ValueListenerState createState() => ValueListenerState();
@@ -21,13 +23,18 @@ class ValueListener extends StatefulWidget {
     required this.element,
     required this.dependencies,
     required this.varName,
+    this.varDisposal = VariableDisposal.none,
     this.initialValue,
     this.defaultValue,
+    this.onChange,
   }) : super(key: key);
 }
 
 class ValueListenerState extends State<ValueListener> {
-  late ValueNotifier _notifier;
+  static const _log = CommonLog("ValueListenerState");
+
+  ValueNotifier? _notifier;
+  Key? _notifierOwnerKey;
 
   @override
   void initState() {
@@ -44,12 +51,23 @@ class ValueListenerState extends State<ValueListener> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _notifier,
+      valueListenable: _notifier!,
       builder: (context, value, _) {
+        if (widget.onChange != null) {
+          widget.onChange!(context, value);
+        }
         final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies);
         return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
       }
     );
+  }
+
+  @override
+  void dispose() {
+    if (_disposeOfNotifier(_notifier)) {
+      widget.dependencies.removeValue(widget.varName);
+    }
+    super.dispose();
   }
 
   //===================================
@@ -57,12 +75,43 @@ class ValueListenerState extends State<ValueListener> {
   //===================================
 
   void _setValueNotifier() {
-    _notifier = widget.dependencies.listenForChanges(
+    final notifier = widget.dependencies.listenForChanges(
         widget.varName,
         widget.initialValue,
         widget.defaultValue
     );
+    if (notifier is DataValueNotifier) {
+      _notifierOwnerKey = notifier.takeOwnership();
+    }
+    _notifier = notifier;
   }
+
+  bool _disposeOfNotifier(ValueNotifier? notifier) {
+    if (notifier != null && widget.varDisposal != VariableDisposal.none) {
+      // client requested disposal of variable
+      if (notifier is DataValueNotifier) {
+        // notifier is the right class, so we can continue
+        if ((widget.varDisposal == VariableDisposal.byOwner && notifier.isOwner(_notifierOwnerKey)) ||
+            (widget.varDisposal == VariableDisposal.byLastListener && notifier.hasNoListeners)) {
+          // we are the owner or the last listener
+          notifier.dispose();
+          return true;
+        }
+      } else {
+        // log improper disposal request
+        _log.warn("Improper variable disposal request '${widget.varDisposal}' for varName '${widget.varName}' "
+            "referencing a notifier of type '${notifier.runtimeType}'. 'ValueListener' widget only knows how to "
+            "dispose of 'DataValueNotifier' instances. Use 'Dependencies.listenForChanges(String) "
+            "to wrap your data in a 'DataValueNotifier' instance or let 'ValueListener' widget wrap it "
+            "automatically.");
+      }
+    }
+    return false;
+  }
+}
+
+enum VariableDisposal {
+  none, byOwner, byLastListener
 }
 
 class ValueListenerInflater extends Inflater {
@@ -82,8 +131,10 @@ class ValueListenerInflater extends Inflater {
       element: attributes['_element'],
       dependencies: attributes['_dependencies'],
       varName: attributes['varName'],
+      varDisposal: attributes['varDisposal'] ?? VariableDisposal.none,
       initialValue: attributes['initialValue'],
       defaultValue: attributes['defaultValue'],
+      onChange: attributes['onChange'],
     );
   }
 
@@ -92,8 +143,10 @@ class ValueListenerInflater extends Inflater {
     switch (name) {
       case 'key': return parseKey(value);
       case 'varName': return value;
+      case 'varDisposal': return parseEnum(VariableDisposal.values, value);
       case 'initialValue': break;
       case 'defaultValue': break;
+      case 'onChange': break;
     }
     return value;
   }

@@ -2,14 +2,15 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-/// A simple utility for retrieving data using dot/bracket notation. As long as your
-/// data follows a simple convention you can use a simplified dot/bracket notation
-/// to locate any piece of data in your hierarchy. Searches return null if no data is found
-/// or if the path string is invalid.
+/// A simple utility for retrieving data using dot/bracket notation. As long as
+/// your data follows a simple convention you can use a simplified dot/bracket
+/// notation to locate any piece of data in your hierarchy. Searches return null
+/// if no data is found or if the path string is invalid.
 ///
 /// 1. Objects must be represented as <String, dynamic> maps.
 /// 2. Array data must use <dynamic> lists.
-/// 3. Map keys may only contain upper/lower case letters, numbers and the underscore.
+/// 3. Map keys may only contain upper/lower case letters, numbers and the
+///    underscore.
 /// 4. Array indexes must be int parsable numbers.
 
 extension MapBrackets on Map<String, dynamic> {
@@ -21,8 +22,18 @@ extension MapBrackets on Map<String, dynamic> {
     PathResolution.resolvePath(path, true, this).setValue(value, true);
   }
 
+  dynamic removeValue(String? path) {
+    final resolved = PathResolution.resolvePath(path, false, this);
+    final collection = resolved.collection;
+    if (collection is Map) {
+      return collection.remove(resolved.path);
+    }
+  }
+
   ValueNotifier listenForChanges(String path, dynamic initialValue, dynamic defaultValue) {
-    return PathResolution.resolvePath(path, true, this).listenForChanges(initialValue, defaultValue);
+    return PathResolution
+        .resolvePath(path, true, this)
+        .listenForChanges(initialValue, defaultValue);
   }
 }
 
@@ -100,11 +111,14 @@ class PathResolution {
       var value = data[pathInfo.currPath];
       if (value == null) {
         if (createPath && pathInfo.nextPath.isNotEmpty) {
-          value = data[pathInfo.currPath] = pathInfo.isNextPathList ? <dynamic>[] : <String, dynamic>{};
+          value = data[pathInfo.currPath] = pathInfo.isNextPathList
+              ? <dynamic>[]
+              : <String, dynamic>{};
         } else if (pathInfo.isValueNullable) {
           return PathResolution(pathInfo.currPath, data);
         } else {
-          throw Exception("Value at path '$path' is null. Use the '?' null-safety operator to access '${pathInfo.currPath}'");
+          throw Exception("Value at path '$path' is null. Use the '?' "
+              "null-safety operator to access '${pathInfo.currPath}'");
         }
       } else if (pathInfo.nextPath.isEmpty) {
         return PathResolution(pathInfo.currPath, data);
@@ -142,15 +156,19 @@ class PathResolution {
 
   static _continuePathResolution(String path, String nextPath, bool isNextPathList, dynamic value, bool createPath) {
     if (isNextPathList) {
-      if (value is List<dynamic>) return PathResolution._resolveListPath(nextPath, createPath, value);
-      throw Exception("Path '$path' implies a [List], but found a [${value.runtimeType}] at '$nextPath' instead.");
+      if (value is List<dynamic>) {
+        return PathResolution._resolveListPath(nextPath, createPath, value);
+      }
+      throw Exception("Path '$path' implies a [List], but found a "
+          "[${value.runtimeType}] at '$nextPath' instead.");
     } else if (value is Map<String, dynamic> || value is Keyed) {
       return PathResolution.resolvePath(nextPath, createPath, value);
     } else if (value is Data) {
       return PathResolution.resolvePath(nextPath, createPath, value.data);
     }
-    throw Exception("Path '$path' implies a keyed or indexed value such as [Data], [Map], [List] or [Keyed],"
-        " but found a [${value.runtimeType}] at '$nextPath' instead.");
+    throw Exception("Path '$path' implies a keyed or indexed value such as "
+        "[Data], [Map], [List] or [Keyed], but found a [${value.runtimeType}] "
+        "at '$nextPath' instead.");
   }
 }
 
@@ -211,29 +229,73 @@ class Data extends MapBase<String, dynamic> {
 
   @override
   void operator []=(String key, value) {
-    if (immutable) throw UnimplementedError("Cannot change immutable data: key=$key");
+    _assertMutable();
     data.setValue(key, value);
   }
 
   @override
   void clear() {
-    if (immutable) throw UnimplementedError("Cannot change immutable data");
+    _assertMutable();
     data.clear();
   }
 
   @override
   dynamic remove(Object? key) {
-    if (immutable) throw UnimplementedError("Cannot change immutable data: key=$key");
+    _assertMutable();
     data.remove(key);
+  }
+
+  void _assertMutable() {
+    if (immutable) {
+      throw UnimplementedError("Cannot change immutable data");
+    }
   }
 }
 
 /// A [ValueNotifier] that holds a single value.
 ///
-/// The sole purpose of this class is to allow Brackets distinguish it's own ValueNotifiers from
-/// others so that it doesn't access the wrapped value by unintentionally.
+/// The main purpose of this class is to allow Brackets distinguish it's own
+/// ValueNotifiers from others so that it doesn't access the wrapped value
+/// unintentionally.
+///
+/// Additionaly, instances can keep track of ownership and if there are any
+/// attached listeners. This is used by [ValueListener] widget to determine
+/// if and when to cleanup resources.
 class DataValueNotifier extends ValueNotifier {
+  Key? _ownerKey;
+  bool _hasNoListeners = false;
+
   DataValueNotifier(super.value);
+
+  bool get hasNoListeners => _hasNoListeners;
+
+  /// Register a closure to be called when the object changes.
+  ///
+  /// See [ChangeNotifier] for details
+  @override
+  void addListener(VoidCallback listener) {
+    _hasNoListeners = false;
+    super.addListener(listener);
+  }
+
+  /// Remove a previously registered closure from the list of closures that are
+  /// notified when the object changes.
+  ///
+  /// See [ChangeNotifier] for details
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    _hasNoListeners = !hasListeners;
+  }
+
+
+  bool isOwner(Key? key) {
+    return key != null && key == _ownerKey;
+  }
+
+  Key? takeOwnership() {
+    return _ownerKey == null ? _ownerKey = UniqueKey() : null;
+  }
 }
 
 class Keyed {

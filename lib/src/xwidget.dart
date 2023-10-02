@@ -113,12 +113,15 @@ class XWidget {
     Iterable<XmlAttribute>? inheritedAttributes,
     Map<String, String>? params
   }) {
-    // TODO: Allow relative names. The problem lies with builders that inflate fragments, so creating a stack here doesn't work
+    // TODO: Allow relative names. The problem lies with builders that inflate
+    //       fragments, so creating a stack here doesn't work
     final splitIndex = fragmentName.indexOf("?");
     final namePart = splitIndex > -1
         ? fragmentName.substring(0, splitIndex).trim()
         : fragmentName.trim();
-    final queryPart = splitIndex > -1 ? fragmentName.substring(splitIndex + 1).trim() : null;
+    final queryPart = splitIndex > -1
+        ? fragmentName.substring(splitIndex + 1).trim()
+        : null;
     final queryParams = queryPart != null && queryPart.isNotEmpty
         ? Uri.splitQueryString(queryPart)
         : {};
@@ -152,7 +155,8 @@ class XWidget {
       if (visible) {
         // widget is visible, so let's continue
         if (inflater.inflatesCustomWidget) {
-          // inflating a custom widget or object, so include the element and dependencies as 'private' attributes.
+          // inflating a custom widget or object, so include the element and
+          // dependencies as 'private' attributes.
           attributes["_element"] = element;
           attributes["_dependencies"] = dependencies;
         }
@@ -289,7 +293,8 @@ class XWidget {
   }
 
   static String parseAllExpressions(String input, Dependencies dependencies) {
-    // for performance reasons, check input for possible expressions before using a regexp
+    // for performance reasons, check input for possible expressions before
+    // using a regexp
     if (input.contains("\${")) {
       // possible embedded expression
       return input.replaceAllMapped(_attributeContainsExpressions, (Match match) {
@@ -375,7 +380,8 @@ class Children {
 
 /// A class annotation for custom widget inflaters.
 ///
-/// Use this class annotation to configure inflaters for custom widgets and helpers.
+/// Use this class annotation to configure inflaters for custom widgets and
+/// helpers.
 /// ```dart
 /// @InflaterDef(inflaterType: 'MyTitle', inflatesOwnChildren: true)
 /// class MyTitleWidget {
@@ -392,7 +398,8 @@ class InflaterDef {
   /// When 'null', XWidget will use the class name as the default.
   final String? inflaterType;
 
-  /// Whether the class is responsible for calling XWidget.inflateXmlElementChildren to build its children.
+  /// Whether the class is responsible for calling
+  /// XWidget.inflateXmlElementChildren to build its children.
   final bool inflatesOwnChildren;
 
   const InflaterDef({this.inflaterType, required this.inflatesOwnChildren});
@@ -419,7 +426,8 @@ class Dependencies {
 
   /// Returns the dependency references by [key] or null.
   ///
-  /// Supports global references, but does not support dot/bracket notation in keys.
+  /// Supports global references, but does not support dot/bracket notation in
+  /// keys.
   dynamic operator [](String key) {
     final resolved = _getDataStore(key);
     return resolved.value[resolved.key];
@@ -427,7 +435,8 @@ class Dependencies {
 
   /// Adds or replaces a dependency referenced by [key].
   ///
-  /// Supports global references, but does not support dot/bracket notation in keys.
+  /// Supports global references, but does not support dot/bracket notation in
+  /// keys.
   void operator []=(String key, dynamic value) {
     final resolved = _getDataStore(key);
     resolved.value[resolved.key] = value;
@@ -455,23 +464,26 @@ class Dependencies {
   ///
   /// Returns the removed dependency or null.
   ///
-  /// Supports global references, but does not support dot/bracket notation in keys.
-  dynamic remove(String key) {
+  /// Supports dot/bracket notation and global references in keys.
+  /// Returns the removed value.
+  dynamic removeValue(String key) {
     final resolved = _getDataStore(key);
-    return resolved.value.remove(resolved.key);
+    return resolved.value.removeValue(resolved.key);
   }
 
-  /// Creates or returns the existing [ValueNotifier] for the dependency referenced by [path].
+  /// Creates or returns the existing [ValueNotifier] for the dependency
+  /// referenced by [path].
   ///
-  /// Sets the notifier's value to [initialValue], if provided, otherwise it's set
-  /// to the existing dependency value. If both are null, then the notifier's value is set to
-  /// [defaultValue].
+  /// Sets the notifier's value to [initialValue], if provided, otherwise it's
+  /// set to the existing dependency value. If both are null, then the
+  /// notifier's value is set to [defaultValue].
   ValueNotifier listenForChanges(String path, dynamic initialValue, dynamic defaultValue) {
     final resolved = _getDataStore(path);
     return resolved.value.listenForChanges(resolved.key, initialValue, defaultValue);
   }
 
-  /// Adds the [value] as a dependency for the specified [key] if it doesn't already exist.
+  /// Adds the [value] as a dependency for the specified [key] if it doesn't
+  /// already exist.
   void putIfAbsent(String key, dynamic value) {
     final resolved = _getDataStore(key);
     if (!resolved.value.containsKey(resolved.key)) {
@@ -479,7 +491,8 @@ class Dependencies {
     }
   }
 
-  /// Gets the expression parser bound to this instance, or creates and binds a new one if one doesn't exist.
+  /// Gets the expression parser bound to this instance, or creates and binds a
+  /// new one if one doesn't exist.
   Parser getExpressionParser() {
     var parser = _data[_expressionParser];
     if (parser == null) {
@@ -492,10 +505,10 @@ class Dependencies {
 
   /// Creates a shallow copy.
   ///
-  /// The copy excludes the expression parser, if there is one, because the parser can only be bound
-  /// to one [Dependencies] instance. A new parser is created and bound to the copy when needed.
+  /// The copy excludes the expression parser, if there is one, because the
+  /// parser can only be bound to one [Dependencies] instance. A new parser is
+  /// created and bound to the copy when needed.
   Dependencies copy({Map<String, dynamic>? addData, List<String>? preserveData}) {
-    // TODO: figure out a way to automatically dispose of copies. Update: maybe not needed.
     final copy = Dependencies(_data);
     copy._data.remove(_expressionParser);
     if (addData != null) {
@@ -509,9 +522,8 @@ class Dependencies {
     return copy;
   }
 
-  @override
-
   /// Returns a formatted JSON string representation of this instance.
+  @override
   String toString() {
     return JsonEncoder.withIndent('  ', (value) => value?.toString()).convert({
       "data": _data,
@@ -533,19 +545,22 @@ class Dependencies {
 
 /// The base class for all inflaters.
 ///
-/// While it's possible to manually create an inflater by implementing this class, the best practice is
-/// to use the @InflaterDef annotation on your class and let XWidget generate the inflater by running
-/// `dart run xwidget:generate`.
+/// While it's possible to manually create an inflater by implementing this
+/// class, the best practice is to use the @InflaterDef annotation on your class
+/// and let XWidget generate the inflater by running `dart run xwidget:generate`.
 abstract class Inflater<T> {
   /// The XML element name for the inflater.
   String get type;
 
-  /// Whether the class is responsible for calling XWidget.inflateXmlElementChildren to build its children.
+  /// Whether the class is responsible for calling
+  /// XWidget.inflateXmlElementChildren to build its children.
   bool get inflatesOwnChildren;
 
-  /// Whether special private objects are added to the attribute map passed to the inflate method
+  /// Whether special private objects are added to the attribute map passed to
+  /// the inflate method
   ///
-  /// An object is considered 'private' if its key begins with an underscore (_). Schema attributes are not
+  /// An object is considered 'private' if its key begins with an
+  /// underscore (_). Schema attributes are not
   /// generated for these keys.
   ///
   /// There are two:
@@ -562,7 +577,8 @@ abstract class Inflater<T> {
 
 /// The base class for all tags.
 ///
-/// All tags must implement this class and then register themselves using `XWidget.registerTag(...);
+/// All tags must implement this class and then register themselves using
+/// `XWidget.registerTag(...);
 abstract class Tag {
   /// The XML element name for the tag.
   String get name;

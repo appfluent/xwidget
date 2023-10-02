@@ -1,3 +1,13 @@
+### 0.0.27 (Oct 2, 2023)
+
+* Added `varDisposal` option to `ValueListener`. Possible values are `none`, `byOwner`, and 
+  `byLastListener`.
+* Added `onChange` callback to `ValueListener`.
+* Updated `DataValueNotifier` to be owner and listener aware.
+* Added `removeValue` method to `Dependencies` and `MapBrackets` extension. This method is
+  dot/bracket notation aware.
+* Deleted `remove` method from `Dependencies`. Use `removeValue` instead.
+
 ### 0.0.26 (Sep 17, 2023)
 
 * Updated dependencies.

@@ -158,6 +158,18 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="VariableDisposalAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="byOwner"/>
+                    <xs:enumeration value="byLastListener"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <!-- generated enum types -->
 
     <xs:simpleType name="ClipAttributeType">
@@ -582,8 +594,10 @@
                 <xs:extension base="objectType">
                     <xs:attribute name="key"/>
                     <xs:attribute name="varName"/>
+                    <xs:attribute name="varDisposal" type="VariableDisposalAttributeType"/>
                     <xs:attribute name="initialValue"/>
                     <xs:attribute name="defaultValue"/>
+                    <xs:attribute name="onChange"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
