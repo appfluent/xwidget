@@ -1,3 +1,8 @@
+### 0.0.28 (Oct 31, 2023)
+
+* Fixed reference parser 'null' error.
+* Fixed `parseEnum` method signature.`
+
 ### 0.0.27 (Oct 2, 2023)
 
 * Added `varDisposal` option to `ValueListener`. Possible values are `none`, `byOwner`, and 

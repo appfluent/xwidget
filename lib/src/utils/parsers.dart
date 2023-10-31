@@ -337,7 +337,7 @@ IconData? parseIcon(String? value) {
   throw Exception("Invalid icon '$value'.");
 }
 
-Enum? parseEnum<T>(List<Enum> values, String? value) {
+T? parseEnum<T extends Enum>(List<T> values, String? value) {
   if (value == null || value.isEmpty) return null;
   for (final type in values) {
     if (type.name == value) {

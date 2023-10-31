@@ -196,15 +196,20 @@ class ELParserDefinition extends ELGrammarDefinition {
   });
 
   @override
-  Parser reference() => super.reference().map((values) {
-    final resolved = _getDataStore(values[0]);
+  Parser reference() => super.reference().map((reference) {
+    final referenceRoot = reference[0];
+    final referenceParts = reference[1];
+    final resolved = _getDataStore(referenceRoot);
     var value = resolved.key != "" ? resolved.value[resolved.key] : resolved.value;
     if (value != null) {
+      // root value is not null
       value = value is DataValueNotifier ? value.value : value;
-      for (final next in values[1]) {
-        if (next[1] != null) {
+      for (final nextParts in referenceParts) {
+        // process the remaining parts of the identifier
+        final nextKey = nextParts[1];
+        if (nextKey != null && value != null) {
           // TODO: handle index out of range errors gracefully and provide better error messages
-          value = value[next[1] is Expression ? next[1].evaluate() : next[1]];
+          value = value[nextKey is Expression ? nextKey.evaluate() : nextKey];
           value = value is DataValueNotifier ? value.value : value;
         } else {
           value = null;
