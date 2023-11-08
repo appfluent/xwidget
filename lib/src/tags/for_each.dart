@@ -7,10 +7,16 @@ class ForEachTag implements Tag {
   String get name => "forEach";
 
   @override
-  Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
+  Children? processTag(
+      XmlElement element,
+      Map<String, dynamic> attributes,
+      Dependencies dependencies)
+  {
     // 'var' is a required attribute
     final varName = attributes["var"];
-    if (varName == null || varName.isEmpty) throw Exception("<$name> 'var' attribute is required.");
+    if (varName == null || varName.isEmpty) {
+      throw Exception("<$name> 'var' attribute is required.");
+    }
 
     // 'items' is a required attribute
     final items = attributes["items"];
@@ -18,7 +24,9 @@ class ForEachTag implements Tag {
 
     // check for iterable object
     final iterable = items is Map ? items.entries : items;
-    if (iterable is! Iterable) throw Exception("<$name> 'items' attribute does not reference an iterable object");
+    if (iterable is! Iterable) {
+      throw Exception("<$name> 'items' attribute does not reference an iterable object");
+    }
 
     // 'indexVar' is an optional attribute
     final indexVarName = attributes["indexVar"];
@@ -34,7 +42,7 @@ class ForEachTag implements Tag {
       if (indexVarName != null && indexVarName.isNotEmpty) {
         deps[indexVarName] = indexVar;
       }
-      final tagChildren = XWidget.inflateXmlElementChildren(element, deps);
+      final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
       children.addAll(tagChildren);
       indexVar++;
     }

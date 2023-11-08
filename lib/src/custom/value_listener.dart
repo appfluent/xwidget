@@ -56,7 +56,7 @@ class ValueListenerState extends State<ValueListener> {
         if (widget.onChange != null) {
           widget.onChange!(context, value);
         }
-        final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies);
+        final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies, excludeText: true);
         return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
       }
     );
@@ -99,11 +99,13 @@ class ValueListenerState extends State<ValueListener> {
         }
       } else {
         // log improper disposal request
-        _log.warn("Improper variable disposal request '${widget.varDisposal}' for varName '${widget.varName}' "
-            "referencing a notifier of type '${notifier.runtimeType}'. 'ValueListener' widget only knows how to "
-            "dispose of 'DataValueNotifier' instances. Use 'Dependencies.listenForChanges(String) "
-            "to wrap your data in a 'DataValueNotifier' instance or let 'ValueListener' widget wrap it "
-            "automatically.");
+        _log.warn("Improper variable disposal request '${widget.varDisposal}' "
+            "for varName '${widget.varName}' referencing a notifier of type "
+            "'${notifier.runtimeType}'. 'ValueListener' widget only knows how "
+            "to dispose of 'DataValueNotifier' instances. Use "
+            "'Dependencies.listenForChanges(String) to wrap your data in a "
+            "'DataValueNotifier' instance or let 'ValueListener' widget wrap "
+            "it automatically.");
       }
     }
     return false;
@@ -125,7 +127,11 @@ class ValueListenerInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  ValueListener? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+  ValueListener? inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text)
+  {
     return ValueListener(
       key: attributes['key'],
       element: attributes['_element'],

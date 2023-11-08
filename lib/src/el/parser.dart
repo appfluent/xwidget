@@ -43,7 +43,8 @@ class ELParserDefinition extends ELGrammarDefinition {
     @Deprecated("Use 'buildFrom(parser)'") List<Object> arguments = const []
   }) {
     if (start != null || arguments.isNotEmpty) {
-      throw Exception("Build arguments 'start' and 'arguments' not used. Use 'buildFrom(parser)' instead.");
+      throw Exception("Build arguments 'start' and 'arguments' not used. Use "
+          "'buildFrom(parser)' instead.");
     }
     return _parser = super.build<T>();
   }
@@ -89,7 +90,8 @@ class ELParserDefinition extends ELGrammarDefinition {
       } else if (item[0].value == '%') {
         left = ModuloExpression(left, right);
       } else {
-        throw Exception("Unknown multiplicative expression type '${item[0].value}'");
+        throw Exception("Unknown multiplicative expression type "
+            "'${item[0].value}'");
       }
     }
     return left;
@@ -208,7 +210,7 @@ class ELParserDefinition extends ELGrammarDefinition {
         // process the remaining parts of the identifier
         final nextKey = nextParts[1];
         if (nextKey != null && value != null) {
-          // TODO: handle index out of range errors gracefully and provide better error messages
+          // TODO: handle index out of range errors and provide better messages
           value = value[nextKey is Expression ? nextKey.evaluate() : nextKey];
           value = value is DataValueNotifier ? value.value : value;
         } else {
@@ -328,10 +330,13 @@ class ELParserDefinition extends ELGrammarDefinition {
   Expression _createFunctionExpression(String functionName, List<Expression> parameters) {
     final resolved = _getDataStore(functionName);
     final func = _builtInFunctions[functionName] ?? resolved.value[resolved.key];
-    if (func is Function) {
-      return DynamicFunction(func, parameters);
+    if (func != null) {
+      if (func is Function) {
+        return DynamicFunction(func, parameters);
+      }
+      throw Exception("Not a function: '$functionName'\n$func");
     }
-    throw Exception("Unknown function: '$functionName'");
+    throw Exception("Function not found: '$functionName'");
   }
 
   /// Gets local or global data depending on the key prefix

@@ -1,8 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:petitparser/core.dart';
+import 'package:xwidget/src/utils/logging.dart';
 import 'package:xwidget/src/utils/parsers.dart';
 
 class BuiltInFunctions {
+  static const _log = CommonLog("BuiltInFunctions");
+
   final Parser Function() _getParser;
   final _durationValidator = RegExp(r'^P(([0-9]+D)?T?([0-9]+H)?([0-9]+M)?([0-9]+S)?)$');
   final _durationMatcher = [
@@ -29,12 +32,15 @@ class BuiltInFunctions {
       case "eval": return _eval;
       case "formatDateTime": return _formatDateTime;
       case "isEmpty": return _isEmpty;
+      case "isFalse": return _isFalse;
       case "isFalseOrNull": return _isFalseOrNull;
       case "isNotEmpty": return _isNotEmpty;
       case "isNotNull": return _isNotNull;
       case "isNull": return _isNull;
+      case "isTrue": return _isTrue;
       case "isTrueOrNull": return _isTrueOrNull;
       case "length": return _length;
+      case "logDebug": return _logDebug;
       case "matches": return _matches;
       case "now": return _now;
       case "nowInUtc": return _nowInUtc;
@@ -53,7 +59,8 @@ class BuiltInFunctions {
     if (value is String) return value.contains(searchValue.toString());
     if (value is List) return value.contains(searchValue);
     if (value is Set) return value.contains(searchValue);
-    throw Exception("Invalid function 'contains' for type '${value.runtimeType}'. Valid types are String, List and Set.");
+    throw Exception("Invalid function 'contains' for type "
+        "'${value.runtimeType}'. Valid types are String, List and Set.");
   }
 
   bool _containsKey(Map? map, dynamic searchKey) {
@@ -113,7 +120,11 @@ class BuiltInFunctions {
 
   bool _isNotNull(dynamic value) => value != null;
 
+  bool _isTrue(dynamic value) => _toBool(value);
+
   bool _isTrueOrNull(dynamic value) => value == null || _toBool(value);
+
+  bool _isFalse(dynamic value) => !_toBool(value);
 
   bool _isFalseOrNull(dynamic value) => value == null || !_toBool(value);
 
@@ -122,7 +133,12 @@ class BuiltInFunctions {
     if (value is List) return value.length;
     if (value is Map) return value.length;
     if (value is Set) return value.length;
-    throw Exception("Function 'length' is invalid for type '${value.runtimeType}'. Valid types are String, List, Map, and Set.");
+    throw Exception("Function 'length' is invalid for type "
+        "'${value.runtimeType}'. Valid types are String, List, Map, and Set.");
+  }
+
+  void _logDebug(dynamic message) {
+    _log.debug(message);
   }
 
   bool _matches(String value, String regExp) {
@@ -144,7 +160,7 @@ class BuiltInFunctions {
 
   DateTime _nowInUtc() => DateTime.now().toUtc();
 
-  bool _startsWith(String value, String searchValue) => value.startsWith(searchValue);
+  bool _startsWith(String value, String searchFor) => value.startsWith(searchFor);
 
   String _substring(String value, int start, [int end = -1]) {
     final maxEnd = value.length;
@@ -169,7 +185,8 @@ class BuiltInFunctions {
       ];
       for (var i = 0; i < matchedStrings.length; i++) {
         values[i] = (matchedStrings[i] != null && matchedStrings.isNotEmpty)
-            ? int.parse(matchedStrings[i]!.substring(0, matchedStrings[i]!.length - 1)) : 0;
+            ? int.parse(matchedStrings[i]!.substring(0, matchedStrings[i]!.length - 1))
+            : 0;
       }
       return Duration(
         days: values[0],

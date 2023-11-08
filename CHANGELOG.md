@@ -1,7 +1,18 @@
+### 0.0.29 (Nov 8, 2023)
+
+* BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+* Renamed `execution` parameter to `build` in `ControllerWidget` constructor.
+* Fixed `ControllerWidget`'s async build.
+* Enhanced `parseDuration` function to accept `m`, `min`, `mins`, `h`, `hr`, `hrs`, 
+  `d`, `day`, `days` duration suffixes i.e. `5m`, `1hr`, `3days`.  
+* Added `isTrue`, `isFalse`, and `logDebug` EL functions.
+* Improved invalid EL function error message.
+* Minor XML parsing performance improvements.
+
 ### 0.0.28 (Oct 31, 2023)
 
 * Fixed reference parser 'null' error.
-* Fixed `parseEnum` method signature.`
+* Fixed `parseEnum` method signature.
 
 ### 0.0.27 (Oct 2, 2023)
 
@@ -28,7 +39,7 @@
 
 ### 0.0.23 (Sep 8, 2023)
 
-* Removed `disposeOfDependencies` argument from `DynamicBuilder` constructor.
+* Removed `disposeOfDependencies` parameter from `DynamicBuilder` constructor.
 * `Inflater.parseAttribute` now returns the unparsed value if the value is not parsed. 
 
 ### 0.0.22 (Sep 5, 2023)

@@ -18,7 +18,7 @@ class ControllerWidget extends StatefulWidget {
   final Dependencies dependencies;
   final Widget? errorWidget;
   final Widget? progressWidget;
-  final BuildExecution execution;
+  final BuildExecution build;
 
   @override
   ControllerWidgetState createState() => ControllerWidgetState();
@@ -30,7 +30,7 @@ class ControllerWidget extends StatefulWidget {
     required this.dependencies,
     this.errorWidget,
     this.progressWidget,
-    this.execution = BuildExecution.sync,
+    this.build = BuildExecution.sync,
   }) : super(key: key);
 }
 
@@ -108,34 +108,39 @@ class ControllerWidgetState extends State<ControllerWidget> {
     }
 
     if (streams.length > 1) {
-      throw Exception("Initialization of multiple streams in the same ControllerWidget not allowed.");
+      throw Exception("Initialization of multiple streams in the same "
+          "ControllerWidget not allowed.");
     } else if (streams.isNotEmpty && futures.isNotEmpty) {
-      throw Exception("Initialization of streams and futures in the same ControllerWidget is not allowed");
+      throw Exception("Initialization of streams and futures in the same "
+          "ControllerWidget is not allowed");
     } else if (streams.isNotEmpty && others.isNotEmpty) {
-      throw Exception("Initialization of streams and other values in the same ControllerWidget is not allowed");
+      throw Exception("Initialization of streams and other values in the same"
+          " ControllerWidget is not allowed");
     } else if (streams.isNotEmpty) {
       _initValue = initValues[streams[0]];
     } else if (futures.isEmpty) {
       _initValue = initValues;
     } else {
-      _initValue = Future.wait(initValues.map((value) => (value is Future) ? value : Future.value(value)));
+      _initValue = Future.wait(initValues.map((value) => (value is Future)
+          ? value : Future.value(value)));
     }
   }
 
   /// Returns the initValue received from [Controller.initialize].
   ///
-  /// [Controller.initialize] is called in [setState] instead of being passed directly to [DynamicBuilder]
-  /// as the initializer function because we don't want to reinitialize the controller every time the
-  /// widget's 'build' function is called.
+  /// [Controller.initialize] is called in [setState] instead of being passed
+  /// directly to [DynamicBuilder] as the initializer function because we don't
+  /// want to reinitialize the controller every time the widget's 'build'
+  /// function is called.
   dynamic _initializer(BuildContext context, Dependencies dependencies) {
     return _initValue;
   }
 
   Widget _builder(BuildContext context, Dependencies dependencies, dynamic initValue) {
     if (_shouldBuild()) {
-      if (widget.execution == BuildExecution.async) {
+      if (widget.build == BuildExecution.async) {
         return DynamicBuilder<Widget>(
-            initializer: (context, dependencies) => _inflateChildren(dependencies),
+            initializer: (context, dependencies) async => _inflateChildren(dependencies),
             builder: (context, dependencies, widget) => widget,
             dependencies: dependencies
         );
@@ -147,7 +152,7 @@ class ControllerWidgetState extends State<ControllerWidget> {
 
   Widget _inflateChildren(Dependencies dependencies) {
     _bindDependencies();
-    final children = XWidget.inflateXmlElementChildren(widget.element, dependencies);
+    final children = XWidget.inflateXmlElementChildren(widget.element, dependencies, excludeText: true);
     return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
   }
 
@@ -226,7 +231,11 @@ class ControllerWidgetInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  ControllerWidget? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+  ControllerWidget? inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text)
+  {
     return ControllerWidget(
       key: attributes['key'],
       name: attributes['name'],
@@ -234,7 +243,7 @@ class ControllerWidgetInflater extends Inflater {
       dependencies: attributes['_dependencies'],
       errorWidget: attributes['errorWidget'],
       progressWidget: attributes['progressWidget'],
-      execution: attributes["execution"] ?? BuildExecution.sync,
+      build: attributes["execution"] ?? BuildExecution.sync,
     );
   }
 

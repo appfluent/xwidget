@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../xwidget.dart';
 
-final _parseDurationRegExp = RegExp(r'^(\d+)(ms|s)$');
+final _parseDurationRegExp = RegExp(r'^(\d+)([a-z]+)$');
 
 double? parseHeight(String? value) {
   if (value == null || value.isEmpty) return null;
@@ -38,6 +38,15 @@ Duration? parseDuration(String? value) {
       switch (unit) {
         case "ms": return Duration(milliseconds: digits);
         case "s": return Duration(seconds: digits);
+        case "m": return Duration(minutes: digits);
+        case "min": return Duration(minutes: digits);
+        case "mins": return Duration(minutes: digits);
+        case "h": return Duration(hours: digits);
+        case "hr": return Duration(hours: digits);
+        case "hrs": return Duration(hours: digits);
+        case "d": return Duration(days: digits);
+        case "day": return Duration(days: digits);
+        case "days": return Duration(days: digits);
         default: throw Exception("Invalid duration unit: $unit");
       }
     }
@@ -152,7 +161,12 @@ EdgeInsets? parseEdgeInsets(String? value) {
   if (doubles != null && doubles.isNotEmpty) {
     switch (doubles.length) {
       case 1: return EdgeInsets.all(doubles[0]);
-      case 4: return EdgeInsets.fromLTRB(doubles[0], doubles[1], doubles[2], doubles[3]);
+      case 4: return EdgeInsets.fromLTRB(
+          doubles[0],
+          doubles[1],
+          doubles[2],
+          doubles[3]
+      );
     }
     throw Exception("Invalid visual density value: $value");
   }
@@ -344,7 +358,8 @@ T? parseEnum<T extends Enum>(List<T> values, String? value) {
       return type;
     }
   }
-  throw Exception("Invalid enum '$value'. Valid values are ${values.asNameMap().keys}");
+  throw Exception("Invalid enum '$value'. Valid values are "
+      "${values.asNameMap().keys}");
 }
 
 MaterialStateProperty<Color>? parseMaterialStateColor(String? value) {
