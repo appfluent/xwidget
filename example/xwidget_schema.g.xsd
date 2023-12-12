@@ -544,7 +544,6 @@
                     <xs:attribute name="name"/>
                     <xs:attribute name="errorWidget"/>
                     <xs:attribute name="progressWidget"/>
-                    <xs:attribute name="execution" type="BuildExecutionAttributeType"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

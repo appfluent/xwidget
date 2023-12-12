@@ -1,6 +1,18 @@
+### 0.0.30 (Dec 12, 2023)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Controller now extends `StatefulWidget`. This allows Controllers to use mixins designed for
+  stateful widgets such as `TickerProviderStateMixin`.
+* Renamed `Controller.initialize` to `Controller.init`.
+* Removed `build` parameter from Controller constructor.
+* Removed multi-controller support from Controllers.
+* Some code cleanup
+
 ### 0.0.29 (Nov 8, 2023)
 
-* BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
 * Renamed `execution` parameter to `build` in `ControllerWidget` constructor.
 * Fixed `ControllerWidget`'s async build.
 * Enhanced `parseDuration` function to accept `m`, `min`, `mins`, `h`, `hr`, `hrs`, 
@@ -56,7 +68,8 @@
 
 ### 0.0.20 (Aug 16, 2023)
 
-* BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
 * Changed `Inflater.inflate` signature to pass a list of unprocessed child strings instead of a 
   single preprocessed string. The inflater's implementation now determines how to process the 
   strings i.e. `Text` inflater uses `XWidgetUtils.joinStrings(text)`.

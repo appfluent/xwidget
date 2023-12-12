@@ -30,7 +30,11 @@ extension MapBrackets on Map<String, dynamic> {
     }
   }
 
-  ValueNotifier listenForChanges(String path, dynamic initialValue, dynamic defaultValue) {
+  ValueNotifier listenForChanges(
+      String path,
+      dynamic initialValue,
+      dynamic defaultValue
+  ) {
     return PathResolution
         .resolvePath(path, true, this)
         .listenForChanges(initialValue, defaultValue);

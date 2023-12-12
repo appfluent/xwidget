@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:petitparser/context.dart';
 import 'package:petitparser/core.dart';
 import 'package:xwidget/src/utils/logging.dart';
 import 'package:xwidget/src/utils/parsers.dart';
@@ -92,7 +93,7 @@ class BuiltInFunctions {
     final expression = value;
     if (expression != null && expression.isNotEmpty) {
       final result = _getParser().parse(expression);
-      if (result.isSuccess) {
+      if (result is Success) {
         return result.value.evaluate();
       } else {
         throw Exception("Failed to evaluate '$expression'. ${result.message}");

@@ -19,7 +19,7 @@ class ValueListener extends StatefulWidget {
   ValueListenerState createState() => ValueListenerState();
 
   const ValueListener({
-    Key? key,
+    super.key,
     required this.element,
     required this.dependencies,
     required this.varName,
@@ -27,7 +27,7 @@ class ValueListener extends StatefulWidget {
     this.initialValue,
     this.defaultValue,
     this.onChange,
-  }) : super(key: key);
+  });
 }
 
 class ValueListenerState extends State<ValueListener> {

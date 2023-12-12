@@ -17,17 +17,18 @@ class DynamicBuilder<T> extends StatefulWidget {
   final Dependencies dependencies;
 
   DynamicBuilder({
-    Key? key,
+    super.key,
     required this.builder,
     required this.dependencies,
     this.errorWidget,
     this.progressWidget,
     this.initializer,
     this.initValue,
-  }) : super(key: key) {
+  }) {
     if (initializer != null && initValue != null) {
-      throw Exception("XWidget DynamicBuilder can't have an [initializer] function and an [initValue]. "
-          "You may return an initial value from [initializer] or pass it directly in [initValue], but not both.");
+      throw Exception("XWidget DynamicBuilder can't have an [initializer] "
+          "function and an [initValue]. You may return an initial value from "
+          "[initializer] or pass it directly in [initValue], but not both.");
     }
   }
 
@@ -44,7 +45,9 @@ class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
   void initState() {
     super.initState();
     final initializer = widget.initializer;
-    _initValue = initializer != null ? initializer(context, widget.dependencies) : widget.initValue;
+    _initValue = initializer != null
+        ? initializer(context, widget.dependencies)
+        : widget.initValue;
   }
 
   @override
@@ -102,7 +105,11 @@ class DynamicBuilderInflater extends Inflater {
   bool get inflatesCustomWidget => true;
 
   @override
-  DynamicBuilder? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+  DynamicBuilder? inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  ) {
     return DynamicBuilder(
       key: attributes['key'],
       builder: attributes['builder'],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide Stack;
+import 'package:petitparser/context.dart';
 import 'package:petitparser/core.dart';
 import 'package:xml/xml.dart';
 
@@ -64,7 +65,8 @@ class XWidget {
 
   /// Enable or disable fragment XML caching
   ///
-  /// If enabled, the fragment's parsed XML is cached until the cache is cleared.
+  /// If enabled, the fragment's parsed XML is cached until the cache is
+  /// cleared.
   /// DEFAULT: false
   static bool xmlCacheEnabled = true;
 
@@ -142,7 +144,9 @@ class XWidget {
     try {
       final type = element.localName;
       final inflater = _inflaters[type];
-      if (inflater == null) throw Exception("XWidget inflater not found for XML element <${element.localName}>");
+      if (inflater == null) {
+        throw Exception("XWidget inflater not found for XML element <${element.localName}>");
+      }
 
       final attributes = parseXmlAttributes(
         element,
@@ -245,8 +249,9 @@ class XWidget {
     required Dependencies dependencies,
     Inflater? inflater,
   }) {
-    // IMPORTANT: startsWith and endsWith are much faster than RegExp with numerous iterations.
-    // Since parsing is called 1000s of times, it needs to be as efficient as possible.
+    // IMPORTANT: startsWith and endsWith are much faster than RegExp with
+    // numerous iterations. Since parsing is called 1000s of times, it needs
+    // to be as efficient as possible.
 
     if (attributeValue == null || attributeValue.isEmpty) return null;
     if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
@@ -311,7 +316,7 @@ class XWidget {
 
     final parser = dependencies.getExpressionParser();
     final result = parser.parse(expression);
-    if (result.isSuccess) return result.value.evaluate();
+    if (result is Success) return result.value.evaluate();
 
     throw Exception("Failed to parse EL expression '$expression'. ${result.message}");
   }
@@ -546,8 +551,9 @@ class Dependencies {
 /// The base class for all inflaters.
 ///
 /// While it's possible to manually create an inflater by implementing this
-/// class, the best practice is to use the @InflaterDef annotation on your class
-/// and let XWidget generate the inflater by running `dart run xwidget:generate`.
+/// class, the best practice is to use the @InflaterDef annotation on your
+/// class and let XWidget generate the inflater by running
+/// `dart run xwidget:generate`.
 abstract class Inflater<T> {
   /// The XML element name for the inflater.
   String get type;
