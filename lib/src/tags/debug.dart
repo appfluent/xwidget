@@ -14,7 +14,11 @@ class DebugTag implements Tag {
   ///
   /// Returns null (no children)
   @override
-  Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies) {
+  Children? processTag(
+      XmlElement element,
+      Map<String, dynamic> attributes,
+      Dependencies dependencies
+  ) {
     _log.debug(attributes["message"]);
     return null;
   }

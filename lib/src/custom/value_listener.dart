@@ -5,7 +5,6 @@ import '../../xwidget.dart';
 
 typedef ValueListenerCallback = void Function(BuildContext, dynamic);
 
-@InflaterDef(inflaterType: "ValueListener", inflatesOwnChildren: true)
 class ValueListener extends StatefulWidget {
   final XmlElement element;
   final Dependencies dependencies;

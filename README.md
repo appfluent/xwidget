@@ -28,7 +28,7 @@ An XWidget UI is defined in XML and parsed at runtime. You have access to all th
 and classes you are used to working with, including widgets from 3rd party libraries and even your
 own custom widgets. This is achieved through code generation. You specify which widgets you want to
 use and XWidget will generate the appropriate classes and functions and make them available as XML
-elements. You'll have access to all of the Widgets' constructor arguments as element properties just
+elements. You'll have access to all of the Widgets' constructor arguments as element attribute just
 as if you were writing Dart code. You'll even have code completion and access to Widgets'
 documentation in tooltips, if provided by the author, when you register the generated XML schema
 with your IDE.
@@ -514,6 +514,15 @@ The ```Dependencies``` object, at its core, is just a map of dependencies as def
 *inflate* method call requires a ```Dependencies``` object. It can be a new instance or one that was
 received from a previous *inflate* method invocation.
 
+## Scoping
+
+### `copy`
+### `inherit`
+### `new`
+### `Auto Scoped
+
+## Features
+
 ```Dependencies``` objects have a few characteristics that make them a little more interesting than plain
 old maps.
 
@@ -725,13 +734,13 @@ as dependencies in the current `Dependencies` instance. The values of placeholde
 simply ignored. The `BuildContext` is never stored as a dependency, even if explicitly named,
 because it would cause a memory leak.
 
-| Attribute         | Description                                                                                                                                | Required | Default   |
-|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------|
-| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`.                          | no       | `inherit` |
-| for               | The name of the parent's attribute that will be assigned the builder function.                                                             | yes      | null      |
-| multiChild        | Whether the builder function should return an array of widgets or a single widget.                                                         | no       | false     |
-| nullable          | Whether the builder function can return null.                                                                                              | no       | false     |
-| vars              | A comma separated list of builder function arguments. Values of named arguments are stored as dependencies. Supports up to five arguments. | no       | null      |
+| Attribute         | Description                                                                                                                                | Required | Default |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`.                          | no       | auto    |
+| for               | The name of the parent's attribute that will be assigned the builder function.                                                             | yes      | null    |
+| multiChild        | Whether the builder function should return an array of widgets or a single widget.                                                         | no       | false   |
+| nullable          | Whether the builder function can return null.                                                                                              | no       | false   |
+| vars              | A comma separated list of builder function arguments. Values of named arguments are stored as dependencies. Supports up to five arguments. | no       | null    |
 
 Example usage:
 ```xml
@@ -764,13 +773,13 @@ and underscore (_) in place of the name. Doing so will ignore the values and the
 `Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never added to `Dependencies` even
 when named, because this would cause a memory leak.
 
-| Attribute         | Description                                                                                                                                | Required | Default   |
-|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------|
-| action            | The El expression to evaluate when the event handler is triggered.                                                                         | yes      | null      |
-| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`.                          | no       | `inherit` |
-| for               | The name of the parent's attribute that will be assigned the event handler.                                                                | yes      | null      |
-| returnVar         | The storage destination within `Dependencies` for the return value of `action`.                                                            | no       | null      |
-| vars              | A comma separated list of handler function arguments. Values of named arguments are stored as dependencies. Supports up to five arguments. | no       | null      |
+| Attribute         | Description                                                                                                                                | Required | Default |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| action            | The El expression to evaluate when the event handler is triggered.                                                                         | yes      | null    |
+| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`.                          | no       | auto    |
+| for               | The name of the parent's attribute that will be assigned the event handler.                                                                | yes      | null    |
+| returnVar         | The storage destination within `Dependencies` for the return value of `action`.                                                            | no       | null    |
+| vars              | A comma separated list of handler function arguments. Values of named arguments are stored as dependencies. Supports up to five arguments. | no       | null    |
 
 ```xml
 <TextButton>
@@ -796,14 +805,14 @@ A simple tag that logs a debug message
 
 *Add documentation here.*
 
-| Attribute         | Description                                                                                                       | Required | Default   |
-|-------------------|-------------------------------------------------------------------------------------------------------------------|----------|-----------|
-| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`. | no       | `inherit` |
-| indexVar          |                                                                                                                   | no       | null      |
-| items             |                                                                                                                   | yes      | null      |
-| multiChild        |                                                                                                                   | no       | null      |
-| nullable          |                                                                                                                   | no       | null      |
-| var               |                                                                                                                   | yes      | null      |
+| Attribute         | Description                                                                                                       | Required | Default |
+|-------------------|-------------------------------------------------------------------------------------------------------------------|----------|---------|
+| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`. | no       | `copy`  |
+| indexVar          |                                                                                                                   | no       | null    |
+| items             |                                                                                                                   | yes      | null    |
+| multiChild        |                                                                                                                   | no       | null    |
+| nullable          |                                                                                                                   | no       | null    |
+| var               |                                                                                                                   | yes      | null    |
 
 ```xml
 <forEach var="user" items="${users}">
@@ -815,13 +824,13 @@ A simple tag that logs a debug message
 
 *Add documentation here.*
 
-| Attribute         | Description                                                                                                       | Required | Default   |
-|-------------------|-------------------------------------------------------------------------------------------------------------------|----------|-----------|
-| begin             |                                                                                                                   | no       | 0         |
-| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`. | no       | `inherit` |
-| end               |                                                                                                                   | no       | 0         |
-| step              |                                                                                                                   | no       | 1         |
-| var               |                                                                                                                   | yes      | null      |
+| Attribute         | Description                                                                                                       | Required | Default |
+|-------------------|-------------------------------------------------------------------------------------------------------------------|----------|---------|
+| begin             |                                                                                                                   | no       | 0       |
+| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`. | no       | `copy`  |
+| end               |                                                                                                                   | no       | 0       |
+| step              |                                                                                                                   | no       | 1       |
+| var               |                                                                                                                   | yes      | null    |
 
 ```xml
 <forLoop var="index" begin="1" end="5">
@@ -833,11 +842,11 @@ A simple tag that logs a debug message
 
 A tag that renders a UI fragment
 
-| Attribute         | Description                                                                                                       | Required | Default   |
-|-------------------|-------------------------------------------------------------------------------------------------------------------|----------|-----------|
-| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`. | no       | `inherit` |
-| for               | The name of the parent's attribute that will be assigned the fragment's output.                                   | no       | null      |
-| name              | The `Resources` name of the fragment.                                                                             | yes      | null      |
+| Attribute         | Description                                                                                                       | Required | Default |
+|-------------------|-------------------------------------------------------------------------------------------------------------------|----------|---------|
+| dependenciesScope | Defines the method for passing Dependencies to immediate children. Valid values are `new`, `copy`, and `inherit`. | no       | auto    |
+| for               | The name of the parent's attribute that will be assigned the fragment's output.                                   | no       | null    |
+| name              | The `Resources` name of the fragment.                                                                             | yes      | null    |
 
 ```xml
 <AppBar>

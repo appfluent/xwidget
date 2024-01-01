@@ -1,3 +1,27 @@
+### 0.0.31 (Jan 1, 2024)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Renamed `ListOf` element to `List` for consistency
+* Added `Map` element. Example usage:
+  ```xml
+  <Map for="attribute">
+    <Entry key="name" value="name"/>
+    <Entry value="description">description</Entry>
+  </Map>
+  ```
+ * Allow `param`, `forEach`, and `if` elements as optional children of `fragment`
+   element. Example usage:
+   ```xml
+   <fragment name="header">
+       <!-- use 'var' to pass values to fragment -->
+       <param name="bottom" value="tab_bar"/>
+   </fragment>
+   ```
+* Auto scope dependencies for elements that support the `dependenciesScope` attribute.
+* Updated minimum `petitparser` version to `6.0.0`.
+* Removed deprecated imports.
+
 ### 0.0.30 (Dec 12, 2023)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.

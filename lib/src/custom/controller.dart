@@ -9,7 +9,6 @@ import 'async.dart';
 
 typedef XWidgetControllerFactory<T extends Controller> = T Function();
 
-@InflaterDef(inflaterType: "Controller", inflatesOwnChildren: true)
 class ControllerWidget extends StatefulWidget {
   final String name;
   final XmlElement element;

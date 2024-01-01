@@ -1,0 +1,115 @@
+import '../../xwidget.dart';
+
+class ListInflater extends Inflater {
+  @override
+  String get type => 'List';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => false;
+
+  @override
+  List? inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  ) {
+    return [...children];
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    return value;
+  }
+}
+
+class MapInflater extends Inflater {
+  @override
+  String get type => 'Map';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => false;
+
+  @override
+  Map inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  ) {
+    final Map map = {};
+    for (final child in children) {
+      if (child is MapEntry) {
+        map[child.key] = child.value;
+      }
+    }
+    return map;
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    return value;
+  }
+}
+
+class MapEntryInflater extends Inflater {
+  @override
+  String get type => 'Entry';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => false;
+
+  @override
+  MapEntry? inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  ) {
+    return MapEntry(
+      attributes["key"],
+      XWidgetUtils.getOnlyChild("Entry", children, attributes['value'])
+          ?? XWidgetUtils.joinStrings(text),
+    );
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    return value;
+  }
+}
+
+class ParamInflater extends Inflater {
+  @override
+  String get type => 'param';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => false;
+
+  @override
+  MapEntry? inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  ) {
+    return MapEntry(
+      attributes["name"],
+      XWidgetUtils.getOnlyChild("param", children, attributes['value'])
+          ?? XWidgetUtils.joinStrings(text),
+    );
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    return value;
+  }
+}

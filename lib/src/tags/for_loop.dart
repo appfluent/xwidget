@@ -27,7 +27,7 @@ class ForLoopTag implements Tag {
 
     final children = Children();
     for (var index = begin; step > 0 ? index < end : index > end; index += step) {
-      final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
+      final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
       deps[varName] = index;
       final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
       children.addAll(tagChildren);

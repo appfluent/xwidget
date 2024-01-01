@@ -521,6 +521,7 @@ class MaterialAppInflater extends Inflater {
             onGenerateRoute: attributes['onGenerateRoute'],
             onGenerateInitialRoutes: attributes['onGenerateInitialRoutes'],
             onUnknownRoute: attributes['onUnknownRoute'],
+            onNavigationNotification: attributes['onNavigationNotification'],
             navigatorObservers: attributes['navigatorObservers'] != null ? [...attributes['navigatorObservers']] : const <NavigatorObserver>[],
             builder: attributes['builder'],
             title: attributes['title'] ?? '',
@@ -563,6 +564,7 @@ class MaterialAppInflater extends Inflater {
             case 'onGenerateRoute': break;
             case 'onGenerateInitialRoutes': break;
             case 'onUnknownRoute': break;
+            case 'onNavigationNotification': break;
             case 'navigatorObservers': break;
             case 'builder': break;
             case 'title': return value;
@@ -619,6 +621,7 @@ class MaterialApp_routerInflater extends Inflater {
             builder: attributes['builder'],
             title: attributes['title'] ?? '',
             onGenerateTitle: attributes['onGenerateTitle'],
+            onNavigationNotification: attributes['onNavigationNotification'],
             color: attributes['color'],
             theme: attributes['theme'],
             darkTheme: attributes['darkTheme'],
@@ -658,6 +661,7 @@ class MaterialApp_routerInflater extends Inflater {
             case 'builder': break;
             case 'title': return value;
             case 'onGenerateTitle': break;
+            case 'onNavigationNotification': break;
             case 'color': return parseColor(value);
             case 'theme': break;
             case 'darkTheme': break;
@@ -784,7 +788,7 @@ class TextInflater extends Inflater {
             locale: attributes['locale'],
             softWrap: attributes['softWrap'],
             overflow: attributes['overflow'],
-            textScaleFactor: attributes['textScaleFactor'],
+            textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
             textWidthBasis: attributes['textWidthBasis'],
@@ -805,7 +809,7 @@ class TextInflater extends Inflater {
             case 'locale': return parseLocale(value);
             case 'softWrap': return parseBool(value);
             case 'overflow': return parseEnum(TextOverflow.values, value);
-            case 'textScaleFactor': return double.parse(value);
+            case 'textScaler': break;
             case 'maxLines': return int.parse(value);
             case 'semanticsLabel': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
@@ -839,7 +843,7 @@ class Text_richInflater extends Inflater {
             locale: attributes['locale'],
             softWrap: attributes['softWrap'],
             overflow: attributes['overflow'],
-            textScaleFactor: attributes['textScaleFactor'],
+            textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
             textWidthBasis: attributes['textWidthBasis'],
@@ -860,7 +864,7 @@ class Text_richInflater extends Inflater {
             case 'locale': return parseLocale(value);
             case 'softWrap': return parseBool(value);
             case 'overflow': return parseEnum(TextOverflow.values, value);
-            case 'textScaleFactor': return double.parse(value);
+            case 'textScaler': break;
             case 'maxLines': return int.parse(value);
             case 'semanticsLabel': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);

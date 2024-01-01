@@ -37,7 +37,7 @@ class ForEachTag implements Tag {
     var indexVar = 0;
     final children = Children();
     for (final item in iterable) {
-      final deps = XWidget.scopeDependencies(dependencies, dependenciesScope);
+      final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
       deps[varName] = item is MapEntry ? {"key": item.key, "value": item.value} : item;
       if (indexVarName != null && indexVarName.isNotEmpty) {
         deps[indexVarName] = indexVar;

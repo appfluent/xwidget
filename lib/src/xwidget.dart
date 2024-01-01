@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide Stack;
-import 'package:petitparser/context.dart';
 import 'package:petitparser/core.dart';
 import 'package:xml/xml.dart';
 
 import 'custom/async.dart';
+import 'custom/collection.dart';
 import 'custom/controller.dart';
-import 'custom/list_of.dart';
 import 'custom/value_listener.dart';
 import 'el/parser.dart';
 import 'tags/builder.dart';
@@ -22,13 +21,17 @@ import 'utils/brackets.dart';
 import 'utils/logging.dart';
 import 'utils/parsers.dart';
 import 'utils/resources.dart';
+import 'utils/utils.dart';
 
 class XWidget {
   static const _log = CommonLog("XWidget");
 
   static final _controllerInflater = ControllerWidgetInflater();
   static final _dynamicBuilderInflater = DynamicBuilderInflater();
-  static final _listOfInflater = ListOfInflater();
+  static final _listInflater = ListInflater();
+  static final _mapInflater = MapInflater();
+  static final _mapEntryInflater = MapEntryInflater();
+  static final _paramInflater = ParamInflater();
   static final _valueListenerInflater = ValueListenerInflater();
 
   static final _builderTag = BuilderTag();
@@ -43,7 +46,10 @@ class XWidget {
   static final _inflaters = <String, Inflater>{
     _controllerInflater.type: _controllerInflater,
     _dynamicBuilderInflater.type: _dynamicBuilderInflater,
-    _listOfInflater.type: _listOfInflater,
+    _listInflater.type: _listInflater,
+    _mapInflater.type: _mapInflater,
+    _mapEntryInflater.type: _mapEntryInflater,
+    _paramInflater.type: _paramInflater,
     _valueListenerInflater.type: _valueListenerInflater,
   };
 
@@ -113,24 +119,25 @@ class XWidget {
     String fragmentName,
     Dependencies dependencies, {
     Iterable<XmlAttribute>? inheritedAttributes,
-    Map<String, String>? params
+    Map<String, dynamic>? params
   }) {
-    // TODO: Allow relative names. The problem lies with builders that inflate
-    //       fragments, so creating a stack here doesn't work
+    String name;
     final splitIndex = fragmentName.indexOf("?");
-    final namePart = splitIndex > -1
-        ? fragmentName.substring(0, splitIndex).trim()
-        : fragmentName.trim();
-    final queryPart = splitIndex > -1
-        ? fragmentName.substring(splitIndex + 1).trim()
-        : null;
-    final queryParams = queryPart != null && queryPart.isNotEmpty
-        ? Uri.splitQueryString(queryPart)
-        : {};
-    queryParams.forEach((key, value) => dependencies[key] = value);
-
+    if (splitIndex > -1) {
+      // process params in name
+      name = fragmentName.substring(0, splitIndex).trim();
+      final query = fragmentName.substring(splitIndex + 1).trim();
+      final queryParams = query.isNotEmpty ? Uri.splitQueryString(query) : {};
+      queryParams.forEach((key, value) => dependencies.setValue(key, value));
+    } else {
+      name = fragmentName.trim();
+    }
+    if (params != null && params.isNotEmpty) {
+      // process formal params
+      params.forEach((key, value) => dependencies.setValue(key, value));
+    }
     return inflateFromXmlElement(
-      getFragmentXml(namePart).rootElement,
+      getFragmentXml(name).rootElement,
       dependencies,
       inheritedAttributes: inheritedAttributes,
     );
@@ -155,8 +162,7 @@ class XWidget {
         inheritedAttributes: inheritedAttributes,
       );
 
-      final visible = !attributes.containsKey("visible") || parseBool(attributes["visible"]) == true;
-      if (visible) {
+      if (!attributes.containsKey("visible") || parseBool(attributes["visible"]) == true) {
         // widget is visible, so let's continue
         if (inflater.inflatesCustomWidget) {
           // inflating a custom widget or object, so include the element and
@@ -283,7 +289,10 @@ class XWidget {
         : value;
   }
 
-  static Iterable<XmlAttribute> mergeXmlAttributes(Iterable<XmlAttribute> list1, Iterable<XmlAttribute>? list2) {
+  static Iterable<XmlAttribute> mergeXmlAttributes(
+      Iterable<XmlAttribute> list1,
+      Iterable<XmlAttribute>? list2
+  ) {
     // if list2 is null or empty then just return list1 for efficiency
     if (list2 == null || list2.isEmpty) return list1;
 
@@ -337,8 +346,21 @@ class XWidget {
     return xmlDocument;
   }
 
-  static Dependencies scopeDependencies(Dependencies dependencies, String? scope, [String defaultScope = "inherit"]) {
-    switch (scope ?? defaultScope) {
+  static Dependencies scopeDependencies(
+      XmlElement element,
+      Dependencies dependencies,
+      String? scope,
+      [String defaultScope = "inherit"]
+  ) {
+    if (CommonUtils.isBlank(scope)) {
+      scope = defaultScope;
+      for (final child in element.children) {
+        if (child is XmlElement && child.localName == "var") {
+          scope = "copy";
+        }
+      }
+    }
+    switch (scope) {
       case "new": return Dependencies();
       case "copy": return dependencies.copy();
       case "inherit": return dependencies;
@@ -423,10 +445,11 @@ class Dependencies {
   /// Adds all key/value dependency pairs of [data] to this instance.
   ///
   /// Supports dot/bracket notation and global references in keys.
-  void addAll(Map<String, dynamic> data) {
+  Dependencies addAll(Map<String, dynamic> data) {
     for (final entry in data.entries) {
       setValue(entry.key, entry.value);
     }
+    return this;
   }
 
   /// Returns the dependency references by [key] or null.
@@ -575,7 +598,10 @@ abstract class Inflater<T> {
   bool get inflatesCustomWidget;
 
   /// Inflates an xml element into a flutter object.
-  T? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text);
+  T? inflate(Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  );
 
   /// Parses an XML attribute into a constructor argument
   dynamic parseAttribute(String name, String value);
@@ -592,5 +618,9 @@ abstract class Tag {
   /// Executes the tag's implementation.
   ///
   /// If the tag creates any children, they are return in a [Children] instance.
-  Children? processTag(XmlElement element, Map<String, dynamic> attributes, Dependencies dependencies);
+  Children? processTag(
+      XmlElement element,
+      Map<String, dynamic> attributes,
+      Dependencies dependencies
+  );
 }

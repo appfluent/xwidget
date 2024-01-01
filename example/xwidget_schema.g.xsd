@@ -396,6 +396,25 @@
 
     <!-- complex types -->
 
+    <xs:complexType name="paramType">
+        <xs:sequence>
+            <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" use="required"/>
+        <xs:attribute name="value"/>
+        <xs:attribute name="visible" type="boolAttributeType"/>
+    </xs:complexType>
+
+    <xs:complexType name="mapEntryType">
+        <xs:sequence>
+            <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="for" type="xs:string"/>
+        <xs:attribute name="key" use="required"/>
+        <xs:attribute name="value"/>
+        <xs:attribute name="visible" type="boolAttributeType"/>
+    </xs:complexType>
+
     <xs:complexType name="objectType" mixed="true">
         <xs:sequence>
             <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
@@ -487,6 +506,30 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="forEach" form="qualified">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="param" type="paramType" form="qualified"/>
+                        </xs:sequence>
+                        <xs:attribute name="var" type="xs:string" use="required"/>
+                        <xs:attribute name="indexVar" type="xs:string"/>
+                        <xs:attribute name="items" type="xs:string" use="required"/>
+                        <xs:attribute name="start" type="integerAttributeType"/>
+                        <xs:attribute name="end" type="integerAttributeType"/>
+                        <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="if" form="qualified">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded">
+                            <xs:element name="param" type="paramType" form="qualified"/>
+                        </xs:choice>
+                        <xs:attribute name="test" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="param" type="paramType" form="qualified"/>
+            </xs:choice>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
@@ -569,7 +612,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="ListOf">
+    <xs:element name="List">
         <xs:annotation>
             <xs:documentation xml:lang="en">
             </xs:documentation>
@@ -577,9 +620,22 @@
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
-                    <xs:attribute name="children"/>
                 </xs:extension>
             </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Map">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Entry" form="qualified" type="mapEntryType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="for" type="xs:string"/>
+            <xs:attribute name="visible" type="boolAttributeType"/>
         </xs:complexType>
     </xs:element>
 
@@ -1287,9 +1343,7 @@ an explicit key.</p><br/>
         <xs:annotation>
             <xs:documentation xml:lang="en">
 <p>Creates a vertical array of children.</p><br/>
-<p>The [mainAxisAlignment], [mainAxisSize], [crossAxisAlignment], and
-[verticalDirection] arguments must not be null.
-If [crossAxisAlignment] is [CrossAxisAlignment.baseline], then
+<p>If [crossAxisAlignment] is [CrossAxisAlignment.baseline], then
 [textBaseline] must not be null.</p><br/>
 <p>The [textDirection] argument defaults to the ambient [Directionality], if
 any. If there is no ambient directionality, and a text direction is going
@@ -1484,9 +1538,8 @@ class SomeWidgetState extends State&lt;SomeWidget&gt; {
         <xs:annotation>
             <xs:documentation xml:lang="en">
 <p>Creates a circular floating action button.</p><br/>
-<p>The [mini] and [clipBehavior] arguments must not be null. Additionally,
-[elevation], [highlightElevation], and [disabledElevation] (if specified)
-must be non-negative.</p><br/>
+<p>The [elevation], [highlightElevation], and [disabledElevation] parameters,
+if specified, must be non-negative.</p><br/>
 
             </xs:documentation>
         </xs:annotation>
@@ -1732,7 +1785,7 @@ shape as well.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
-<p>Defaults to [Clip.none], and must not be null.</p><br/>
+<p>Defaults to [Clip.none].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -1807,10 +1860,8 @@ If both are null, then default value is true.</p><br/>
 <p>Creates a small circular floating action button.</p><br/>
 <p>This constructor overrides the default size constraints of the floating
 action button.</p><br/>
-<p>The [clipBehavior] and [autofocus] arguments must not be null.
-Additionally, [elevation], [focusElevation], [hoverElevation],
-[highlightElevation], and [disabledElevation] (if specified) must be
-non-negative.</p><br/>
+<p>The [elevation], [focusElevation], [hoverElevation], [highlightElevation],
+and [disabledElevation] parameters, if specified, must be non-negative.</p><br/>
 
             </xs:documentation>
         </xs:annotation>
@@ -2042,7 +2093,7 @@ shape as well.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
-<p>Defaults to [Clip.none], and must not be null.</p><br/>
+<p>Defaults to [Clip.none].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2103,10 +2154,8 @@ If both are null, then default value is true.</p><br/>
 <p>Creates a large circular floating action button.</p><br/>
 <p>This constructor overrides the default size constraints of the floating
 action button.</p><br/>
-<p>The [clipBehavior] and [autofocus] arguments must not be null.
-Additionally, [elevation], [focusElevation], [hoverElevation],
-[highlightElevation], and [disabledElevation] (if specified) must be
-non-negative.</p><br/>
+<p>The [elevation], [focusElevation], [hoverElevation], [highlightElevation],
+and [disabledElevation] parameters, if specified, must be non-negative.</p><br/>
 
             </xs:documentation>
         </xs:annotation>
@@ -2338,7 +2387,7 @@ shape as well.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
-<p>Defaults to [Clip.none], and must not be null.</p><br/>
+<p>Defaults to [Clip.none].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2398,9 +2447,8 @@ If both are null, then default value is true.</p><br/>
             <xs:documentation xml:lang="en">
 <p>Creates a wider [StadiumBorder]-shaped floating action button with
 an optional [icon] and a [label].</p><br/>
-<p>The [label], [autofocus], and [clipBehavior] arguments must not be null.
-Additionally, [elevation], [highlightElevation], and [disabledElevation]
-(if specified) must be non-negative.</p><br/>
+<p>The [elevation], [highlightElevation], and [disabledElevation] parameters,
+if specified, must be non-negative.</p><br/>
 <p>See also:</p><br/>
 <ul>
 <li><a href="https://m3.material.io/components/extended-fab">https://m3.material.io/components/extended-fab</a></li>
@@ -2663,7 +2711,7 @@ floating action buttons are scaled and faded in.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
-<p>Defaults to [Clip.none], and must not be null.</p><br/>
+<p>Defaults to [Clip.none].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2966,7 +3014,6 @@ non-null. If only [routes] is given, it must include an entry for the
 application is launched with an intent that specifies an otherwise
 unsupported route.</p><br/>
 <p>This class creates an instance of [WidgetsApp].</p><br/>
-<p>The boolean arguments, [routes], and [navigatorObservers], must not be null.</p><br/>
 
             </xs:documentation>
         </xs:annotation>
@@ -3069,6 +3116,14 @@ new route.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.widgets.widgetsApp.onUnknownRoute}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="onNavigationNotification">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@macro flutter.widgets.widgetsApp.onNavigationNotification}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3661,6 +3716,14 @@ function.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.widgets.widgetsApp.onGenerateTitle}</p><br/>
 <p>This value is passed unmodified to [WidgetsApp.onGenerateTitle].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="onNavigationNotification">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@macro flutter.widgets.widgetsApp.onNavigationNotification}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -4394,7 +4457,7 @@ extended to include the height of the app bar and the top of the body
 is aligned with the top of the app bar.</p><br/>
 <p>This is useful if the app bar's [AppBar.backgroundColor] is not
 completely opaque.</p><br/>
-<p>This property is false by default. It must not be null.</p><br/>
+<p>This property is false by default.</p><br/>
 <p>See also:</p><br/>
 <ul>
 <li>[extendBody], which extends the height of the body to the bottom
@@ -4479,7 +4542,6 @@ Flutter.</li>
 <p>Creates a text widget.</p><br/>
 <p>If the [style] argument is null, the text will use the style from the
 closest enclosing [DefaultTextStyle].</p><br/>
-<p>The [data] parameter must not be null.</p><br/>
 <p>The [overflow] property's behavior is affected by the [softWrap] argument.
 If the [softWrap] is true or null, the glyph causing overflow, and those
 that follow, will not be rendered. Otherwise, it will be shown with the
@@ -4600,15 +4662,10 @@ from the nearest [DefaultTextStyle] ancestor will be used.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="textScaleFactor">
+                    <xs:attribute name="textScaler">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The number of font pixels for each logical pixel.</p><br/>
-<p>For example, if the text scale factor is 1.5, text will be 50% larger than
-the specified font size.</p><br/>
-<p>The value given to the constructor as textScaleFactor. If null, will
-use the [MediaQueryData.textScaleFactor] obtained from the ambient
-[MediaQuery], or 1.0 if there is no [MediaQuery] in scope.</p><br/>
+<p>{@macro flutter.painting.textPainter.textScaler}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -4689,7 +4746,6 @@ that, the selection color defaults to [DefaultSelectionStyle.defaultColor]
 <li>[TextSpan]s define text and children [InlineSpan]s.</li>
 <li>[WidgetSpan]s define embedded inline widgets.</li>
 </ul>
-<p>The [textSpan] parameter must not be null.</p><br/>
 <p>See [RichText] which provides a lower-level way to draw text.</p><br/>
 
             </xs:documentation>
@@ -4807,15 +4863,10 @@ from the nearest [DefaultTextStyle] ancestor will be used.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="textScaleFactor">
+                    <xs:attribute name="textScaler">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The number of font pixels for each logical pixel.</p><br/>
-<p>For example, if the text scale factor is 1.5, text will be 50% larger than
-the specified font size.</p><br/>
-<p>The value given to the constructor as textScaleFactor. If null, will
-use the [MediaQueryData.textScaleFactor] obtained from the ambient
-[MediaQuery], or 1.0 if there is no [MediaQuery] in scope.</p><br/>
+<p>{@macro flutter.painting.textPainter.textScaler}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5466,18 +5517,14 @@ splash with sparkle effects.</li>
                     <xs:attribute name="useMaterial3" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A temporary flag used to opt-in to Material 3 features.</p><br/>
-<p>If true, then widgets that have been migrated to Material 3 will
-use new colors, typography and other features of Material 3. If false,
-they will use the Material 2 look and feel.</p><br/>
-<p>During the migration to Material 3, turning this on may yield
-inconsistent look and feel in your app as some widgets are migrated
-while others have yet to be.</p><br/>
-<p>Defaults to false. When the Material 3 specification is complete
-and all widgets are migrated on stable, we will change this flag to be
-true by default. After that change has landed on stable, we will deprecate
-this flag and remove all uses of it. At that point, the <code>material</code> library
-will aim to only support Material 3.</p><br/>
+<p>A temporary flag that can be used to opt-out of Material 3 features.</p><br/>
+<p>This flag is <em>true</em> by default. If false, then components will
+continue to use the colors, typography and other features of
+Material 2.</p><br/>
+<p>In the long run this flag will be deprecated and eventually
+only Material 3 will be supported. We recommend that applications
+migrate to Material 3 as soon as that's practical. Until that migration
+is complete, this flag can be set to false.</p><br/>
 <h2>Defaults</h2>
 <p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
 some properties will get updated defaults. However, the
@@ -5503,7 +5550,6 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
-<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
 <li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
@@ -5512,7 +5558,7 @@ scheme depending on [useMaterial3].</p><br/>
 <ul>
 <li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal], [IconButton.outlined]</li>
 <li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
@@ -5535,11 +5581,11 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
-<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
+<li>Search: [SearchBar], [SearchAnchor],</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
+<li>Tabs: [TabBar], [TabBar.secondary]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
 <li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
@@ -6390,18 +6436,14 @@ splash with sparkle effects.</li>
                     <xs:attribute name="useMaterial3" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A temporary flag used to opt-in to Material 3 features.</p><br/>
-<p>If true, then widgets that have been migrated to Material 3 will
-use new colors, typography and other features of Material 3. If false,
-they will use the Material 2 look and feel.</p><br/>
-<p>During the migration to Material 3, turning this on may yield
-inconsistent look and feel in your app as some widgets are migrated
-while others have yet to be.</p><br/>
-<p>Defaults to false. When the Material 3 specification is complete
-and all widgets are migrated on stable, we will change this flag to be
-true by default. After that change has landed on stable, we will deprecate
-this flag and remove all uses of it. At that point, the <code>material</code> library
-will aim to only support Material 3.</p><br/>
+<p>A temporary flag that can be used to opt-out of Material 3 features.</p><br/>
+<p>This flag is <em>true</em> by default. If false, then components will
+continue to use the colors, typography and other features of
+Material 2.</p><br/>
+<p>In the long run this flag will be deprecated and eventually
+only Material 3 will be supported. We recommend that applications
+migrate to Material 3 as soon as that's practical. Until that migration
+is complete, this flag can be set to false.</p><br/>
 <h2>Defaults</h2>
 <p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
 some properties will get updated defaults. However, the
@@ -6427,7 +6469,6 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
-<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
 <li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
@@ -6436,7 +6477,7 @@ scheme depending on [useMaterial3].</p><br/>
 <ul>
 <li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal], [IconButton.outlined]</li>
 <li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
@@ -6459,11 +6500,11 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
-<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
+<li>Search: [SearchBar], [SearchAnchor],</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
+<li>Tabs: [TabBar], [TabBar.secondary]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
 <li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
@@ -7138,7 +7179,6 @@ popup menus.</p><br/>
             <xs:documentation xml:lang="en">
 <p>Create a [ThemeData] based on the colors in the given [colorScheme] and
 text styles of the optional [textTheme].</p><br/>
-<p>The [colorScheme] can not be null.</p><br/>
 <p>If [colorScheme].brightness is [Brightness.dark] then
 [ThemeData.applyElevationOverlayColor] will be set to true to support
 the Material dark theme method for indicating elevation by applying
@@ -7187,18 +7227,14 @@ backwards compatibility breaks.</p><br/>
                     <xs:attribute name="useMaterial3" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A temporary flag used to opt-in to Material 3 features.</p><br/>
-<p>If true, then widgets that have been migrated to Material 3 will
-use new colors, typography and other features of Material 3. If false,
-they will use the Material 2 look and feel.</p><br/>
-<p>During the migration to Material 3, turning this on may yield
-inconsistent look and feel in your app as some widgets are migrated
-while others have yet to be.</p><br/>
-<p>Defaults to false. When the Material 3 specification is complete
-and all widgets are migrated on stable, we will change this flag to be
-true by default. After that change has landed on stable, we will deprecate
-this flag and remove all uses of it. At that point, the <code>material</code> library
-will aim to only support Material 3.</p><br/>
+<p>A temporary flag that can be used to opt-out of Material 3 features.</p><br/>
+<p>This flag is <em>true</em> by default. If false, then components will
+continue to use the colors, typography and other features of
+Material 2.</p><br/>
+<p>In the long run this flag will be deprecated and eventually
+only Material 3 will be supported. We recommend that applications
+migrate to Material 3 as soon as that's practical. Until that migration
+is complete, this flag can be set to false.</p><br/>
 <h2>Defaults</h2>
 <p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
 some properties will get updated defaults. However, the
@@ -7224,7 +7260,6 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
-<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
 <li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
@@ -7233,7 +7268,7 @@ scheme depending on [useMaterial3].</p><br/>
 <ul>
 <li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal], [IconButton.outlined]</li>
 <li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
@@ -7256,11 +7291,11 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
-<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
+<li>Search: [SearchBar], [SearchAnchor],</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
+<li>Tabs: [TabBar], [TabBar.secondary]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
 <li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
@@ -7286,7 +7321,7 @@ scheme depending on [useMaterial3].</p><br/>
     <xs:element name="ThemeData.light">
         <xs:annotation>
             <xs:documentation xml:lang="en">
-<p>A default light blue theme.</p><br/>
+<p>A default light theme.</p><br/>
 <p>This theme does not contain text geometry. Instead, it is expected that
 this theme is localized using text geometry using [ThemeData.localize].</p><br/>
 
@@ -7298,18 +7333,14 @@ this theme is localized using text geometry using [ThemeData.localize].</p><br/>
                     <xs:attribute name="useMaterial3" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A temporary flag used to opt-in to Material 3 features.</p><br/>
-<p>If true, then widgets that have been migrated to Material 3 will
-use new colors, typography and other features of Material 3. If false,
-they will use the Material 2 look and feel.</p><br/>
-<p>During the migration to Material 3, turning this on may yield
-inconsistent look and feel in your app as some widgets are migrated
-while others have yet to be.</p><br/>
-<p>Defaults to false. When the Material 3 specification is complete
-and all widgets are migrated on stable, we will change this flag to be
-true by default. After that change has landed on stable, we will deprecate
-this flag and remove all uses of it. At that point, the <code>material</code> library
-will aim to only support Material 3.</p><br/>
+<p>A temporary flag that can be used to opt-out of Material 3 features.</p><br/>
+<p>This flag is <em>true</em> by default. If false, then components will
+continue to use the colors, typography and other features of
+Material 2.</p><br/>
+<p>In the long run this flag will be deprecated and eventually
+only Material 3 will be supported. We recommend that applications
+migrate to Material 3 as soon as that's practical. Until that migration
+is complete, this flag can be set to false.</p><br/>
 <h2>Defaults</h2>
 <p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
 some properties will get updated defaults. However, the
@@ -7335,7 +7366,6 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
-<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
 <li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
@@ -7344,7 +7374,7 @@ scheme depending on [useMaterial3].</p><br/>
 <ul>
 <li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal], [IconButton.outlined]</li>
 <li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
@@ -7367,11 +7397,11 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
-<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
+<li>Search: [SearchBar], [SearchAnchor],</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
+<li>Tabs: [TabBar], [TabBar.secondary]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
 <li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
@@ -7397,7 +7427,7 @@ scheme depending on [useMaterial3].</p><br/>
     <xs:element name="ThemeData.dark">
         <xs:annotation>
             <xs:documentation xml:lang="en">
-<p>A default dark theme with a teal secondary [ColorScheme] color.</p><br/>
+<p>A default dark theme.</p><br/>
 <p>This theme does not contain text geometry. Instead, it is expected that
 this theme is localized using text geometry using [ThemeData.localize].</p><br/>
 
@@ -7409,18 +7439,14 @@ this theme is localized using text geometry using [ThemeData.localize].</p><br/>
                     <xs:attribute name="useMaterial3" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A temporary flag used to opt-in to Material 3 features.</p><br/>
-<p>If true, then widgets that have been migrated to Material 3 will
-use new colors, typography and other features of Material 3. If false,
-they will use the Material 2 look and feel.</p><br/>
-<p>During the migration to Material 3, turning this on may yield
-inconsistent look and feel in your app as some widgets are migrated
-while others have yet to be.</p><br/>
-<p>Defaults to false. When the Material 3 specification is complete
-and all widgets are migrated on stable, we will change this flag to be
-true by default. After that change has landed on stable, we will deprecate
-this flag and remove all uses of it. At that point, the <code>material</code> library
-will aim to only support Material 3.</p><br/>
+<p>A temporary flag that can be used to opt-out of Material 3 features.</p><br/>
+<p>This flag is <em>true</em> by default. If false, then components will
+continue to use the colors, typography and other features of
+Material 2.</p><br/>
+<p>In the long run this flag will be deprecated and eventually
+only Material 3 will be supported. We recommend that applications
+migrate to Material 3 as soon as that's practical. Until that migration
+is complete, this flag can be set to false.</p><br/>
 <h2>Defaults</h2>
 <p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
 some properties will get updated defaults. However, the
@@ -7446,7 +7472,6 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
-<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
 <li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
@@ -7455,7 +7480,7 @@ scheme depending on [useMaterial3].</p><br/>
 <ul>
 <li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal], [IconButton.outlined]</li>
 <li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
@@ -7478,11 +7503,11 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
-<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
+<li>Search: [SearchBar], [SearchAnchor],</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
+<li>Tabs: [TabBar], [TabBar.secondary]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
 <li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>
@@ -7523,18 +7548,14 @@ text geometry.</p><br/>
                     <xs:attribute name="useMaterial3" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>A temporary flag used to opt-in to Material 3 features.</p><br/>
-<p>If true, then widgets that have been migrated to Material 3 will
-use new colors, typography and other features of Material 3. If false,
-they will use the Material 2 look and feel.</p><br/>
-<p>During the migration to Material 3, turning this on may yield
-inconsistent look and feel in your app as some widgets are migrated
-while others have yet to be.</p><br/>
-<p>Defaults to false. When the Material 3 specification is complete
-and all widgets are migrated on stable, we will change this flag to be
-true by default. After that change has landed on stable, we will deprecate
-this flag and remove all uses of it. At that point, the <code>material</code> library
-will aim to only support Material 3.</p><br/>
+<p>A temporary flag that can be used to opt-out of Material 3 features.</p><br/>
+<p>This flag is <em>true</em> by default. If false, then components will
+continue to use the colors, typography and other features of
+Material 2.</p><br/>
+<p>In the long run this flag will be deprecated and eventually
+only Material 3 will be supported. We recommend that applications
+migrate to Material 3 as soon as that's practical. Until that migration
+is complete, this flag can be set to false.</p><br/>
 <h2>Defaults</h2>
 <p>If a [ThemeData] is <em>constructed</em> with [useMaterial3] set to true, then
 some properties will get updated defaults. However, the
@@ -7560,7 +7581,6 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Typography: [Typography] (see table above)</li>
 </ul>
 <h3>Components</h3>
-<p>* <em>new</em> means the new widgets/methods created since the last stable release.</p><br/>
 <ul>
 <li>Badges: [Badge]</li>
 <li>Bottom app bar: [BottomAppBar]</li>
@@ -7569,7 +7589,7 @@ scheme depending on [useMaterial3].</p><br/>
 <ul>
 <li>Common buttons: [ElevatedButton], [FilledButton], [FilledButton.tonal], [OutlinedButton], [TextButton]</li>
 <li>FAB: [FloatingActionButton], [FloatingActionButton.extended]</li>
-<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal] (<em>new</em>), [IconButton.outlined] (<em>new</em>)</li>
+<li>Icon buttons: [IconButton], [IconButton.filled] (<em>new</em>), [IconButton.filledTonal], [IconButton.outlined]</li>
 <li>Segmented buttons: [SegmentedButton] (replacing [ToggleButtons])</li>
 </ul>
 </li>
@@ -7592,11 +7612,11 @@ scheme depending on [useMaterial3].</p><br/>
 <li>Navigation rail: [NavigationRail]</li>
 <li>Progress indicators: [CircularProgressIndicator], [LinearProgressIndicator]</li>
 <li>Radio button: [Radio], [RadioListTile]</li>
-<li>Search: [SearchBar] (<em>new</em>), [SearchAnchor] (<em>new</em>),</li>
+<li>Search: [SearchBar], [SearchAnchor],</li>
 <li>Snack bar: [SnackBar]</li>
 <li>Slider: [Slider], [RangeSlider]</li>
 <li>Switch: [Switch], [SwitchListTile]</li>
-<li>Tabs: [TabBar], [TabBar.secondary] (<em>new</em>)</li>
+<li>Tabs: [TabBar], [TabBar.secondary]</li>
 <li>TextFields: [TextField] together with its [InputDecoration]</li>
 <li>Time pickers: [showTimePicker], [TimePickerDialog]</li>
 <li>Top app bar: [AppBar], [SliverAppBar], [SliverAppBar.medium], [SliverAppBar.large]</li>

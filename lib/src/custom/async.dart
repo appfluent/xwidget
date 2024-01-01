@@ -4,10 +4,17 @@ import '../utils/logging.dart';
 import '../utils/parsers.dart';
 import '../xwidget.dart';
 
-typedef InitializerFunction = dynamic Function(BuildContext context, Dependencies dependencies);
-typedef BuilderFunction<T> = Widget Function(BuildContext context, Dependencies dependencies, T initValue);
+typedef InitializerFunction = dynamic Function(
+    BuildContext context,
+    Dependencies dependencies
+);
 
-@InflaterDef(inflaterType: "DynamicBuilder", inflatesOwnChildren: false)
+typedef BuilderFunction<T> = Widget Function(
+    BuildContext context,
+    Dependencies dependencies,
+    T initValue
+);
+
 class DynamicBuilder<T> extends StatefulWidget {
   final InitializerFunction? initializer;
   final BuilderFunction<T> builder;

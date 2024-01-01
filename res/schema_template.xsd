@@ -176,6 +176,25 @@
 
     <!-- complex types -->
 
+    <xs:complexType name="paramType">
+        <xs:sequence>
+            <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" use="required"/>
+        <xs:attribute name="value"/>
+        <xs:attribute name="visible" type="boolAttributeType"/>
+    </xs:complexType>
+
+    <xs:complexType name="mapEntryType">
+        <xs:sequence>
+            <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="for" type="xs:string"/>
+        <xs:attribute name="key" use="required"/>
+        <xs:attribute name="value"/>
+        <xs:attribute name="visible" type="boolAttributeType"/>
+    </xs:complexType>
+
     <xs:complexType name="objectType" mixed="true">
         <xs:sequence>
             <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
@@ -267,6 +286,30 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="forEach" form="qualified">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="param" type="paramType" form="qualified"/>
+                        </xs:sequence>
+                        <xs:attribute name="var" type="xs:string" use="required"/>
+                        <xs:attribute name="indexVar" type="xs:string"/>
+                        <xs:attribute name="items" type="xs:string" use="required"/>
+                        <xs:attribute name="start" type="integerAttributeType"/>
+                        <xs:attribute name="end" type="integerAttributeType"/>
+                        <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="if" form="qualified">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded">
+                            <xs:element name="param" type="paramType" form="qualified"/>
+                        </xs:choice>
+                        <xs:attribute name="test" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="param" type="paramType" form="qualified"/>
+            </xs:choice>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
@@ -349,7 +392,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="ListOf">
+    <xs:element name="List">
         <xs:annotation>
             <xs:documentation xml:lang="en">
             </xs:documentation>
@@ -357,9 +400,22 @@
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
-                    <xs:attribute name="children"/>
                 </xs:extension>
             </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Map">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Entry" form="qualified" type="mapEntryType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="for" type="xs:string"/>
+            <xs:attribute name="visible" type="boolAttributeType"/>
         </xs:complexType>
     </xs:element>
 
