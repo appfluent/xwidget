@@ -1,6 +1,7 @@
 import 'package:xml/xml.dart';
 
 import '../xwidget.dart';
+import '../utils/parsers.dart';
 
 /// A tag that renders a UI fragment
 ///
@@ -21,7 +22,7 @@ import '../xwidget.dart';
 ///         </AppBar>
 ///         ```
 class FragmentTag implements Tag {
-  static const attributeNames = {"for", "name"};
+  static const attributeNames = {"for", "name", "visible"};
 
   @override
   String get name => "fragment";
@@ -37,6 +38,12 @@ class FragmentTag implements Tag {
     if (fragmentName == null) {
       final dump = XWidget.dump(element, dependencies);
       throw Exception("<$name> 'name' attribute is required. $dump");
+    }
+
+    final bool? visible = attributes["visible"];
+    if (visible != null && parseBool(visible) != true) {
+      // don't show fragment
+      return null;
     }
 
     // process child tags for parameters only - need original deps here

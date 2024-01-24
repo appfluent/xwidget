@@ -54,9 +54,6 @@ class BuilderTag implements Tag {
 
     // 'for' is a required attribute.
     final forAttribute = element.getAttribute("for");
-    if (forAttribute == null || forAttribute.isEmpty) {
-      throw Exception("<$name> 'for' attribute is required.");
-    }
 
     final multiChild = parseBool(attributes["multiChild"]) ?? false;
     final nullable = parseBool(attributes["nullable"]) ?? false;
@@ -102,11 +99,23 @@ class BuilderTag implements Tag {
 
     final children = Children();
     if (multiChild) {
-      children.attributes[forAttribute] = multiWidgetBuilder;
+      if (CommonUtils.isBlank(forAttribute)) {
+        children.objects.add(multiWidgetBuilder);
+      } else {
+        children.attributes[forAttribute!] = multiWidgetBuilder;
+      }
     } else if (nullable) {
-      children.attributes[forAttribute] = nullableSingleWidgetBuilder;
+      if (CommonUtils.isBlank(forAttribute)) {
+        children.objects.add(nullableSingleWidgetBuilder);
+      } else {
+        children.attributes[forAttribute!] = nullableSingleWidgetBuilder;
+      }
     } else {
-      children.attributes[forAttribute] = singleWidgetBuilder;
+      if (CommonUtils.isBlank(forAttribute)) {
+        children.objects.add(singleWidgetBuilder);
+      } else {
+        children.attributes[forAttribute!] = singleWidgetBuilder;
+      }
     }
     return children;
   }

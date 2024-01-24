@@ -228,11 +228,33 @@ class InflaterBuilder extends SpecBuilder {
             defaultValueCode = constVariableValue!.toBoolValue().toString();
           } else if (constVariableValueType.isDartCoreString) {
             defaultValueCode = constVariableValue!.toStringValue().toString();
+          } else if (defaultValueCode.startsWith("_")) {
+            // default is a private variable
+            final constExp = _getConstantInitializer(constValue?.variable);
+            if (constExp != null && constExp.isNotEmpty) {
+              defaultValueCode = constExp;
+            }
           }
         }
       }
     }
     return defaultValueCode;
+  }
+
+  String? _getConstantInitializer(VariableElement? element) {
+    try {
+      // expecting a ConstTopLevelVariableElementImpl object
+      final dynamic variable = element;
+
+      // expecting an InstanceCreationExpressionImpl object
+      final expression = variable.constantInitializer;
+
+      return expression != null ? expression.toString() : null;
+    } on NoSuchMethodError catch (_) {
+      // ignore this error because we're hacking the analyzer to retrieve
+      // a property that is not exposed by the api.
+    }
+    return null;
   }
 
   String _buildInflaterParseCase(String constructorName, ParameterElement param) {

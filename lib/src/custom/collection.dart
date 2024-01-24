@@ -16,7 +16,16 @@ class ListInflater extends Inflater {
       List<dynamic> children,
       List<String> text
   ) {
-    return [...children];
+    final items = [];
+    final innerLists = attributes["innerLists"];
+    for (final child in children) {
+      if (innerLists == "spread" && child is List) {
+        items.addAll(child);
+      } else {
+        items.add(child);
+      }
+    }
+    return items;
   }
 
   @override

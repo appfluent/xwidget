@@ -163,16 +163,15 @@ class PathResolution {
       if (value is List<dynamic>) {
         return PathResolution._resolveListPath(nextPath, createPath, value);
       }
-      throw Exception("Path '$path' implies a [List], but found a "
-          "[${value.runtimeType}] at '$nextPath' instead.");
+      throw Exception("Path '$path' implies that '$nextPath' is referencing a "
+          "[List], but found a [${value.runtimeType}].");
     } else if (value is Map<String, dynamic> || value is Keyed) {
       return PathResolution.resolvePath(nextPath, createPath, value);
     } else if (value is Data) {
       return PathResolution.resolvePath(nextPath, createPath, value.data);
     }
-    throw Exception("Path '$path' implies a keyed or indexed value such as "
-        "[Data], [Map], [List] or [Keyed], but found a [${value.runtimeType}] "
-        "at '$nextPath' instead.");
+    throw Exception("Path '$path' implies that '$nextPath' is referencing a "
+        "[Map] or [Data], but found a [${value.runtimeType}] instead.");
   }
 }
 

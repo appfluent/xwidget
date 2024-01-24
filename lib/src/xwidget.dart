@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart' hide Stack;
 import 'package:petitparser/core.dart';
 import 'package:xml/xml.dart';
+import 'package:xwidget/src/custom/media.dart';
 
 import 'custom/async.dart';
 import 'custom/collection.dart';
@@ -31,6 +32,7 @@ class XWidget {
   static final _listInflater = ListInflater();
   static final _mapInflater = MapInflater();
   static final _mapEntryInflater = MapEntryInflater();
+  static final _mediaQueryInflater = MediaQueryWidgetInflater();
   static final _paramInflater = ParamInflater();
   static final _valueListenerInflater = ValueListenerInflater();
 
@@ -49,6 +51,7 @@ class XWidget {
     _listInflater.type: _listInflater,
     _mapInflater.type: _mapInflater,
     _mapEntryInflater.type: _mapEntryInflater,
+    _mediaQueryInflater.type: _mediaQueryInflater,
     _paramInflater.type: _paramInflater,
     _valueListenerInflater.type: _valueListenerInflater,
   };

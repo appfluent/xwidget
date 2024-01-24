@@ -145,6 +145,17 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="ListOperationAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="add"/>
+                    <xs:enumeration value="spread"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="TextDecorationAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -434,7 +445,7 @@
             <xs:sequence>
                 <xs:any namespace="##targetNamespace" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="for" type="xs:string" use="required"/>
+            <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="vars" type="xs:string"/>
             <xs:attribute name="multiChild" type="boolAttributeType"/>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
@@ -532,8 +543,9 @@
             </xs:choice>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="visible" type="boolAttributeType"/>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
-            <xs:anyAttribute/>
+            <xs:anyAttribute processContents="lax"/>
         </xs:complexType>
     </xs:element>
 
@@ -620,6 +632,7 @@
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
+                    <xs:attribute name="innerLists" type="ListOperationAttributeType"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -636,6 +649,24 @@
             </xs:sequence>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="visible" type="boolAttributeType"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MediaQuery">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="objectType">
+                    <xs:attribute name="key"/>
+                    <xs:attribute name="varName" type="xs:string"/>
+                    <xs:attribute name="smallMaxWidth" type="integerAttributeType"/>
+                    <xs:attribute name="mediumMaxWidth" type="integerAttributeType"/>
+                    <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
+                </xs:extension>
+            </xs:complexContent>
         </xs:complexType>
     </xs:element>
 

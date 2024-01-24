@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:intl/intl.dart';
 import 'package:petitparser/core.dart';
 import 'package:xwidget/src/utils/logging.dart';
@@ -6,6 +8,7 @@ import 'package:xwidget/src/utils/parsers.dart';
 class BuiltInFunctions {
   static const _log = CommonLog("BuiltInFunctions");
 
+  final _random = Random();
   final Parser Function() _getParser;
   final _durationValidator = RegExp(r'^P(([0-9]+D)?T?([0-9]+H)?([0-9]+M)?([0-9]+S)?)$');
   final _durationMatcher = [
@@ -42,8 +45,12 @@ class BuiltInFunctions {
       case "length": return _length;
       case "logDebug": return _logDebug;
       case "matches": return _matches;
+      case "randomDouble": return _randomDouble;
+      case "randomInt": return _randomInt;
+      case "replaceAll": return _replaceAll;
+      case "replaceFirst": return _replaceFirst;
       case "now": return _now;
-      case "nowInUtc": return _nowInUtc;
+      case "nowUtc": return _nowUtc;
       case "startsWith": return _startsWith;
       case "substring": return _substring;
       case "toBool": return _toBool;
@@ -156,9 +163,50 @@ class BuiltInFunctions {
     }
   }
 
+  /// Generates a non-negative random integer uniformly distributed in the range
+  /// from 0, inclusive, to [max], exclusive.
+  ///
+  /// Implementation note: The default implementation supports [max] values
+  /// between 1 and (1<<32) inclusive.
+  ///
+  /// Example:
+  /// ```dart
+  /// var intValue = Random().nextInt(10); // Value is >= 0 and < 10.
+  /// intValue = Random().nextInt(100) + 50; // Value is >= 50 and < 150.
+  /// ```
+  int _randomInt(int max) => _random.nextInt(max);
+
+  /// Generates a non-negative random floating point value uniformly distributed
+  /// in the range from 0.0, inclusive, to 1.0, exclusive.
+  ///
+  /// Example:
+  /// ```dart
+  /// var doubleValue = Random().nextDouble(); // Value is >= 0.0 and < 1.0.
+  /// doubleValue = Random().nextDouble() * 256; // Value is >= 0.0 and < 256.0.
+  /// ```
+  double _randomDouble() => _random.nextDouble();
+
+  String _replaceAll(String value, String regExp, String replacement) {
+    final regex = RegExp(regExp);
+    return value.replaceAll(regex, replacement);
+  }
+
+  String _replaceFirst(String value, String regExp, String replacement, [int startIndex = 0]) {
+    final regex = RegExp(regExp);
+    return value.replaceFirst(regex, replacement, startIndex);
+  }
+
   DateTime _now() => DateTime.now();
 
-  DateTime _nowInUtc() => DateTime.now().toUtc();
+  /// Returns this DateTime value in the UTC time zone.
+  ///
+  /// Returns [this] if it is already in UTC.
+  /// Otherwise this method is equivalent to:
+  ///
+  /// ```dart template:expression
+  /// DateTime.fromMicrosecondsSinceEpoch(microsecondsSinceEpoch, isUtc: true)
+  /// ```
+  DateTime _nowUtc() => DateTime.now().toUtc();
 
   bool _startsWith(String value, String searchFor) => value.startsWith(searchFor);
 

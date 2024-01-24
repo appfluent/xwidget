@@ -8,6 +8,8 @@ import '../utils/config_loader.dart';
 import '../utils/utils.dart';
 
 abstract class SpecBuilder {
+  static final listTypeRegExp = RegExp(r"^List(<[ _0-9a-zA-z<>()?]+>)?\??$");
+
   final BuilderConfig config;
 
   SpecBuilder(this.config);
@@ -55,7 +57,7 @@ abstract class SpecBuilder {
   }
 
   bool isTypeList(String type) {
-    final match = RegExp(r"^List(<[_0-9a-zA-z<>?]+>)?\??$").firstMatch(type);
+    final match = listTypeRegExp.firstMatch(type);
     return match != null;
   }
 

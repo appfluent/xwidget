@@ -113,13 +113,13 @@ class ELParserDefinition extends ELGrammarDefinition {
   @override
   Parser postfixOperatorExpression() => super.postfixOperatorExpression().map((c) {
     if (c[1] == null) return c[0];
-    return _createNonNullableConversionExpression(c[0]);
+    return NullableToNonNullableExpression(c[0]);
   });
 
   @override
   Parser conditionalExpression() => super.conditionalExpression().map((c) {
     if (c[1] == null) return c[0];
-    return _createConditionalExpression(c[0], c[1][1], c[1][3]);
+    return ConditionalExpression(c[0], c[1][1], c[1][3]);
   });
 
   @override
@@ -264,68 +264,6 @@ class ELParserDefinition extends ELGrammarDefinition {
   //===================================
   // private methods
   //===================================
-
-  ConditionalExpression _createConditionalExpression(Expression<bool> condition, Expression trueValue, Expression falseValue) {
-    if (trueValue is Expression<int>) {
-      return ConditionalExpression<int>(condition, trueValue, falseValue as Expression<int>);
-    }
-    if (trueValue is Expression<bool>) {
-      return ConditionalExpression<bool>(condition, trueValue, falseValue as Expression<bool>);
-    }
-    if (trueValue is Expression<String>) {
-      return ConditionalExpression<String>(condition, trueValue, falseValue as Expression<String>);
-    }
-    if (trueValue is Expression<double>) {
-      return ConditionalExpression<double>(condition, trueValue, falseValue as Expression<double>);
-    }
-    if (trueValue is Expression<DateTime>) {
-      return ConditionalExpression<DateTime>(condition, trueValue, falseValue as Expression<DateTime>);
-    }
-    if (trueValue is Expression<Duration>) {
-      return ConditionalExpression<Duration>(condition, trueValue, falseValue as Expression<Duration>);
-    }
-    throw Exception('Unknown expression in conditional expression');
-  }
-
-  NullableToNonNullableExpression _createNonNullableConversionExpression(Expression value) {
-    if (value is Expression<int>) {
-      return NullableToNonNullableExpression<int>(value);
-    }
-    if (value is Expression<int?>) {
-      return NullableToNonNullableExpression<int>(value);
-    }
-    if (value is Expression<bool>) {
-      return NullableToNonNullableExpression<bool>(value);
-    }
-    if (value is Expression<bool?>) {
-      return NullableToNonNullableExpression<bool>(value);
-    }
-    if (value is Expression<String>) {
-      return NullableToNonNullableExpression<String>(value);
-    }
-    if (value is Expression<String?>) {
-      return NullableToNonNullableExpression<String>(value);
-    }
-    if (value is Expression<double>) {
-      return NullableToNonNullableExpression<double>(value);
-    }
-    if (value is Expression<double?>) {
-      return NullableToNonNullableExpression<double>(value);
-    }
-    if (value is Expression<DateTime>) {
-      return NullableToNonNullableExpression<DateTime>(value);
-    }
-    if (value is Expression<DateTime?>) {
-      return NullableToNonNullableExpression<DateTime>(value);
-    }
-    if (value is Expression<Duration>) {
-      return NullableToNonNullableExpression<Duration>(value);
-    }
-    if (value is Expression<Duration?>) {
-      return NullableToNonNullableExpression<Duration>(value);
-    }
-    throw Exception('Unknown expression in conditional expression');
-  }
 
   Expression _createFunctionExpression(String functionName, List<Expression> parameters) {
     final resolved = _getDataStore(functionName);

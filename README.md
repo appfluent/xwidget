@@ -78,16 +78,17 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
     - [```<fragment>```](#fragment)
     - [```<if>/<else>```](#ifelse)
     - [```<var>```](#var)
-12. [Tips and Tricks](#tips-and-tricks)
-13. [Trouble Shooting](#trouble-shooting)
+12. [Best Practices](#best-practices)
+13. [Tips and Tricks](#tips-and-tricks)
+14. [Trouble Shooting](#trouble-shooting)
     - [The generated inflater code has errors](#the-generated-inflater-code-has-errors)
     - [Hot reload/restart clears dependency values](#hot-reloadrestart-clears-dependency-values)
-14. [FAQ](#faq)
-15. [Roadmap](#roadmap)
+15. [FAQ](#faq)
+16. [Roadmap](#roadmap)
     - [0.0.x Releases (2023)](#00x-releases-2023)
     - [0.x Releases (2024)](#0x-releases-2024)
     - [1.0.0 Release (mid 2024)](#100-release-mid-2024)
-16. [Known Issues](#known-issues)
+17. [Known Issues](#known-issues)
 
 # Quick Start
 
@@ -102,8 +103,11 @@ below.
     ```
 
 2. Create an inflater specification file. This is a Dart file that tells XWidget which widgets and
-   helper classes you're planning on using in your fragments. See [Inflaters](#inflaters) for more.
-
+   helper classes you intend on using in your fragments. While this fill can live anywhere
+   under the `lib` folder, we recommend placing it under `lib\xwidget` and naming it
+   `inflater_spec.dart`. See [Recommended folder structure](#recommended-folder-structure).
+   See [Inflaters](#inflaters) for more about inflaters.
+    
     ```dart
     // lib/xwidget/inflater_spec.dart
     import 'package:flutter/material.dart';
@@ -137,7 +141,7 @@ below.
 
 5. Register the generated schema file with your IDE under the namespace
    `http://www.appfluent.us/xwidget`. This will provide validation, code completion, and tooltip
-   documentation while editing your fragments.<br><br>
+   documentation while editing your fragments.
 
 6. Register the generated components in your application's main method. You'll need to import
    XWidget and the generated code.
@@ -184,13 +188,22 @@ below.
     ```
 
 9. Inflate your fragment. Where ever you want to render your fragment, simply call
-   *XWidget.inflateFragment(...)* with the name of your fragment and `Dependencies`. See
+   *XWidget.inflateFragment(...)* with the name of your fragment and `Dependencies` object. See
    [Dependencies](#dependencies) for more.
 
    ```dart
-   return Container(
+   // Example 1
+   Container(
      child: XWidget.inflateFragment("hello_world", Dependencies())
    )
+   ```
+
+   ```dart
+   // Example 2
+   @override
+   Widget build(BuildContext context) {
+     return XWidget.inflateFragment("hello_world", Dependencies()); 
+   }
    ```
 
 # Example
@@ -300,7 +313,7 @@ const inflaters = [
 ```yaml
 # Responsible for configuring inputs and outputs to generate the inflater schema.
 # Register the generated schema with your IDE to get code completion and documentation
-# while editing UI markup. 
+# while editing fragments. 
 schema:
 
   # DEFAULT: "xwidget_schema.g.xsd"
@@ -636,36 +649,40 @@ associativity. Both the precedence level and associativity can be seen in the ta
 
 ### Built-In Functions
 
-| Name              | Arguments                                       | Returns  | Description | Examples                                                                          |
-|-------------------|-------------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
-| contains          | dynamic value<br/>dynamic searchValue           | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
-| containsKey       | Map? map<br/>dynamic searchKey                  | bool     |             |                                                                                   |
-| containsValue     | Map? map<br/>dynamic searchValue                | bool     |             |                                                                                   |
-| diffDateTime      | DateTime left<br/>DateTime right                | Duration |             |                                                                                   |
-| durationInDays    | Duration value                                  | int      |             |                                                                                   |
-| durationInHours   | Duration value                                  | int      |             |                                                                                   |
-| durationInMinutes | Duration value                                  | int      |             |                                                                                   |
-| durationInSeconds | Duration value                                  | int      |             |                                                                                   |
-| durationInMills   | Duration value                                  | int      |             |                                                                                   |
-| endsWith          | String value<br/>String searchValue             | bool     |             |                                                                                   |
-| eval              | String? value                                   | dynamic  |             |                                                                                   |
-| formatDateTime    | String format<br/>DateTime dateTime             | String   |             |                                                                                   |
-| isEmpty           | dynamic value                                   | bool     |             |                                                                                   |
-| isFalseOrNull     | dynamic value                                   | bool     |             |                                                                                   |
-| isNotEmpty        | dynamic value                                   | bool     |             |                                                                                   |
-| isNotNull         | dynamic value                                   | bool     |             |                                                                                   |
-| isNull            | dynamic value                                   | bool     |             |                                                                                   |
-| sTrueOrNull       | dynamic value                                   | bool     |             |                                                                                   |
-| length            | dynamic value                                   | length   |             |                                                                                   |
-| matches           | String value<br/>String regExp                  | bool     |             |                                                                                   |
-| now               | none                                            | DateTime |             |                                                                                   |
-| nowInUtc          | none                                            | DateTime |             |                                                                                   |
-| startsWith        | String value<br/>String searchValue             | bool     |             |                                                                                   |
-| substring         | String value<br/>int start<br/>[int end = -1]   | String   |             |                                                                                   |
-| toBool            | dynamic value                                   | bool     |             |                                                                                   |
-| toDateTime        | dynamic value                                   | DateTime |             |                                                                                   |
-| toDuration        | String value                                    | Duration |             |                                                                                   |
-| toString          | dynamic value                                   | String   |             |                                                                                   |
+| Name              | Arguments                                                                     | Returns  | Description | Examples                                                                          |
+|-------------------|-------------------------------------------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
+| contains          | dynamic value<br/>dynamic searchValue                                         | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
+| containsKey       | Map? map<br/>dynamic searchKey                                                | bool     |             |                                                                                   |
+| containsValue     | Map? map<br/>dynamic searchValue                                              | bool     |             |                                                                                   |
+| diffDateTime      | DateTime left<br/>DateTime right                                              | Duration |             |                                                                                   |
+| durationInDays    | Duration value                                                                | int      |             |                                                                                   |
+| durationInHours   | Duration value                                                                | int      |             |                                                                                   |
+| durationInMinutes | Duration value                                                                | int      |             |                                                                                   |
+| durationInSeconds | Duration value                                                                | int      |             |                                                                                   |
+| durationInMills   | Duration value                                                                | int      |             |                                                                                   |
+| endsWith          | String value<br/>String searchValue                                           | bool     |             |                                                                                   |
+| eval              | String? value                                                                 | dynamic  |             |                                                                                   |
+| formatDateTime    | String format<br/>DateTime dateTime                                           | String   |             |                                                                                   |
+| isEmpty           | dynamic value                                                                 | bool     |             |                                                                                   |
+| isFalseOrNull     | dynamic value                                                                 | bool     |             |                                                                                   |
+| isNotEmpty        | dynamic value                                                                 | bool     |             |                                                                                   |
+| isNotNull         | dynamic value                                                                 | bool     |             |                                                                                   |
+| isNull            | dynamic value                                                                 | bool     |             |                                                                                   |
+| sTrueOrNull       | dynamic value                                                                 | bool     |             |                                                                                   |
+| length            | dynamic value                                                                 | length   |             |                                                                                   |
+| matches           | String value<br/>String regExp                                                | bool     |             |                                                                                   |
+| now               | none                                                                          | DateTime |             |                                                                                   |
+| nowInUtc          | none                                                                          | DateTime |             |                                                                                   |
+| randomDouble      |                                                                               | double   |             |                                                                                   | 
+| randomInt         | int max                                                                       | int      |             |                                                                                   |
+| replaceAll        | String value<br/>String regex<br/>String replacement                          | String   |             |                                                                                   |
+| replaceFirst      | String value<br/>String regex<br/>String replacement<br/>[int startIndex = 0] | String   |             |                                                                                   |
+| startsWith        | String value<br/>String searchValue                                           | bool     |             |                                                                                   |
+| substring         | String value<br/>int start<br/>[int end = -1]                                 | String   |             |                                                                                   |
+| toBool            | dynamic value                                                                 | bool     |             |                                                                                   |
+| toDateTime        | dynamic value                                                                 | DateTime |             |                                                                                   |
+| toDuration        | String value                                                                  | Duration |             |                                                                                   |
+| toString          | dynamic value                                                                 | String   |             |                                                                                   |
 
 ### Custom Functions
 
@@ -696,7 +713,7 @@ Example usage:
 
 *Add documentation here.*
 
-### Ints
+### Integers
 
 *Add documentation here.*
 
@@ -704,7 +721,7 @@ Example usage:
 
 *Add documentation here.*
 
-### Bools
+### Booleans
 
 *Add documentation here.*
 
@@ -905,6 +922,22 @@ A tag that renders a UI fragment
 
 *Add documentation here.*
 
+### Instantiate a new Dependencies object for each page
+
+```dart
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return Scaffold(
+          body: XWidget.inflateFragment("profile/settings", Dependencies())
+      );
+    }));
+```
+
+*Add documentation here.*
+
+### Prefer automatic scoping of Dependencies
+
+*Add documentation here.*
+
 ### Recommended folder structure
 
 *Add documentation here.*
@@ -916,8 +949,8 @@ project
 │       ├── controllers  # holds all custom controllers
 │       └── generated    # holds all generated .g.dart files
 └── resources
-├── fragments  # holds all fragments
-└── values     # holds all resource values i.e strings.xml, bools.xml, colors.xml, etc.
+    ├── fragments  # holds all fragments
+    └── values     # holds all resource values i.e strings.xml, bools.xml, colors.xml, etc.
 ```
 
 # Tips and Tricks
@@ -978,6 +1011,21 @@ these problems in an uncomplicated way with fragments and controllers.
 This may just be our opinion, but building views in code just feels clunky. We find it more
 enjoyable to write our UIs using markup - it feels more natural and it's certainly a lot easier to
 read. The experience should only get better as we improve IDE integration.
+
+## I don't need dynamic UIs, why should I still use XWidget?
+
+While not all apps require dynamic user interfaces, incorporating XWidget can still yield 
+substantial benefits. XWidget enhances code quality by promoting organization and readability,
+contributing to overall code improvement.
+
+Code readability is a fundamental aspect of quality code for any software project. Readable
+code is much easier to debug, maintain, and understand. XWidget's strong separation between
+presentation logic and layout leads to better organized code. Its XML based markup language 
+for building layouts is vastly easier to read and modify than the default, code centric approach
+offered by the Flutter framework. Additionally, XWidget can manage your static string, boolean,
+numeric, and color resources, so that values are never hardcoded directly into your layouts or
+anywhere else. Please read the [Fragments](#fragments), [Controllers](#controllers), and
+[Resources](#resources) sections above.
 
 # Roadmap
 

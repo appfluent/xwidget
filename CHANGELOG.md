@@ -1,3 +1,20 @@
+### 0.0.32 (Jan 23, 2024)
+
+#### Please run `dart run xwidget:generate` after upgrading.
+
+* Fixed issues with code generator not recognizing some `List` types.
+* Improved EL dot notation path resolution error messages.
+* Changed `<builder/>`'s `for` attribute from required to optional. This is needed for
+  creating lists of builders as required by `BottomNavLayout.pages`.
+* Added `innerLists` attribute to `<List/>` for configuration of how inner lists are handled.
+  The options are `add` and `spread`. `add` (default) will add the inner list object.
+  `spread` will add the inner list's items to the containing list. 
+* Added `visible` attribute to `<fragment/>`.
+* Added new EL functions: `randomDouble`, `randomInt`, `replaceAll`, `replaceFirst`
+* Improved code generator's handling of private constant defaults.
+* Added `<Media/>` component. Writes MediaQuery values to `Dependencies`.
+* Added `createMaterialColor`, `parseMaterialColor` utility functions.
+
 ### 0.0.31 (Jan 1, 2024)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
@@ -14,7 +31,6 @@
    element. Example usage:
    ```xml
    <fragment name="header">
-       <!-- use 'var' to pass values to fragment -->
        <param name="bottom" value="tab_bar"/>
    </fragment>
    ```

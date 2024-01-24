@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // ignore_for_file: unused_element
 
+const AlertDialog? _alertDialog = null;
 const AppBar? _appBar = null;
 const BoxConstraints? _boxConstraints = null;
 const Center? _center = null;
@@ -21,6 +22,7 @@ const TextStyle? _textStyle = null;
 const ThemeData? _themeData = null;
 
 const inflaters = [
+  AlertDialog,
   AppBar,
   BoxConstraints,
   Center,
