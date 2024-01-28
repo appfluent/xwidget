@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:xwidget/xwidget.dart';
-
+import '../../../lib/xwidget.dart';
 
 main() {
 
@@ -27,7 +26,6 @@ main() {
     data.setValue("topicsFollowed.top_news.test", true);
     expect(data.getValue("topicsFollowed.top_news.test"), true);
   });
-
 
   test('Assert replace', () {
     final data = <String, dynamic>{};
@@ -63,10 +61,10 @@ main() {
   test('Assert ImmutableData is mutable', () {
     final data = Data({"a": "a"}, false);
     data["b.c"] = "c";
-    expect(data["b.c"], "c");
+    expect(data, {"a": "a", "b": {"c": "c"}});
   });
 
-  test('Assert ger list value', () {
+  test('Assert get list value', () {
     final data = Data({"list": ["A", "B", "C"]}, true);
     expect(data["list[1]"], "B");
   });
@@ -74,12 +72,34 @@ main() {
   test('Assert update data in list', () {
     final data = Data({"list": ["A", "B", "C"]}, false);
     data["list[1]"] = "D";
-    expect(data["list[1]"], "D");
+    expect(data["list"], ["A", "D", "C"]);
   });
 
-  // test('Assert append data to list', () {
-  //   final data = Data({"list": ["A", "B", "C"]}, false);
-  //   data.setValue("list[3]", "D", true);
-  //   expect(data["list[3]"], "l");
-  // });
+  test('Assert data removed from list', () {
+    final data = Data({"lists": {"a":["A", "B", "C"]}, "b":["X", "Y", "Z"]}, false);
+    data.removeValue("lists.a[1]");
+    expect(data["lists.a"], ["A", "C"]);
+  });
+
+  test('Assert item from multi-dimensional list', () {
+    final data = Data({"list": [["A", "B", "C"]]}, false);
+    expect(data["list[0][1]"], "B");
+  });
+
+  test('Assert append data to end of list', () {
+    final data = Data({"list": ["A", "B", "C"]}, false);
+    data.setValue("list[3]", "D");
+    expect(data["list"], ["A", "B", "C", "D"]);
+  });
+
+  test('Assert insert data past range in nullable list', () {
+    final data = Data({"list": <dynamic>["A", "B", "C"]}, false);
+    data.setValue("list[4]", "D");
+    expect(data["list"], ["A", "B", "C", null, "D"]);
+  });
+
+  test('Assert insert data past range in non-nullable list', () {
+    final data = Data({"list": ["A", "B", "C"]}, false);
+    expect(() => data["list[4]"] = "D", throwsException);
+  });
 }

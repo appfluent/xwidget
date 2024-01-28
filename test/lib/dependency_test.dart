@@ -1,8 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xml/xml.dart';
-import 'package:xwidget/src/custom/value_listener.dart';
 
-import 'package:xwidget/src/xwidget.dart';
+import '../../../lib/xwidget.dart';
 
 
 void main() {

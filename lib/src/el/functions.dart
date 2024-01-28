@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:intl/intl.dart';
 import 'package:petitparser/core.dart';
-import 'package:xwidget/src/utils/logging.dart';
-import 'package:xwidget/src/utils/parsers.dart';
+
+import '../utils/logging.dart';
+import '../utils/parsers.dart';
 
 class BuiltInFunctions {
   static const _log = CommonLog("BuiltInFunctions");

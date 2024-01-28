@@ -1,10 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:xwidget/xwidget.dart';
+import '../../../lib/xwidget.dart';
 
 
 main() {
-
 
   test('Assert setValue is fast', () {
     final data = <String, dynamic>{};

@@ -23,11 +23,7 @@ extension MapBrackets on Map<String, dynamic> {
   }
 
   dynamic removeValue(String? path) {
-    final resolved = PathResolution.resolvePath(path, false, this);
-    final collection = resolved.collection;
-    if (collection is Map) {
-      return collection.remove(resolved.path);
-    }
+    return PathResolution.resolvePath(path, false, this).removeValue();
   }
 
   ValueNotifier listenForChanges(
@@ -35,9 +31,8 @@ extension MapBrackets on Map<String, dynamic> {
       dynamic initialValue,
       dynamic defaultValue
   ) {
-    return PathResolution
-        .resolvePath(path, true, this)
-        .listenForChanges(initialValue, defaultValue);
+    final resolved = PathResolution.resolvePath(path, true, this);
+    return resolved.listenForChanges(initialValue, defaultValue);
   }
 }
 
@@ -54,12 +49,19 @@ extension ListBrackets on List<dynamic> {
     return PathResolution.resolvePath(path, true, this).listenForChanges(initialValue, defaultValue);
   }
 
-  void setValueAt(int index, dynamic value) {
+  void setValueAt(int index, dynamic value, [dynamic fill]) {
     if (index < length) {
       this[index] = value;
     } else {
-      for (var i = length; i <= index; i++) {
-        add(i == index ? value : null);
+      try {
+        for (var i = length; i <= index; i++) {
+          // this will throw an exception if we need to add null items and
+          // the list does not allow nulls
+          add(i == index ? value : fill);
+        }
+      } catch (e) {
+        throw Exception("Problem setting item value at index $index. "
+            "Unable to add filler value '$fill' to $runtimeType,");
       }
     }
   }
@@ -72,26 +74,52 @@ class PathResolution {
   PathResolution(this.path, this.collection);
 
   static PathResolution resolvePath(String? path, bool createPath, dynamic data) {
-    return data is List
-        ? _resolveListPath(path, createPath, data)
-        : _resolveMapPath(path, createPath, data);
+    return _resolve(path, createPath, data);
   }
 
   dynamic getValue(bool readValueNotifier) {
-    if (collection == null) return null;
-    final value = collection[path];
+    dynamic value;
+    final data = collection;
+    if (data is Map) {
+      value = data[path];
+    } else if (data is List) {
+      final index = path;
+      if (index is int && index < data.length) {
+        value = data[index];
+      }
+    }
     return value is DataValueNotifier && readValueNotifier
-        ? value.value
-        : value;
+        ? value.value : value;
   }
 
   void setValue(dynamic newValue, bool writeToValueNotifier) {
-    if (collection != null) {
-      final value = collection[path];
-      if (value is DataValueNotifier && newValue is! DataValueNotifier && writeToValueNotifier) {
-        value.value = newValue;
-      } else {
-        collection[path] = newValue;
+    final value = getValue(false);
+    if (value is DataValueNotifier &&
+        newValue is! DataValueNotifier &&
+        writeToValueNotifier)
+    {
+      value.value = newValue;
+    } else {
+      final data = collection;
+      if (data is Map) {
+        data[path] = newValue;
+      } else if (data is List) {
+        final index = path;
+        if (index is int) {
+          data.setValueAt(index, newValue);
+        }
+      }
+    }
+  }
+
+  dynamic removeValue() {
+    final data = collection;
+    if (data is Map) {
+      return data.remove(path);
+    } else if (data is List) {
+      final index = path;
+      if (index is int && index < data.length) {
+        return data.removeAt(index);
       }
     }
   }
@@ -109,110 +137,89 @@ class PathResolution {
   // private methods
   //===================================
 
-  static PathResolution _resolveMapPath(String? path, bool createPath, dynamic data) {
-    if (path != null) {
+  static _resolve(String? path, bool createPath, dynamic data) {
+    if (path != null && path.isNotEmpty && data != null) {
       final pathInfo = PathInfo.parsePath(path);
-      var value = data[pathInfo.currPath];
+      dynamic currPath = pathInfo.currPath;
+      dynamic value;
+
+      if (data is List) {
+        // data is a List; therefore, currPath must be an index, so convert it
+        // to an int and get the value that it points to.
+        currPath = int.parse(currPath);
+        if (currPath > -1 && currPath < data.length) {
+          value = data[currPath];
+        }
+      } else {
+        // data is some sort of map, so use currPath as it to get the value.
+        value = data[currPath];
+      }
+
       if (value == null) {
         if (createPath && pathInfo.nextPath.isNotEmpty) {
-          value = data[pathInfo.currPath] = pathInfo.isNextPathList
-              ? <dynamic>[]
-              : <String, dynamic>{};
-        } else if (pathInfo.isValueNullable) {
-          return PathResolution(pathInfo.currPath, data);
-        } else {
+          if (pathInfo.isList) {
+            value = [];
+            data.setValue(currPath, value);
+          } else {
+            value = data[currPath] = <String, dynamic>{};
+          }
+        } else if (!pathInfo.isNullable) {
           throw Exception("Value at path '$path' is null. Use the '?' "
               "null-safety operator to access '${pathInfo.currPath}'");
         }
-      } else if (pathInfo.nextPath.isEmpty) {
-        return PathResolution(pathInfo.currPath, data);
+      }
+      if (pathInfo.nextPath.isEmpty) {
+        return PathResolution(currPath, data);
       }
       if (value is DataValueNotifier) {
-        // unwrap notifier value
         value = value.value;
       }
-      return _continuePathResolution(path, pathInfo.nextPath, pathInfo.isNextPathList, value, createPath);
+      return _resolve(pathInfo.nextPath, createPath, value);
     }
     return PathResolution(path, null);
-  }
-
-  static PathResolution _resolveListPath(String? path, bool createPath, List data) {
-    if (path != null) {
-      final pathInfo = PathInfo.parsePath(path);
-      final index = pathInfo.currPathListIndex;
-      if (index != null && index > -1) {
-        var value = index < data.length ? data[index] : null;
-        if (pathInfo.nextPath.isEmpty) {
-          return PathResolution(index, data);
-        } else if (value == null && createPath) {
-          value = pathInfo.isNextPathList ? [] : <String, dynamic>{};
-          data.setValueAt(index, value);
-        }
-        if (value is DataValueNotifier) {
-          // unwrap notifier value
-          value = value.value;
-        }
-        return _continuePathResolution(path, pathInfo.nextPath, pathInfo.isNextPathList, value, createPath);
-      }
-    }
-    return PathResolution(path, null);
-  }
-
-  static _continuePathResolution(String path, String nextPath, bool isNextPathList, dynamic value, bool createPath) {
-    if (isNextPathList) {
-      if (value is List<dynamic>) {
-        return PathResolution._resolveListPath(nextPath, createPath, value);
-      }
-      throw Exception("Path '$path' implies that '$nextPath' is referencing a "
-          "[List], but found a [${value.runtimeType}].");
-    } else if (value is Map<String, dynamic> || value is Keyed) {
-      return PathResolution.resolvePath(nextPath, createPath, value);
-    } else if (value is Data) {
-      return PathResolution.resolvePath(nextPath, createPath, value.data);
-    }
-    throw Exception("Path '$path' implies that '$nextPath' is referencing a "
-        "[Map] or [Data], but found a [${value.runtimeType}] instead.");
   }
 }
 
 class PathInfo {
   final String currPath;
   final String nextPath;
-  final int? currPathListIndex;
-  final bool isNextPathList;
-  final bool isValueNullable;
+  final bool isNullable;
+  final bool isList;
 
-  PathInfo(this.currPath, this.nextPath, this.isNextPathList, this.currPathListIndex, this.isValueNullable);
+  PathInfo(this.currPath, this.nextPath, this.isNullable, this.isList);
 
   factory PathInfo.parsePath(String path) {
     String currPath = "";
     String nextPath = "";
-    int? currPathListIndex;
-    bool isValueNullable = false;
+    bool isNullable = false;
+    bool done = false;
 
-    final splitIndex = path.indexOf(".");
-    if (splitIndex > -1) {
-      currPath = path.substring(0, splitIndex);
-      nextPath = path.substring(splitIndex + 1, path.length);
-    } else {
-      currPath = path;
-    }
-
-    if (currPath.startsWith("[")) {
-      currPathListIndex = int.parse(currPath.substring(1, currPath.length - 1));
+    for (int pos = 0; pos < path.length && !done; pos++) {
+      final char = path[pos];
+      if (char == "[") {
+        if (pos > 0) {
+          nextPath = path.substring(pos, path.length);
+          done = true;
+        }
+      } else if (char == ".") {
+        nextPath = path.substring(pos + 1, path.length);
+        done = true;
+      } else if (char != "]" && char != " ") {
+        currPath += char;
+      }
     }
 
     if (currPath.endsWith("?")) {
-      isValueNullable = true;
+      isNullable = true;
       currPath = currPath.substring(0, currPath.length - 1);
     } else if (currPath.endsWith("!")) {
       currPath = currPath.substring(0, currPath.length - 1);
     } else if (nextPath.isEmpty) {
-      isValueNullable = true;
+      isNullable = true;
     }
 
-    final isNextPathList = nextPath.isNotEmpty && nextPath.startsWith("[");
-    return PathInfo(currPath, nextPath, isNextPathList, currPathListIndex, isValueNullable);
+    final isList = nextPath.isNotEmpty && nextPath.startsWith("[");
+    return PathInfo(currPath, nextPath, isNullable, isList);
   }
 }
 
@@ -291,22 +298,11 @@ class DataValueNotifier extends ValueNotifier {
     _hasNoListeners = !hasListeners;
   }
 
-
   bool isOwner(Key? key) {
     return key != null && key == _ownerKey;
   }
 
   Key? takeOwnership() {
     return _ownerKey == null ? _ownerKey = UniqueKey() : null;
-  }
-}
-
-class Keyed {
-  dynamic operator [](String key) {
-    throw UnimplementedError("[] operator not implement.");
-  }
-
-  void operator []=(String key, value) {
-    throw UnimplementedError("[] operator not implement.");
   }
 }

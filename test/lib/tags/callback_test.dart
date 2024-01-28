@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xml/xml.dart';
-import 'package:xwidget/xwidget.dart';
 
+import '../../../lib/xwidget.dart';
 import '../../fixtures/src/inflaters.g.dart';
 import '../testing_utils.dart';
 

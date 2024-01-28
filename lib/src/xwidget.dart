@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart' hide Stack;
 import 'package:petitparser/core.dart';
 import 'package:xml/xml.dart';
-import 'package:xwidget/src/custom/media.dart';
 
 import 'custom/async.dart';
 import 'custom/collection.dart';
 import 'custom/controller.dart';
+import 'custom/media.dart';
 import 'custom/value_listener.dart';
 import 'el/parser.dart';
 import 'tags/builder.dart';

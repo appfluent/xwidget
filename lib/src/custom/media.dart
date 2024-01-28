@@ -2,7 +2,8 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
-import 'package:xwidget/xwidget.dart';
+
+import '../../xwidget.dart';
 
 
 class MediaQueryWidget extends StatelessWidget {

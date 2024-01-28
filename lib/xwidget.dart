@@ -3,6 +3,7 @@ export 'src/el/parser.dart';
 export 'src/custom/async.dart';
 export 'src/custom/collection.dart';
 export 'src/custom/controller.dart';
+export 'src/custom/media.dart';
 export 'src/custom/value_listener.dart';
 
 export 'src/utils/brackets.dart';

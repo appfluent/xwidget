@@ -1,3 +1,9 @@
+### 0.0.33 (Jan 28, 2024)
+
+* Fixed dot/bracket notation parsing of `List` paths.
+* Fixed relative `import` statements.
+* Export `MediaQueryWidget`.
+
 ### 0.0.32 (Jan 23, 2024)
 
 #### Please run `dart run xwidget:generate` after upgrading.
