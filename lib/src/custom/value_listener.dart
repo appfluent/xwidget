@@ -3,6 +3,7 @@ import 'package:xml/xml.dart';
 
 import '../../xwidget.dart';
 
+
 typedef ValueListenerCallback = void Function(BuildContext, dynamic);
 
 class ValueListener extends StatefulWidget {
@@ -79,7 +80,7 @@ class ValueListenerState extends State<ValueListener> {
         widget.initialValue,
         widget.defaultValue
     );
-    if (notifier is DataValueNotifier) {
+    if (notifier is ModelValueNotifier) {
       _notifierOwnerKey = notifier.takeOwnership();
     }
     _notifier = notifier;
@@ -88,7 +89,7 @@ class ValueListenerState extends State<ValueListener> {
   bool _disposeOfNotifier(ValueNotifier? notifier) {
     if (notifier != null && widget.varDisposal != VariableDisposal.none) {
       // client requested disposal of variable
-      if (notifier is DataValueNotifier) {
+      if (notifier is ModelValueNotifier) {
         // notifier is the right class, so we can continue
         if ((widget.varDisposal == VariableDisposal.byOwner && notifier.isOwner(_notifierOwnerKey)) ||
             (widget.varDisposal == VariableDisposal.byLastListener && notifier.hasNoListeners)) {

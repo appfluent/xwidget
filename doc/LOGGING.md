@@ -1,0 +1,3 @@
+# Logging
+
+*Add documentation here.*

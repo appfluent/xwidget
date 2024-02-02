@@ -1,3 +1,14 @@
+### 0.0.34 (Feb 2, 2024)
+
+#### BREAKING CHANGES: Please up all usages of `Data` to `Model`.
+
+* Renamed `Data` to `Model` to more accurately represent its purpose.
+* Fixed a bug where `Model` operators `[]` and `[]=` were incorrectly calling `getValue` and `setValue` respectively.
+  They now directly access the underlying collection.
+* Added static instance management methods to `Model` to help with state management:
+  `singleInstance`, `keyedInstance`, `clearInstances`, `hasInstance`
+* Reorganized documentation.
+
 ### 0.0.33 (Jan 28, 2024)
 
 * Fixed dot/bracket notation parsing of `List` paths.

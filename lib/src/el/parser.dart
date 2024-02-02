@@ -1,6 +1,6 @@
 import 'package:petitparser/petitparser.dart';
 
-import '../utils/brackets.dart';
+import '../utils/model.dart';
 import 'expressions/conditional_expression.dart';
 import 'expressions/equal_to.dart';
 import 'expressions/dynamic.dart';
@@ -205,14 +205,14 @@ class ELParserDefinition extends ELGrammarDefinition {
     var value = resolved.key != "" ? resolved.value[resolved.key] : resolved.value;
     if (value != null) {
       // root value is not null
-      value = value is DataValueNotifier ? value.value : value;
+      value = value is ModelValueNotifier ? value.value : value;
       for (final nextParts in referenceParts) {
         // process the remaining parts of the identifier
         final nextKey = nextParts[1];
         if (nextKey != null && value != null) {
           // TODO: handle index out of range errors and provide better messages
           value = value[nextKey is Expression ? nextKey.evaluate() : nextKey];
-          value = value is DataValueNotifier ? value.value : value;
+          value = value is ModelValueNotifier ? value.value : value;
         } else {
           value = null;
           break;

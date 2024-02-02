@@ -1,6 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
+
+import 'model.dart';
 
 /// A simple utility for retrieving data using dot/bracket notation. As long as
 /// your data follows a simple convention you can use a simplified dot/bracket
@@ -88,14 +88,14 @@ class PathResolution {
         value = data[index];
       }
     }
-    return value is DataValueNotifier && readValueNotifier
+    return value is ModelValueNotifier && readValueNotifier
         ? value.value : value;
   }
 
   void setValue(dynamic newValue, bool writeToValueNotifier) {
     final value = getValue(false);
-    if (value is DataValueNotifier &&
-        newValue is! DataValueNotifier &&
+    if (value is ModelValueNotifier &&
+        newValue is! ModelValueNotifier &&
         writeToValueNotifier)
     {
       value.value = newValue;
@@ -127,7 +127,7 @@ class PathResolution {
   ValueNotifier listenForChanges(dynamic initialValue, dynamic defaultValue) {
     var value = getValue(false);
     if (value is! ValueNotifier) {
-      value = DataValueNotifier(initialValue ?? value ?? defaultValue);
+      value = ModelValueNotifier(initialValue ?? value ?? defaultValue);
       setValue(value, false);
     }
     return value;
@@ -171,7 +171,7 @@ class PathResolution {
       if (pathInfo.nextPath.isEmpty) {
         return PathResolution(currPath, data);
       }
-      if (value is DataValueNotifier) {
+      if (value is ModelValueNotifier) {
         value = value.value;
       }
       return _resolve(pathInfo.nextPath, createPath, value);
@@ -180,6 +180,7 @@ class PathResolution {
   }
 }
 
+/// A simple dot/bracket notation path parser.
 class PathInfo {
   final String currPath;
   final String nextPath;
@@ -220,89 +221,5 @@ class PathInfo {
 
     final isList = nextPath.isNotEmpty && nextPath.startsWith("[");
     return PathInfo(currPath, nextPath, isNullable, isList);
-  }
-}
-
-class Data extends MapBase<String, dynamic> {
-  final Map<String, dynamic> data;
-  final bool immutable;
-
-  Data(this.data, [this.immutable = true]);
-
-  @override
-  Iterable<String> get keys => data.keys;
-
-  @override
-  dynamic operator [](Object? key) {
-    return data.getValue(key?.toString());
-  }
-
-  @override
-  void operator []=(String key, value) {
-    _assertMutable();
-    data.setValue(key, value);
-  }
-
-  @override
-  void clear() {
-    _assertMutable();
-    data.clear();
-  }
-
-  @override
-  dynamic remove(Object? key) {
-    _assertMutable();
-    data.remove(key);
-  }
-
-  void _assertMutable() {
-    if (immutable) {
-      throw UnimplementedError("Cannot change immutable data");
-    }
-  }
-}
-
-/// A [ValueNotifier] that holds a single value.
-///
-/// The main purpose of this class is to allow Brackets distinguish it's own
-/// ValueNotifiers from others so that it doesn't access the wrapped value
-/// unintentionally.
-///
-/// Additionaly, instances can keep track of ownership and if there are any
-/// attached listeners. This is used by [ValueListener] widget to determine
-/// if and when to cleanup resources.
-class DataValueNotifier extends ValueNotifier {
-  Key? _ownerKey;
-  bool _hasNoListeners = false;
-
-  DataValueNotifier(super.value);
-
-  bool get hasNoListeners => _hasNoListeners;
-
-  /// Register a closure to be called when the object changes.
-  ///
-  /// See [ChangeNotifier] for details
-  @override
-  void addListener(VoidCallback listener) {
-    _hasNoListeners = false;
-    super.addListener(listener);
-  }
-
-  /// Remove a previously registered closure from the list of closures that are
-  /// notified when the object changes.
-  ///
-  /// See [ChangeNotifier] for details
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    _hasNoListeners = !hasListeners;
-  }
-
-  bool isOwner(Key? key) {
-    return key != null && key == _ownerKey;
-  }
-
-  Key? takeOwnership() {
-    return _ownerKey == null ? _ownerKey = UniqueKey() : null;
   }
 }
