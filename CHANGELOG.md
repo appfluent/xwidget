@@ -1,3 +1,8 @@
+### 0.0.35 (Feb 2, 2024)
+
+* Fixed readability issues with README.md file.
+* Added documentation builder tool (internal).
+
 ### 0.0.34 (Feb 2, 2024)
 
 #### BREAKING CHANGES: Please up all usages of `Data` to `Model`.
