@@ -4,8 +4,6 @@ import 'package:xml/xml.dart';
 import '../../xwidget.dart';
 
 
-typedef ValueListenerCallback = void Function(BuildContext, dynamic);
-
 class ValueListener extends StatefulWidget {
   final XmlElement element;
   final Dependencies dependencies;
@@ -13,7 +11,6 @@ class ValueListener extends StatefulWidget {
   final VariableDisposal varDisposal;
   final dynamic initialValue;
   final dynamic defaultValue;
-  final ValueListenerCallback? onChange;
 
   @override
   ValueListenerState createState() => ValueListenerState();
@@ -26,7 +23,6 @@ class ValueListener extends StatefulWidget {
     this.varDisposal = VariableDisposal.none,
     this.initialValue,
     this.defaultValue,
-    this.onChange,
   });
 }
 
@@ -53,10 +49,12 @@ class ValueListenerState extends State<ValueListener> {
     return ValueListenableBuilder(
       valueListenable: _notifier!,
       builder: (context, value, _) {
-        if (widget.onChange != null) {
-          widget.onChange!(context, value);
-        }
-        final children = XWidget.inflateXmlElementChildren(widget.element, widget.dependencies, excludeText: true);
+        final children = XWidget.inflateXmlElementChildren(
+          widget.element,
+          widget.dependencies,
+          excludeText: true,
+          excludeAttributes: true,
+        );
         return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
       }
     );
@@ -140,7 +138,6 @@ class ValueListenerInflater extends Inflater {
       varDisposal: attributes['varDisposal'] ?? VariableDisposal.none,
       initialValue: attributes['initialValue'],
       defaultValue: attributes['defaultValue'],
-      onChange: attributes['onChange'],
     );
   }
 
@@ -152,7 +149,6 @@ class ValueListenerInflater extends Inflater {
       case 'varDisposal': return parseEnum(VariableDisposal.values, value);
       case 'initialValue': break;
       case 'defaultValue': break;
-      case 'onChange': break;
     }
     return value;
   }

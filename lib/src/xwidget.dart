@@ -7,6 +7,7 @@ import 'package:xml/xml.dart';
 import 'custom/async.dart';
 import 'custom/collection.dart';
 import 'custom/controller.dart';
+import 'custom/event_listener.dart';
 import 'custom/media.dart';
 import 'custom/value_listener.dart';
 import 'el/parser.dart';
@@ -24,11 +25,13 @@ import 'utils/parsers.dart';
 import 'utils/resources.dart';
 import 'utils/utils.dart';
 
+
 class XWidget {
   static const _log = CommonLog("XWidget");
 
   static final _controllerInflater = ControllerWidgetInflater();
   static final _dynamicBuilderInflater = DynamicBuilderInflater();
+  static final _eventListenerInflater = EventListenerInflater();
   static final _listInflater = ListInflater();
   static final _mapInflater = MapInflater();
   static final _mapEntryInflater = MapEntryInflater();
@@ -48,6 +51,7 @@ class XWidget {
   static final _inflaters = <String, Inflater>{
     _controllerInflater.type: _controllerInflater,
     _dynamicBuilderInflater.type: _dynamicBuilderInflater,
+    _eventListenerInflater.type: _eventListenerInflater,
     _listInflater.type: _listInflater,
     _mapInflater.type: _mapInflater,
     _mapEntryInflater.type: _mapEntryInflater,
@@ -154,77 +158,105 @@ class XWidget {
     try {
       final type = element.localName;
       final inflater = _inflaters[type];
-      if (inflater == null) {
-        throw Exception("XWidget inflater not found for XML element <${element.localName}>");
-      }
+      if (inflater != null) {
+        final attributes = parseXmlAttributes(element, dependencies,
+          inflater: inflater,
+          inheritedAttributes: inheritedAttributes,
+        );
 
-      final attributes = parseXmlAttributes(
-        element,
-        dependencies,
-        inflater: inflater,
-        inheritedAttributes: inheritedAttributes,
-      );
-
-      if (!attributes.containsKey("visible") || parseBool(attributes["visible"]) == true) {
-        // widget is visible, so let's continue
-        if (inflater.inflatesCustomWidget) {
-          // inflating a custom widget or object, so include the element and
-          // dependencies as 'private' attributes.
-          attributes["_element"] = element;
-          attributes["_dependencies"] = dependencies;
-        }
-        if (inflater.inflatesOwnChildren) {
-          return inflater.inflate(attributes, [], []);
-        } else {
-          final children = inflateXmlElementChildren(element, dependencies);
+        // we only want to evaluate the 'visible' attribute if one was provided;
+        // otherwise, the component is visible by default.
+        if (!attributes.containsKey("visible") || parseBool(attributes["visible"]) == true) {
+          // widget is visible, so let's continue
+          if (inflater.inflatesCustomWidget) {
+            // inflating a custom widget or object, so include the element and
+            // dependencies as 'private' attributes.
+            attributes["_element"] = element;
+            attributes["_dependencies"] = dependencies;
+          }
+          final children = inflateXmlElementChildren(element, dependencies,
+              // if the component inflates it's own children the we only want to
+              // inflate the children the reference attributes so we can pass
+              // them to the constructor. THe component is responsible for
+              // inflating the remaining children.
+              onlyAttributes: inflater.inflatesOwnChildren
+          );
           attributes.addAll(children.attributes);
           return inflater.inflate(attributes, children.objects, children.text);
         }
+        // component is not visible
+        return null;
       }
+      throw Exception("XWidget inflater not found for XML element <$type>");
     } catch (e, stacktrace) {
-      _log.error("Problem inflating XML element.${dump(element, dependencies)}", e, stacktrace);
+      _log.error("Problem inflating XML element."
+          "${dump(element, dependencies)}", e, stacktrace);
+      return null;
     }
-    return null;
   }
 
   static Children inflateXmlElementChildren(
       XmlElement element,
       Dependencies dependencies, {
       Set<String>? excludeElements,
-      bool excludeText = false
+      bool excludeText = false,
+      excludeAttributes = false,
+      onlyAttributes = false,
   }) {
     final children = Children();
     for (final child in element.children) {
-      if (!excludeText && (child is XmlText || child is XmlCDATA)) {
+      if (!excludeText && !onlyAttributes && (child is XmlText || child is XmlCDATA)) {
         if (child.value != null && child.value!.isNotEmpty) {
           children.text.add(child.value!);
         }
-      } else if (child is XmlElement) {
-        // child is an element
-        final elementName = child.localName;
-        if (excludeElements == null || excludeElements.isEmpty || !excludeElements.contains(elementName)) {
-          final tag = _tags[elementName];
-          if (tag != null) {
-            // element is a tag
-            final attributes = parseXmlAttributes(child, dependencies);
-            final tagChildren = tag.processTag(child, attributes, dependencies);
-            children.addAll(tagChildren);
-          } else {
-            // element is a widget or other object
-            final object = inflateFromXmlElement(child, dependencies);
-            if (object != null) {
-              final attributeName = child.getAttribute("for");
-              if (attributeName != null && attributeName.isNotEmpty) {
-                children.attributes[attributeName] = object;
-              } else {
-                children.objects.add(object);
-              }
+      } else if (child is XmlElement && shouldInflateXmlElement(child,
+          excludeElements: excludeElements,
+          excludeAttributes: excludeAttributes,
+          onlyAttributes: onlyAttributes)
+      ) {
+        // child is an element and we should inflate it
+        final tag = _tags[child.localName];
+        if (tag != null) {
+          // element is a tag
+          final attributes = parseXmlAttributes(child, dependencies);
+          final tagChildren = tag.processTag(child, attributes, dependencies);
+          children.addAll(tagChildren);
+        } else {
+          // element is a component
+          final object = inflateFromXmlElement(child, dependencies);
+          if (object != null) {
+            final attributeName = child.getAttribute("for");
+            if (attributeName != null && attributeName.isNotEmpty) {
+              children.attributes[attributeName] = object;
+            } else {
+              children.objects.add(object);
             }
           }
         }
       }
     }
     return children;
+  }
+
+  static bool shouldInflateXmlElement(
+    XmlElement element, {
+    Set<String>? excludeElements,
+    bool excludeAttributes = false,
+    bool onlyAttributes = false,
+  }) {
+    final elementName = element.localName;
+    if (excludeElements == null ||
+        excludeElements.isEmpty ||
+        !excludeElements.contains(elementName)) {
+      if (excludeAttributes || onlyAttributes) {
+        final attributeName = element.getAttribute("for");
+        final forAttribute = attributeName != null && attributeName.isNotEmpty;
+        return (forAttribute && !excludeAttributes) ||
+            (!forAttribute && !onlyAttributes);
+      }
+      return true;
+    }
+    return false;
   }
 
   static Map<String, dynamic> parseXmlAttributes(
@@ -246,7 +278,9 @@ class XWidget {
         );
         attributes[attributeName] = attributeValue;
       } catch (e, stacktrace) {
-        _log.error("Problem parsing XML element attribute '${attribute.qualifiedName}'. ${dump(element, dependencies)}", e, stacktrace);
+        _log.error("Problem parsing XML element attribute "
+            "'${attribute.qualifiedName}'. "
+            "${dump(element, dependencies)}", e, stacktrace);
       }
     }
     return attributes;
@@ -272,6 +306,9 @@ class XWidget {
     }
     if (attributeValue.startsWith("@")) {
       // possible directive
+      if (attributeValue.startsWith("@color/")) {
+        return Resources.instance.getColor(attributeValue.substring(7, attributeValue.length));
+      }
       if (attributeValue.startsWith("@string/")) {
         return Resources.instance.getString(attributeValue.substring(8, attributeValue.length));
       }

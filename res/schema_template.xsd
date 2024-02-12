@@ -379,6 +379,7 @@
                     <xs:attribute name="name"/>
                     <xs:attribute name="errorWidget"/>
                     <xs:attribute name="progressWidget"/>
+                    <xs:attribute name="options"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -399,6 +400,22 @@
                     <xs:attribute name="initializer"/>
                     <xs:attribute name="initValue"/>
                     <xs:attribute name="disposeOfDependencies" type="boolAttributeType"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="EventListener">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="objectType">
+                    <xs:attribute name="key"/>
+                    <xs:attribute name="event"/>
+                    <xs:attribute name="onEvent"/>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

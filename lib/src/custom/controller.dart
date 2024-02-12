@@ -15,15 +15,17 @@ class ControllerWidget extends StatefulWidget {
   final Dependencies dependencies;
   final Widget? errorWidget;
   final Widget? progressWidget;
+  final Map<String, dynamic> options;
 
-  const ControllerWidget({
+  ControllerWidget({
     super.key,
     required this.name,
     required this.element,
     required this.dependencies,
     this.errorWidget,
     this.progressWidget,
-  });
+    Map<String, dynamic>? options,
+  }): options = options ?? {};
 
   @override
   // ignore: no_logic_in_create_state
@@ -35,6 +37,9 @@ abstract class Controller extends State<ControllerWidget> {
 
   @nonVirtual
   Dependencies get dependencies => widget.dependencies;
+
+  @nonVirtual
+  Map<String, dynamic> get options => widget.options;
 
   @override
   @nonVirtual
@@ -65,7 +70,12 @@ abstract class Controller extends State<ControllerWidget> {
 
   Widget _inflateChildren(Dependencies dependencies) {
     bindDependencies();
-    final children = XWidget.inflateXmlElementChildren(widget.element, dependencies, excludeText: true);
+    final children = XWidget.inflateXmlElementChildren(
+      widget.element,
+      dependencies,
+      excludeText: true,
+      excludeAttributes: true,
+    );
     return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
   }
 }
@@ -93,6 +103,7 @@ class ControllerWidgetInflater extends Inflater {
       dependencies: attributes['_dependencies'],
       errorWidget: attributes['errorWidget'],
       progressWidget: attributes['progressWidget'],
+      options: attributes['options'] != null ? {...attributes['options']} : null,
     );
   }
 
@@ -103,6 +114,7 @@ class ControllerWidgetInflater extends Inflater {
       case 'name': return value;
       case 'errorWidget': break;
       case 'progressWidget': break;
+      case 'options': break;
     }
     return value;
   }

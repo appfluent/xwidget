@@ -7,6 +7,7 @@ export 'src/custom/media.dart';
 export 'src/custom/value_listener.dart';
 
 export 'src/utils/brackets.dart';
+export 'src/utils/events.dart';
 export 'src/utils/logging.dart';
 export 'src/utils/model.dart';
 export 'src/utils/parsers.dart';

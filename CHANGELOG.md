@@ -1,3 +1,25 @@
+### 0.0.36 (Feb 11, 2024)
+
+#### Please run `dart run xwidget:generate` after upgrading.
+
+* Added `EventNotifier` component.
+  ```xml
+  <EventNotifier event="UserEvents.login">
+    ...
+  </EventNotifier>
+  ```
+* Added mapped `Controller` options.
+  ```xml
+  <Controller name="...">
+      <Map for="options">
+          <Entry key="name" value="${value}"/>
+      </Map>
+  </Controller>
+  ```
+* Added arguments to `XWidget.inflateXmlElementChildren` that optionally include or exclude the
+  processing of attributes defined as children i.e. `for='<parent_attribute>'`
+* Removed `ValueListener`'s `onChange` callback.
+
 ### 0.0.35 (Feb 2, 2024)
 
 * Fixed readability issues with README.md file.

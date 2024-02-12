@@ -197,6 +197,10 @@ class InflaterBuilder extends SpecBuilder {
         final nullable = paramTypeName.endsWith("?");
         final newDefaultValue = defaultValue == null && !nullable ? "[]" : defaultValue;
         code.write("$attributeValue != null ? [...$attributeValue] : $newDefaultValue");
+      } else if (isTypeMap(paramTypeName)) {
+        final nullable = paramTypeName.endsWith("?");
+        final newDefaultValue = defaultValue == null && !nullable ? "{}" : defaultValue;
+        code.write("$attributeValue != null ? {...$attributeValue} : $newDefaultValue");
       } else {
         code.write(attributeValue);
         if (defaultValue != null) {
