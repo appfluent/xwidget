@@ -83,6 +83,7 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
     - [Built-In](#built-in)
         - [```<Controller>```](#controller)
         - [```<DynamicBuilder>```](#dynamicbuilder)
+        - [```<EventListener>```](#eventlistener)
         - [```<List>```](#list)
         - [```<Map>```](#map)
         - [```<MapEntry>```](#mapentry)
@@ -235,6 +236,14 @@ below.
 Please see the [example](https://github.com/appfluent/xwidget/tree/main/example) folder of this
 package. It contains an XWidget version of Flutter's classic starter app. It only scratches the
 surface of XWidget's capabilities.
+
+**Please note:** The inflaters in the example were generated with Fultter 3.19, which mean that if
+you're using an older version Flutter, you'll need to regenerate the inflaters using the 
+folowing command:
+
+```shell
+$ dart run xwidget:generate --only inflaters 
+```
 <!-- // end of #include -->
 
 <!-- #include doc/CONFIGURATION.md -->
@@ -775,7 +784,9 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | substring         | String value<br/>int start<br/>[int end = -1]                                 | String   |             |                                                                                   |
 | toBool            | dynamic value                                                                 | bool     |             |                                                                                   |
 | toDateTime        | dynamic value                                                                 | DateTime |             |                                                                                   |
+| toDouble          | dynamic value                                                                 | double   |             |                                                                                   |
 | toDuration        | String value                                                                  | Duration |             |                                                                                   |
+| toInt             | dynamic value                                                                 | int      |             |                                                                                   |
 | toString          | dynamic value                                                                 | String   |             |                                                                                   |
 
 ### Custom Functions
@@ -852,6 +863,10 @@ Example usage:
 *Add documentation here.*
 
 ### ```<DynamicBuilder>```
+
+*Add documentation here.*
+
+### ```<EventListener>```
 
 *Add documentation here.*
 

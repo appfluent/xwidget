@@ -1,3 +1,8 @@
+### 0.0.37 (March 28, 2024)
+
+* Added `toDouble` and `toInt` EL functions.
+* Minor documentation updates
+
 ### 0.0.36 (Feb 11, 2024)
 
 #### Please run `dart run xwidget:generate` after upgrading.

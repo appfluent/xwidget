@@ -797,8 +797,8 @@ without the [Builder], the <code>context</code> wouldn't be able to see the
                             <xs:documentation xml:lang="en">
 <p>{@template flutter.material.appbar.automaticallyImplyLeading}
 Controls whether we should try to imply the leading widget if null.</p><br/>
-<p>If true and [leading] is null, automatically try to deduce what the leading
-widget should be. If false and [leading] is null, leading space is given to [title].
+<p>If true and [AppBar.leading] is null, automatically try to deduce what the leading
+widget should be. If false and [AppBar.leading] is null, leading space is given to [AppBar.title].
 If leading widget is not null, this parameter has no effect.
 {@endtemplate}</p><br/>
 
@@ -1223,8 +1223,8 @@ Defines the height of the toolbar component of an [AppBar].</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@template flutter.material.appbar.leadingWidth}
-Defines the width of [leading] widget.</p><br/>
-<p>By default, the value of [leadingWidth] is 56.0.
+Defines the width of [AppBar.leading] widget.</p><br/>
+<p>By default, the value of [AppBar.leadingWidth] is 56.0.
 {@endtemplate}</p><br/>
 
                             </xs:documentation>
@@ -3047,6 +3047,19 @@ specified, either directly using this property or using [Directionality].</p><br
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="applyTextScaling" type="boolAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>Whether to scale the size of this widget using the ambient [MediaQuery]'s [TextScaler].</p><br/>
+<p>This is specially useful when you have an icon associated with a text, as
+scaling the text without scaling the icon would result in a confusing
+interface.</p><br/>
+<p>Defaults to the nearest [IconTheme]'s
+[IconThemeData.applyTextScaling].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -3645,6 +3658,28 @@ in a subtree.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="themeAnimationStyle">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>Used to override the theme animation curve and duration.</p><br/>
+<p>If [AnimationStyle.duration] is provided, it will be used to override
+the theme animation duration in the underlying [AnimatedTheme] widget.
+If it is null, then [themeAnimationDuration] will be used. Otherwise,
+defaults to 200ms.</p><br/>
+<p>If [AnimationStyle.curve] is provided, it will be used to override
+the theme animation curve in the underlying [AnimatedTheme] widget.
+If it is null, then [themeAnimationCurve] will be used. Otherwise,
+defaults to [Curves.linear].</p><br/>
+<p>To disable the theme animation, use [AnimationStyle.noAnimation].</p><br/>
+<p>{@tool dartpad}
+This sample showcases how to override the theme animation curve and
+duration in the [MaterialApp] widget using [AnimationStyle].</p><br/>
+<p>** See code in examples/api/lib/material/app/app.0.dart **
+{@end-tool}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -4204,6 +4239,28 @@ an application, and manage [Scrollable] decorations like [Scrollbar]s and
 <li>[ScrollConfiguration], which controls how [Scrollable] widgets behave
 in a subtree.</li>
 </ul>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="themeAnimationStyle">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>Used to override the theme animation curve and duration.</p><br/>
+<p>If [AnimationStyle.duration] is provided, it will be used to override
+the theme animation duration in the underlying [AnimatedTheme] widget.
+If it is null, then [themeAnimationDuration] will be used. Otherwise,
+defaults to 200ms.</p><br/>
+<p>If [AnimationStyle.curve] is provided, it will be used to override
+the theme animation curve in the underlying [AnimatedTheme] widget.
+If it is null, then [themeAnimationCurve] will be used. Otherwise,
+defaults to [Curves.linear].</p><br/>
+<p>To disable the theme animation, use [AnimationStyle.noAnimation].</p><br/>
+<p>{@tool dartpad}
+This sample showcases how to override the theme animation curve and
+duration in the [MaterialApp] widget using [AnimationStyle].</p><br/>
+<p>** See code in examples/api/lib/material/app/app.0.dart **
+{@end-tool}</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -4993,6 +5050,13 @@ that, the selection color defaults to [DefaultSelectionStyle.defaultColor]
 <p>The <code>package</code> argument must be non-null if the font family is defined in a
 package. It is combined with the <code>fontFamily</code> argument to set the
 [fontFamily] property.</p><br/>
+<p>On Apple devices the strings 'CupertinoSystemText' and
+'CupertinoSystemDisplay' are used in [fontFamily] as proxies for the
+Apple system fonts. They currently redirect to the equivilant of SF Pro
+Text and SF Pro Display respectively. 'CupertinoSystemText' is designed
+for fonts below 20 point size, and 'CupertinoSystemDisplay' is recommended
+for sizes 20 and above. When used on non-Apple platforms, these strings
+will return the regular fallback font family instead.</p><br/>
 
             </xs:documentation>
         </xs:annotation>
@@ -5009,10 +5073,10 @@ method argument decides whether the two [TextStyle]s can be combined
 together. If it is false, the method argument [TextStyle] will be returned.
 Otherwise, the combining is allowed, and the returned [TextStyle] inherits
 the [inherit] value from the method receiver.</p><br/>
-<p>This property has no effect on [TextSpan]'s text style cascading: in a
-[TextSpan] tree, a [TextSpan]'s text style can be combined with that of an
-ancestor [TextSpan] if it has unspecified fields, regardless of its
-[inherit] value.</p><br/>
+<p>This property does not affect the text style inheritance in an [InlineSpan]
+tree: an [InlineSpan]'s text style is merged with that of an ancestor
+[InlineSpan] if it has unspecified fields, regardless of its [inherit]
+value.</p><br/>
 <p>Properties that don't have explicit values or other default values to fall
 back to will revert to the defaults: white in color, a font size of 14
 pixels, in a sans-serif font face.</p><br/>
@@ -5226,6 +5290,11 @@ rendered. For example, a font might provide both proportional and
 tabular numbers, or it might offer versions of the zero digit with
 and without slashes. [FontFeature]s can be used to select which of
 these variants will be used for rendering.</p><br/>
+<p>Font features are not interpolated by [lerp].</p><br/>
+<p>See also:</p><br/>
+<ul>
+<li>[fontVariations], for font features that have continuous parameters.</li>
+</ul>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5242,9 +5311,16 @@ may have a weight axis that can be set to a value between 1 and 1000.
 (https://fonts.google.com/specimen/Roboto+Slab):</p><br/>
 <pre><code class="language-dart">const TextStyle(
   fontFamily: 'RobotoSlab',
-  fontVariations: &lt;ui.FontVariation&gt;[ui.FontVariation('wght', 900.0)]
+  fontVariations: &lt;FontVariation&gt;[FontVariation('wght', 900.0)]
 )
 </code></pre>
+<p>Font variations can be interpolated via [lerp]. This is fastest when the
+same font variation axes are specified, in the same order, in both
+[TextStyle] objects. See [lerpFontVariations].</p><br/>
+<p>See also:</p><br/>
+<ul>
+<li>[fontFeatures], for font variations that have discrete values.</li>
+</ul>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5345,6 +5421,13 @@ in [fontFamilyFallback]. When [fontFamily] is null or not provided, the
 first value in [fontFamilyFallback] acts as the preferred/first font
 family. When neither is provided, then the default platform font will
 be used.</p><br/>
+<p>When running on Apple devices, the strings 'CupertinoSystemText' and
+'CupertinoSystemDisplay' are used as proxies for the Apple system fonts.
+They currently redirect to the equivilant of SF Pro Text and SF Pro Display
+respectively. 'CupertinoSystemText' is designed for fonts below 20 point
+size, and 'CupertinoSystemDisplay' is recommended for sizes 20 and above.
+When used on non-Apple platforms, these strings will return the regular
+fallback font family instead.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5405,6 +5488,7 @@ or [bottomNavigationBarTheme].</p><br/>
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
+                    <xs:attribute name="adaptations"/>
                     <xs:attribute name="applyElevationOverlayColor" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6324,6 +6408,16 @@ create intermediate themes based on two themes created with the
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
+                    <xs:attribute name="adaptationMap">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A map which contains the adaptations for the theme. The entry's key is the
+type of the adaptation; the value is the adaptation itself.</p><br/>
+<p>To obtain an adaptation, use [getAdaptation].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="applyElevationOverlayColor" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">

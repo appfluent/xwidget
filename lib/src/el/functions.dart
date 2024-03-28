@@ -56,7 +56,9 @@ class BuiltInFunctions {
       case "substring": return _substring;
       case "toBool": return _toBool;
       case "toDateTime": return _toDateTime;
+      case "toDouble": return _toDouble;
       case "toDuration": return _toDuration;
+      case "toInt": return _toInt;
       case "toString": return _toString;
       default: return null;
     }
@@ -223,6 +225,13 @@ class BuiltInFunctions {
     return throw Exception('Invalid DateTime value: $value');
   }
 
+  double _toDouble(dynamic value) {
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.parse(value);
+    return throw Exception('Invalid double value: $value');
+  }
+
   Duration _toDuration(String value) {
     final values = List<int>.filled(4, 0);
     if (_durationValidator.hasMatch(value)) {
@@ -245,6 +254,13 @@ class BuiltInFunctions {
       );
     }
     throw Exception("Invalid duration format: $value");
+  }
+
+  int _toInt(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.parse(value);
+    return throw Exception('Invalid double value: $value');
   }
 
   String _toString(dynamic value) => value.toString();

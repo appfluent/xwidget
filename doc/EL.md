@@ -57,7 +57,9 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | substring         | String value<br/>int start<br/>[int end = -1]                                 | String   |             |                                                                                   |
 | toBool            | dynamic value                                                                 | bool     |             |                                                                                   |
 | toDateTime        | dynamic value                                                                 | DateTime |             |                                                                                   |
+| toDouble          | dynamic value                                                                 | double   |             |                                                                                   |
 | toDuration        | String value                                                                  | Duration |             |                                                                                   |
+| toInt             | dynamic value                                                                 | int      |             |                                                                                   |
 | toString          | dynamic value                                                                 | String   |             |                                                                                   |
 
 ### Custom Functions

@@ -476,6 +476,7 @@ class IconInflater extends Inflater {
             shadows: attributes['shadows'] != null ? [...attributes['shadows']] : null,
             semanticLabel: attributes['semanticLabel'],
             textDirection: attributes['textDirection'],
+            applyTextScaling: attributes['applyTextScaling'],
         );
     }
 
@@ -493,6 +494,7 @@ class IconInflater extends Inflater {
             case 'shadows': break;
             case 'semanticLabel': return value;
             case 'textDirection': return parseEnum(TextDirection.values, value);
+            case 'applyTextScaling': return parseBool(value);
         }
         return value;
     }
@@ -549,6 +551,7 @@ class MaterialAppInflater extends Inflater {
             actions: attributes['actions'] != null ? {...attributes['actions']} : null,
             restorationScopeId: attributes['restorationScopeId'],
             scrollBehavior: attributes['scrollBehavior'],
+            themeAnimationStyle: attributes['themeAnimationStyle'],
         );
     }
 
@@ -592,6 +595,7 @@ class MaterialAppInflater extends Inflater {
             case 'actions': break;
             case 'restorationScopeId': return value;
             case 'scrollBehavior': break;
+            case 'themeAnimationStyle': break;
         }
         return value;
     }
@@ -645,6 +649,7 @@ class MaterialApp_routerInflater extends Inflater {
             actions: attributes['actions'] != null ? {...attributes['actions']} : null,
             restorationScopeId: attributes['restorationScopeId'],
             scrollBehavior: attributes['scrollBehavior'],
+            themeAnimationStyle: attributes['themeAnimationStyle'],
         );
     }
 
@@ -685,6 +690,7 @@ class MaterialApp_routerInflater extends Inflater {
             case 'actions': break;
             case 'restorationScopeId': return value;
             case 'scrollBehavior': break;
+            case 'themeAnimationStyle': break;
         }
         return value;
     }
@@ -966,6 +972,7 @@ class ThemeDataInflater extends Inflater {
     @override
     ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData(
+            adaptations: attributes['adaptations'],
             applyElevationOverlayColor: attributes['applyElevationOverlayColor'],
             cupertinoOverrideTheme: attributes['cupertinoOverrideTheme'],
             extensions: attributes['extensions'],
@@ -1059,6 +1066,7 @@ class ThemeDataInflater extends Inflater {
     @override
     dynamic parseAttribute(String name, String value) {
         switch (name) {
+            case 'adaptations': break;
             case 'applyElevationOverlayColor': return parseBool(value);
             case 'cupertinoOverrideTheme': break;
             case 'extensions': break;
@@ -1165,6 +1173,7 @@ class ThemeData_rawInflater extends Inflater {
     @override
     ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.raw(
+            adaptationMap: attributes['adaptationMap'] != null ? {...attributes['adaptationMap']} : {},
             applyElevationOverlayColor: attributes['applyElevationOverlayColor'],
             cupertinoOverrideTheme: attributes['cupertinoOverrideTheme'],
             extensions: attributes['extensions'] != null ? {...attributes['extensions']} : {},
@@ -1252,6 +1261,7 @@ class ThemeData_rawInflater extends Inflater {
     @override
     dynamic parseAttribute(String name, String value) {
         switch (name) {
+            case 'adaptationMap': break;
             case 'applyElevationOverlayColor': return parseBool(value);
             case 'cupertinoOverrideTheme': break;
             case 'extensions': break;

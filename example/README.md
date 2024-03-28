@@ -1,4 +1,4 @@
-# XWidget Example
+# XWidget Example (Flutter 3.19)
 
 A new Flutter XWidget project.
 
