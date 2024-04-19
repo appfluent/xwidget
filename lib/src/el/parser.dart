@@ -210,9 +210,20 @@ class ELParserDefinition extends ELGrammarDefinition {
         // process the remaining parts of the identifier
         final nextKey = nextParts[1];
         if (nextKey != null && value != null) {
-          // TODO: handle index out of range errors and provide better messages
-          value = value[nextKey is Expression ? nextKey.evaluate() : nextKey];
-          value = value is ModelValueNotifier ? value.value : value;
+          final key = nextKey is Expression ? nextKey.evaluate() : nextKey;
+          if (value is List && key is int && key >= value.length) {
+            // List index is out of range
+            value = null;
+            break;
+          } else if (value is List && key is! int){
+            // List index is not an integer
+            throw Exception("Cannot reference List '${resolved.key}' using "
+                "non-integer index '$key'.");
+          } else {
+            // looks good - proceed
+            value = value[key];
+            value = value is ModelValueNotifier ? value.value : value;
+          }
         } else {
           value = null;
           break;

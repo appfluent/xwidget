@@ -1,3 +1,10 @@
+### 0.0.38 (April 29, 2024)
+
+* Fixed EL `RangeError` when referencing data using an out of range index i.e. `${items[2].name}`
+  where `items.length == 2` now returns a null. This is consistent with how null property
+  references are handled i.e `${person.name}` where `person == null`. Maybe in the future we'll add
+  a `strict` mode that throws Exceptions.
+
 ### 0.0.37 (March 28, 2024)
 
 * Added `toDouble` and `toInt` EL functions.

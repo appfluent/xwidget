@@ -26,12 +26,16 @@ class Model extends MapBase<String, dynamic> {
     return _instances[type]![key] ??= create();
   }
 
-  // Helper method to streamline instance creation for subclasses.
+  /// Helper method to streamline instance creation for subclasses.
+  ///
+  /// Keyed instances always returns the same instance when given the same key.
   static T keyedInstance<T extends Model>(String key, T Function() create) {
     return Model._getInstance(T, key, create);
   }
 
-  // Helper method to streamline instance creation for subclasses.
+  /// Helper method to streamline instance creation for subclasses.
+  ///
+  /// Always returns the same instance (singleton)
   static T singleInstance<T extends Model>(T Function() create) {
     return Model._getInstance(T, null, create);
   }

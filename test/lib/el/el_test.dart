@@ -122,6 +122,39 @@ main() {
     expect(() => parser.parse('3 / 0').value.evaluate(), throwsException);
   });
 
+  test('Assert List item reference throws Exception when index is not an integer', () {
+    final data = <String, dynamic>{
+      "items" : [
+        { "id": 23 }
+      ],
+    };
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(() => parser.parse("items['a'].id").value.evaluate(), throwsException);
+  });
+
+  test('Assert List item reference throws Exception when index is null', () {
+    final data = <String, dynamic>{
+      "items" : [
+        { "id": 23 }
+      ],
+    };
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(() => parser.parse("items[a].id").value.evaluate(), throwsException);
+  });
+
+  test('Assert reference throws Exception when List item is references like a property', () {
+    final data = <String, dynamic>{
+      "items" : [
+        { "id": 23 }
+      ],
+    };
+    final definition = ELParserDefinition(data: data, globalData: globalData);
+    final parser = definition.build();
+    expect(() => parser.parse('items.ll.id').value.evaluate(), throwsException);
+  });
+
   // ==================================
   // precedence tests
   // ==================================
