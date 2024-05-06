@@ -19,6 +19,7 @@ double? parseWidth(String? value) {
 bool? parseBool(dynamic value) {
   if (value == null) return null;
   if (value is bool) return value;
+  if (value is int) return value != 0;
   if (value is String) {
     if (value.isEmpty) return null;
     switch (value.toLowerCase()) {
@@ -392,6 +393,42 @@ MaterialColor createMaterialColor(Color color) {
   }
 
   return MaterialColor(color.value, swatch);
+}
+
+MaterialStateProperty<EdgeInsetsGeometry>? parseMaterialStateEdgeInsets(String? value) {
+  final padding = parseEdgeInsetsGeometry(value);
+  return (padding != null) ? MaterialStateProperty.all<EdgeInsetsGeometry>(padding) : null;
+}
+
+MaterialStateProperty<Size>? parseMaterialStateSize(String? value) {
+  final size = parseSize(value);
+  return (size != null) ? MaterialStateProperty.all<Size>(size) : null;
+}
+
+MaterialStateProperty<double>? parseMaterialStateDouble(String? value) {
+  final db = value != null ? double.tryParse(value) : null;
+  return (db != null) ? MaterialStateProperty.all<double>(db) : null;
+}
+
+Size? parseSize(String? value) {
+  if (value != null && value.isNotEmpty) {
+    double? width;
+    double? height;
+    final parts = value.split("x");
+    if (parts.length == 1) {
+      width = double.tryParse(parts[0]);
+      height = width;
+    } else if (parts.length == 2) {
+      width = parts[0] == "" ? double.infinity : double.tryParse(parts[0]);
+      height = parts[1] == "" ? double.infinity : double.tryParse(parts[1]);
+    }
+    if (width != null && height != null) {
+      return Size(width, height);
+    }
+    throw Exception("Invalid Size value: '$value'. Valid formats are " +
+        "<W>x<H>, <W>x, x<H>, or <one value for W and H>");
+  }
+  return null;
 }
 
 //=====================================

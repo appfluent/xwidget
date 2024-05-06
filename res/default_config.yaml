@@ -21,6 +21,7 @@ inflaters:
   # we can't access it unless they make it public. For now we'll just have to maintain this map.
   constructor_arg_defaults:
     "AnimatedCrossFade:layoutBuilder": "AnimatedCrossFade.defaultLayoutBuilder"
+    "BoxShadow:color": "const Color(0xFF000000)"
     "CupertinoSliverRefreshControl:builder": "CupertinoSliverRefreshControl.buildRefreshIndicator"
     "CupertinoTextField:placeholderStyle": "const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText)"
     "CupertinoTextField.borderless:placeholderStyle": "const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText)"
@@ -61,6 +62,9 @@ inflaters:
     "List<int>": "parseListOfInts(value)"
     "Locale": "parseLocale(value)"
     "MaterialStateProperty<Color>": "parseMaterialStateColor(value)"
+    "MaterialStateProperty<double>": "parseMaterialStateDouble(value)"
+    "MaterialStateProperty<EdgeInsetsGeometry>": "parseMaterialStateEdgeInsets(value)"
+    "MaterialStateProperty<Size>": "parseMaterialStateSize(value)"
     "Offset": "parseOffset(value)"
     "TextDecoration": "parseTextDecoration(value)"
     "VisualDensity": "parseVisualDensity(value)"

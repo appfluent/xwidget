@@ -1,3 +1,46 @@
+### 0.0.39 (May 6, 2024)
+
+#### Please run `dart run xwidget:generate --only inlfaters` after upgrading.
+
+* Added default inflater constructor value for `BoxShadow:color`.
+* `parseBool` now parses `int`s. Zero is `false`, non-zero values are `true`.
+* Added custom `MaterialState` implementations and parsers to better support `MaterialState` properties.
+  
+  ```dart
+  // inflater_spec.dart example
+  const inflaters = [
+    MaterialStateBorderSide,
+    MaterialStateColor,
+    MaterialStateDouble,
+    MaterialStateEdgeInsets
+    MaterialStateMouseCursor,
+    MaterialStateOutlineBorder,
+    MaterialStateSize,
+    MaterialStateTextStyle,
+  ];
+  ```
+  
+  ```xml
+    <!-- simple fragment examples -->
+    <MaterialStateColor for="..." primary="#272727" disabled="#676767"/>
+  
+    <MaterialStateSize for="..." primary="8x8" focused="12x12" error="x24"/>
+  
+    <MaterialStateTextStyle for="...">
+        <TextStyle for="primary" fontWeight="400"/>
+        <TextStyle for="selected" fontWeight="600"/>
+    </MaterialStateTextStyle>
+  ```
+
+  Configured default parsers:
+  ```yaml
+    # default_config.yaml
+    "MaterialStateProperty<Color>": "parseMaterialStateColor(value)"
+    "MaterialStateProperty<double>": "parseMaterialStateDouble(value)"
+    "MaterialStateProperty<EdgeInsetsGeometry>": "parseMaterialStatePadding(value)"
+    "MaterialStateProperty<Size>": "parseMaterialStateSize(value)"
+  ```
+
 ### 0.0.38 (April 29, 2024)
 
 * Fixed EL `RangeError` when referencing data using an out of range index i.e. `${items[2].name}`

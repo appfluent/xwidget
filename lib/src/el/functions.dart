@@ -110,9 +110,9 @@ class BuiltInFunctions {
     }
   }
 
-  String _formatDateTime(String format, DateTime dateTime) {
+  String _formatDateTime(String format, dynamic dateTime) {
     final formatter = DateFormat(format);
-    return formatter.format(dateTime);
+    return formatter.format(_toDateTime(dateTime));
   }
 
   bool _isEmpty(dynamic value) {
@@ -222,7 +222,7 @@ class BuiltInFunctions {
     if (value is DateTime) return value;
     if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
     if (value is String) return DateTime.parse(value);
-    return throw Exception('Invalid DateTime value: $value');
+    return throw Exception('Invalid DateTime: value=$value, type=${value.runtimeType}');
   }
 
   double _toDouble(dynamic value) {
