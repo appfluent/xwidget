@@ -55,9 +55,11 @@ class BuilderTag implements Tag {
     // 'for' is a required attribute.
     final forAttribute = element.getAttribute("for");
 
-    final multiChild = parseBool(attributes["multiChild"]) ?? false;
-    final nullable = parseBool(attributes["nullable"]) ?? false;
+    // optional attributes
+    final String? returnType = attributes["returnType"];
     final dependenciesScope = attributes["dependenciesScope"];
+
+    final isList = returnType != null && returnType.startsWith("List");
 
     dynamic builder([p0, p1, p2, p3, p4]) {
       final params = <String, dynamic>{};
@@ -81,12 +83,13 @@ class BuilderTag implements Tag {
           dependenciesScope,
           params.isEmpty ? "inherit" : "copy"
       ).addAll(params);
-      final children = XWidget.inflateXmlElementChildren(element, deps).objects;
-      return multiChild ? children : XWidgetUtils.getOnlyChild("<$name> tag", children);
-    }
-
-    List<Widget> multiWidgetBuilder([p0, p1, p2, p3, p4]) {
-      return [...builder(p0, p1, p2, p3, p4)];
+      List children = XWidget.inflateXmlElementChildren(element, deps).objects;
+      if (children.length == 1 && children[0] is List) {
+        // flatten nested list. this might happen if the builder inflates
+        // a fragment that returns a list of items.
+        children = children[0];
+      }
+      return isList ? children : XWidgetUtils.getOnlyChild("<$name> tag", children);
     }
 
     Widget singleWidgetBuilder([p0, p1, p2, p3, p4]) {
@@ -97,25 +100,30 @@ class BuilderTag implements Tag {
       return builder(p0, p1, p2, p3, p4);
     }
 
-    final children = Children();
-    if (multiChild) {
-      if (CommonUtils.isBlank(forAttribute)) {
-        children.objects.add(multiWidgetBuilder);
-      } else {
-        children.attributes[forAttribute!] = multiWidgetBuilder;
-      }
-    } else if (nullable) {
-      if (CommonUtils.isBlank(forAttribute)) {
-        children.objects.add(nullableSingleWidgetBuilder);
-      } else {
-        children.attributes[forAttribute!] = nullableSingleWidgetBuilder;
-      }
+    List<Widget> multiWidgetBuilder([p0, p1, p2, p3, p4]) {
+      return [...builder(p0, p1, p2, p3, p4)];
+    }
+
+    List<PopupMenuEntry> popupMenuEntryBuilder([p0, p1, p2, p3, p4]) {
+      return [...builder(p0, p1, p2, p3, p4)];
+    }
+
+    Function builderFunction;
+    if (returnType == "Widget?") {
+      builderFunction = nullableSingleWidgetBuilder;
+    } else if (returnType == "List:Widget") {
+      builderFunction = multiWidgetBuilder;
+    } else if (returnType == "List:PopupMenuEntry") {
+      builderFunction = popupMenuEntryBuilder;
     } else {
-      if (CommonUtils.isBlank(forAttribute)) {
-        children.objects.add(singleWidgetBuilder);
-      } else {
-        children.attributes[forAttribute!] = singleWidgetBuilder;
-      }
+      builderFunction = singleWidgetBuilder;
+    }
+
+    final children = Children();
+    if (CommonUtils.isBlank(forAttribute)) {
+      children.objects.add(builderFunction);
+    } else {
+      children.attributes[forAttribute!] = builderFunction;
     }
     return children;
   }

@@ -1,5 +1,6 @@
 import 'package:xml/xml.dart';
 
+import '../utils/utils.dart';
 import '../xwidget.dart';
 
 class ForEachTag implements Tag {
@@ -31,20 +32,36 @@ class ForEachTag implements Tag {
     // 'indexVar' is an optional attribute
     final indexVarName = attributes["indexVar"];
 
+    // 'groupSize' is an optional attribute
+    final groupSize = CommonUtils.tryParseInt(attributes["groupSize"]) ?? 1;
+
     // 'dependenciesScope' is an optional attribute
     final dependenciesScope = attributes["dependenciesScope"];
 
-    var indexVar = 0;
+    var index = 0;
+    var itemGroup = [];
     final children = Children();
+
     for (final item in iterable) {
-      final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
-      deps[varName] = item is MapEntry ? {"key": item.key, "value": item.value} : item;
-      if (indexVarName != null && indexVarName.isNotEmpty) {
-        deps[indexVarName] = indexVar;
+      dynamic depItem = item is MapEntry ? {"key": item.key, "value": item.value} : item;;
+      int depIndex = index ~/ groupSize;
+
+      if (groupSize > 1) {
+        itemGroup.add(depItem);
+        depItem = itemGroup;
       }
-      final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
-      children.addAll(tagChildren);
-      indexVar++;
+
+      if ((index + 1) % groupSize == 0 || index == iterable.length - 1) {
+        final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
+        deps[varName] = depItem;
+        if (indexVarName != null && indexVarName.isNotEmpty) {
+          deps[indexVarName] = depIndex;
+        }
+        final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
+        children.addAll(tagChildren);
+        itemGroup = [];
+      }
+      index++;
     }
     return children;
   }

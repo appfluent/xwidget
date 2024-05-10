@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:path/path.dart';
 
 import '../utils/cli_log.dart';
+import '../utils/extensions.dart';
 import '../utils/path_resolver.dart';
 import '../utils/source_analyzer.dart';
 import 'builder.dart';
@@ -41,39 +43,43 @@ class InflaterBuilder extends SpecBuilder {
       inflaters.write(_buildIncludeSource(includeManifest));
 
       // build inflater classes and schema
+      // todo: nested ifs are a little crazy
       for (final path in sourceManifest.paths) {
         final library = libraryElements[path];
         if (library != null) {
+          // found source library
           for (final element in library.topLevelElements) {
             if (element is PropertyAccessorElement) {
               final returnType = element.returnType;
               if (returnType.toString() != "InvalidType") {
-                // has a known return type
-                final classElements = <ClassElement>[];
+                // has a known return type i.e. not invalid
+                final inflaterTypes = <InflaterType>[];
                 if (element.name == "inflaters") {
                   // found a list of inflaters
-                  final inflaterTypes = element.variable.computeConstantValue()?.toListValue();
-                  if (inflaterTypes != null) {
-                    for (final inflaterType in inflaterTypes) {
-                      final element = inflaterType.toTypeValue()?.element;
-                      if (element is ClassElement) classElements.add(element);
+                  final computedValues = element.variable.computeConstantValue()?.toListValue();
+                  if (computedValues != null) {
+                    for (final computedValue in computedValues) {
+                      final typeValue = computedValue.toTypeValue();
+                      if (typeValue != null) {
+                        final element = typeValue.element;
+                        if (element is ClassElement) {
+                          final typeArguments = typeValue is InterfaceType ? typeValue.typeArguments : <DartType>[];
+                          inflaterTypes.add(InflaterType(element, typeArguments));
+                        }
+                      }
                     }
                   }
-                } else {
-                  // found individual inflater const
-                  final returnElement = returnType.element;
-                  if (returnElement is ClassElement) classElements.add(returnElement);
                 }
 
                 // process all class elements
-                for (final classElement in classElements) {
-                  final annotations = decodeMetadata(classElement.metadata);
-                  for (final constructor in classElement.constructors) {
+                for (final inflaterType in inflaterTypes) {
+                  final annotations = decodeMetadata(inflaterType.element.metadata);
+                  for (final constructor in inflaterType.element.constructors) {
                     if (!constructor.isPrivate && (!constructor.hasDeprecated || config.allowDeprecated)) {
-                      final inflater = _buildInflaterClass(classElement, constructor, annotations);
+                      final inflater = _buildInflaterClass(inflaterType, constructor, annotations);
                       inflaters.write(inflater[0]);
                       initializers.write(inflater[1]);
-                      schemaElements.write(_buildSchemaElement(classElement, constructor, annotations));
+                      schemaElements.write(_buildSchemaElement(inflaterType, constructor, annotations));
                     }
                   }
                 }
@@ -142,15 +148,17 @@ class InflaterBuilder extends SpecBuilder {
     return code.toString();
   }
 
-  List _buildInflaterClass(ClassElement type, ConstructorElement constructor, Map<String, dynamic> annotations) {
+  List _buildInflaterClass(InflaterType type, ConstructorElement constructor, Map<String, dynamic> annotations) {
     final code = StringBuffer();
     final constructorArgs = StringBuffer();
     final parseCases = StringBuffer();
     final constructorName = constructor.displayName;
-    final className = "${constructorName}Inflater".replaceAll(".", "_");
+    final typedConstructorName = _buildTypedConstructorName(type, constructorName);
+    final className = _buildInflaterName(type, constructorName, "_") + "Inflater";
     final isCustomWidget = annotations.containsKey(inflaterDefAnnotation);
-    final inflaterType = annotations[inflaterDefAnnotation]?[inflaterTypeParam] ?? constructorName;
+    final inflaterKey = annotations[inflaterDefAnnotation]?[inflaterTypeParam] ?? _buildInflaterName(type, constructorName, ".");
     final inflatesOwnChildren = annotations[inflaterDefAnnotation]?[inflatesOwnChildrenParam] ?? false;
+    final inflaterReturnType = type.element.name;
 
     for (final param in constructor.parameters) {
       if (!param.hasDeprecated || config.allowDeprecated) {
@@ -160,7 +168,8 @@ class InflaterBuilder extends SpecBuilder {
             final privateAccess = isPrivateAccessParam(param, isCustomWidget);
             constructorArgs.write(_buildConstructorArg(constructorName, param, privateAccess));
             if (schemaConfig.isNotExcludedAttribute(constructorName, param.name) && !privateAccess) {
-              parseCases.write(_buildInflaterParseCase(constructorName, param));
+              final paramType = type.resolveParamType(param);
+              parseCases.write(_buildInflaterParseCase(constructorName, param.name, paramType));
             }
           }
         } else {
@@ -169,10 +178,10 @@ class InflaterBuilder extends SpecBuilder {
       }
     }
     code.write("class $className extends Inflater {\n\n");
-    code.write("    @override\n    String get type => '$inflaterType';\n\n");
+    code.write("    @override\n    String get type => '$inflaterKey';\n\n");
     code.write("    @override\n    bool get inflatesOwnChildren => $inflatesOwnChildren;\n\n");
     code.write("    @override\n    bool get inflatesCustomWidget => $isCustomWidget;\n\n");
-    code.write(_buildInflaterInflateMethod(type.name, constructorName, constructorArgs.toString()));
+    code.write(_buildInflaterInflateMethod(inflaterReturnType, typedConstructorName, constructorArgs.toString()));
     code.write(_buildInflaterParseMethod(parseCases.toString()));
     code.write("}\n\n");
     return [code.toString(), _buildInflaterInitializer(className)];
@@ -261,14 +270,14 @@ class InflaterBuilder extends SpecBuilder {
     return null;
   }
 
-  String _buildInflaterParseCase(String constructorName, ParameterElement param) {
+  String _buildInflaterParseCase(String constructorName, String paramName, DartType paramType) {
     final code = StringBuffer();
-    final parser = inflaterConfig.findConstructorArgParser(constructorName, param.name, param.type.toString());
-    code.write("            case '${param.name}': ");
+    final parser = inflaterConfig.findConstructorArgParser(constructorName, paramName, paramType.toString());
+    code.write("            case '${paramName}': ");
     if (parser != null) {
       code.write("return $parser");
-    } else if (param.type.element is EnumElement) {
-      code.write("return parseEnum(${param.type.element?.name}.values, value)");
+    } else if (paramType.element is EnumElement) {
+      code.write("return parseEnum(${paramType.element?.name}.values, value)");
     } else {
       code.write("break");
     }
@@ -313,9 +322,26 @@ class InflaterBuilder extends SpecBuilder {
     return ok;
   }
 
+  String _buildTypedConstructorName(InflaterType type, String constructorName) {
+    final types = type.argumentNames.isNotEmpty ? "<${type.argumentNames.join(',')}>" : "";
+    final dotIndex = constructorName.indexOf(".");
+    return dotIndex > 0
+        ? constructorName.substring(0, dotIndex) + types +
+          constructorName.substring(dotIndex, constructorName.length)
+        : constructorName + types;
+  }
+
+  String _buildInflaterName(InflaterType type, String constructorName, String separator) {
+    final types = type.argumentNames.map((e) => e.capitalizeFirst()).join();
+    final dotIndex = constructorName.indexOf(".");
+    return dotIndex > 0
+        ? constructorName.substring(0, dotIndex) + types + separator +
+          constructorName.substring(dotIndex + 1, constructorName.length)
+        : constructorName + types;
+  }
+
   //=============================================
   // schema methods
-  // TODO: auto generate element types from enums
   //=============================================
 
   Future<String> _buildSchema(String elements) async {
@@ -337,12 +363,13 @@ class InflaterBuilder extends SpecBuilder {
     return code.toString();
   }
 
-  String _buildSchemaElement(ClassElement type, ConstructorElement constructor, Map<String, dynamic> annotations) {
+  String _buildSchemaElement(InflaterType type, ConstructorElement constructor, Map<String, dynamic> annotations) {
     final code = StringBuffer();
     final attributes = StringBuffer();
     final constructorName = constructor.displayName;
     final isCustomWidget = annotations.containsKey(inflaterDefAnnotation);
-    final inflaterType = annotations[inflaterDefAnnotation]?[inflaterTypeParam] ?? constructorName;
+    final inflaterKey = annotations[inflaterDefAnnotation]?[inflaterTypeParam]
+        ?? _buildInflaterName(type, constructorName, ".");
 
     for (final param in constructor.parameters) {
       if ((!param.hasDeprecated || config.allowDeprecated) &&
@@ -356,7 +383,7 @@ class InflaterBuilder extends SpecBuilder {
         attributes.write(_buildSchemaAttribute(type, param));
       }
     }
-    code.write('    <xs:element name="$inflaterType">\n');
+    code.write('    <xs:element name="$inflaterKey">\n');
     code.write(_buildSchemaDocumentation(constructor.documentationComment, 8));
     code.write('        <xs:complexType>\n');
     code.write('            <xs:complexContent>\n');
@@ -383,10 +410,10 @@ class InflaterBuilder extends SpecBuilder {
     return code.toString();
   }
 
-  String _buildSchemaAttribute(ClassElement type, ParameterElement param) {
+  String _buildSchemaAttribute(InflaterType type, ParameterElement param) {
     final code = StringBuffer();
     final schemaType = _getSchemaAttributeType(param);
-    final paramDocs = getParameterDocumentation(type, param);
+    final paramDocs = getParameterDocumentation(type.element, param);
     code.write('                    <xs:attribute name="${param.name}"');
     if (schemaType != null) {
       code.write(' type="$schemaType"');
@@ -435,4 +462,38 @@ class SchemaType {
   final String code;
 
   SchemaType(this.name, this.code);
+}
+
+class InflaterType<T> {
+  final ClassElement element;
+  final List<DartType> arguments;
+  final List<TypeParameterElement> parameters;
+  late final List<String> argumentNames;
+
+  InflaterType(this.element, this.arguments) : this.parameters = element.typeParameters {
+    int dynamicCount = 0;
+    final args = <String>[];
+    for (final argument in arguments) {
+      final name = argument.element?.name;
+      if (name != null) {
+        if (name == "dynamic") {
+          dynamicCount++;
+        }
+        args.add(name);
+      }
+    }
+    // ignore type arguments if they're all dynamic
+    this.argumentNames = dynamicCount < args.length ? args : [];
+  }
+
+  DartType resolveParamType(ParameterElement param) {
+    final paramType = param.type;
+    for (int i=0; i < parameters.length; i++) {
+      final typeParam = parameters[i];
+      if (typeParam.name == paramType.toString().replaceAll("?", "")) {
+        return arguments[i];
+      }
+    }
+    return paramType;
+  }
 }

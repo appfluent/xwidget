@@ -6,23 +6,12 @@ import 'package:flutter/material.dart';
 
 // ignore_for_file: unused_element
 
-const AlertDialog? _alertDialog = null;
-const AppBar? _appBar = null;
-const BoxConstraints? _boxConstraints = null;
-const Center? _center = null;
-const CircularProgressIndicator? _circularProgressIndicator = null;
-const Column? _column = null;
-const CupertinoTextField? _cupertinoTextField = null;
-const FloatingActionButton? _floatingActionButton = null;
-const Icon? _icon = null;
-const MaterialApp? _materialApp = null;
-const Scaffold? _scaffold = null;
-const Text? _text = null;
-const TextStyle? _textStyle = null;
-const ThemeData? _themeData = null;
-
 const inflaters = [
   AlertDialog,
+  AlwaysStoppedAnimation,
+  AlwaysStoppedAnimation<Color>,
+  AlwaysStoppedAnimation<int>,
+  AnimatedCrossFade,
   AppBar,
   BoxConstraints,
   Center,

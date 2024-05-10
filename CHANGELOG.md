@@ -1,3 +1,61 @@
+### 0.0.40 (May 9, 2024)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Added `abs`, `ceil`, `floor`, and `round` EL functions. 
+* Added grouping functionality to `forEach` tag. Useful for creating simple multi-column layouts. 
+  ```xml
+  <!-- forEach grouping example -->
+  <forEach var="group" items="${items}" groupSize="2">
+      <Row>
+          <forEach var="item" items="${group}">
+              <Text data="${item.title}"/>
+          </forEach>
+      </Row>
+  </forEach>
+  ```
+* Added `returnType` attribute to `builder` tag. Valid values are `Widget`, `Widget?`, `List:Widget`, 
+  and `List:PopupMenuEntry`. Defaults to `Widget` if empty.
+* Added return type `List<PopupMenuEntry>` (display name `List:PopupMenuEntry`) to `builder` tag.
+* Added support for defining inflaters with generic types i.e. `AlwaysStoppedAnimation<T>`,
+  `MaterialStatePropertyOf<T>`, etc.
+  ```dart
+  // inflater_spec.dart example
+  const inflaters = [
+    AlwaysStoppedAnimation<Color>
+    MaterialStatePropertyOf<Color>,
+    MaterialStatePropertyOf<Size>,
+    MaterialStatePropertyOf<TextStyle>,
+  ];
+  ```
+  ```xml
+    <!-- simple fragment examples -->
+    <AlwaysStoppedAnimationColor for="..." value="@color/primary"/>
+    <MaterialStatePropertyOfColor for="..." primary="#272727" disabled="#676767"/>
+    <MaterialStatePropertyOfSize for="..." primary="8x8" focused="12x12" error="x24"/>
+    <MaterialStatePropertyOfTextStyle for="...">
+        <TextStyle for="primary" fontWeight="400"/>
+        <TextStyle for="selected" fontWeight="600"/>
+    </MaterialStatePropertyOfTextStyle>
+  ```
+* Removed `nullable` and `multiChild` attributes from `builder` tag. Use `returnType` instead.
+* Removed erroneous `start`, `end` attributes from `forEach` schema definition.
+* Removed previously added `MaterialStateXXX` custom inflaters. Use `MaterialStatePropertyOf<T>` instead.
+* Removed support for original inflater specification format. Use the new specification format.
+  ```dart
+  // old format - no longer supported
+  const Column? _column = null;
+  const Text? _text = null;
+  const TextStyle? _textStyle = null;
+
+  // new format
+  const inflaters = [
+    Column,
+    Text,
+    TextStyle,
+  ];
+  ```
+
 ### 0.0.39 (May 6, 2024)
 
 #### Please run `dart run xwidget:generate --only inlfaters` after upgrading.
@@ -5,7 +63,6 @@
 * Added default inflater constructor value for `BoxShadow:color`.
 * `parseBool` now parses `int`s. Zero is `false`, non-zero values are `true`.
 * Added custom `MaterialState` implementations and parsers to better support `MaterialState` properties.
-  
   ```dart
   // inflater_spec.dart example
   const inflaters = [
@@ -19,19 +76,15 @@
     MaterialStateTextStyle,
   ];
   ```
-  
   ```xml
     <!-- simple fragment examples -->
     <MaterialStateColor for="..." primary="#272727" disabled="#676767"/>
-  
     <MaterialStateSize for="..." primary="8x8" focused="12x12" error="x24"/>
-  
     <MaterialStateTextStyle for="...">
         <TextStyle for="primary" fontWeight="400"/>
         <TextStyle for="selected" fontWeight="600"/>
     </MaterialStateTextStyle>
   ```
-
   Configured default parsers:
   ```yaml
     # default_config.yaml

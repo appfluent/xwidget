@@ -129,10 +129,10 @@ abstract class SpecBuilder {
     return annotations;
   }
 
-  /// Check para to see if it should be publicly available
+  /// Check param to see if it should be publicly available
   ///
-  /// Private means that it should not appear in the schema as an attribute and it should be a 'private'
-  /// reference in Dependencies (prepend '_' to Dependencies key).
+  /// Private means that it should not appear in the schema as an attribute and
+  /// it should be a 'private' reference in Dependencies (prepend '_' to Dependencies key).
   bool isPrivateAccessParam(ParameterElement param, bool isCustomWidget) {
     final paramType = param.type.getDisplayString(withNullability: false);
     return (paramType == "Dependencies" || paramType == "XmlElement") && isCustomWidget;
@@ -264,8 +264,8 @@ class InflaterConfig with ConfigMixin {
   Map<String, String> constructorArgDefaults = {};
   Map<String, String> constructorArgParsers = {};
 
-  String? findConstructorArgDefault(String? inflaterType, String? argName, [String? defaultValue]) {
-    List<String> keys = _searchKeys(inflaterType, argName);
+  String? findConstructorArgDefault(String? inflaterType, String? paramName, [String? defaultValue]) {
+    List<String> keys = _searchKeys(inflaterType, paramName);
     for (final key in keys) {
       final value = constructorArgDefaults[key];
       if (value != null) return value;
@@ -273,10 +273,10 @@ class InflaterConfig with ConfigMixin {
     return defaultValue;
   }
 
-  String? findConstructorArgParser(String? inflaterType, String? argName, String? argType) {
-    List<String> keys = _searchKeys(inflaterType, argName);
-    if (argType != null) {
-      keys.add(argType.replaceAll("?", ""));
+  String? findConstructorArgParser(String? inflaterType, String? paramName, String? paramType) {
+    List<String> keys = _searchKeys(inflaterType, paramName);
+    if (paramType != null) {
+      keys.add(paramType.replaceAll("?", ""));
     }
     for (final key in keys) {
       final parser = constructorArgParsers[key];
@@ -285,16 +285,16 @@ class InflaterConfig with ConfigMixin {
     return null;
   }
 
-  bool isExcludedConstructorArg(String? inflaterType, String? argName) {
-    List<String> keys = _searchKeys(inflaterType, argName);
+  bool isExcludedConstructorArg(String? inflaterType, String? paramName) {
+    List<String> keys = _searchKeys(inflaterType, paramName);
     for (final key in keys) {
       if (constructorExclusions.contains(key)) return true;
     }
     return false;
   }
 
-  bool isNotExcludedConstructorArg(String? inflaterType, String? argName) {
-    return !isExcludedConstructorArg(inflaterType, argName);
+  bool isNotExcludedConstructorArg(String? inflaterType, String? paramName) {
+    return !isExcludedConstructorArg(inflaterType, paramName);
   }
 
   bool isValid() {
@@ -308,11 +308,11 @@ class InflaterConfig with ConfigMixin {
 }
 
 mixin ConfigMixin {
-  List<String> _searchKeys(String? inflaterType, String? argName) {
+  List<String> _searchKeys(String? inflaterType, String? paramName) {
     final keys = <String>[];
-    if (inflaterType != null && argName != null) keys.add("$inflaterType:$argName");
+    if (inflaterType != null && paramName != null) keys.add("$inflaterType:$paramName");
     if (inflaterType != null) keys.add("$inflaterType:*");
-    if (argName != null) keys.add("*:$argName");
+    if (paramName != null) keys.add("*:$paramName");
     // no need to add the *.* key since we never want to return the same value for all types and attributes
     return keys;
   }

@@ -27,6 +27,8 @@ associativity. Both the precedence level and associativity can be seen in the ta
 
 | Name              | Arguments                                                                     | Returns  | Description | Examples                                                                          |
 |-------------------|-------------------------------------------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
+| abs               | dynamic value                                                                 | num      |             |                                                                                   |
+| ceil              | dynamic value                                                                 | int      |             |                                                                                   |
 | contains          | dynamic value<br/>dynamic searchValue                                         | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
 | containsKey       | Map? map<br/>dynamic searchKey                                                | bool     |             |                                                                                   |
 | containsValue     | Map? map<br/>dynamic searchValue                                              | bool     |             |                                                                                   |
@@ -38,6 +40,7 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | durationInMills   | Duration value                                                                | int      |             |                                                                                   |
 | endsWith          | String value<br/>String searchValue                                           | bool     |             |                                                                                   |
 | eval              | String? value                                                                 | dynamic  |             |                                                                                   |
+| floor             | dynamic value                                                                 | int      |             |                                                                                   |
 | formatDateTime    | String format<br/>DateTime dateTime                                           | String   |             |                                                                                   |
 | isEmpty           | dynamic value                                                                 | bool     |             |                                                                                   |
 | isFalseOrNull     | dynamic value                                                                 | bool     |             |                                                                                   |
@@ -53,6 +56,7 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | randomInt         | int max                                                                       | int      |             |                                                                                   |
 | replaceAll        | String value<br/>String regex<br/>String replacement                          | String   |             |                                                                                   |
 | replaceFirst      | String value<br/>String regex<br/>String replacement<br/>[int startIndex = 0] | String   |             |                                                                                   |
+| round             | dynamic value                                                                 | int      |             |                                                                                   |
 | startsWith        | String value<br/>String searchValue                                           | bool     |             |                                                                                   |
 | substring         | String value<br/>int start<br/>[int end = -1]                                 | String   |             |                                                                                   |
 | toBool            | dynamic value                                                                 | bool     |             |                                                                                   |

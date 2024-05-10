@@ -5,6 +5,19 @@
 
     <!-- simple types -->
 
+    <xs:simpleType name="builderReturnTypeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Widget"/>
+                    <xs:enumeration value="Widget?"/>
+                    <xs:enumeration value="List:Widget"/>
+                    <xs:enumeration value="List:PopupMenuEntry"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="expressionAttributeType">
         <xs:restriction base="xs:string">
             <xs:pattern value="\$\{.*\}" />
@@ -227,7 +240,7 @@
             </xs:sequence>
             <xs:attribute name="for" type="xs:string"/>
             <xs:attribute name="vars" type="xs:string"/>
-            <xs:attribute name="multiChild" type="boolAttributeType"/>
+            <xs:attribute name="returnType" type="builderReturnTypeAttributeType"/>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
         </xs:complexType>
     </xs:element>
@@ -268,8 +281,7 @@
             <xs:attribute name="var" type="xs:string" use="required"/>
             <xs:attribute name="indexVar" type="xs:string"/>
             <xs:attribute name="items" type="xs:string" use="required"/>
-            <xs:attribute name="start" type="integerAttributeType"/>
-            <xs:attribute name="end" type="integerAttributeType"/>
+            <xs:attribute name="groupSize" type="integerAttributeType"/>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType"/>
         </xs:complexType>
     </xs:element>

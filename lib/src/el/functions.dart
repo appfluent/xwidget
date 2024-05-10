@@ -23,6 +23,8 @@ class BuiltInFunctions {
 
   Function? operator [](String name) {
     switch (name) {
+      case "abs": return _abs;
+      case "ceil": return _ceil;
       case "contains": return _contains;
       case "containsKey": return _containsKey;
       case "containsValue": return _containsValue;
@@ -34,6 +36,7 @@ class BuiltInFunctions {
       case "durationInMills": return _durationInMills;
       case "endsWith": return _endsWith;
       case "eval": return _eval;
+      case "floor": return _floor;
       case "formatDateTime": return _formatDateTime;
       case "isEmpty": return _isEmpty;
       case "isFalse": return _isFalse;
@@ -46,12 +49,13 @@ class BuiltInFunctions {
       case "length": return _length;
       case "logDebug": return _logDebug;
       case "matches": return _matches;
+      case "now": return _now;
+      case "nowUtc": return _nowUtc;
       case "randomDouble": return _randomDouble;
       case "randomInt": return _randomInt;
       case "replaceAll": return _replaceAll;
       case "replaceFirst": return _replaceFirst;
-      case "now": return _now;
-      case "nowUtc": return _nowUtc;
+      case "round": return _round;
       case "startsWith": return _startsWith;
       case "substring": return _substring;
       case "toBool": return _toBool;
@@ -64,13 +68,27 @@ class BuiltInFunctions {
     }
   }
 
+  num _abs(dynamic value) {
+    if (value is int) return value.abs();
+    if (value is double) return value.abs();
+    if (value is String) return double.parse(value).abs();
+    throw Exception("Invalid value '$value' for 'abs' function.");
+  }
+
+  int _ceil(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.ceil();
+    if (value is String) return double.parse(value).ceil();
+    throw Exception("Invalid value '$value' for 'ceil' function.");
+  }
+
   bool _contains(dynamic value, dynamic searchValue) {
     if (value == null) return false;
     if (value is String) return value.contains(searchValue.toString());
     if (value is List) return value.contains(searchValue);
     if (value is Set) return value.contains(searchValue);
-    throw Exception("Invalid function 'contains' for type "
-        "'${value.runtimeType}'. Valid types are String, List and Set.");
+    throw Exception("Invalid type '${value.runtimeType}' for 'contains' "
+        "function. Valid types are String, List and Set.");
   }
 
   bool _containsKey(Map? map, dynamic searchKey) {
@@ -108,6 +126,13 @@ class BuiltInFunctions {
         throw Exception("Failed to evaluate '$expression'. ${result.message}");
       }
     }
+  }
+
+  int _floor(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.floor();
+    if (value is String) return double.parse(value).floor();
+    throw Exception("Invalid value '$value' for 'floor' function.");
   }
 
   String _formatDateTime(String format, dynamic dateTime) {
@@ -166,6 +191,18 @@ class BuiltInFunctions {
     }
   }
 
+  DateTime _now() => DateTime.now();
+
+  /// Returns this DateTime value in the UTC time zone.
+  ///
+  /// Returns [this] if it is already in UTC.
+  /// Otherwise this method is equivalent to:
+  ///
+  /// ```dart template:expression
+  /// DateTime.fromMicrosecondsSinceEpoch(microsecondsSinceEpoch, isUtc: true)
+  /// ```
+  DateTime _nowUtc() => DateTime.now().toUtc();
+
   /// Generates a non-negative random integer uniformly distributed in the range
   /// from 0, inclusive, to [max], exclusive.
   ///
@@ -199,17 +236,12 @@ class BuiltInFunctions {
     return value.replaceFirst(regex, replacement, startIndex);
   }
 
-  DateTime _now() => DateTime.now();
-
-  /// Returns this DateTime value in the UTC time zone.
-  ///
-  /// Returns [this] if it is already in UTC.
-  /// Otherwise this method is equivalent to:
-  ///
-  /// ```dart template:expression
-  /// DateTime.fromMicrosecondsSinceEpoch(microsecondsSinceEpoch, isUtc: true)
-  /// ```
-  DateTime _nowUtc() => DateTime.now().toUtc();
+  int _round(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.round();
+    if (value is String) return double.parse(value).round();
+    throw Exception("Invalid value '$value' for 'round' function.");
+  }
 
   bool _startsWith(String value, String searchFor) => value.startsWith(searchFor);
 

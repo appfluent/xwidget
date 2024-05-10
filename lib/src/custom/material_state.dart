@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../xwidget.dart';
 
-abstract class XWidgetMaterialState<T> extends MaterialStateProperty<T> {
+class MaterialStatePropertyOf<T> extends MaterialStateProperty<T> {
   final T primary;
   final T? hovered;
   final T? focused;
@@ -13,7 +12,7 @@ abstract class XWidgetMaterialState<T> extends MaterialStateProperty<T> {
   final T? disabled;
   final T? error;
 
-  XWidgetMaterialState({
+  MaterialStatePropertyOf({
     required this.primary,
     this.hovered,
     this.focused,
@@ -53,124 +52,4 @@ abstract class XWidgetMaterialState<T> extends MaterialStateProperty<T> {
     }
     return primary;
   }
-}
-
-@InflaterDef(inflaterType: "MaterialStateOutlineBorder", inflatesOwnChildren: false)
-class XWidgetMaterialStateOutlinedBorder extends XWidgetMaterialState<OutlinedBorder> {
-  XWidgetMaterialStateOutlinedBorder({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateBorderSide", inflatesOwnChildren: false)
-class XWidgetMaterialStateBorderSide extends XWidgetMaterialState<BorderSide> {
-  XWidgetMaterialStateBorderSide({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateMouseCursor", inflatesOwnChildren: false)
-class XWidgetMaterialStateMouseCursor extends XWidgetMaterialState<MouseCursor> {
-  XWidgetMaterialStateMouseCursor({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateTextStyle", inflatesOwnChildren: false)
-class XWidgetMaterialStateTextStyle extends XWidgetMaterialState<TextStyle> {
-  XWidgetMaterialStateTextStyle({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateColor", inflatesOwnChildren: false)
-class XWidgetMaterialStateColor extends XWidgetMaterialState<Color> {
-  XWidgetMaterialStateColor({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateDouble", inflatesOwnChildren: false)
-class XWidgetMaterialStateDouble extends XWidgetMaterialState<double> {
-  XWidgetMaterialStateDouble({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateSize", inflatesOwnChildren: false)
-class XWidgetMaterialStateSize extends XWidgetMaterialState<Size> {
-  XWidgetMaterialStateSize({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
-}
-
-@InflaterDef(inflaterType: "MaterialStateEdgeInsets", inflatesOwnChildren: false)
-class XWidgetMaterialStateEdgeInsets extends XWidgetMaterialState<EdgeInsetsGeometry> {
-  XWidgetMaterialStateEdgeInsets({
-    required super.primary,
-    super.hovered,
-    super.focused,
-    super.pressed,
-    super.dragged,
-    super.selected,
-    super.scrolledUnder,
-    super.disabled,
-    super.error
-  });
 }

@@ -66,6 +66,7 @@ inflaters:
     "MaterialStateProperty<EdgeInsetsGeometry>": "parseMaterialStateEdgeInsets(value)"
     "MaterialStateProperty<Size>": "parseMaterialStateSize(value)"
     "Offset": "parseOffset(value)"
+    "Size": "parseSize(value)"
     "TextDecoration": "parseTextDecoration(value)"
     "VisualDensity": "parseVisualDensity(value)"
 
