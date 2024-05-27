@@ -1,33 +1,43 @@
+/// Parsing Functions
+///
+/// Parsing functions convert Strings to objects or primitives and
+/// should begin with the prefix 'parse' and accept a String? argument.
+/// They should not be confused with conversion functions.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../xwidget.dart';
 
+
 final _parseDurationRegExp = RegExp(r'^(\d+)([a-z]+)$');
 
-double? parseHeight(String? value) {
-  if (value == null || value.isEmpty) return null;
-  if (value == "infinity") return double.infinity;
-  return double.parse(value);
+int? parseInt(String? value) {
+  if (value != null && value.isNotEmpty) {
+    return int.parse(value);
+  }
+  throw Exception("Problem parsing int value: $value");
 }
 
-double? parseWidth(String? value) {
-  if (value == null || value.isEmpty) return null;
-  if (value == "infinity") return double.infinity;
-  return double.parse(value);
-}
+double? parseDouble(String? value) {
 
-bool? parseBool(dynamic value) {
-  if (value == null) return null;
-  if (value is bool) return value;
-  if (value is int) return value != 0;
   if (value is String) {
     if (value.isEmpty) return null;
+    if (value == "infinity") return double.infinity;
+    return double.parse(value);
+  }
+  throw Exception("Problem parsing double value: $value");
+}
+
+bool? parseBool(String? value) {
+  if (value != null && value.isNotEmpty) {
     switch (value.toLowerCase()) {
       case "true": return true;
       case "false": return false;
+      default: throw Exception("Problem parsing bool value: $value");
     }
   }
-  throw Exception("Invalid bool value: $value");
+  return null;
 }
 
 Duration? parseDuration(String? value) {
@@ -48,10 +58,9 @@ Duration? parseDuration(String? value) {
         case "d": return Duration(days: digits);
         case "day": return Duration(days: digits);
         case "days": return Duration(days: digits);
-        default: throw Exception("Invalid duration unit: $unit");
       }
     }
-    throw Exception("Invalid duration value: $value");
+    throw Exception("Problem parsing duration value: $value");
   }
   return null;
 }
@@ -101,7 +110,7 @@ Curve? parseCurve(String? value) {
       case "linear": return Curves.linear;
       case "linearToEaseOut": return Curves.linearToEaseOut;
       case "slowMiddle": return Curves.slowMiddle;
-      default: throw Exception("Invalid curve value: $value");
+      default: throw Exception("Problem parsing curve value: $value");
     }
   }
   return null;
@@ -119,29 +128,30 @@ Alignment? parseAlignment(String? value) {
       case 'bottomLeft': return Alignment.bottomLeft;
       case 'bottomCenter': return Alignment.bottomCenter;
       case 'bottomRight': return Alignment.bottomRight;
-      default: throw Exception("Invalid alignment value: $value");
+      default: throw Exception("Problem parsing alignment value: $value");
     }
   }
   return null;
 }
 
 Color? parseColor(String? value) {
-  if (value == null || value.isEmpty) return null;
-
-  var argb = value;
-  if (argb.startsWith("#")) {
-    argb = argb.substring(1, argb.length);
-  } else if (argb.startsWith("0x")) {
-    argb = argb.substring(2, argb.length);
+  if (value != null && value.isNotEmpty) {
+    var argb = value;
+    if (argb.startsWith("#")) {
+      argb = argb.substring(1, argb.length);
+    } else if (argb.startsWith("0x")) {
+      argb = argb.substring(2, argb.length);
+    }
+    if (argb.length == 6) {
+      argb = "FF$argb";
+    }
+    if (argb.length == 8) {
+      final colorInt = int.parse(argb, radix: 16);
+      return Color(colorInt);
+    }
+    throw Exception("Problem parsing color value: $value");
   }
-  if (argb.length == 6) {
-    argb = "FF$argb";
-  }
-  if (argb.length == 8) {
-    final colorInt = int.parse(argb, radix: 16);
-    return Color(colorInt);
-  }
-  throw Exception("Invalid color value: $value");
+  return null;
 }
 
 TextDecoration? parseTextDecoration(String? value) {
@@ -151,7 +161,7 @@ TextDecoration? parseTextDecoration(String? value) {
       case "overline": return TextDecoration.overline;
       case "underline": return TextDecoration.underline;
       case "none": return TextDecoration.none;
-      default: throw Exception("Invalid text decoration value: $value");
+      default: throw Exception("Problem parsing text decoration value: $value");
     }
   }
   return null;
@@ -169,7 +179,7 @@ EdgeInsets? parseEdgeInsets(String? value) {
           doubles[3]
       );
     }
-    throw Exception("Invalid visual density value: $value");
+    throw Exception("Problem parsing visual density value: $value");
   }
   return null;
 }
@@ -199,7 +209,7 @@ BorderRadius? parseBorderRadius(String? value) {
           bottomLeft: parseRadius(values[3]) ?? Radius.zero,
         );
       default:
-        throw Exception("Invalid border radius '$value'");
+        throw Exception("Problem parsing border radius '$value'");
     }
   }
 }
@@ -218,7 +228,7 @@ Radius? parseRadius(String? value) {
         final y = double.parse(values[1].trim());
         return Radius.elliptical(x, y);
       default:
-        throw Exception("Invalid radius '$value'");
+        throw Exception("InvaProblem parsinglid radius '$value'");
     }
   }
 }
@@ -283,7 +293,7 @@ VisualDensity? parseVisualDensity(String? value) {
       case 1: return VisualDensity(horizontal: doubles[0], vertical: doubles[0]);
       case 2: return VisualDensity(horizontal: doubles[0], vertical: doubles[1]);
     }
-    throw Exception("Invalid visual density value: $value");
+    throw Exception("Problem parsing visual density value: $value");
   }
   return null;
 }
@@ -295,7 +305,7 @@ Offset? parseOffset(String? value) {
       case 1: return Offset(doubles[0], doubles[0]);
       case 2: return Offset(doubles[0], doubles[1]);
     }
-    throw Exception("Invalid offset value: $value");
+    throw Exception("Problem parsing offset value: $value");
   }
   return null;
 }
@@ -349,7 +359,7 @@ IconData? parseIcon(String? value) {
   if (value == null || value.isEmpty) return null;
   final icon = XWidget.getIcon(value);
   if (icon != null) return icon;
-  throw Exception("Invalid icon '$value'.");
+  throw Exception("Problem parsing icon '$value'.");
 }
 
 T? parseEnum<T extends Enum>(List<T> values, String? value) {
@@ -359,7 +369,7 @@ T? parseEnum<T extends Enum>(List<T> values, String? value) {
       return type;
     }
   }
-  throw Exception("Invalid enum '$value'. Valid values are "
+  throw Exception("Problem parsing enum '$value'. Valid values are "
       "${values.asNameMap().keys}");
 }
 
@@ -381,7 +391,6 @@ MaterialColor createMaterialColor(Color color) {
   for (int i = 1; i < 10; i++) {
     strengths.add(0.1 * i);
   }
-
   for (var strength in strengths) {
     final double ds = 0.5 - strength;
     swatch[(strength * 1000).round()] = Color.fromRGBO(
@@ -391,7 +400,6 @@ MaterialColor createMaterialColor(Color color) {
       1,
     );
   }
-
   return MaterialColor(color.value, swatch);
 }
 
@@ -425,23 +433,24 @@ Size? parseSize(String? value) {
     if (width != null && height != null) {
       return Size(width, height);
     }
-    throw Exception("Invalid Size value: '$value'. Valid formats are " +
+    throw Exception("Problem parsing Size value: '$value'. Valid formats are " +
         "<W>x<H>, <W>x, x<H>, or <one value for W and H>");
   }
   return null;
 }
 
-//=====================================
-
-Rect? parseRect(String? fromLTRBString) {
-  if (fromLTRBString == null) {
-    return null;
+Rect? parseRect(String? value) {
+  if (value != null && value.isNotEmpty) {
+    var dimensions = value.split(',');
+    if (dimensions.length == 4) {
+      return Rect.fromLTRB(
+          double.parse(dimensions[0]),
+          double.parse(dimensions[1]),
+          double.parse(dimensions[2]),
+          double.parse(dimensions[3])
+      );
+    }
+    throw Exception("Problem parsing Rect from LTRB value '$value'.");
   }
-  var strings = fromLTRBString.split(',');
-  return Rect.fromLTRB(
-      double.parse(strings[0]),
-      double.parse(strings[1]),
-      double.parse(strings[2]),
-      double.parse(strings[3])
-  );
+  return null;
 }
