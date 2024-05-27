@@ -45,8 +45,14 @@ extension ListBrackets on List<dynamic> {
     PathResolution.resolvePath(path, true, this).setValue(value, true);
   }
 
-  ValueNotifier listenForChanges(String path, dynamic initialValue, dynamic defaultValue) {
-    return PathResolution.resolvePath(path, true, this).listenForChanges(initialValue, defaultValue);
+  ValueNotifier listenForChanges(
+      String path,
+      dynamic initialValue,
+      dynamic defaultValue
+  ) {
+    return PathResolution
+        .resolvePath(path, true, this)
+        .listenForChanges(initialValue, defaultValue);
   }
 
   void setValueAt(int index, dynamic value, [dynamic fill]) {
@@ -69,23 +75,32 @@ extension ListBrackets on List<dynamic> {
 
 class PathResolution {
   final dynamic path;
-  final dynamic collection;
+  final dynamic data;
+  final PathResolution? parent;
 
-  PathResolution(this.path, this.collection);
+  PathResolution(this.path, this.data, this.parent);
 
-  static PathResolution resolvePath(String? path, bool createPath, dynamic data) {
-    return _resolve(path, createPath, data);
+  static PathResolution resolvePath(
+      String? path,
+      bool createPath,
+      dynamic data
+  ) {
+    return _resolve(path, createPath, data, null);
+  }
+
+  dynamic get _dataValue {
+    return data is ModelValueNotifier ? data.value : data;
   }
 
   dynamic getValue(bool readValueNotifier) {
     dynamic value;
-    final data = collection;
-    if (data is Map) {
-      value = data[path];
-    } else if (data is List) {
+    final collection = _dataValue;
+    if (collection is Map) {
+      value = collection[path];
+    } else if (collection is List) {
       final index = path;
-      if (index is int && index < data.length) {
-        value = data[index];
+      if (index is int && index < collection.length) {
+        value = collection[index];
       }
     }
     return value is ModelValueNotifier && readValueNotifier
@@ -93,33 +108,44 @@ class PathResolution {
   }
 
   void setValue(dynamic newValue, bool writeToValueNotifier) {
-    final value = getValue(false);
-    if (value is ModelValueNotifier &&
+    bool written = false;
+    final oldValue = getValue(false);
+    final changed =
+      (oldValue is ModelValueNotifier ? oldValue.value : oldValue) !=
+      (newValue is ModelValueNotifier ? newValue.value : newValue);
+
+    if (oldValue is ModelValueNotifier &&
         newValue is! ModelValueNotifier &&
-        writeToValueNotifier)
-    {
-      value.value = newValue;
+        writeToValueNotifier) {
+      oldValue.value = newValue;
+      written = true;
     } else {
-      final data = collection;
-      if (data is Map) {
-        data[path] = newValue;
-      } else if (data is List) {
+      final collection = _dataValue;
+      if (collection is Map) {
+        collection[path] = newValue;
+        written = true;
+      } else if (collection is List) {
         final index = path;
         if (index is int) {
-          data.setValueAt(index, newValue);
+          collection.setValueAt(index, newValue);
+          written = true;
         }
       }
+    }
+    if (changed && written) {
+      // aw, we're telling on you!!
+      _notifyParents();
     }
   }
 
   dynamic removeValue() {
-    final data = collection;
-    if (data is Map) {
-      return data.remove(path);
-    } else if (data is List) {
+    final collection = _dataValue;
+    if (collection is Map) {
+      return collection.remove(path);
+    } else if (collection is List) {
       final index = path;
-      if (index is int && index < data.length) {
-        return data.removeAt(index);
+      if (index is int && index < collection.length) {
+        return collection.removeAt(index);
       }
     }
   }
@@ -137,46 +163,68 @@ class PathResolution {
   // private methods
   //===================================
 
-  static _resolve(String? path, bool createPath, dynamic data) {
+  static PathResolution _resolve(
+      String? path,
+      bool createPath,
+      dynamic data,
+      PathResolution? parent
+  ) {
     if (path != null && path.isNotEmpty && data != null) {
       final pathInfo = PathInfo.parsePath(path);
+      dynamic collection = data is ModelValueNotifier ? data.value : data;
       dynamic currPath = pathInfo.currPath;
       dynamic value;
 
-      if (data is List) {
+      if (collection == null && createPath && data is ModelValueNotifier) {
+        // interesting use case where we have a ModelValueNotifier whose value
+        // is null and we're trying write a property to it. The collection
+        // doesn't exist, so we need to create it first.
+        data.pauseNotifications();
+        collection = data.value = pathInfo.isList ? [] : <String, dynamic>{};
+        data.resumeNotifications();
+      }
+      if (collection is List) {
         // data is a List; therefore, currPath must be an index, so convert it
         // to an int and get the value that it points to.
         currPath = int.parse(currPath);
-        if (currPath > -1 && currPath < data.length) {
-          value = data[currPath];
+        if (currPath > -1 && currPath < collection.length) {
+          value = collection[currPath];
         }
       } else {
         // data is some sort of map, so use currPath as it to get the value.
-        value = data[currPath];
+        value = collection[currPath];
       }
 
       if (value == null) {
         if (createPath && pathInfo.nextPath.isNotEmpty) {
           if (pathInfo.isList) {
             value = [];
-            data.setValue(currPath, value);
+            collection.setValue(currPath, value);
           } else {
-            value = data[currPath] = <String, dynamic>{};
+            value = collection[currPath] = <String, dynamic>{};
           }
         } else if (!pathInfo.isNullable) {
           throw Exception("Value at path '$path' is null. Use the '?' "
               "null-safety operator to access '${pathInfo.currPath}'");
         }
       }
-      if (pathInfo.nextPath.isEmpty) {
-        return PathResolution(currPath, data);
-      }
-      if (value is ModelValueNotifier) {
-        value = value.value;
-      }
-      return _resolve(pathInfo.nextPath, createPath, value);
+      final resolution = PathResolution(currPath, data, parent);
+      return pathInfo.nextPath.isNotEmpty
+        ? _resolve(pathInfo.nextPath, createPath, value, resolution)
+        : resolution;
     }
-    return PathResolution(path, null);
+    return PathResolution(path, null, null);
+  }
+
+  _notifyParents() {
+    PathResolution? currResolution = this;
+    while (currResolution != null) {
+      final currData = currResolution.data;
+      if (currData is ModelValueNotifier) {
+        currData.notifyListeners();
+      }
+      currResolution = currResolution.parent;
+    }
   }
 }
 

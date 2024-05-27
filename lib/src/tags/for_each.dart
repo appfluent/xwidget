@@ -1,6 +1,6 @@
 import 'package:xml/xml.dart';
 
-import '../utils/utils.dart';
+import '../utils/functions/converters.dart';
 import '../xwidget.dart';
 
 class ForEachTag implements Tag {
@@ -33,7 +33,7 @@ class ForEachTag implements Tag {
     final indexVarName = attributes["indexVar"];
 
     // 'groupSize' is an optional attribute
-    final groupSize = CommonUtils.tryParseInt(attributes["groupSize"]) ?? 1;
+    final groupSize = toInt(attributes["groupSize"]) ?? 1;
 
     // 'dependenciesScope' is an optional attribute
     final dependenciesScope = attributes["dependenciesScope"];
@@ -43,7 +43,7 @@ class ForEachTag implements Tag {
     final children = Children();
 
     for (final item in iterable) {
-      dynamic depItem = item is MapEntry ? {"key": item.key, "value": item.value} : item;;
+      dynamic depItem = item is MapEntry ? {"key": item.key, "value": item.value} : item;
       int depIndex = index ~/ groupSize;
 
       if (groupSize > 1) {

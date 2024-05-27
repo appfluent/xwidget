@@ -1,3 +1,88 @@
+### 0.0.41 (May 26, 2024)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+#### This is a big release with many changes. Please read the release notes carefully.
+
+* Reorganized utility functions to eliminate duplication, clarify purpose, and better
+  support reuse. They are divided into the following groups: converters, math, parsers, validators,
+  and misc. All parsing function now only parse `String` values; conversion function convert
+  `dynamic` values and may call a parsing function if the value is a `String`. 
+* Added the following EL functions:
+  `formatDuration`
+  `isBlank`
+  `isNotBlank`
+  `toColor`
+  `toDays`
+  `toHours`
+  `toMillis`
+  `toMinutes`
+  `toSeconds`
+  `tryToBool`
+  `tryToColor`
+  `tryToDateTime`
+  `tryToDays`
+  `tryToDouble`
+  `tryToDuration`
+  `tryToHours`
+  `tryToInt`
+  `tryToMillis`
+  `tryToMinutes`
+  `tryToSeconds`
+* Added the following parsing functions:
+  `parseInt`
+  `parseDouble`
+  `tryParseBool`
+  `tryParseDateTime`
+  `tryParseDouble`
+  `tryParseDuration`
+  `tryParseEnum`
+  `tryParseInt`
+* You can now listen changes to nested model properties with `<ValueListener>`,
+  `Model.listenForChanges` or `Dependencies.listenForChanges` when using `Model.setValue` or
+  `Dependencies.setValue`. For example:
+  ```dart
+  final user = Model({
+    "first": "Mike",
+    "last": "Smith",
+    "email": "test@example.com"
+  });
+  dependecies.setValue("profile", user);
+  ```
+  ```xml
+  <ValueListener varName="profile">
+    <Row>
+        <Text data="${profile.first}"/>
+        <Text data="${profile.last}"/>
+        <Text data="${profile.email}"/>
+    </Row>
+  </ValueListener>
+  ```
+  Any changes to `first`, `last` or `email` using `setValue` will trigger the `<ValueListener>` to
+  rebuild.
+* `Model` instances now default to mutable.
+* Added named constructor `Model.immutable`.
+* Added `<Item>` tag to `<List>` for situations where you want to build a list from values stored in
+  `Dependencies` or EL functions.
+  ```xml
+  <List for="...">
+    <Item value="${color}"/>
+    <Item value="${toColor('0xFF272727')}"/>
+    <Item value="${backgroundColor}"/>
+  </List>
+  ```
+* You can now pass `int` values to inflaters that previously required `doubles` and they will be
+  automatically converted to `doubles` i.e. any widget that takes `width` and `height`.   
+* Updated EL Functions and Tips & Tricks documentation.
+* Removed the following EL functions:
+  `durationInDays` - use `toDays` instead
+  `durationInHours` - use `toHours` instead
+  `durationInMinutes` - use `toMinutes` instead
+  `durationInSeconds` - use `toSeconds` instead
+  `durationInMills` - use `toMillis` instead
+* Removed the following parser functions:
+  `parseWidth` - use `parseDouble` instead
+  `parseHeight` - use `parseDouble` instead
+
 ### 0.0.40 (May 9, 2024)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.

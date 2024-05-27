@@ -1,5 +1,6 @@
 import '../../xwidget.dart';
 
+
 class ListInflater extends Inflater {
   @override
   String get type => 'List';
@@ -26,6 +27,31 @@ class ListInflater extends Inflater {
       }
     }
     return items;
+  }
+
+  @override
+  dynamic parseAttribute(String name, String value) {
+    return value;
+  }
+}
+
+class ItemInflater extends Inflater {
+  @override
+  String get type => 'Item';
+
+  @override
+  bool get inflatesOwnChildren => false;
+
+  @override
+  bool get inflatesCustomWidget => false;
+
+  @override
+  dynamic inflate(
+      Map<String, dynamic> attributes,
+      List<dynamic> children,
+      List<String> text
+  ) {
+    return attributes["value"];
   }
 
   @override

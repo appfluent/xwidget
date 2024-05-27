@@ -21,9 +21,9 @@ import 'tags/if_else.dart';
 import 'tags/variable.dart';
 import 'utils/brackets.dart';
 import 'utils/logging.dart';
-import 'utils/parsers.dart';
+import 'utils/functions/converters.dart';
 import 'utils/resources.dart';
-import 'utils/utils.dart';
+import 'utils/functions/validators.dart';
 
 
 class XWidget {
@@ -32,6 +32,7 @@ class XWidget {
   static final _controllerInflater = ControllerWidgetInflater();
   static final _dynamicBuilderInflater = DynamicBuilderInflater();
   static final _eventListenerInflater = EventListenerInflater();
+  static final _itemInflater = ItemInflater();
   static final _listInflater = ListInflater();
   static final _mapInflater = MapInflater();
   static final _mapEntryInflater = MapEntryInflater();
@@ -52,6 +53,7 @@ class XWidget {
     _controllerInflater.type: _controllerInflater,
     _dynamicBuilderInflater.type: _dynamicBuilderInflater,
     _eventListenerInflater.type: _eventListenerInflater,
+    _itemInflater.type: _itemInflater,
     _listInflater.type: _listInflater,
     _mapInflater.type: _mapInflater,
     _mapEntryInflater.type: _mapEntryInflater,
@@ -166,7 +168,7 @@ class XWidget {
 
         // we only want to evaluate the 'visible' attribute if one was provided;
         // otherwise, the component is visible by default.
-        if (!attributes.containsKey("visible") || parseBool(attributes["visible"]) == true) {
+        if (!attributes.containsKey("visible") || toBool(attributes["visible"]) == true) {
           // widget is visible, so let's continue
           if (inflater.inflatesCustomWidget) {
             // inflating a custom widget or object, so include the element and
@@ -392,7 +394,7 @@ class XWidget {
       String? scope,
       [String defaultScope = "inherit"]
   ) {
-    if (CommonUtils.isBlank(scope)) {
+    if (isEmpty(scope)) {
       scope = defaultScope;
       for (final child in element.children) {
         if (child is XmlElement && child.localName == "var") {

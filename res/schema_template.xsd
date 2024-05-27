@@ -200,12 +200,11 @@
 
     <!-- complex types -->
 
-    <xs:complexType name="paramType">
+    <xs:complexType name="listItemType">
         <xs:sequence>
             <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="name" use="required"/>
-        <xs:attribute name="value"/>
+        <xs:attribute name="value" use="required"/>
         <xs:attribute name="visible" type="boolAttributeType"/>
     </xs:complexType>
 
@@ -213,7 +212,6 @@
         <xs:sequence>
             <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="for" type="xs:string"/>
         <xs:attribute name="key" use="required"/>
         <xs:attribute name="value"/>
         <xs:attribute name="visible" type="boolAttributeType"/>
@@ -224,6 +222,15 @@
             <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="for" type="xs:string"/>
+        <xs:attribute name="visible" type="boolAttributeType"/>
+    </xs:complexType>
+
+    <xs:complexType name="paramType">
+        <xs:sequence>
+            <xs:any namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" use="required"/>
+        <xs:attribute name="value"/>
         <xs:attribute name="visible" type="boolAttributeType"/>
     </xs:complexType>
 
@@ -441,6 +448,9 @@
         <xs:complexType>
             <xs:complexContent>
                 <xs:extension base="objectType">
+                    <xs:sequence>
+                        <xs:element name="Item" form="qualified" type="listItemType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
                     <xs:attribute name="innerLists" type="ListOperationAttributeType"/>
                 </xs:extension>
             </xs:complexContent>

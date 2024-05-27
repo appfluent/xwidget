@@ -7,26 +7,27 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../xwidget.dart';
+import '../../xwidget.dart';
 
 
 final _parseDurationRegExp = RegExp(r'^(\d+)([a-z]+)$');
 
-int? parseInt(String? value) {
+Alignment? parseAlignment(String? value) {
   if (value != null && value.isNotEmpty) {
-    return int.parse(value);
+    switch (value) {
+      case 'topLeft': return Alignment.topLeft;
+      case 'topCenter': return Alignment.topCenter;
+      case 'topRight': return Alignment.topRight;
+      case 'centerLeft': return Alignment.centerLeft;
+      case 'center': return Alignment.center;
+      case 'centerRight': return Alignment.centerRight;
+      case 'bottomLeft': return Alignment.bottomLeft;
+      case 'bottomCenter': return Alignment.bottomCenter;
+      case 'bottomRight': return Alignment.bottomRight;
+      default: throw Exception("Problem parsing alignment value: $value");
+    }
   }
-  throw Exception("Problem parsing int value: $value");
-}
-
-double? parseDouble(String? value) {
-
-  if (value is String) {
-    if (value.isEmpty) return null;
-    if (value == "infinity") return double.infinity;
-    return double.parse(value);
-  }
-  throw Exception("Problem parsing double value: $value");
+  return null;
 }
 
 bool? parseBool(String? value) {
@@ -40,27 +41,48 @@ bool? parseBool(String? value) {
   return null;
 }
 
-Duration? parseDuration(String? value) {
-  if (value != null && value.isNotEmpty) {
-    final match = _parseDurationRegExp.firstMatch(value);
-    if (match != null) {
-      final digits = int.parse(match.group(1)!);
-      final unit = match.group(2);
-      switch (unit) {
-        case "ms": return Duration(milliseconds: digits);
-        case "s": return Duration(seconds: digits);
-        case "m": return Duration(minutes: digits);
-        case "min": return Duration(minutes: digits);
-        case "mins": return Duration(minutes: digits);
-        case "h": return Duration(hours: digits);
-        case "hr": return Duration(hours: digits);
-        case "hrs": return Duration(hours: digits);
-        case "d": return Duration(days: digits);
-        case "day": return Duration(days: digits);
-        case "days": return Duration(days: digits);
-      }
+BorderRadius? parseBorderRadius(String? value) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    return BorderRadius.all(parseRadius(value) ?? Radius.zero);
+  } else {
+    final values = value.split(',');
+    switch (values.length) {
+      case 2:
+        return BorderRadius.vertical(
+          top: parseRadius(values[0]) ?? Radius.zero,
+          bottom: parseRadius(values[1]) ?? Radius.zero,
+        );
+      case 4:
+        return BorderRadius.only(
+          topLeft: parseRadius(values[0]) ?? Radius.zero,
+          topRight: parseRadius(values[1]) ?? Radius.zero,
+          bottomRight: parseRadius(values[2]) ?? Radius.zero,
+          bottomLeft: parseRadius(values[3]) ?? Radius.zero,
+        );
+      default:
+        throw Exception("Problem parsing border radius '$value'");
     }
-    throw Exception("Problem parsing duration value: $value");
+  }
+}
+
+Color? parseColor(String? value) {
+  if (value != null && value.isNotEmpty) {
+    var argb = value;
+    if (argb.startsWith("#")) {
+      argb = argb.substring(1, argb.length);
+    } else if (argb.startsWith("0x")) {
+      argb = argb.substring(2, argb.length);
+    }
+    if (argb.length == 6) {
+      argb = "FF$argb";
+    }
+    if (argb.length == 8) {
+      final colorInt = int.parse(argb, radix: 16);
+      return Color(colorInt);
+    }
+    throw Exception("Problem parsing color value: $value");
   }
   return null;
 }
@@ -116,53 +138,42 @@ Curve? parseCurve(String? value) {
   return null;
 }
 
-Alignment? parseAlignment(String? value) {
+DateTime? parseDateTime(String? value) {
   if (value != null && value.isNotEmpty) {
-    switch (value) {
-      case 'topLeft': return Alignment.topLeft;
-      case 'topCenter': return Alignment.topCenter;
-      case 'topRight': return Alignment.topRight;
-      case 'centerLeft': return Alignment.centerLeft;
-      case 'center': return Alignment.center;
-      case 'centerRight': return Alignment.centerRight;
-      case 'bottomLeft': return Alignment.bottomLeft;
-      case 'bottomCenter': return Alignment.bottomCenter;
-      case 'bottomRight': return Alignment.bottomRight;
-      default: throw Exception("Problem parsing alignment value: $value");
-    }
+    return DateTime.parse(value);
   }
   return null;
 }
 
-Color? parseColor(String? value) {
+double? parseDouble(String? value) {
   if (value != null && value.isNotEmpty) {
-    var argb = value;
-    if (argb.startsWith("#")) {
-      argb = argb.substring(1, argb.length);
-    } else if (argb.startsWith("0x")) {
-      argb = argb.substring(2, argb.length);
-    }
-    if (argb.length == 6) {
-      argb = "FF$argb";
-    }
-    if (argb.length == 8) {
-      final colorInt = int.parse(argb, radix: 16);
-      return Color(colorInt);
-    }
-    throw Exception("Problem parsing color value: $value");
+    if (value == "infinity") return double.infinity;
+    return double.parse(value);
   }
   return null;
 }
 
-TextDecoration? parseTextDecoration(String? value) {
+Duration? parseDuration(String? value) {
   if (value != null && value.isNotEmpty) {
-    switch (value) {
-      case "lineThrough": return TextDecoration.lineThrough;
-      case "overline": return TextDecoration.overline;
-      case "underline": return TextDecoration.underline;
-      case "none": return TextDecoration.none;
-      default: throw Exception("Problem parsing text decoration value: $value");
+    final match = _parseDurationRegExp.firstMatch(value);
+    if (match != null) {
+      final digits = int.parse(match.group(1)!);
+      final unit = match.group(2);
+      switch (unit) {
+        case "ms": return Duration(milliseconds: digits);
+        case "s": return Duration(seconds: digits);
+        case "m": return Duration(minutes: digits);
+        case "min": return Duration(minutes: digits);
+        case "mins": return Duration(minutes: digits);
+        case "h": return Duration(hours: digits);
+        case "hr": return Duration(hours: digits);
+        case "hrs": return Duration(hours: digits);
+        case "d": return Duration(days: digits);
+        case "day": return Duration(days: digits);
+        case "days": return Duration(days: digits);
+      }
     }
+    throw Exception("Problem parsing duration value: $value");
   }
   return null;
 }
@@ -188,49 +199,15 @@ EdgeInsetsGeometry? parseEdgeInsetsGeometry(String? value) {
   return parseEdgeInsets(value);
 }
 
-BorderRadius? parseBorderRadius(String? value) {
-  if (value == null || value.isEmpty) {
-    return null;
-  } else if (!value.contains(",")) {
-    return BorderRadius.all(parseRadius(value) ?? Radius.zero);
-  } else {
-    final values = value.split(',');
-    switch (values.length) {
-      case 2:
-        return BorderRadius.vertical(
-          top: parseRadius(values[0]) ?? Radius.zero,
-          bottom: parseRadius(values[1]) ?? Radius.zero,
-        );
-      case 4:
-        return BorderRadius.only(
-          topLeft: parseRadius(values[0]) ?? Radius.zero,
-          topRight: parseRadius(values[1]) ?? Radius.zero,
-          bottomRight: parseRadius(values[2]) ?? Radius.zero,
-          bottomLeft: parseRadius(values[3]) ?? Radius.zero,
-        );
-      default:
-        throw Exception("Problem parsing border radius '$value'");
+T? parseEnum<T extends Enum>(List<T> values, String? value) {
+  if (value == null || value.isEmpty) return null;
+  for (final type in values) {
+    if (type.name == value) {
+      return type;
     }
   }
-}
-
-Radius? parseRadius(String? value) {
-  if (value == null || value.isEmpty) {
-    return null;
-  } else if (!value.contains(",")) {
-    final x = double.parse(value.trim());
-    return Radius.elliptical(x, x);
-  } else {
-    final values = value.split(':');
-    switch (values.length) {
-      case 2:
-        final x = double.parse(values[0].trim());
-        final y = double.parse(values[1].trim());
-        return Radius.elliptical(x, y);
-      default:
-        throw Exception("InvaProblem parsinglid radius '$value'");
-    }
-  }
+  throw Exception("Problem parsing enum '$value'. Valid values are "
+      "${values.asNameMap().keys}");
 }
 
 FontWeight? parseFontWeight(String? value) {
@@ -269,45 +246,24 @@ FontWeight? parseFontWeight(String? value) {
   return null;
 }
 
+IconData? parseIcon(String? value) {
+  if (value == null || value.isEmpty) return null;
+  final icon = XWidget.getIcon(value);
+  if (icon != null) return icon;
+  throw Exception("Problem parsing icon '$value'.");
+}
+
+int? parseInt(String? value, {int radix = 10}) {
+  if (value != null && value.isNotEmpty) {
+    return int.parse(value, radix: radix);
+  }
+  return null;
+}
+
 Key? parseKey(String? value) {
   if (value == null || value.isEmpty) return null;
   if (value == "unique") return UniqueKey();
   return ValueKey(value);
-}
-
-Locale? parseLocale(String? value) {
-  if (value == null || value.isEmpty) {
-    return null;
-  } else if (!value.contains("_")) {
-    return Locale(value.toLowerCase(), null);
-  } else {
-    final parts = value.split("_");
-    return Locale(parts[0].toLowerCase(), parts[1].toUpperCase());
-  }
-}
-
-VisualDensity? parseVisualDensity(String? value) {
-  final doubles = parseListOfDoubles(value);
-  if (doubles != null && doubles.isNotEmpty) {
-    switch (doubles.length) {
-      case 1: return VisualDensity(horizontal: doubles[0], vertical: doubles[0]);
-      case 2: return VisualDensity(horizontal: doubles[0], vertical: doubles[1]);
-    }
-    throw Exception("Problem parsing visual density value: $value");
-  }
-  return null;
-}
-
-Offset? parseOffset(String? value) {
-  final doubles = parseListOfDoubles(value);
-  if (doubles != null && doubles.isNotEmpty) {
-    switch (doubles.length) {
-      case 1: return Offset(doubles[0], doubles[0]);
-      case 2: return Offset(doubles[0], doubles[1]);
-    }
-    throw Exception("Problem parsing offset value: $value");
-  }
-  return null;
 }
 
 List<String>? parseListOfStrings(String? value) {
@@ -355,32 +311,15 @@ List<int>? parseListOfInts(String? value) {
   }
 }
 
-IconData? parseIcon(String? value) {
-  if (value == null || value.isEmpty) return null;
-  final icon = XWidget.getIcon(value);
-  if (icon != null) return icon;
-  throw Exception("Problem parsing icon '$value'.");
-}
-
-T? parseEnum<T extends Enum>(List<T> values, String? value) {
-  if (value == null || value.isEmpty) return null;
-  for (final type in values) {
-    if (type.name == value) {
-      return type;
-    }
+Locale? parseLocale(String? value) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains("_")) {
+    return Locale(value.toLowerCase(), null);
+  } else {
+    final parts = value.split("_");
+    return Locale(parts[0].toLowerCase(), parts[1].toUpperCase());
   }
-  throw Exception("Problem parsing enum '$value'. Valid values are "
-      "${values.asNameMap().keys}");
-}
-
-MaterialStateProperty<Color>? parseMaterialStateColor(String? value) {
-  final color = parseColor(value);
-  return (color != null) ? MaterialStateProperty.all<Color>(color) : null;
-}
-
-MaterialColor? parseMaterialColor(String? value) {
-  final color = parseColor(value);
-  return (color != null) ? createMaterialColor(color) : null;
 }
 
 MaterialColor createMaterialColor(Color color) {
@@ -403,6 +342,21 @@ MaterialColor createMaterialColor(Color color) {
   return MaterialColor(color.value, swatch);
 }
 
+MaterialColor? parseMaterialColor(String? value) {
+  final color = parseColor(value);
+  return (color != null) ? createMaterialColor(color) : null;
+}
+
+MaterialStateProperty<Color>? parseMaterialStateColor(String? value) {
+  final color = parseColor(value);
+  return (color != null) ? MaterialStateProperty.all<Color>(color) : null;
+}
+
+MaterialStateProperty<double>? parseMaterialStateDouble(String? value) {
+  final db = value != null ? double.tryParse(value) : null;
+  return (db != null) ? MaterialStateProperty.all<double>(db) : null;
+}
+
 MaterialStateProperty<EdgeInsetsGeometry>? parseMaterialStateEdgeInsets(String? value) {
   final padding = parseEdgeInsetsGeometry(value);
   return (padding != null) ? MaterialStateProperty.all<EdgeInsetsGeometry>(padding) : null;
@@ -413,9 +367,51 @@ MaterialStateProperty<Size>? parseMaterialStateSize(String? value) {
   return (size != null) ? MaterialStateProperty.all<Size>(size) : null;
 }
 
-MaterialStateProperty<double>? parseMaterialStateDouble(String? value) {
-  final db = value != null ? double.tryParse(value) : null;
-  return (db != null) ? MaterialStateProperty.all<double>(db) : null;
+Offset? parseOffset(String? value) {
+  final doubles = parseListOfDoubles(value);
+  if (doubles != null && doubles.isNotEmpty) {
+    switch (doubles.length) {
+      case 1: return Offset(doubles[0], doubles[0]);
+      case 2: return Offset(doubles[0], doubles[1]);
+    }
+    throw Exception("Problem parsing offset value: $value");
+  }
+  return null;
+}
+
+Radius? parseRadius(String? value) {
+  if (value == null || value.isEmpty) {
+    return null;
+  } else if (!value.contains(",")) {
+    final x = double.parse(value.trim());
+    return Radius.elliptical(x, x);
+  } else {
+    final values = value.split(':');
+    switch (values.length) {
+      case 2:
+        final x = double.parse(values[0].trim());
+        final y = double.parse(values[1].trim());
+        return Radius.elliptical(x, y);
+      default:
+        throw Exception("InvaProblem parsinglid radius '$value'");
+    }
+  }
+}
+
+Rect? parseRect(String? value) {
+  if (value != null && value.isNotEmpty) {
+    var dimensions = value.split(',');
+    if (dimensions.length == 4) {
+      return Rect.fromLTRB(
+          double.parse(dimensions[0]),
+          double.parse(dimensions[1]),
+          double.parse(dimensions[2]),
+          double.parse(dimensions[3])
+      );
+    }
+    throw Exception("Problem parsing Rect from LTRB value '$value'.");
+  }
+  return null;
 }
 
 Size? parseSize(String? value) {
@@ -433,24 +429,93 @@ Size? parseSize(String? value) {
     if (width != null && height != null) {
       return Size(width, height);
     }
-    throw Exception("Problem parsing Size value: '$value'. Valid formats are " +
+    throw Exception("Problem parsing Size value: '$value'. Valid formats are "
         "<W>x<H>, <W>x, x<H>, or <one value for W and H>");
   }
   return null;
 }
 
-Rect? parseRect(String? value) {
+TextDecoration? parseTextDecoration(String? value) {
   if (value != null && value.isNotEmpty) {
-    var dimensions = value.split(',');
-    if (dimensions.length == 4) {
-      return Rect.fromLTRB(
-          double.parse(dimensions[0]),
-          double.parse(dimensions[1]),
-          double.parse(dimensions[2]),
-          double.parse(dimensions[3])
-      );
+    switch (value) {
+      case "lineThrough": return TextDecoration.lineThrough;
+      case "overline": return TextDecoration.overline;
+      case "underline": return TextDecoration.underline;
+      case "none": return TextDecoration.none;
+      default: throw Exception("Problem parsing text decoration value: $value");
     }
-    throw Exception("Problem parsing Rect from LTRB value '$value'.");
   }
   return null;
+}
+
+VisualDensity? parseVisualDensity(String? value) {
+  final doubles = parseListOfDoubles(value);
+  if (doubles != null && doubles.isNotEmpty) {
+    switch (doubles.length) {
+      case 1: return VisualDensity(horizontal: doubles[0], vertical: doubles[0]);
+      case 2: return VisualDensity(horizontal: doubles[0], vertical: doubles[1]);
+    }
+    throw Exception("Problem parsing visual density value: $value");
+  }
+  return null;
+}
+
+//=============================================
+// "try" parser functions
+//
+// They don't throw exceptions if parsing fails.
+//==============================================
+
+bool? tryParseBool(String? value) {
+  try {
+    return parseBool(value);
+  } catch (e) {
+    // intentionally ignored
+    return null;
+  }
+}
+
+DateTime? tryParseDateTime(String? value) {
+  try {
+    return parseDateTime(value);
+  } catch (e) {
+    // intentionally ignored
+    return null;
+  }
+}
+
+double? tryParseDouble(String? value) {
+  try {
+    return parseDouble(value);
+  } catch (e) {
+    // intentionally ignored
+    return null;
+  }
+}
+
+Duration? tryParseDuration(String? value) {
+  try {
+    return parseDuration(value);
+  } catch (e) {
+    // intentionally ignored
+    return null;
+  }
+}
+
+T? tryParseEnum<T extends Enum>(List<T> values, String? value) {
+  try {
+    return parseEnum(values, value);
+  } catch (e) {
+    // intentionally ignored
+    return null;
+  }
+}
+
+int? tryParseInt(String? value) {
+  try {
+    return parseInt(value);
+  } catch (e) {
+    // intentionally ignored
+    return null;
+  }
 }

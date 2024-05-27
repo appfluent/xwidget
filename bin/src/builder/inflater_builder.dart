@@ -203,13 +203,20 @@ class InflaterBuilder extends SpecBuilder {
       final defaultValue = inflaterConfig.findConstructorArgDefault(constructorName, param.name) ?? _calcParamDefault(param);
       final paramTypeName = param.type.getDisplayString(withNullability: true);
       if (isTypeList(paramTypeName)) {
-        final nullable = paramTypeName.endsWith("?");
-        final newDefaultValue = defaultValue == null && !nullable ? "[]" : defaultValue;
+        final required = isTypeRequired(paramTypeName);
+        final newDefaultValue = defaultValue == null && required ? "[]" : defaultValue;
         code.write("$attributeValue != null ? [...$attributeValue] : $newDefaultValue");
       } else if (isTypeMap(paramTypeName)) {
-        final nullable = paramTypeName.endsWith("?");
-        final newDefaultValue = defaultValue == null && !nullable ? "{}" : defaultValue;
+        final required = isTypeRequired(paramTypeName);
+        final newDefaultValue = defaultValue == null && required ? "{}" : defaultValue;
         code.write("$attributeValue != null ? {...$attributeValue} : $newDefaultValue");
+      } else if (isTypeDouble(paramTypeName)) {
+        code.write("toDouble($attributeValue)");
+        if (defaultValue != null) {
+          code.write(" ?? $defaultValue");
+        } else if (isTypeRequired(paramTypeName)) {
+          code.write("!");
+        }
       } else {
         code.write(attributeValue);
         if (defaultValue != null) {

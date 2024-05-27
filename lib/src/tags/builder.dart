@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/parsers.dart';
+import '../utils/functions/parsers.dart';
+import '../utils/functions/validators.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 
@@ -66,7 +67,7 @@ class BuilderTag implements Tag {
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
           final varName = vars[paramIndex];
-          if (CommonUtils.isNotBlank(varName) && !_ignoreVar.hasMatch(varName)) {
+          if (isNotEmpty(varName) && !_ignoreVar.hasMatch(varName)) {
             switch (paramIndex) {
               case 0: if (p0 is! BuildContext) params[varName] = p0; break;
               case 1: if (p1 is! BuildContext) params[varName] = p1; break;
@@ -120,7 +121,7 @@ class BuilderTag implements Tag {
     }
 
     final children = Children();
-    if (CommonUtils.isBlank(forAttribute)) {
+    if (isEmpty(forAttribute)) {
       children.objects.add(builderFunction);
     } else {
       children.attributes[forAttribute!] = builderFunction;

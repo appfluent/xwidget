@@ -71,8 +71,8 @@ inflaters:
     "VisualDensity": "parseVisualDensity(value)"
 
     # type/class agnostic - for specific attributes
-    "*:width": "parseWidth(value)"
-    "*:height": "parseHeight(value)"
+    "*:width": "parseDouble(value)"
+    "*:height": "parseDouble(value)"
     "*:icon": "parseIcon(value)"
     "*:activeIcon": "parseIcon(value)"
 

@@ -5,9 +5,9 @@ class HomePageController extends Controller {
 
   @override
   void bindDependencies() {
-    dependencies["title"] = "XWidget Demo Home Page";
-    dependencies["count"] = count;
-    dependencies["onPressed"] = onPressed;
+    dependencies.setValue("title", "XWidget Demo Home Page");
+    dependencies.setValue("count", count);
+    dependencies.setValue("onPressed", onPressed);
   }
 
   onPressed() {

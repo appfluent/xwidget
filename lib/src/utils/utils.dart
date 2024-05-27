@@ -23,18 +23,3 @@ class XWidgetUtils {
     return trimResult ? text.toString().trim() : text.toString();
   }
 }
-
-class CommonUtils {
-  static bool isBlank(String? value) {
-    return value == null || value.isEmpty;
-  }
-
-  static bool isNotBlank(String? value) {
-    return !isBlank(value);
-  }
-
-  static int? tryParseInt(dynamic value, {int? radix}) {
-    if (value is int) return value;
-    return isNotBlank(value) ? int.tryParse(value!) : null;
-  }
-}

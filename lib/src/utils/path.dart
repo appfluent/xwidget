@@ -1,4 +1,4 @@
-import 'utils.dart';
+import 'functions/validators.dart';
 
 class Path {
   static const _separator = "/";
@@ -9,7 +9,7 @@ class Path {
   Path(this._path, this._fileName);
 
   static Path parse(String? path) {
-    if (CommonUtils.isBlank(path)) return Path([], "");
+    if (isEmpty(path)) return Path([], "");
 
     String fileName = "";
     final parsedPath = <String>[];
@@ -17,7 +17,7 @@ class Path {
 
     for (int index = 0; index < segments.length; index++) {
       final segment = segments[index];
-      if (CommonUtils.isNotBlank(segment) && segment != ".") {
+      if (isNotEmpty(segment) && segment != ".") {
         if (segment == "..") {
           if (parsedPath.isNotEmpty) {
             parsedPath.removeLast();
@@ -37,7 +37,7 @@ class Path {
   static parseRelativeTo(String? path, String? relativeTo) {
     if (path == null) return Path.parse("");
     final relativePath = Path.parse(relativeTo).pathToString();
-    final separator = CommonUtils.isNotBlank(relativePath) && CommonUtils.isNotBlank(path)
+    final separator = isNotEmpty(relativePath) && isNotEmpty(path)
         ? _separator
         : "";
     return Path.parse("$relativePath$separator$path");
@@ -50,7 +50,7 @@ class Path {
   @override
   toString() {
     final pathStr = pathToString();
-    final separator = CommonUtils.isNotBlank(pathStr) && CommonUtils.isNotBlank(_fileName)
+    final separator = isNotEmpty(pathStr) && isNotEmpty(_fileName)
         ? _separator
         : "";
     return "$pathStr$separator$_fileName";

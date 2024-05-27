@@ -5,7 +5,7 @@ import 'package:xml/xml.dart';
 
 import 'extensions.dart';
 import 'path.dart';
-import 'utils.dart';
+import 'functions/validators.dart';
 
 class Resources {
   static final instance = Resources()..addResourceBundles([
@@ -219,7 +219,7 @@ class FragmentResources extends ResourceBundle {
     if (_fragments.containsKey(name)) {
       return name;
     }
-    if (CommonUtils.isNotBlank(relativeTo)) {
+    if (isNotEmpty(relativeTo)) {
       final relativeName = Path.parseRelativeTo(name, relativeTo).toString();
       if (_fragments.containsKey(relativeName)) return relativeName;
     }

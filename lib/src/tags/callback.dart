@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/parsers.dart';
-import '../utils/utils.dart';
+import '../utils/functions/parsers.dart';
+import '../utils/functions/validators.dart';
 import '../xwidget.dart';
 
 /// This tag allows you to bind an event handler with custom arguments. If you don't need to pass any
@@ -63,7 +63,7 @@ class CallbackTag implements Tag {
       if (vars != null) {
         for (int paramIndex = 0; paramIndex < vars.length; paramIndex++) {
           final varName = vars[paramIndex];
-          if (CommonUtils.isNotBlank(varName) && !_ignoreVar.hasMatch(varName)) {
+          if (isNotEmpty(varName) && !_ignoreVar.hasMatch(varName)) {
             switch (paramIndex) {
               case 0: if (p0 is! BuildContext) params[varName] = p0; break;
               case 1: if (p1 is! BuildContext) params[varName] = p1; break;

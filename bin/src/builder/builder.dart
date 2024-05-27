@@ -67,6 +67,14 @@ abstract class SpecBuilder {
     return match != null;
   }
 
+  bool isTypeDouble(String type) {
+    return type == "double" || type == "double?";
+  }
+
+  bool isTypeRequired(String type) {
+    return !type.endsWith("?");
+  }
+
   String? getParameterDocumentation(ClassElement type, ParameterElement param) {
     var fieldElement = type.getField(param.name);
     if (fieldElement == null && param.isSuperFormal) {

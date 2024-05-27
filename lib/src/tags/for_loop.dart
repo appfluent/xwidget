@@ -1,6 +1,6 @@
 import 'package:xml/xml.dart';
 
-import '../utils/utils.dart';
+import '../utils/functions/converters.dart';
 import '../xwidget.dart';
 
 class ForLoopTag implements Tag {
@@ -20,9 +20,9 @@ class ForLoopTag implements Tag {
     }
 
     final dependenciesScope = attributes["dependenciesScope"];
-    final begin = CommonUtils.tryParseInt(element.getAttribute("begin")) ?? 0;
-    final end = CommonUtils.tryParseInt(element.getAttribute("end")) ?? 0;
-    final step = CommonUtils.tryParseInt(element.getAttribute("step")) ?? 1;
+    final begin = toInt(element.getAttribute("begin")) ?? 0;
+    final end = toInt(element.getAttribute("end")) ?? 0;
+    final step = toInt(element.getAttribute("step")) ?? 1;
     if (step == 0) throw Exception("<$name> 'step' cannot be zero.");
 
     final children = Children();
@@ -32,7 +32,6 @@ class ForLoopTag implements Tag {
       final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
       children.addAll(tagChildren);
     }
-
     return children;
   }
 }

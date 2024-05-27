@@ -237,9 +237,9 @@ Please see the [example](https://github.com/appfluent/xwidget/tree/main/example)
 package. It contains an XWidget version of Flutter's classic starter app. It only scratches the
 surface of XWidget's capabilities.
 
-**Please note:** The inflaters in the example were generated with Fultter 3.19, which mean that if
+**Please Note:** The inflaters in the example were generated with Flutter 3.19, which means that if
 you're using an older version Flutter, you'll need to regenerate the inflaters using the 
-folowing command:
+following command:
 
 ```shell
 $ dart run xwidget:generate --only inflaters 
@@ -752,42 +752,63 @@ associativity. Both the precedence level and associativity can be seen in the ta
 
 ### Built-In Functions
 
-| Name              | Arguments                                                                     | Returns  | Description | Examples                                                                          |
-|-------------------|-------------------------------------------------------------------------------|----------|-------------|-----------------------------------------------------------------------------------|
-| contains          | dynamic value<br/>dynamic searchValue                                         | bool     |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
-| containsKey       | Map? map<br/>dynamic searchKey                                                | bool     |             |                                                                                   |
-| containsValue     | Map? map<br/>dynamic searchValue                                              | bool     |             |                                                                                   |
-| diffDateTime      | DateTime left<br/>DateTime right                                              | Duration |             |                                                                                   |
-| durationInDays    | Duration value                                                                | int      |             |                                                                                   |
-| durationInHours   | Duration value                                                                | int      |             |                                                                                   |
-| durationInMinutes | Duration value                                                                | int      |             |                                                                                   |
-| durationInSeconds | Duration value                                                                | int      |             |                                                                                   |
-| durationInMills   | Duration value                                                                | int      |             |                                                                                   |
-| endsWith          | String value<br/>String searchValue                                           | bool     |             |                                                                                   |
-| eval              | String? value                                                                 | dynamic  |             |                                                                                   |
-| formatDateTime    | String format<br/>DateTime dateTime                                           | String   |             |                                                                                   |
-| isEmpty           | dynamic value                                                                 | bool     |             |                                                                                   |
-| isFalseOrNull     | dynamic value                                                                 | bool     |             |                                                                                   |
-| isNotEmpty        | dynamic value                                                                 | bool     |             |                                                                                   |
-| isNotNull         | dynamic value                                                                 | bool     |             |                                                                                   |
-| isNull            | dynamic value                                                                 | bool     |             |                                                                                   |
-| sTrueOrNull       | dynamic value                                                                 | bool     |             |                                                                                   |
-| length            | dynamic value                                                                 | length   |             |                                                                                   |
-| matches           | String value<br/>String regExp                                                | bool     |             |                                                                                   |
-| now               | none                                                                          | DateTime |             |                                                                                   |
-| nowInUtc          | none                                                                          | DateTime |             |                                                                                   |
-| randomDouble      |                                                                               | double   |             |                                                                                   | 
-| randomInt         | int max                                                                       | int      |             |                                                                                   |
-| replaceAll        | String value<br/>String regex<br/>String replacement                          | String   |             |                                                                                   |
-| replaceFirst      | String value<br/>String regex<br/>String replacement<br/>[int startIndex = 0] | String   |             |                                                                                   |
-| startsWith        | String value<br/>String searchValue                                           | bool     |             |                                                                                   |
-| substring         | String value<br/>int start<br/>[int end = -1]                                 | String   |             |                                                                                   |
-| toBool            | dynamic value                                                                 | bool     |             |                                                                                   |
-| toDateTime        | dynamic value                                                                 | DateTime |             |                                                                                   |
-| toDouble          | dynamic value                                                                 | double   |             |                                                                                   |
-| toDuration        | String value                                                                  | Duration |             |                                                                                   |
-| toInt             | dynamic value                                                                 | int      |             |                                                                                   |
-| toString          | dynamic value                                                                 | String   |             |                                                                                   |
+| Name           | Arguments                                                                                      | Returns   | Description | Examples                                                                          |
+|----------------|------------------------------------------------------------------------------------------------|-----------|-------------|-----------------------------------------------------------------------------------|
+| abs            | dynamic value                                                                                  | num       |             |                                                                                   |
+| ceil           | dynamic value                                                                                  | int       |             |                                                                                   |
+| contains       | dynamic value<br/>dynamic searchValue                                                          | bool      |             | `${contains('I love XWidget', 'love'}`<br/>`${contains(dependencyValue, 'hello'}` |
+| containsKey    | Map? map<br/>dynamic searchKey                                                                 | bool      |             |                                                                                   |
+| containsValue  | Map? map<br/>dynamic searchValue                                                               | bool      |             |                                                                                   |
+| diffDateTime   | DateTime left<br/>DateTime right                                                               | Duration  |             |                                                                                   |
+| endsWith       | String value<br/>String searchValue                                                            | bool      |             |                                                                                   |
+| eval           | String? value                                                                                  | dynamic   |             |                                                                                   |
+| floor          | dynamic value                                                                                  | int       |             |                                                                                   |
+| formatDateTime | String format<br/>DateTime dateTime                                                            | String    |             |                                                                                   |
+| formatDuration | Duration? value<br>[String precision = "s"<br/>DurationFormat? format = defaultDurationFormat] | String?   |             |                                                                                   |
+| isBlank        | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isEmpty        | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isFalseOrNull  | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isNotBlank     | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isNotEmpty     | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isNotNull      | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isNull         | dynamic value                                                                                  | bool      |             |                                                                                   |
+| sTrueOrNull    | dynamic value                                                                                  | bool      |             |                                                                                   |
+| length         | dynamic value                                                                                  | length    |             |                                                                                   |
+| logDebug       | dynamic message                                                                                | void      |             |                                                                                   |
+| matches        | String value<br/>String regExp                                                                 | bool      |             |                                                                                   |
+| now            |                                                                                                | DateTime  |             |                                                                                   |
+| nowInUtc       |                                                                                                | DateTime  |             |                                                                                   |
+| randomDouble   |                                                                                                | double    |             |                                                                                   | 
+| randomInt      | int max                                                                                        | int       |             |                                                                                   |
+| replaceAll     | String value<br/>String regex<br/>String replacement                                           | String    |             |                                                                                   |
+| replaceFirst   | String value<br/>String regex<br/>String replacement<br/>[int startIndex = 0]                  | String    |             |                                                                                   |
+| round          | dynamic value                                                                                  | int       |             |                                                                                   |
+| startsWith     | String value<br/>String searchValue                                                            | bool      |             |                                                                                   |
+| substring      | String value<br/>int start<br/>[int end = -1]                                                  | String    |             |                                                                                   |
+| toBool         | dynamic value                                                                                  | bool?     |             |                                                                                   |
+| toColor        | dynamic value                                                                                  | Color?    |             |                                                                                   |
+| toDateTime     | dynamic value                                                                                  | DateTime? |             |                                                                                   |
+| toDays         | dynamic value                                                                                  | int?      |             |                                                                                   |
+| toDouble       | dynamic value                                                                                  | double?   |             |                                                                                   |
+| toDuration     | dynamic value<br/>[String? intUnit]                                                            | Duration? |             |                                                                                   |
+| toHours        | dynamic value                                                                                  | int?      |             |                                                                                   |
+| toInt          | dynamic value                                                                                  | int?      |             |                                                                                   |
+| toMillis       | dynamic value                                                                                  | int?      |             |                                                                                   |
+| toMinutes      | dynamic value                                                                                  | int?      |             |                                                                                   |
+| toSeconds      | dynamic value                                                                                  | int?      |             |                                                                                   |
+| toString       | dynamic value                                                                                  | String?   |             |                                                                                   |
+| tryToBool      | dynamic value                                                                                  | bool      |             |                                                                                   |
+| tryToColor     | dynamic value                                                                                  | Color?    |             |                                                                                   |
+| tryToDateTime  | dynamic value                                                                                  | DateTime? |             |                                                                                   |
+| tryToDays      | dynamic value                                                                                  | int?      |             |                                                                                   |
+| tryToDouble    | dynamic value                                                                                  | double?   |             |                                                                                   |
+| tryToDuration  | dynamic value<br/>[String? intUnit]                                                            | Duration? |             |                                                                                   |
+| tryToHours     | dynamic value                                                                                  | int?      |             |                                                                                   |
+| tryToInt       | dynamic value                                                                                  | int?      |             |                                                                                   |
+| tryToMillis    | dynamic value                                                                                  | int?      |             |                                                                                   |
+| tryToMinutes   | dynamic value                                                                                  | int?      |             |                                                                                   |
+| tryToSeconds   | dynamic value                                                                                  | int?      |             |                                                                                   |
+| tryToString    | dynamic value                                                                                  | String?   |             |                                                                                   |
 
 ### Custom Functions
 
@@ -1123,6 +1144,40 @@ project
 ### Use controllers to create reusable components
 
 *Add documentation here.*
+
+### Specify generic types with literals when your model is mutable.
+
+When listening for changes using `<ValueListener>` or `listenForChanges`, XWidget wraps a
+`ModelValueNotifier` around the data that is being listening to. Therefore, it is important
+that model collections be type agnostic i.e. `dynamic` or `Object?`. For example:
+
+```dart
+// don't do this - no types
+final model = Model({
+  "users": {
+    "user1": { "email": "@", "phone": "0" },
+    "user2": { "email": "@", "phone": "0" }
+  }
+});
+// throws exception
+final user1Notifier = model.listenForChanges("users.user1", null, null);
+```
+This throws `type 'ModelValueNotifier' is not a subtype of type 'Map<String, String>' of 'value'`.
+To fix this, explicitly specify the Map's `key` and `value` types:
+
+```dart
+// this is ok - explicitly typed maps
+final model = Model({
+  "users": <String, dynamic>{
+    "user1": <String, dynamic>{ "email": "@", "phone": "0" },
+    "user2": <String, dynamic>{ "email": "@", "phone": "0" }
+  }
+});
+// this now works.
+// NOTE: You typically wouldn't call `listenForChanges' directly. You would use <ValueListener> 
+// in your fragment instead.
+final user1Notifier = model.listenForChanges("users.user1", null, null);
+```
 <!-- // end of #include -->
 
 <!-- #include doc/TROUBLE_SHOOTING.md -->

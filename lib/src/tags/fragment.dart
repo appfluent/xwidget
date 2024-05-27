@@ -1,7 +1,6 @@
 import 'package:xml/xml.dart';
 
-import '../xwidget.dart';
-import '../utils/parsers.dart';
+import '../../xwidget.dart';
 
 /// A tag that renders a UI fragment
 ///
@@ -41,7 +40,7 @@ class FragmentTag implements Tag {
     }
 
     final bool? visible = attributes["visible"];
-    if (visible != null && parseBool(visible) != true) {
+    if (toBool(visible) == false) {
       // don't show fragment
       return null;
     }

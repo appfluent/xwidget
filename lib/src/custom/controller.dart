@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/parsers.dart';
+import '../utils/functions/parsers.dart';
 import '../utils/utils.dart';
 import '../xwidget.dart';
 import 'async.dart';

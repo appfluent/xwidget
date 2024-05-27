@@ -11,11 +11,13 @@ class Model extends MapBase<String, dynamic> {
   final Map<String, dynamic> _data = {};
   final bool immutable;
 
-  Model([Map<String, dynamic>? data, this.immutable = true]) {
+  Model([Map<String, dynamic>? data, this.immutable = false]) {
     if (data != null) {
       _data.addAll(data);
     }
   }
+
+  Model.immutable([Map<String, dynamic>? data]) : this(data, true);
 
   // An internal static method to manage instance creation.
   static T _getInstance<T extends Model>(Type type, String? key, T Function() create) {
@@ -107,6 +109,7 @@ class Model extends MapBase<String, dynamic> {
 class ModelValueNotifier extends ValueNotifier {
   Key? _ownerKey;
   bool _hasNoListeners = false;
+  bool _paused = false;
 
   ModelValueNotifier(super.value);
 
@@ -137,5 +140,22 @@ class ModelValueNotifier extends ValueNotifier {
 
   Key? takeOwnership() {
     return _ownerKey == null ? _ownerKey = UniqueKey() : null;
+  }
+
+  void pauseNotifications() {
+    _paused = true;
+  }
+
+  void resumeNotifications() {
+    _paused = false;
+  }
+
+  @override
+  void notifyListeners() {
+    // we're overriding this method to make it available to users of this class
+    // i.e. brackets.
+    if (!_paused) {
+      super.notifyListeners();
+    }
   }
 }
