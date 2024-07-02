@@ -40,8 +40,8 @@ inflaters:
   constructor_arg_parsers:
     # basic types
     "bool": "parseBool(value)"
-    "double": "double.parse(value)"
-    "int": "int.parse(value)"
+    "double": "parseDouble(value)"
+    "int": "parseInt(value)"
     "String": "value"
 
     # complex types

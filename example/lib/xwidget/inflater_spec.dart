@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 const inflaters = [
   AppBar,
   Center,
+  ColorScheme,
   Column,
   FloatingActionButton,
   Icon,

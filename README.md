@@ -58,26 +58,27 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
 # Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Example](#example)
-3. [Configuration](#configuration)
-4. [Code Generation](#code-generation)
-5. [Inflaters](#inflaters)
-6. [Dependencies](#dependencies)
-7. [Model](#model)
-8. [Fragments](#fragments)
-9. [Controllers](#controllers)
-10. [Expression Language (EL)](#expression-language-el)
+2. [Manual Setup](#manual-setup)
+3. [Example](#example)
+4. [Configuration](#configuration)
+5. [Code Generation](#code-generation)
+6. [Inflaters](#inflaters)
+7. [Dependencies](#dependencies)
+8. [Model](#model)
+9. [Fragments](#fragments)
+10. [Controllers](#controllers)
+11. [Expression Language (EL)](#expression-language-el)
     - [Operators](#operators)
     - [Built-In Functions](#built-in-functions)
     - [Custom Functions](#custom-functions)
-11. [Resources](#resources)
+12. [Resources](#resources)
     - [Strings](#strings)
     - [Integers](#integers)
     - [Doubles](#doubles)
     - [Booleans](#booleans)
     - [Colors](#colors)
     - [Fragments](#fragments-1)
-12. [Components](#components)
+13. [Components](#components)
     - [Flutter](#flutter)
     - [Third Party](#third-party)
     - [Built-In](#built-in)
@@ -90,7 +91,7 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
         - [```<MediaQuery>```](#mediaquery)
         - [```<ValueListener>```](#valuelistener)
     - [Custom](#custom)
-13. [Tags](#tags)
+14. [Tags](#tags)
     - [```<builder>```](#builder)
     - [```<callback>```](#callback)
     - [```<debug>```](#debug)
@@ -99,17 +100,17 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
     - [```<fragment>```](#fragment)
     - [```<if>/<else>```](#ifelse)
     - [```<var>```](#var)
-14. [Best Practices](#best-practices)
-15. [Tips and Tricks](#tips-and-tricks)
-16. [Trouble Shooting](#trouble-shooting)
+15. [Best Practices](#best-practices)
+16. [Tips and Tricks](#tips-and-tricks)
+17. [Trouble Shooting](#trouble-shooting)
     - [The generated inflater code has errors](#the-generated-inflater-code-has-errors)
     - [Hot reload/restart clears dependency values](#hot-reloadrestart-clears-dependency-values)
-17. [FAQ](#faq)
-18. [Roadmap](#roadmap)
+18. [FAQ](#faq)
+19. [Roadmap](#roadmap)
     - [0.0.x Releases (2023)](#00x-releases-2023)
     - [0.x Releases (2024)](#0x-releases-2024)
     - [1.0.0 Release (mid 2024)](#100-release-mid-2024)
-19. [Known Issues](#known-issues)
+20. [Known Issues](#known-issues)
 <!-- // end of #include -->
 
 <!-- #include doc/QUICK_START.md -->
@@ -122,10 +123,51 @@ below.
 1. Install XWidget using the following command:
 
     ```shell
-    $ flutter pub add xwidget 
+    $ flutter pub add xwidget
     ```
 
-2. Create an inflater specification file. This is a Dart file that tells XWidget which widgets and
+2. Initialize your project by running:
+
+    ```shell
+    $ dart run xwidget:init --new-app
+    ```
+   
+   This will create and configure all the components required for a simple XWidget application.
+   It will overwrite `main.dart`, `pubscpec.yaml` and existing XWidget specifications,
+   configurations, colors and string values. If you don't want to overwrite these files, run the
+   following non-destructive initialization command:
+
+    ```shell
+    $ dart run xwidget:init
+    ```
+   
+   The non-destructive command is intended for advanced users that want to add XWidget to an
+   existing project. For those users, follow the [Manual Setup](#manual-setup) guide starting
+   with step #4. Everyone else should continue to step #3 in this guide.
+
+3. Register the generated schema file `xwidget_scheme.g.xsd` with your IDE under the namespace
+   `http://www.appfluent.us/xwidget`. This will provide validation, code completion, and tooltip
+   documentation while editing your fragments.
+
+4. To register additional Flutter components, simply modify `lib/xwidget/inflater_spec.dart`
+   and run:
+
+    ```shell
+    $ dart run xwidget:generate --only inflaters
+    ```
+   
+   See [Inflaters](#inflaters), [Components](#components) and [Fragments](#fragments) for
+   more information.
+<!-- // end of #include -->
+
+<!-- #include doc/MANUAL_SETUP.md -->
+# Manual Setup
+
+This Manual Setup guide primarily exists to give you a deeper understanding of how XWidget is
+configured. It is recommended that you refer to the [Quick Setup](#quick-setup) guide to
+setup a new project.
+
+1. Create an inflater specification file. This is a Dart file that tells XWidget which widgets and
    helper classes you intend on using in your fragments. While this fill can live anywhere
    under the `lib` folder, we recommend placing it under `lib\xwidget` and naming it
    `inflater_spec.dart`. See [Recommended folder structure](#recommended-folder-structure).
@@ -143,7 +185,7 @@ below.
     ];
     ```
 
-3. Create a custom configuration file. This is an XML document that configures the inputs and
+2. Create a custom configuration file. This is an XML document that configures the inputs and
    outputs of XWidget's code generator. By default, XWidget looks for a file named
    `xwidget_config.yaml` in the project's root folder. Make sure that `sources` contains the
    location of the inflater spec you created in step #2. See [Configuration](#configuration)
@@ -154,7 +196,7 @@ below.
     inflaters:
        sources: [ "lib/xwidget/inflater_spec.dart" ]
     ```
-4. Generate inflaters and fragment schema. By default, all generated Dart files are written to
+3. Generate inflaters and fragment schema. By default, all generated Dart files are written to
    `lib/xwidget/generated`. The schema file is written to the project root as `xwidget_schema.g.xsd`.
    See [Code Generation](#code-generation) for more.
 
@@ -162,11 +204,11 @@ below.
     $ dart run xwidget:generate 
     ```
 
-5. Register the generated schema file with your IDE under the namespace
+4. Register the generated schema file `xwidget_scheme.g.xsd` with your IDE under the namespace
    `http://www.appfluent.us/xwidget`. This will provide validation, code completion, and tooltip
    documentation while editing your fragments.
 
-6. Register the generated components in your application's main method. You'll need to import
+5. Register the generated components in your application's main method. You'll need to import
    XWidget and the generated code.
 
    ```dart
@@ -185,17 +227,18 @@ below.
    }
    ```
 
-7. Modify your project's `pubspec.yaml` and add `resources/fragments/` to `assets`. There's no need
-   to add each individual fragment; however, if you use fragment folders, you'll need to add each
-   folder here. See [Resources](#resources) for more.
+6. Modify your project's `pubspec.yaml` and add `resources/fragments/` and `resources/values/` 
+   to `assets`. There's no need to add each individual fragment; however, if you use fragment
+   folders, you'll need to add each folder here. See [Resources](#resources) for more.
 
     ```yaml
     flutter:
       assets:
         - resources/fragments/
+        - resources/values/
     ```
 
-8. Create your UI fragment. By default, XWidget looks for fragments under `resources/fragments`.
+7. Create your UI fragment. By default, XWidget looks for fragments under `resources/fragments`.
    Fragments are XML documents that are "inflated" at runtime. See [Fragments](#fragments) for more.
 
     ```XML
@@ -210,7 +253,7 @@ below.
     </Column>
     ```
 
-9. Inflate your fragment. Where ever you want to render your fragment, simply call
+8. Inflate your fragment. Where ever you want to render your fragment, simply call
    *XWidget.inflateFragment(...)* with the name of your fragment and `Dependencies` object. See
    [Dependencies](#dependencies) for more.
 
@@ -229,6 +272,7 @@ below.
    }
    ```
 <!-- // end of #include -->
+
 
 <!-- #include doc/EXAMPLE.md -->
 # Example

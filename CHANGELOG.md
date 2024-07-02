@@ -1,3 +1,10 @@
+### 0.0.42 (July 2, 2024)
+
+#### Please run `dart run xwidget:generate` after upgrading.
+
+* Added an initialization command to setup a new XWidget project. Please see the Quick Start guide.
+* Updated Example project to use Material3.
+
 ### 0.0.41 (May 26, 2024)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
@@ -8,35 +15,35 @@
   and misc. All parsing function now only parse `String` values; conversion function convert
   `dynamic` values and may call a parsing function if the value is a `String`. 
 * Added the following EL functions:
-  `formatDuration`
-  `isBlank`
-  `isNotBlank`
-  `toColor`
-  `toDays`
-  `toHours`
-  `toMillis`
-  `toMinutes`
-  `toSeconds`
-  `tryToBool`
-  `tryToColor`
-  `tryToDateTime`
-  `tryToDays`
-  `tryToDouble`
-  `tryToDuration`
-  `tryToHours`
-  `tryToInt`
-  `tryToMillis`
-  `tryToMinutes`
-  `tryToSeconds`
+  - `formatDuration`
+  - `isBlank`
+  - `isNotBlank`
+  - `toColor`
+  - `toDays`
+  - `toHours`
+  - `toMillis`
+  - `toMinutes`
+  - `toSeconds`
+  - `tryToBool`
+  - `tryToColor`
+  - `tryToDateTime`
+  - `tryToDays`
+  - `tryToDouble`
+  - `tryToDuration`
+  - `tryToHours`
+  - `tryToInt`
+  - `tryToMillis`
+  - `tryToMinutes`
+  - `tryToSeconds`
 * Added the following parsing functions:
-  `parseInt`
-  `parseDouble`
-  `tryParseBool`
-  `tryParseDateTime`
-  `tryParseDouble`
-  `tryParseDuration`
-  `tryParseEnum`
-  `tryParseInt`
+  - `parseInt`
+  - `parseDouble`
+  - `tryParseBool`
+  - `tryParseDateTime`
+  - `tryParseDouble`
+  - `tryParseDuration`
+  - `tryParseEnum`
+  - `tryParseInt`
 * You can now listen changes to nested model properties with `<ValueListener>`,
   `Model.listenForChanges` or `Dependencies.listenForChanges` when using `Model.setValue` or
   `Dependencies.setValue`. For example:

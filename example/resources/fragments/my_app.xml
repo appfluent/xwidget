@@ -5,11 +5,13 @@
  code completion, and in-editor documentation.
 -->
 <MaterialApp xmlns="http://www.appfluent.us/xwidget" title="Flutter Demo">
-    <ThemeData for="theme" primarySwatch="${primarySwatch}"/>
-    <Controller for="home" name="HomePageController">
+    <ThemeData for="theme" useMaterial3="true">
+        <ColorScheme.fromSeed for="colorScheme" seedColor="@color/primary"/>
+    </ThemeData>
+    <Controller for="home" name="AppController">
         <Scaffold>
             <AppBar for="appBar" centerTitle="true">
-                <Text for="title" data="${title}"/>
+                <Text for="title" data="@string/title"/>
             </AppBar>
             <Center for="body">
                 <Column mainAxisAlignment="center">

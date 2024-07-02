@@ -1,21 +1,21 @@
 publish_to: 'none'
 
-name: xwidget_example
-description: A new Flutter project.
-version: 1.0.0
+name: $project_name
+description: $project_description
+version: $project_version
 
 environment:
-  sdk: '>=2.19.6 <4.0.0'
+  sdk: $environment_sdk_version
 
 dependencies:
   flutter:
     sdk: flutter
-  xwidget: 0.0.42
+  xwidget: $xwidget_version
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: $flutter_lints_version
 
 # The following section is specific to Flutter packages.
 flutter:

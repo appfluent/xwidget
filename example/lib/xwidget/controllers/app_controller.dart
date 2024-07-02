@@ -1,11 +1,10 @@
 import 'package:xwidget/xwidget.dart';
 
-class HomePageController extends Controller {
+class AppController extends Controller {
   var count = 0;
 
   @override
   void bindDependencies() {
-    dependencies.setValue("title", "XWidget Demo Home Page");
     dependencies.setValue("count", count);
     dependencies.setValue("onPressed", onPressed);
   }

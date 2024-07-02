@@ -28,8 +28,6 @@ class MyApp extends StatelessWidget {
   // UI into fragments and reuse them, iterate over them, use control tags on them, etc.
   @override
   Widget build(BuildContext context) {
-    return XWidget.inflateFragment("my_app", Dependencies({
-      "primarySwatch": Colors.blue
-    }));
+    return XWidget.inflateFragment("my_app", Dependencies());
   }
 }
