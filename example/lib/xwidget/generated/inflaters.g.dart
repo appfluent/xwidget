@@ -63,8 +63,8 @@ class AppBarInflater extends Inflater {
             case 'actions': break;
             case 'flexibleSpace': break;
             case 'bottom': break;
-            case 'elevation': return double.parse(value);
-            case 'scrolledUnderElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'scrolledUnderElevation': return parseDouble(value);
             case 'notificationPredicate': break;
             case 'shadowColor': return parseColor(value);
             case 'surfaceTintColor': return parseColor(value);
@@ -76,11 +76,11 @@ class AppBarInflater extends Inflater {
             case 'primary': return parseBool(value);
             case 'centerTitle': return parseBool(value);
             case 'excludeHeaderSemantics': return parseBool(value);
-            case 'titleSpacing': return double.parse(value);
-            case 'toolbarOpacity': return double.parse(value);
-            case 'bottomOpacity': return double.parse(value);
-            case 'toolbarHeight': return double.parse(value);
-            case 'leadingWidth': return double.parse(value);
+            case 'titleSpacing': return parseDouble(value);
+            case 'toolbarOpacity': return parseDouble(value);
+            case 'bottomOpacity': return parseDouble(value);
+            case 'toolbarHeight': return parseDouble(value);
+            case 'leadingWidth': return parseDouble(value);
             case 'toolbarTextStyle': break;
             case 'titleTextStyle': break;
             case 'systemOverlayStyle': break;
@@ -116,8 +116,8 @@ class CenterInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'key': return parseKey(value);
-            case 'widthFactor': return double.parse(value);
-            case 'heightFactor': return double.parse(value);
+            case 'widthFactor': return parseDouble(value);
+            case 'heightFactor': return parseDouble(value);
         }
         return value;
     }
@@ -142,23 +142,39 @@ class ColorSchemeInflater extends Inflater {
             onPrimary: attributes['onPrimary'],
             primaryContainer: attributes['primaryContainer'],
             onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
             secondary: attributes['secondary'],
             onSecondary: attributes['onSecondary'],
             secondaryContainer: attributes['secondaryContainer'],
             onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
             tertiary: attributes['tertiary'],
             onTertiary: attributes['onTertiary'],
             tertiaryContainer: attributes['tertiaryContainer'],
             onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
             error: attributes['error'],
             onError: attributes['onError'],
             errorContainer: attributes['errorContainer'],
             onErrorContainer: attributes['onErrorContainer'],
-            background: attributes['background'],
-            onBackground: attributes['onBackground'],
             surface: attributes['surface'],
             onSurface: attributes['onSurface'],
-            surfaceVariant: attributes['surfaceVariant'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
             onSurfaceVariant: attributes['onSurfaceVariant'],
             outline: attributes['outline'],
             outlineVariant: attributes['outlineVariant'],
@@ -179,23 +195,39 @@ class ColorSchemeInflater extends Inflater {
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
             case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
             case 'secondary': return parseColor(value);
             case 'onSecondary': return parseColor(value);
             case 'secondaryContainer': return parseColor(value);
             case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
             case 'tertiary': return parseColor(value);
             case 'onTertiary': return parseColor(value);
             case 'tertiaryContainer': return parseColor(value);
             case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
             case 'error': return parseColor(value);
             case 'onError': return parseColor(value);
             case 'errorContainer': return parseColor(value);
             case 'onErrorContainer': return parseColor(value);
-            case 'background': return parseColor(value);
-            case 'onBackground': return parseColor(value);
             case 'surface': return parseColor(value);
             case 'onSurface': return parseColor(value);
-            case 'surfaceVariant': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
             case 'onSurfaceVariant': return parseColor(value);
             case 'outline': return parseColor(value);
             case 'outlineVariant': return parseColor(value);
@@ -226,29 +258,46 @@ class ColorScheme_fromSeedInflater extends Inflater {
         return ColorScheme.fromSeed(
             seedColor: attributes['seedColor'],
             brightness: attributes['brightness'] ?? Brightness.light,
+            dynamicSchemeVariant: attributes['dynamicSchemeVariant'] ?? DynamicSchemeVariant.tonalSpot,
             primary: attributes['primary'],
             onPrimary: attributes['onPrimary'],
             primaryContainer: attributes['primaryContainer'],
             onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
             secondary: attributes['secondary'],
             onSecondary: attributes['onSecondary'],
             secondaryContainer: attributes['secondaryContainer'],
             onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
             tertiary: attributes['tertiary'],
             onTertiary: attributes['onTertiary'],
             tertiaryContainer: attributes['tertiaryContainer'],
             onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
             error: attributes['error'],
             onError: attributes['onError'],
             errorContainer: attributes['errorContainer'],
             onErrorContainer: attributes['onErrorContainer'],
             outline: attributes['outline'],
             outlineVariant: attributes['outlineVariant'],
-            background: attributes['background'],
-            onBackground: attributes['onBackground'],
             surface: attributes['surface'],
             onSurface: attributes['onSurface'],
-            surfaceVariant: attributes['surfaceVariant'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
             onSurfaceVariant: attributes['onSurfaceVariant'],
             inverseSurface: attributes['inverseSurface'],
             onInverseSurface: attributes['onInverseSurface'],
@@ -264,29 +313,46 @@ class ColorScheme_fromSeedInflater extends Inflater {
         switch (name) {
             case 'seedColor': return parseColor(value);
             case 'brightness': return parseEnum(Brightness.values, value);
+            case 'dynamicSchemeVariant': return parseEnum(DynamicSchemeVariant.values, value);
             case 'primary': return parseColor(value);
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
             case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
             case 'secondary': return parseColor(value);
             case 'onSecondary': return parseColor(value);
             case 'secondaryContainer': return parseColor(value);
             case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
             case 'tertiary': return parseColor(value);
             case 'onTertiary': return parseColor(value);
             case 'tertiaryContainer': return parseColor(value);
             case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
             case 'error': return parseColor(value);
             case 'onError': return parseColor(value);
             case 'errorContainer': return parseColor(value);
             case 'onErrorContainer': return parseColor(value);
             case 'outline': return parseColor(value);
             case 'outlineVariant': return parseColor(value);
-            case 'background': return parseColor(value);
-            case 'onBackground': return parseColor(value);
             case 'surface': return parseColor(value);
             case 'onSurface': return parseColor(value);
-            case 'surfaceVariant': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
             case 'onSurfaceVariant': return parseColor(value);
             case 'inverseSurface': return parseColor(value);
             case 'onInverseSurface': return parseColor(value);
@@ -318,23 +384,39 @@ class ColorScheme_lightInflater extends Inflater {
             onPrimary: attributes['onPrimary'] ?? Colors.white,
             primaryContainer: attributes['primaryContainer'],
             onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
             secondary: attributes['secondary'] ?? const Color(0xff03dac6),
             onSecondary: attributes['onSecondary'] ?? Colors.black,
             secondaryContainer: attributes['secondaryContainer'],
             onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
             tertiary: attributes['tertiary'],
             onTertiary: attributes['onTertiary'],
             tertiaryContainer: attributes['tertiaryContainer'],
             onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
             error: attributes['error'] ?? const Color(0xffb00020),
             onError: attributes['onError'] ?? Colors.white,
             errorContainer: attributes['errorContainer'],
             onErrorContainer: attributes['onErrorContainer'],
-            background: attributes['background'] ?? Colors.white,
-            onBackground: attributes['onBackground'] ?? Colors.black,
             surface: attributes['surface'] ?? Colors.white,
             onSurface: attributes['onSurface'] ?? Colors.black,
-            surfaceVariant: attributes['surfaceVariant'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
             onSurfaceVariant: attributes['onSurfaceVariant'],
             outline: attributes['outline'],
             outlineVariant: attributes['outlineVariant'],
@@ -355,23 +437,39 @@ class ColorScheme_lightInflater extends Inflater {
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
             case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
             case 'secondary': return parseColor(value);
             case 'onSecondary': return parseColor(value);
             case 'secondaryContainer': return parseColor(value);
             case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
             case 'tertiary': return parseColor(value);
             case 'onTertiary': return parseColor(value);
             case 'tertiaryContainer': return parseColor(value);
             case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
             case 'error': return parseColor(value);
             case 'onError': return parseColor(value);
             case 'errorContainer': return parseColor(value);
             case 'onErrorContainer': return parseColor(value);
-            case 'background': return parseColor(value);
-            case 'onBackground': return parseColor(value);
             case 'surface': return parseColor(value);
             case 'onSurface': return parseColor(value);
-            case 'surfaceVariant': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
             case 'onSurfaceVariant': return parseColor(value);
             case 'outline': return parseColor(value);
             case 'outlineVariant': return parseColor(value);
@@ -405,23 +503,39 @@ class ColorScheme_darkInflater extends Inflater {
             onPrimary: attributes['onPrimary'] ?? Colors.black,
             primaryContainer: attributes['primaryContainer'],
             onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
             secondary: attributes['secondary'] ?? const Color(0xff03dac6),
             onSecondary: attributes['onSecondary'] ?? Colors.black,
             secondaryContainer: attributes['secondaryContainer'],
             onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
             tertiary: attributes['tertiary'],
             onTertiary: attributes['onTertiary'],
             tertiaryContainer: attributes['tertiaryContainer'],
             onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
             error: attributes['error'] ?? const Color(0xffcf6679),
             onError: attributes['onError'] ?? Colors.black,
             errorContainer: attributes['errorContainer'],
             onErrorContainer: attributes['onErrorContainer'],
-            background: attributes['background'] ?? const Color(0xff121212),
-            onBackground: attributes['onBackground'] ?? Colors.white,
             surface: attributes['surface'] ?? const Color(0xff121212),
             onSurface: attributes['onSurface'] ?? Colors.white,
-            surfaceVariant: attributes['surfaceVariant'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
             onSurfaceVariant: attributes['onSurfaceVariant'],
             outline: attributes['outline'],
             outlineVariant: attributes['outlineVariant'],
@@ -442,23 +556,39 @@ class ColorScheme_darkInflater extends Inflater {
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
             case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
             case 'secondary': return parseColor(value);
             case 'onSecondary': return parseColor(value);
             case 'secondaryContainer': return parseColor(value);
             case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
             case 'tertiary': return parseColor(value);
             case 'onTertiary': return parseColor(value);
             case 'tertiaryContainer': return parseColor(value);
             case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
             case 'error': return parseColor(value);
             case 'onError': return parseColor(value);
             case 'errorContainer': return parseColor(value);
             case 'onErrorContainer': return parseColor(value);
-            case 'background': return parseColor(value);
-            case 'onBackground': return parseColor(value);
             case 'surface': return parseColor(value);
             case 'onSurface': return parseColor(value);
-            case 'surfaceVariant': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
             case 'onSurfaceVariant': return parseColor(value);
             case 'outline': return parseColor(value);
             case 'outlineVariant': return parseColor(value);
@@ -492,23 +622,39 @@ class ColorScheme_highContrastLightInflater extends Inflater {
             onPrimary: attributes['onPrimary'] ?? Colors.white,
             primaryContainer: attributes['primaryContainer'],
             onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
             secondary: attributes['secondary'] ?? const Color(0xff66fff9),
             onSecondary: attributes['onSecondary'] ?? Colors.black,
             secondaryContainer: attributes['secondaryContainer'],
             onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
             tertiary: attributes['tertiary'],
             onTertiary: attributes['onTertiary'],
             tertiaryContainer: attributes['tertiaryContainer'],
             onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
             error: attributes['error'] ?? const Color(0xff790000),
             onError: attributes['onError'] ?? Colors.white,
             errorContainer: attributes['errorContainer'],
             onErrorContainer: attributes['onErrorContainer'],
-            background: attributes['background'] ?? Colors.white,
-            onBackground: attributes['onBackground'] ?? Colors.black,
             surface: attributes['surface'] ?? Colors.white,
             onSurface: attributes['onSurface'] ?? Colors.black,
-            surfaceVariant: attributes['surfaceVariant'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
             onSurfaceVariant: attributes['onSurfaceVariant'],
             outline: attributes['outline'],
             outlineVariant: attributes['outlineVariant'],
@@ -529,23 +675,39 @@ class ColorScheme_highContrastLightInflater extends Inflater {
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
             case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
             case 'secondary': return parseColor(value);
             case 'onSecondary': return parseColor(value);
             case 'secondaryContainer': return parseColor(value);
             case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
             case 'tertiary': return parseColor(value);
             case 'onTertiary': return parseColor(value);
             case 'tertiaryContainer': return parseColor(value);
             case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
             case 'error': return parseColor(value);
             case 'onError': return parseColor(value);
             case 'errorContainer': return parseColor(value);
             case 'onErrorContainer': return parseColor(value);
-            case 'background': return parseColor(value);
-            case 'onBackground': return parseColor(value);
             case 'surface': return parseColor(value);
             case 'onSurface': return parseColor(value);
-            case 'surfaceVariant': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
             case 'onSurfaceVariant': return parseColor(value);
             case 'outline': return parseColor(value);
             case 'outlineVariant': return parseColor(value);
@@ -579,23 +741,39 @@ class ColorScheme_highContrastDarkInflater extends Inflater {
             onPrimary: attributes['onPrimary'] ?? Colors.black,
             primaryContainer: attributes['primaryContainer'],
             onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
             secondary: attributes['secondary'] ?? const Color(0xff66fff9),
             onSecondary: attributes['onSecondary'] ?? Colors.black,
             secondaryContainer: attributes['secondaryContainer'],
             onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
             tertiary: attributes['tertiary'],
             onTertiary: attributes['onTertiary'],
             tertiaryContainer: attributes['tertiaryContainer'],
             onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
             error: attributes['error'] ?? const Color(0xff9b374d),
             onError: attributes['onError'] ?? Colors.black,
             errorContainer: attributes['errorContainer'],
             onErrorContainer: attributes['onErrorContainer'],
-            background: attributes['background'] ?? const Color(0xff121212),
-            onBackground: attributes['onBackground'] ?? Colors.white,
             surface: attributes['surface'] ?? const Color(0xff121212),
             onSurface: attributes['onSurface'] ?? Colors.white,
-            surfaceVariant: attributes['surfaceVariant'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
             onSurfaceVariant: attributes['onSurfaceVariant'],
             outline: attributes['outline'],
             outlineVariant: attributes['outlineVariant'],
@@ -616,23 +794,39 @@ class ColorScheme_highContrastDarkInflater extends Inflater {
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
             case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
             case 'secondary': return parseColor(value);
             case 'onSecondary': return parseColor(value);
             case 'secondaryContainer': return parseColor(value);
             case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
             case 'tertiary': return parseColor(value);
             case 'onTertiary': return parseColor(value);
             case 'tertiaryContainer': return parseColor(value);
             case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
             case 'error': return parseColor(value);
             case 'onError': return parseColor(value);
             case 'errorContainer': return parseColor(value);
             case 'onErrorContainer': return parseColor(value);
-            case 'background': return parseColor(value);
-            case 'onBackground': return parseColor(value);
             case 'surface': return parseColor(value);
             case 'onSurface': return parseColor(value);
-            case 'surfaceVariant': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
             case 'onSurfaceVariant': return parseColor(value);
             case 'outline': return parseColor(value);
             case 'outlineVariant': return parseColor(value);
@@ -777,11 +971,11 @@ class FloatingActionButtonInflater extends Inflater {
             case 'hoverColor': return parseColor(value);
             case 'splashColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'mini': return parseBool(value);
@@ -847,11 +1041,11 @@ class FloatingActionButton_smallInflater extends Inflater {
             case 'hoverColor': return parseColor(value);
             case 'splashColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'shape': break;
@@ -915,11 +1109,11 @@ class FloatingActionButton_largeInflater extends Inflater {
             case 'hoverColor': return parseColor(value);
             case 'splashColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'shape': break;
@@ -987,12 +1181,12 @@ class FloatingActionButton_extendedInflater extends Inflater {
             case 'focusColor': return parseColor(value);
             case 'hoverColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
             case 'splashColor': return parseColor(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'shape': break;
@@ -1001,7 +1195,7 @@ class FloatingActionButton_extendedInflater extends Inflater {
             case 'clipBehavior': return parseEnum(Clip.values, value);
             case 'focusNode': break;
             case 'autofocus': return parseBool(value);
-            case 'extendedIconLabelSpacing': return double.parse(value);
+            case 'extendedIconLabelSpacing': return parseDouble(value);
             case 'extendedPadding': return parseEdgeInsetsGeometry(value);
             case 'extendedTextStyle': break;
             case 'icon': return parseIcon(value);
@@ -1046,11 +1240,11 @@ class IconInflater extends Inflater {
         switch (name) {
             case 'icon': return parseIcon(value);
             case 'key': return parseKey(value);
-            case 'size': return double.parse(value);
-            case 'fill': return double.parse(value);
-            case 'weight': return double.parse(value);
-            case 'grade': return double.parse(value);
-            case 'opticalSize': return double.parse(value);
+            case 'size': return parseDouble(value);
+            case 'fill': return parseDouble(value);
+            case 'weight': return parseDouble(value);
+            case 'grade': return parseDouble(value);
+            case 'opticalSize': return parseDouble(value);
             case 'color': return parseColor(value);
             case 'shadows': break;
             case 'semanticLabel': return value;
@@ -1309,7 +1503,7 @@ class ScaffoldInflater extends Inflater {
             case 'floatingActionButtonLocation': break;
             case 'floatingActionButtonAnimator': break;
             case 'persistentFooterButtons': break;
-            case 'persistentFooterAlignment': break;
+            case 'persistentFooterAlignment': return parseAlignmentDirectional(value);
             case 'drawer': break;
             case 'onDrawerChanged': break;
             case 'endDrawer': break;
@@ -1323,7 +1517,7 @@ class ScaffoldInflater extends Inflater {
             case 'extendBody': return parseBool(value);
             case 'extendBodyBehindAppBar': return parseBool(value);
             case 'drawerScrimColor': return parseColor(value);
-            case 'drawerEdgeDragWidth': return double.parse(value);
+            case 'drawerEdgeDragWidth': return parseDouble(value);
             case 'drawerEnableOpenDragGesture': return parseBool(value);
             case 'endDrawerEnableOpenDragGesture': return parseBool(value);
             case 'restorationId': return value;
@@ -1377,7 +1571,7 @@ class TextInflater extends Inflater {
             case 'softWrap': return parseBool(value);
             case 'overflow': return parseEnum(TextOverflow.values, value);
             case 'textScaler': break;
-            case 'maxLines': return int.parse(value);
+            case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
@@ -1432,7 +1626,7 @@ class Text_richInflater extends Inflater {
             case 'softWrap': return parseBool(value);
             case 'overflow': return parseEnum(TextOverflow.values, value);
             case 'textScaler': break;
-            case 'maxLines': return int.parse(value);
+            case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
@@ -1491,11 +1685,11 @@ class TextStyleInflater extends Inflater {
             case 'inherit': return parseBool(value);
             case 'color': return parseColor(value);
             case 'backgroundColor': return parseColor(value);
-            case 'fontSize': return double.parse(value);
+            case 'fontSize': return parseDouble(value);
             case 'fontWeight': return parseFontWeight(value);
             case 'fontStyle': return parseEnum(FontStyle.values, value);
-            case 'letterSpacing': return double.parse(value);
-            case 'wordSpacing': return double.parse(value);
+            case 'letterSpacing': return parseDouble(value);
+            case 'wordSpacing': return parseDouble(value);
             case 'textBaseline': return parseEnum(TextBaseline.values, value);
             case 'height': return parseDouble(value);
             case 'leadingDistribution': return parseEnum(TextLeadingDistribution.values, value);
@@ -1508,7 +1702,7 @@ class TextStyleInflater extends Inflater {
             case 'decoration': return parseTextDecoration(value);
             case 'decorationColor': return parseColor(value);
             case 'decorationStyle': return parseEnum(TextDecorationStyle.values, value);
-            case 'decorationThickness': return double.parse(value);
+            case 'decorationThickness': return parseDouble(value);
             case 'debugLabel': return value;
             case 'fontFamily': return value;
             case 'fontFamilyFallback': return parseListOfStrings(value);

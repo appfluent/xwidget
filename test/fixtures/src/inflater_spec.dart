@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Define constants for all widgets and objects we want to generate inflaters for.
@@ -17,7 +16,6 @@ const inflaters = [
   Center,
   CircularProgressIndicator,
   Column,
-  CupertinoTextField,
   FloatingActionButton,
   Icon,
   MaterialApp,

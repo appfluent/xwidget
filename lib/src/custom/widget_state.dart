@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-@Deprecated("Use WidgetStatePropertyOf instead")
-class MaterialStatePropertyOf<T> extends MaterialStateProperty<T> {
+
+class WidgetStatePropertyOf<T> extends WidgetStateProperty<T> {
   final T primary;
   final T? hovered;
   final T? focused;
@@ -12,7 +12,7 @@ class MaterialStatePropertyOf<T> extends MaterialStateProperty<T> {
   final T? disabled;
   final T? error;
 
-  MaterialStatePropertyOf({
+  WidgetStatePropertyOf({
     required this.primary,
     this.hovered,
     this.focused,
@@ -25,29 +25,29 @@ class MaterialStatePropertyOf<T> extends MaterialStateProperty<T> {
   });
 
   @override
-  T resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.hovered)) {
+  T resolve(Set<WidgetState> states) {
+    if (states.contains(WidgetState.hovered)) {
       return hovered ?? primary;
     }
-    if (states.contains(MaterialState.focused)) {
+    if (states.contains(WidgetState.focused)) {
       return focused ?? primary;
     }
-    if (states.contains(MaterialState.pressed)) {
+    if (states.contains(WidgetState.pressed)) {
       return pressed ?? primary;
     }
-    if (states.contains(MaterialState.dragged)) {
+    if (states.contains(WidgetState.dragged)) {
       return dragged ?? primary;
     }
-    if (states.contains(MaterialState.selected)) {
+    if (states.contains(WidgetState.selected)) {
       return selected ?? primary;
     }
-    if (states.contains(MaterialState.scrolledUnder)) {
+    if (states.contains(WidgetState.scrolledUnder)) {
       return scrolledUnder ?? primary;
     }
-    if (states.contains(MaterialState.disabled)) {
+    if (states.contains(WidgetState.disabled)) {
       return disabled ?? primary;
     }
-    if (states.contains(MaterialState.error)) {
+    if (states.contains(WidgetState.error)) {
       return error ?? primary;
     }
     return primary;

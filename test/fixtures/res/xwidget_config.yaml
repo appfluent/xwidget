@@ -1,0 +1,19 @@
+# XWidget Config
+
+icons:
+  target: "build/icons_test.g.dart"
+  sources: [
+    "test/fixtures/src/icons_spec.dart"
+  ]
+
+inflaters:
+  target: "build/inflaters_test.g.dart"
+  imports: [
+    "package:flutter/gestures.dart",
+  ]
+  sources: [
+    "test/fixtures/src/inflater_spec.dart"
+  ]
+
+schema:
+  target: "build/schema_test.xsd"

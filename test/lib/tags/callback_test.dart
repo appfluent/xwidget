@@ -8,12 +8,12 @@ import '../testing_utils.dart';
 
 main() {
   final assetBundle = TestAssetBundle([
-    "test/fixtures/resources"
+    "test/fixtures/res"
   ]);
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await Resources.instance.loadResources("test/fixtures/resources", assetBundle);
+    await Resources.instance.loadResources("test/fixtures/res", assetBundle);
     registerXWidgetInflaters();
   });
 

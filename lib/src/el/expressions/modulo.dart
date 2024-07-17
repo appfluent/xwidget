@@ -1,13 +1,13 @@
 import 'expression.dart';
 
-class ModuloExpression extends Expression<num> {
+class ModuloExpression extends Expression<dynamic> {
   final dynamic left;
   final dynamic right;
 
   ModuloExpression(this.left, this.right);
 
   @override
-  num evaluate() {
+  dynamic evaluate() {
     final leftValue = Expression.evaluateValue(left);
     final rightValue = Expression.evaluateValue(right);
 
@@ -15,10 +15,11 @@ class ModuloExpression extends Expression<num> {
     if (leftValue == null) throw Exception("Dividend cannot be 'null'");
     if (rightValue == null) throw Exception("Cannot divide by 'null'");
 
-    if (leftValue is num && rightValue is num) return leftValue % rightValue;
-
-    final leftType = leftValue.runtimeType;
-    final rightType = rightValue.runtimeType;
-    throw Exception("Modulo division not applicable to types '$leftType' and '$rightType'");
+    try {
+      return leftValue % rightValue;
+    } catch(e) {
+      throw Exception("Modulo division is not applicable to types "
+          "'${leftValue.runtimeType}' and '${rightValue.runtimeType}'");
+    }
   }
 }

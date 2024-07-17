@@ -46,7 +46,8 @@ inflaters:
 
     # complex types
     "Alignment": "parseAlignment(value)"
-    "AlignmentGeometry": "parseAlignment(value)"
+    "AlignmentDirectional": "parseAlignmentDirectional(value)"
+    "AlignmentGeometry": "parseAlignmentGeometry(value)"
     "Duration": "parseDuration(value)"
     "BorderRadius": "parseBorderRadius(value)"
     "BorderRadiusGeometry": "parseBorderRadius(value)"
@@ -55,6 +56,7 @@ inflaters:
     "EdgeInsets": "parseEdgeInsets(value)"
     "EdgeInsetsGeometry": "parseEdgeInsetsGeometry(value)"
     "IconData": "parseIcon(value)"
+    "InputBorder": "parseInputBorder(value)"
     "FontWeight": "parseFontWeight(value)"
     "Key": "parseKey(value)"
     "List<String>": "parseListOfStrings(value)"
@@ -68,7 +70,12 @@ inflaters:
     "Offset": "parseOffset(value)"
     "Size": "parseSize(value)"
     "TextDecoration": "parseTextDecoration(value)"
+    "TextInputType": "parseTextInputType(value)"
     "VisualDensity": "parseVisualDensity(value)"
+    "WidgetStateProperty<Color>": "parseWidgetStateColor(value)"
+    "WidgetStateProperty<double>": "parseWidgetStateDouble(value)"
+    "WidgetStateProperty<EdgeInsetsGeometry>": "parseWidgetStateEdgeInsets(value)"
+    "WidgetStateProperty<Size>": "parseWidgetStateSize(value)"
 
     # type/class agnostic - for specific attributes
     "*:width": "parseDouble(value)"
@@ -83,10 +90,13 @@ schema:
   types:
     "bool": "boolAttributeType"
     "Alignment": "AlignmentAttributeType"
-    "AlignmentGeometry": "AlignmentAttributeType"
+    "AlignmentDirectional": "AlignmentDirectionalAttributeType"
+    "AlignmentGeometry": "AlignmentGeometryAttributeType"
     "Curve": "CurvesAttributeType"
     "FontWeight": "FontWeightAttributeType"
+    "InputBorder": "InputBorderAttributeType"
     "TextDecoration": "TextDecorationAttributeType"
+    "TextInputType": "TextInputTypeAttributeType"
 
   attribute_exclusions: [
     "*:child",

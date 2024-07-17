@@ -5,7 +5,6 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - test/**
     - build/**
   errors:
     lines_longer_than_80_chars: ignore
@@ -13,3 +12,4 @@ analyzer:
 linter:
   rules:
     - lines_longer_than_80_chars
+    - prefer_relative_imports

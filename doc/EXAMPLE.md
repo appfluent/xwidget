@@ -11,3 +11,6 @@ following command:
 ```shell
 $ dart run xwidget:generate --only inflaters 
 ```
+
+Here are some apps using XWidget:
+- [MoneyMagnate (Google Play)](https://play.google.com/store/apps/details?id=us.appfluent.moneymagnate.moneymagnate)

@@ -24,7 +24,49 @@ Alignment? parseAlignment(String? value) {
       case 'bottomLeft': return Alignment.bottomLeft;
       case 'bottomCenter': return Alignment.bottomCenter;
       case 'bottomRight': return Alignment.bottomRight;
-      default: throw Exception("Problem parsing alignment value: $value");
+      default: throw Exception("Problem parsing Alignment value: $value");
+    }
+  }
+  return null;
+}
+
+AlignmentDirectional? parseAlignmentDirectional(String? value) {
+  if (value != null && value.isNotEmpty) {
+    switch (value) {
+      case 'topStart': return AlignmentDirectional.topStart;
+      case 'topCenter': return AlignmentDirectional.topCenter;
+      case 'topEnd': return AlignmentDirectional.topEnd;
+      case 'centerStart': return AlignmentDirectional.centerStart;
+      case 'center': return AlignmentDirectional.center;
+      case 'centerEnd': return AlignmentDirectional.centerEnd;
+      case 'bottomStart': return AlignmentDirectional.bottomStart;
+      case 'bottomCenter': return AlignmentDirectional.bottomCenter;
+      case 'bottomEnd': return AlignmentDirectional.bottomEnd;
+      default: throw Exception("Problem parsing AlignmentDirectional value: $value");
+    }
+  }
+  return null;
+}
+
+AlignmentGeometry? parseAlignmentGeometry(String? value) {
+  if (value != null && value.isNotEmpty) {
+    switch (value) {
+      case 'topLeft': return Alignment.topLeft;
+      case 'topStart': return AlignmentDirectional.topStart;
+      case 'topCenter': return AlignmentDirectional.topCenter;
+      case 'topEnd': return AlignmentDirectional.topEnd;
+      case 'topRight': return Alignment.topRight;
+      case 'centerLeft': return Alignment.centerLeft;
+      case 'centerStart': return AlignmentDirectional.centerStart;
+      case 'center': return AlignmentDirectional.center;
+      case 'centerEnd': return AlignmentDirectional.centerEnd;
+      case 'centerRight': return Alignment.centerRight;
+      case 'bottomLeft': return Alignment.bottomLeft;
+      case 'bottomStart': return AlignmentDirectional.bottomStart;
+      case 'bottomCenter': return AlignmentDirectional.bottomCenter;
+      case 'bottomEnd': return AlignmentDirectional.bottomEnd;
+      case 'bottomRight': return Alignment.bottomRight;
+      default: throw Exception("Problem parsing AlignmentGeometry value: $value");
     }
   }
   return null;
@@ -62,7 +104,7 @@ BorderRadius? parseBorderRadius(String? value) {
           bottomLeft: parseRadius(values[3]) ?? Radius.zero,
         );
       default:
-        throw Exception("Problem parsing border radius '$value'");
+        throw Exception("Problem parsing BorderRadius value: $value");
     }
   }
 }
@@ -82,7 +124,7 @@ Color? parseColor(String? value) {
       final colorInt = int.parse(argb, radix: 16);
       return Color(colorInt);
     }
-    throw Exception("Problem parsing color value: $value");
+    throw Exception("Problem parsing Color value: $value");
   }
   return null;
 }
@@ -132,7 +174,7 @@ Curve? parseCurve(String? value) {
       case "linear": return Curves.linear;
       case "linearToEaseOut": return Curves.linearToEaseOut;
       case "slowMiddle": return Curves.slowMiddle;
-      default: throw Exception("Problem parsing curve value: $value");
+      default: throw Exception("Problem parsing Curve value: $value");
     }
   }
   return null;
@@ -173,7 +215,7 @@ Duration? parseDuration(String? value) {
         case "days": return Duration(days: digits);
       }
     }
-    throw Exception("Problem parsing duration value: $value");
+    throw Exception("Problem parsing Duration value: $value");
   }
   return null;
 }
@@ -190,7 +232,7 @@ EdgeInsets? parseEdgeInsets(String? value) {
           doubles[3]
       );
     }
-    throw Exception("Problem parsing visual density value: $value");
+    throw Exception("Problem EdgeInsets value: $value");
   }
   return null;
 }
@@ -250,7 +292,19 @@ IconData? parseIcon(String? value) {
   if (value == null || value.isEmpty) return null;
   final icon = XWidget.getIcon(value);
   if (icon != null) return icon;
-  throw Exception("Problem parsing icon '$value'.");
+  throw Exception("Problem parsing IconData value: $value");
+}
+
+InputBorder? parseInputBorder(String? value) {
+  if (value != null && value.isNotEmpty) {
+    switch (value) {
+      case 'none': return InputBorder.none;
+      case 'outline': return const OutlineInputBorder();
+      case 'underline': return const UnderlineInputBorder();
+      default: throw Exception("Problem parsing InputBorder value: $value");
+    }
+  }
+  return null;
 }
 
 int? parseInt(String? value, {int radix = 10}) {
@@ -367,6 +421,26 @@ MaterialStateProperty<Size>? parseMaterialStateSize(String? value) {
   return (size != null) ? MaterialStateProperty.all<Size>(size) : null;
 }
 
+WidgetStateProperty<Color>? parseWidgetStateColor(String? value) {
+  final color = parseColor(value);
+  return (color != null) ? WidgetStateProperty.all<Color>(color) : null;
+}
+
+WidgetStateProperty<double>? parseWidgetStateDouble(String? value) {
+  final db = value != null ? double.tryParse(value) : null;
+  return (db != null) ? WidgetStateProperty.all<double>(db) : null;
+}
+
+WidgetStateProperty<EdgeInsetsGeometry>? parseWidgetStateEdgeInsets(String? value) {
+  final padding = parseEdgeInsetsGeometry(value);
+  return (padding != null) ? WidgetStateProperty.all<EdgeInsetsGeometry>(padding) : null;
+}
+
+WidgetStateProperty<Size>? parseWidgetStateSize(String? value) {
+  final size = parseSize(value);
+  return (size != null) ? WidgetStateProperty.all<Size>(size) : null;
+}
+
 Offset? parseOffset(String? value) {
   final doubles = parseListOfDoubles(value);
   if (doubles != null && doubles.isNotEmpty) {
@@ -374,7 +448,7 @@ Offset? parseOffset(String? value) {
       case 1: return Offset(doubles[0], doubles[0]);
       case 2: return Offset(doubles[0], doubles[1]);
     }
-    throw Exception("Problem parsing offset value: $value");
+    throw Exception("Problem parsing Offset value: $value");
   }
   return null;
 }
@@ -393,7 +467,7 @@ Radius? parseRadius(String? value) {
         final y = double.parse(values[1].trim());
         return Radius.elliptical(x, y);
       default:
-        throw Exception("InvaProblem parsinglid radius '$value'");
+        throw Exception("Problem parsing Radius value: $value");
     }
   }
 }
@@ -409,7 +483,7 @@ Rect? parseRect(String? value) {
           double.parse(dimensions[3])
       );
     }
-    throw Exception("Problem parsing Rect from LTRB value '$value'.");
+    throw Exception("Problem parsing Rect from LTRB value: $value");
   }
   return null;
 }
@@ -442,7 +516,27 @@ TextDecoration? parseTextDecoration(String? value) {
       case "overline": return TextDecoration.overline;
       case "underline": return TextDecoration.underline;
       case "none": return TextDecoration.none;
-      default: throw Exception("Problem parsing text decoration value: $value");
+      default: throw Exception("Problem parsing TextDecoration value: $value");
+    }
+  }
+  return null;
+}
+
+TextInputType? parseTextInputType(String? value) {
+  if (value != null && value.isNotEmpty) {
+    switch(value) {
+      case "datetime": return TextInputType.datetime;
+      case "emailAddress": return TextInputType.emailAddress;
+      case "multiline": return TextInputType.multiline;
+      case "name": return TextInputType.name;
+      case "none": return TextInputType.none;
+      case "number": return TextInputType.number;
+      case "phone": return TextInputType.phone;
+      case "streetAddress": return TextInputType.streetAddress;
+      case "text": return TextInputType.text;
+      case "url": return TextInputType.url;
+      case "visiblePassword": return TextInputType.visiblePassword;
+      default: throw Exception("Problem parsing TextInputType value: $value");
     }
   }
   return null;
@@ -455,7 +549,7 @@ VisualDensity? parseVisualDensity(String? value) {
       case 1: return VisualDensity(horizontal: doubles[0], vertical: doubles[0]);
       case 2: return VisualDensity(horizontal: doubles[0], vertical: doubles[1]);
     }
-    throw Exception("Problem parsing visual density value: $value");
+    throw Exception("Problem parsing VisualDensity value: $value");
   }
   return null;
 }

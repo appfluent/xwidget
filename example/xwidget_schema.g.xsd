@@ -69,6 +69,48 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="AlignmentDirectionalAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="topStart"/>
+                    <xs:enumeration value="topCenter"/>
+                    <xs:enumeration value="topEnd"/>
+                    <xs:enumeration value="centerStart"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="centerEnd"/>
+                    <xs:enumeration value="bottomStart"/>
+                    <xs:enumeration value="bottomCenter"/>
+                    <xs:enumeration value="bottomEnd"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="AlignmentGeometryAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="topLeft"/>
+                    <xs:enumeration value="topStart"/>
+                    <xs:enumeration value="topCenter"/>
+                    <xs:enumeration value="topEnd"/>
+                    <xs:enumeration value="topRight"/>
+                    <xs:enumeration value="centerLeft"/>
+                    <xs:enumeration value="centerStart"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="centerEnd"/>
+                    <xs:enumeration value="centerRight"/>
+                    <xs:enumeration value="bottomLeft"/>
+                    <xs:enumeration value="bottomStart"/>
+                    <xs:enumeration value="bottomCenter"/>
+                    <xs:enumeration value="bottomEnd"/>
+                    <xs:enumeration value="bottomRight"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="BuildExecutionAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -158,6 +200,18 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="InputBorderAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="outline"/>
+                    <xs:enumeration value="underline"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="ListOperationAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -177,6 +231,26 @@
                     <xs:enumeration value="overline"/>
                     <xs:enumeration value="underline"/>
                     <xs:enumeration value="none"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextInputTypeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="datetime"/>
+                    <xs:enumeration value="emailAddress"/>
+                    <xs:enumeration value="multiline"/>
+                    <xs:enumeration value="name"/>
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="number"/>
+                    <xs:enumeration value="phone"/>
+                    <xs:enumeration value="streetAddress"/>
+                    <xs:enumeration value="text"/>
+                    <xs:enumeration value="url"/>
+                    <xs:enumeration value="visiblePassword"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -215,6 +289,24 @@
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="dark"/>
                     <xs:enumeration value="light"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="DynamicSchemeVariantAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="tonalSpot"/>
+                    <xs:enumeration value="fidelity"/>
+                    <xs:enumeration value="monochrome"/>
+                    <xs:enumeration value="neutral"/>
+                    <xs:enumeration value="vibrant"/>
+                    <xs:enumeration value="expressive"/>
+                    <xs:enumeration value="content"/>
+                    <xs:enumeration value="rainbow"/>
+                    <xs:enumeration value="fruitSalad"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
@@ -1061,9 +1153,13 @@ zero.
 <p>{@template flutter.material.appbar.backgroundColor}
 The fill color to use for an app bar's [Material].</p><br/>
 <p>If null, then the [AppBarTheme.backgroundColor] is used. If that value is also
-null, then [AppBar] uses the overall theme's [ColorScheme.primary] if the
+null:
+In Material v2 (i.e., when [ThemeData.useMaterial3] is false),
+then [AppBar] uses the overall theme's [ColorScheme.primary] if the
 overall theme's brightness is [Brightness.light], and [ColorScheme.surface]
-if the overall theme's brightness is [Brightness.dark].</p><br/>
+if the overall theme's brightness is [Brightness.dark].
+In Material v3 (i.e., when [ThemeData.useMaterial3] is true),
+then [AppBar] uses the overall theme's [ColorScheme.surface]</p><br/>
 <p>If this color is a [MaterialStateColor] it will be resolved against
 [MaterialState.scrolledUnder] when the content of the app's
 primary scrollable overlaps the app bar.
@@ -1089,10 +1185,13 @@ is light or dark.</li>
 <p>{@template flutter.material.appbar.foregroundColor}
 The default color for [Text] and [Icon]s within the app bar.</p><br/>
 <p>If null, then [AppBarTheme.foregroundColor] is used. If that
-value is also null, then [AppBar] uses the overall theme's
-[ColorScheme.onPrimary] if the overall theme's brightness is
-[Brightness.light], and [ColorScheme.onSurface] if the overall
-theme's brightness is [Brightness.dark].</p><br/>
+value is also null:
+In Material v2 (i.e., when [ThemeData.useMaterial3] is false),
+then [AppBar] uses the overall theme's [ColorScheme.onPrimary] if the
+overall theme's brightness is [Brightness.light], and [ColorScheme.onSurface]
+if the overall theme's brightness is [Brightness.dark].
+In Material v3 (i.e., when [ThemeData.useMaterial3] is true),
+then [AppBar] uses the overall theme's [ColorScheme.onSurface].</p><br/>
 <p>This color is used to configure [DefaultTextStyle] that contains
 the toolbar's children, and the default [IconTheme] widgets that
 are created if [iconTheme] and [actionsIconTheme] are null.
@@ -1434,10 +1533,11 @@ use the following colors for defaults:</p><br/>
 <li>[onSecondary]</li>
 <li>[error]</li>
 <li>[onError]</li>
+<li>[surface]</li>
+<li>[onSurface]
+DEPRECATED:</li>
 <li>[background]</li>
 <li>[onBackground]</li>
-<li>[surface]</li>
-<li>[onSurface]</li>
 </ul>
 
             </xs:documentation>
@@ -1474,6 +1574,10 @@ use the following colors for defaults:</p><br/>
                     </xs:attribute>
                     <xs:attribute name="primaryContainer"/>
                     <xs:attribute name="onPrimaryContainer"/>
+                    <xs:attribute name="primaryFixed"/>
+                    <xs:attribute name="primaryFixedDim"/>
+                    <xs:attribute name="onPrimaryFixed"/>
+                    <xs:attribute name="onPrimaryFixedVariant"/>
                     <xs:attribute name="secondary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1496,10 +1600,18 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="secondaryContainer"/>
                     <xs:attribute name="onSecondaryContainer"/>
+                    <xs:attribute name="secondaryFixed"/>
+                    <xs:attribute name="secondaryFixedDim"/>
+                    <xs:attribute name="onSecondaryFixed"/>
+                    <xs:attribute name="onSecondaryFixedVariant"/>
                     <xs:attribute name="tertiary"/>
                     <xs:attribute name="onTertiary"/>
                     <xs:attribute name="tertiaryContainer"/>
                     <xs:attribute name="onTertiaryContainer"/>
+                    <xs:attribute name="tertiaryFixed"/>
+                    <xs:attribute name="tertiaryFixedDim"/>
+                    <xs:attribute name="onTertiaryFixed"/>
+                    <xs:attribute name="onTertiaryFixedVariant"/>
                     <xs:attribute name="error">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1522,25 +1634,6 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="errorContainer"/>
                     <xs:attribute name="onErrorContainer"/>
-                    <xs:attribute name="background">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that typically appears behind scrollable content.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="onBackground">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that's clearly legible when drawn on [background].</p><br/>
-<p>To ensure that an app is accessible, a contrast ratio between
-[background] and [onBackground] of at least 4.5:1 is recommended. See
-<a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a>.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1560,7 +1653,13 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="surfaceVariant"/>
+                    <xs:attribute name="surfaceDim"/>
+                    <xs:attribute name="surfaceBright"/>
+                    <xs:attribute name="surfaceContainerLowest"/>
+                    <xs:attribute name="surfaceContainerLow"/>
+                    <xs:attribute name="surfaceContainer"/>
+                    <xs:attribute name="surfaceContainerHigh"/>
+                    <xs:attribute name="surfaceContainerHighest"/>
                     <xs:attribute name="onSurfaceVariant"/>
                     <xs:attribute name="outline"/>
                     <xs:attribute name="outlineVariant"/>
@@ -1579,17 +1678,29 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
         <xs:annotation>
             <xs:documentation xml:lang="en">
 <p>Generate a [ColorScheme] derived from the given <code>seedColor</code>.</p><br/>
-<p>Using the seedColor as a starting point, a set of tonal palettes are
-constructed. These tonal palettes are based on the Material 3 Color
-system and provide all the needed colors for a [ColorScheme]. These
-colors are designed to work well together and meet contrast
-requirements for accessibility.</p><br/>
+<p>Using the <code>seedColor</code> as a starting point, a set of tonal palettes are
+constructed. By default, the tonal palettes are based on the Material 3
+Color system and provide all of the [ColorScheme] colors. These colors are
+designed to work well together and meet contrast requirements for
+accessibility.</p><br/>
 <p>If any of the optional color parameters are non-null they will be
 used in place of the generated colors for that field in the resulting
 color scheme. This allows apps to override specific colors for their
 needs.</p><br/>
-<p>Given the nature of the algorithm, the seedColor may not wind up as
+<p>Given the nature of the algorithm, the <code>seedColor</code> may not wind up as
 one of the ColorScheme colors.</p><br/>
+<p>The <code>dynamicSchemeVariant</code> parameter creates different types of
+[DynamicScheme]s, which are used to generate different styles of [ColorScheme]s.
+By default, <code>dynamicSchemeVariant</code> is set to <code>tonalSpot</code>. A [ColorScheme]
+constructed by <code>dynamicSchemeVariant.tonalSpot</code> has pastel palettes and
+won't be too &quot;colorful&quot; even if the <code>seedColor</code> has a high chroma value.
+If the resulting color scheme is too dark, consider setting <code>dynamicSchemeVariant</code>
+to [DynamicSchemeVariant.fidelity], whose palettes match the seed color.</p><br/>
+<p>{@tool dartpad}
+This sample shows how to use [ColorScheme.fromSeed] to create dynamic
+color schemes with different [DynamicSchemeVariant]s.</p><br/>
+<p>** See code in examples/api/lib/material/color_scheme/color_scheme.0.dart **
+{@end-tool}</p><br/>
 <p>See also:</p><br/>
 <ul>
 <li><a href="https://m3.material.io/styles/color/the-color-system/color-roles">https://m3.material.io/styles/color/the-color-system/color-roles</a>, the
@@ -1612,6 +1723,7 @@ used to generate the tonal palettes needed for the scheme.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="dynamicSchemeVariant" type="DynamicSchemeVariantAttributeType"/>
                     <xs:attribute name="primary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1633,6 +1745,10 @@ used to generate the tonal palettes needed for the scheme.</li>
                     </xs:attribute>
                     <xs:attribute name="primaryContainer"/>
                     <xs:attribute name="onPrimaryContainer"/>
+                    <xs:attribute name="primaryFixed"/>
+                    <xs:attribute name="primaryFixedDim"/>
+                    <xs:attribute name="onPrimaryFixed"/>
+                    <xs:attribute name="onPrimaryFixedVariant"/>
                     <xs:attribute name="secondary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1655,10 +1771,18 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="secondaryContainer"/>
                     <xs:attribute name="onSecondaryContainer"/>
+                    <xs:attribute name="secondaryFixed"/>
+                    <xs:attribute name="secondaryFixedDim"/>
+                    <xs:attribute name="onSecondaryFixed"/>
+                    <xs:attribute name="onSecondaryFixedVariant"/>
                     <xs:attribute name="tertiary"/>
                     <xs:attribute name="onTertiary"/>
                     <xs:attribute name="tertiaryContainer"/>
                     <xs:attribute name="onTertiaryContainer"/>
+                    <xs:attribute name="tertiaryFixed"/>
+                    <xs:attribute name="tertiaryFixedDim"/>
+                    <xs:attribute name="onTertiaryFixed"/>
+                    <xs:attribute name="onTertiaryFixedVariant"/>
                     <xs:attribute name="error">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1683,25 +1807,6 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="onErrorContainer"/>
                     <xs:attribute name="outline"/>
                     <xs:attribute name="outlineVariant"/>
-                    <xs:attribute name="background">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that typically appears behind scrollable content.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="onBackground">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that's clearly legible when drawn on [background].</p><br/>
-<p>To ensure that an app is accessible, a contrast ratio between
-[background] and [onBackground] of at least 4.5:1 is recommended. See
-<a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a>.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1721,7 +1826,13 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="surfaceVariant"/>
+                    <xs:attribute name="surfaceDim"/>
+                    <xs:attribute name="surfaceBright"/>
+                    <xs:attribute name="surfaceContainerLowest"/>
+                    <xs:attribute name="surfaceContainerLow"/>
+                    <xs:attribute name="surfaceContainer"/>
+                    <xs:attribute name="surfaceContainerHigh"/>
+                    <xs:attribute name="surfaceContainerHighest"/>
                     <xs:attribute name="onSurfaceVariant"/>
                     <xs:attribute name="inverseSurface"/>
                     <xs:attribute name="onInverseSurface"/>
@@ -1790,6 +1901,10 @@ using the [ColorScheme.fromSeed] constructor:</p><br/>
                     </xs:attribute>
                     <xs:attribute name="primaryContainer"/>
                     <xs:attribute name="onPrimaryContainer"/>
+                    <xs:attribute name="primaryFixed"/>
+                    <xs:attribute name="primaryFixedDim"/>
+                    <xs:attribute name="onPrimaryFixed"/>
+                    <xs:attribute name="onPrimaryFixedVariant"/>
                     <xs:attribute name="secondary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1812,10 +1927,18 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="secondaryContainer"/>
                     <xs:attribute name="onSecondaryContainer"/>
+                    <xs:attribute name="secondaryFixed"/>
+                    <xs:attribute name="secondaryFixedDim"/>
+                    <xs:attribute name="onSecondaryFixed"/>
+                    <xs:attribute name="onSecondaryFixedVariant"/>
                     <xs:attribute name="tertiary"/>
                     <xs:attribute name="onTertiary"/>
                     <xs:attribute name="tertiaryContainer"/>
                     <xs:attribute name="onTertiaryContainer"/>
+                    <xs:attribute name="tertiaryFixed"/>
+                    <xs:attribute name="tertiaryFixedDim"/>
+                    <xs:attribute name="onTertiaryFixed"/>
+                    <xs:attribute name="onTertiaryFixedVariant"/>
                     <xs:attribute name="error">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1838,25 +1961,6 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="errorContainer"/>
                     <xs:attribute name="onErrorContainer"/>
-                    <xs:attribute name="background">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that typically appears behind scrollable content.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="onBackground">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that's clearly legible when drawn on [background].</p><br/>
-<p>To ensure that an app is accessible, a contrast ratio between
-[background] and [onBackground] of at least 4.5:1 is recommended. See
-<a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a>.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1876,7 +1980,13 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="surfaceVariant"/>
+                    <xs:attribute name="surfaceDim"/>
+                    <xs:attribute name="surfaceBright"/>
+                    <xs:attribute name="surfaceContainerLowest"/>
+                    <xs:attribute name="surfaceContainerLow"/>
+                    <xs:attribute name="surfaceContainer"/>
+                    <xs:attribute name="surfaceContainerHigh"/>
+                    <xs:attribute name="surfaceContainerHighest"/>
                     <xs:attribute name="onSurfaceVariant"/>
                     <xs:attribute name="outline"/>
                     <xs:attribute name="outlineVariant"/>
@@ -1952,6 +2062,10 @@ using the [ColorScheme.fromSeed] constructor:</p><br/>
                     </xs:attribute>
                     <xs:attribute name="primaryContainer"/>
                     <xs:attribute name="onPrimaryContainer"/>
+                    <xs:attribute name="primaryFixed"/>
+                    <xs:attribute name="primaryFixedDim"/>
+                    <xs:attribute name="onPrimaryFixed"/>
+                    <xs:attribute name="onPrimaryFixedVariant"/>
                     <xs:attribute name="secondary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1974,10 +2088,18 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="secondaryContainer"/>
                     <xs:attribute name="onSecondaryContainer"/>
+                    <xs:attribute name="secondaryFixed"/>
+                    <xs:attribute name="secondaryFixedDim"/>
+                    <xs:attribute name="onSecondaryFixed"/>
+                    <xs:attribute name="onSecondaryFixedVariant"/>
                     <xs:attribute name="tertiary"/>
                     <xs:attribute name="onTertiary"/>
                     <xs:attribute name="tertiaryContainer"/>
                     <xs:attribute name="onTertiaryContainer"/>
+                    <xs:attribute name="tertiaryFixed"/>
+                    <xs:attribute name="tertiaryFixedDim"/>
+                    <xs:attribute name="onTertiaryFixed"/>
+                    <xs:attribute name="onTertiaryFixedVariant"/>
                     <xs:attribute name="error">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2000,25 +2122,6 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="errorContainer"/>
                     <xs:attribute name="onErrorContainer"/>
-                    <xs:attribute name="background">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that typically appears behind scrollable content.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="onBackground">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that's clearly legible when drawn on [background].</p><br/>
-<p>To ensure that an app is accessible, a contrast ratio between
-[background] and [onBackground] of at least 4.5:1 is recommended. See
-<a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a>.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2038,7 +2141,13 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="surfaceVariant"/>
+                    <xs:attribute name="surfaceDim"/>
+                    <xs:attribute name="surfaceBright"/>
+                    <xs:attribute name="surfaceContainerLowest"/>
+                    <xs:attribute name="surfaceContainerLow"/>
+                    <xs:attribute name="surfaceContainer"/>
+                    <xs:attribute name="surfaceContainerHigh"/>
+                    <xs:attribute name="surfaceContainerHighest"/>
                     <xs:attribute name="onSurfaceVariant"/>
                     <xs:attribute name="outline"/>
                     <xs:attribute name="outlineVariant"/>
@@ -2109,6 +2218,10 @@ using the [ColorScheme.fromSeed] constructor:</p><br/>
                     </xs:attribute>
                     <xs:attribute name="primaryContainer"/>
                     <xs:attribute name="onPrimaryContainer"/>
+                    <xs:attribute name="primaryFixed"/>
+                    <xs:attribute name="primaryFixedDim"/>
+                    <xs:attribute name="onPrimaryFixed"/>
+                    <xs:attribute name="onPrimaryFixedVariant"/>
                     <xs:attribute name="secondary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2131,10 +2244,18 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="secondaryContainer"/>
                     <xs:attribute name="onSecondaryContainer"/>
+                    <xs:attribute name="secondaryFixed"/>
+                    <xs:attribute name="secondaryFixedDim"/>
+                    <xs:attribute name="onSecondaryFixed"/>
+                    <xs:attribute name="onSecondaryFixedVariant"/>
                     <xs:attribute name="tertiary"/>
                     <xs:attribute name="onTertiary"/>
                     <xs:attribute name="tertiaryContainer"/>
                     <xs:attribute name="onTertiaryContainer"/>
+                    <xs:attribute name="tertiaryFixed"/>
+                    <xs:attribute name="tertiaryFixedDim"/>
+                    <xs:attribute name="onTertiaryFixed"/>
+                    <xs:attribute name="onTertiaryFixedVariant"/>
                     <xs:attribute name="error">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2157,25 +2278,6 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="errorContainer"/>
                     <xs:attribute name="onErrorContainer"/>
-                    <xs:attribute name="background">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that typically appears behind scrollable content.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="onBackground">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that's clearly legible when drawn on [background].</p><br/>
-<p>To ensure that an app is accessible, a contrast ratio between
-[background] and [onBackground] of at least 4.5:1 is recommended. See
-<a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a>.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2195,7 +2297,13 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="surfaceVariant"/>
+                    <xs:attribute name="surfaceDim"/>
+                    <xs:attribute name="surfaceBright"/>
+                    <xs:attribute name="surfaceContainerLowest"/>
+                    <xs:attribute name="surfaceContainerLow"/>
+                    <xs:attribute name="surfaceContainer"/>
+                    <xs:attribute name="surfaceContainerHigh"/>
+                    <xs:attribute name="surfaceContainerHighest"/>
                     <xs:attribute name="onSurfaceVariant"/>
                     <xs:attribute name="outline"/>
                     <xs:attribute name="outlineVariant"/>
@@ -2271,6 +2379,10 @@ using the [ColorScheme.fromSeed] constructor:</p><br/>
                     </xs:attribute>
                     <xs:attribute name="primaryContainer"/>
                     <xs:attribute name="onPrimaryContainer"/>
+                    <xs:attribute name="primaryFixed"/>
+                    <xs:attribute name="primaryFixedDim"/>
+                    <xs:attribute name="onPrimaryFixed"/>
+                    <xs:attribute name="onPrimaryFixedVariant"/>
                     <xs:attribute name="secondary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2293,10 +2405,18 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="secondaryContainer"/>
                     <xs:attribute name="onSecondaryContainer"/>
+                    <xs:attribute name="secondaryFixed"/>
+                    <xs:attribute name="secondaryFixedDim"/>
+                    <xs:attribute name="onSecondaryFixed"/>
+                    <xs:attribute name="onSecondaryFixedVariant"/>
                     <xs:attribute name="tertiary"/>
                     <xs:attribute name="onTertiary"/>
                     <xs:attribute name="tertiaryContainer"/>
                     <xs:attribute name="onTertiaryContainer"/>
+                    <xs:attribute name="tertiaryFixed"/>
+                    <xs:attribute name="tertiaryFixedDim"/>
+                    <xs:attribute name="onTertiaryFixed"/>
+                    <xs:attribute name="onTertiaryFixedVariant"/>
                     <xs:attribute name="error">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2319,25 +2439,6 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     </xs:attribute>
                     <xs:attribute name="errorContainer"/>
                     <xs:attribute name="onErrorContainer"/>
-                    <xs:attribute name="background">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that typically appears behind scrollable content.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="onBackground">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A color that's clearly legible when drawn on [background].</p><br/>
-<p>To ensure that an app is accessible, a contrast ratio between
-[background] and [onBackground] of at least 4.5:1 is recommended. See
-<a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a>.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2357,7 +2458,13 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="surfaceVariant"/>
+                    <xs:attribute name="surfaceDim"/>
+                    <xs:attribute name="surfaceBright"/>
+                    <xs:attribute name="surfaceContainerLowest"/>
+                    <xs:attribute name="surfaceContainerLow"/>
+                    <xs:attribute name="surfaceContainer"/>
+                    <xs:attribute name="surfaceContainerHigh"/>
+                    <xs:attribute name="surfaceContainerHighest"/>
                     <xs:attribute name="onSurfaceVariant"/>
                     <xs:attribute name="outline"/>
                     <xs:attribute name="outlineVariant"/>
@@ -2481,6 +2588,12 @@ value irrelevant to the final layout.</p><br/>
 <p>How the children should be placed along the cross axis.</p><br/>
 <p>For example, [CrossAxisAlignment.center], the default, centers the
 children in the cross axis (e.g., horizontally for a [Column]).</p><br/>
+<p>When the cross axis is vertical (as for a [Row]) and the children
+contain text, consider using [CrossAxisAlignment.baseline] instead.
+This typically produces better visual results if the different children
+have text with different font metrics, for example because they differ in
+[TextStyle.fontSize] or other [TextStyle] properties, or because
+they use different fonts due to being written in different scripts.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2679,7 +2792,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has input focus.</p><br/>
-<p>Defaults to [ThemeData.focusColor] for the current theme.</p><br/>
+<p>In Material3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.1.
+In Material 2, it defaults to [ThemeData.focusColor] for the current theme.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2689,7 +2803,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has a pointer
 hovering over it.</p><br/>
-<p>Defaults to [ThemeData.hoverColor] for the current theme.</p><br/>
+<p>Defaults to [ThemeData.hoverColor] for the current theme in Material 2. In
+Material 3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.08.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2699,7 +2814,8 @@ hovering over it.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The splash color for this [FloatingActionButton]'s [InkWell].</p><br/>
 <p>If null, [FloatingActionButtonThemeData.splashColor] is used, if that is
-null, [ThemeData.splashColor] is used.</p><br/>
+null, [ThemeData.splashColor] is used in Material 2; [ColorScheme.onPrimaryContainer]
+with opacity 0.1 is used in Material 3.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3001,7 +3117,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has input focus.</p><br/>
-<p>Defaults to [ThemeData.focusColor] for the current theme.</p><br/>
+<p>In Material3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.1.
+In Material 2, it defaults to [ThemeData.focusColor] for the current theme.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3011,7 +3128,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has a pointer
 hovering over it.</p><br/>
-<p>Defaults to [ThemeData.hoverColor] for the current theme.</p><br/>
+<p>Defaults to [ThemeData.hoverColor] for the current theme in Material 2. In
+Material 3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.08.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3021,7 +3139,8 @@ hovering over it.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The splash color for this [FloatingActionButton]'s [InkWell].</p><br/>
 <p>If null, [FloatingActionButtonThemeData.splashColor] is used, if that is
-null, [ThemeData.splashColor] is used.</p><br/>
+null, [ThemeData.splashColor] is used in Material 2; [ColorScheme.onPrimaryContainer]
+with opacity 0.1 is used in Material 3.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3295,7 +3414,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has input focus.</p><br/>
-<p>Defaults to [ThemeData.focusColor] for the current theme.</p><br/>
+<p>In Material3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.1.
+In Material 2, it defaults to [ThemeData.focusColor] for the current theme.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3305,7 +3425,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has a pointer
 hovering over it.</p><br/>
-<p>Defaults to [ThemeData.hoverColor] for the current theme.</p><br/>
+<p>Defaults to [ThemeData.hoverColor] for the current theme in Material 2. In
+Material 3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.08.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3315,7 +3436,8 @@ hovering over it.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The splash color for this [FloatingActionButton]'s [InkWell].</p><br/>
 <p>If null, [FloatingActionButtonThemeData.splashColor] is used, if that is
-null, [ThemeData.splashColor] is used.</p><br/>
+null, [ThemeData.splashColor] is used in Material 2; [ColorScheme.onPrimaryContainer]
+with opacity 0.1 is used in Material 3.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3592,7 +3714,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has input focus.</p><br/>
-<p>Defaults to [ThemeData.focusColor] for the current theme.</p><br/>
+<p>In Material3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.1.
+In Material 2, it defaults to [ThemeData.focusColor] for the current theme.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3602,7 +3725,8 @@ null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The color to use for filling the button when the button has a pointer
 hovering over it.</p><br/>
-<p>Defaults to [ThemeData.hoverColor] for the current theme.</p><br/>
+<p>Defaults to [ThemeData.hoverColor] for the current theme in Material 2. In
+Material 3, defaults to [ColorScheme.onPrimaryContainer] with opacity 0.08.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3680,7 +3804,8 @@ they have a pointer hovering over them. The value is always non-negative.</p><br
                             <xs:documentation xml:lang="en">
 <p>The splash color for this [FloatingActionButton]'s [InkWell].</p><br/>
 <p>If null, [FloatingActionButtonThemeData.splashColor] is used, if that is
-null, [ThemeData.splashColor] is used.</p><br/>
+null, [ThemeData.splashColor] is used in Material 2; [ColorScheme.onPrimaryContainer]
+with opacity 0.1 is used in Material 3.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5396,7 +5521,7 @@ persistently visible, even if the [body] of the scaffold scrolls.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="persistentFooterAlignment">
+                    <xs:attribute name="persistentFooterAlignment" type="AlignmentDirectionalAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The alignment of the [persistentFooterButtons] inside the [OverflowBar].</p><br/>
@@ -6072,7 +6197,7 @@ package. It is combined with the <code>fontFamily</code> argument to set the
 [fontFamily] property.</p><br/>
 <p>On Apple devices the strings 'CupertinoSystemText' and
 'CupertinoSystemDisplay' are used in [fontFamily] as proxies for the
-Apple system fonts. They currently redirect to the equivilant of SF Pro
+Apple system fonts. They currently redirect to the equivalent of SF Pro
 Text and SF Pro Display respectively. 'CupertinoSystemText' is designed
 for fonts below 20 point size, and 'CupertinoSystemDisplay' is recommended
 for sizes 20 and above. When used on non-Apple platforms, these strings
@@ -6443,7 +6568,7 @@ family. When neither is provided, then the default platform font will
 be used.</p><br/>
 <p>When running on Apple devices, the strings 'CupertinoSystemText' and
 'CupertinoSystemDisplay' are used as proxies for the Apple system fonts.
-They currently redirect to the equivilant of SF Pro Text and SF Pro Display
+They currently redirect to the equivalent of SF Pro Text and SF Pro Display
 respectively. 'CupertinoSystemText' is designed for fonts below 20 point
 size, and 'CupertinoSystemDisplay' is recommended for sizes 20 and above.
 When used on non-Apple platforms, these strings will return the regular

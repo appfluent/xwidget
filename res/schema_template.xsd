@@ -69,6 +69,48 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="AlignmentDirectionalAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="topStart"/>
+                    <xs:enumeration value="topCenter"/>
+                    <xs:enumeration value="topEnd"/>
+                    <xs:enumeration value="centerStart"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="centerEnd"/>
+                    <xs:enumeration value="bottomStart"/>
+                    <xs:enumeration value="bottomCenter"/>
+                    <xs:enumeration value="bottomEnd"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="AlignmentGeometryAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="topLeft"/>
+                    <xs:enumeration value="topStart"/>
+                    <xs:enumeration value="topCenter"/>
+                    <xs:enumeration value="topEnd"/>
+                    <xs:enumeration value="topRight"/>
+                    <xs:enumeration value="centerLeft"/>
+                    <xs:enumeration value="centerStart"/>
+                    <xs:enumeration value="center"/>
+                    <xs:enumeration value="centerEnd"/>
+                    <xs:enumeration value="centerRight"/>
+                    <xs:enumeration value="bottomLeft"/>
+                    <xs:enumeration value="bottomStart"/>
+                    <xs:enumeration value="bottomCenter"/>
+                    <xs:enumeration value="bottomEnd"/>
+                    <xs:enumeration value="bottomRight"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="BuildExecutionAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -158,6 +200,18 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="InputBorderAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="outline"/>
+                    <xs:enumeration value="underline"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="ListOperationAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -177,6 +231,26 @@
                     <xs:enumeration value="overline"/>
                     <xs:enumeration value="underline"/>
                     <xs:enumeration value="none"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="TextInputTypeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="datetime"/>
+                    <xs:enumeration value="emailAddress"/>
+                    <xs:enumeration value="multiline"/>
+                    <xs:enumeration value="name"/>
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="number"/>
+                    <xs:enumeration value="phone"/>
+                    <xs:enumeration value="streetAddress"/>
+                    <xs:enumeration value="text"/>
+                    <xs:enumeration value="url"/>
+                    <xs:enumeration value="visiblePassword"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>

@@ -1,13 +1,13 @@
 import 'expression.dart';
 
-class IntegerDivisionExpression extends Expression<int> {
+class IntegerDivisionExpression extends Expression<dynamic> {
   final dynamic left;
   final dynamic right;
 
   IntegerDivisionExpression(this.left, this.right);
 
   @override
-  int evaluate() {
+  dynamic evaluate() {
     final leftValue = Expression.evaluateValue(left);
     final rightValue = Expression.evaluateValue(right);
 
@@ -15,10 +15,11 @@ class IntegerDivisionExpression extends Expression<int> {
     if (leftValue == null) throw Exception("Dividend cannot be 'null'");
     if (rightValue == null) throw Exception("Divisor cannot be 'null'");
 
-    if (leftValue is num && rightValue is num) return leftValue ~/ rightValue;
-
-    final leftType = leftValue.runtimeType;
-    final rightType = rightValue.runtimeType;
-    throw Exception("Integer division not applicable to types '$leftType' and '$rightType'");
+    try {
+      return leftValue ~/ rightValue;
+    } catch(e) {
+      throw Exception("Integer division is not applicable to types "
+          "'${leftValue.runtimeType}' and '${rightValue.runtimeType}'");
+    }
   }
 }

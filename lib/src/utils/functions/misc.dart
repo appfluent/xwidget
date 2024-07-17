@@ -4,6 +4,8 @@ library;
 
 import 'package:intl/intl.dart';
 
+import '../extensions.dart';
+
 import 'converters.dart';
 
 
@@ -52,6 +54,14 @@ Duration diffDateTime(DateTime left, DateTime right) {
   return (diff < const Duration(microseconds: 0)) ? (-diff) : diff;
 }
 
+dynamic first(dynamic value) {
+  if (value is List) return value.first;
+  if (value is Map) return value.first();
+  if (value is Set) return value.first;
+  throw Exception("Function 'first' is invalid for type "
+      "'${value.runtimeType}'. Valid types are List, Map, and Set.");
+}
+
 String? formatDateTime(String format, dynamic value) {
   if (value == null) return null;
   final dateTime = toDateTime(value);
@@ -88,6 +98,14 @@ String? formatDuration(
     if (isLast) break;
   }
   return value.isNegative ? "-$formatted" : formatted;
+}
+
+dynamic last(dynamic value) {
+  if (value is List) return value.last;
+  if (value is Map) return value.last();
+  if (value is Set) return value.last;
+  throw Exception("Function 'last' is invalid for type "
+      "'${value.runtimeType}'. Valid types are List, Map, and Set.");
 }
 
 int length(dynamic value) {

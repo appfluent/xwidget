@@ -288,6 +288,9 @@ following command:
 ```shell
 $ dart run xwidget:generate --only inflaters 
 ```
+
+Here are some apps using XWidget:
+- [MoneyMagnate (Google Play)](https://play.google.com/store/apps/details?id=us.appfluent.moneymagnate.moneymagnate)
 <!-- // end of #include -->
 
 <!-- #include doc/CONFIGURATION.md -->
@@ -806,6 +809,7 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | diffDateTime   | DateTime left<br/>DateTime right                                                               | Duration  |             |                                                                                   |
 | endsWith       | String value<br/>String searchValue                                                            | bool      |             |                                                                                   |
 | eval           | String? value                                                                                  | dynamic   |             |                                                                                   |
+| first          | dynamic value                                                                                  | dynamic   |             |                                                                                   |
 | floor          | dynamic value                                                                                  | int       |             |                                                                                   |
 | formatDateTime | String format<br/>DateTime dateTime                                                            | String    |             |                                                                                   |
 | formatDuration | Duration? value<br>[String precision = "s"<br/>DurationFormat? format = defaultDurationFormat] | String?   |             |                                                                                   |
@@ -816,7 +820,8 @@ associativity. Both the precedence level and associativity can be seen in the ta
 | isNotEmpty     | dynamic value                                                                                  | bool      |             |                                                                                   |
 | isNotNull      | dynamic value                                                                                  | bool      |             |                                                                                   |
 | isNull         | dynamic value                                                                                  | bool      |             |                                                                                   |
-| sTrueOrNull    | dynamic value                                                                                  | bool      |             |                                                                                   |
+| isTrueOrNull   | dynamic value                                                                                  | bool      |             |                                                                                   |
+| last           | dynamic value                                                                                  | dynamic   |             |                                                                                   |
 | length         | dynamic value                                                                                  | length    |             |                                                                                   |
 | logDebug       | dynamic message                                                                                | void      |             |                                                                                   |
 | matches        | String value<br/>String regExp                                                                 | bool      |             |                                                                                   |

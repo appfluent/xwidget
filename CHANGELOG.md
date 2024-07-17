@@ -1,3 +1,15 @@
+### 0.0.43 (July 16, 2024)
+
+#### Please run `dart run xwidget:generate` after upgrading.
+
+* Added `WidgetStatePropertyOf<T>` class to replace `MaterialStatePropertyOf<T>`, which is
+  now deprecated. 
+* Added directional alignment options to `AlignmentGeometry` parser.
+* Added `TextInputType` parser.
+* Added `first` and `last` EL functions.
+* Updated EL arithmetic operators (`+`,`-`,`*`,`/`,`%`,`~/`) to work with any class that
+  overrides them.
+
 ### 0.0.42 (July 2, 2024)
 
 #### Please run `dart run xwidget:generate` after upgrading.

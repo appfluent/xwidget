@@ -6,6 +6,302 @@ import 'package:flutter/material.dart';
 import 'package:xwidget/xwidget.dart';
 import 'package:flutter/gestures.dart';
 
+class AlertDialogInflater extends Inflater {
+
+    @override
+    String get type => 'AlertDialog';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    AlertDialog? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return AlertDialog(
+            key: attributes['key'],
+            icon: attributes['icon'],
+            iconPadding: attributes['iconPadding'],
+            iconColor: attributes['iconColor'],
+            title: attributes['title'],
+            titlePadding: attributes['titlePadding'],
+            titleTextStyle: attributes['titleTextStyle'],
+            content: attributes['content'],
+            contentPadding: attributes['contentPadding'],
+            contentTextStyle: attributes['contentTextStyle'],
+            actions: attributes['actions'] != null ? [...attributes['actions']] : null,
+            actionsPadding: attributes['actionsPadding'],
+            actionsAlignment: attributes['actionsAlignment'],
+            actionsOverflowAlignment: attributes['actionsOverflowAlignment'],
+            actionsOverflowDirection: attributes['actionsOverflowDirection'],
+            actionsOverflowButtonSpacing: toDouble(attributes['actionsOverflowButtonSpacing']),
+            buttonPadding: attributes['buttonPadding'],
+            backgroundColor: attributes['backgroundColor'],
+            elevation: toDouble(attributes['elevation']),
+            shadowColor: attributes['shadowColor'],
+            surfaceTintColor: attributes['surfaceTintColor'],
+            semanticLabel: attributes['semanticLabel'],
+            insetPadding: attributes['insetPadding'],
+            clipBehavior: attributes['clipBehavior'] ?? Clip.none,
+            shape: attributes['shape'],
+            alignment: attributes['alignment'],
+            scrollable: attributes['scrollable'] ?? false,
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'icon': return parseIcon(value);
+            case 'iconPadding': return parseEdgeInsetsGeometry(value);
+            case 'iconColor': return parseColor(value);
+            case 'title': break;
+            case 'titlePadding': return parseEdgeInsetsGeometry(value);
+            case 'titleTextStyle': break;
+            case 'content': break;
+            case 'contentPadding': return parseEdgeInsetsGeometry(value);
+            case 'contentTextStyle': break;
+            case 'actions': break;
+            case 'actionsPadding': return parseEdgeInsetsGeometry(value);
+            case 'actionsAlignment': return parseEnum(MainAxisAlignment.values, value);
+            case 'actionsOverflowAlignment': return parseEnum(OverflowBarAlignment.values, value);
+            case 'actionsOverflowDirection': return parseEnum(VerticalDirection.values, value);
+            case 'actionsOverflowButtonSpacing': return parseDouble(value);
+            case 'buttonPadding': return parseEdgeInsetsGeometry(value);
+            case 'backgroundColor': return parseColor(value);
+            case 'elevation': return parseDouble(value);
+            case 'shadowColor': return parseColor(value);
+            case 'surfaceTintColor': return parseColor(value);
+            case 'semanticLabel': return value;
+            case 'insetPadding': return parseEdgeInsets(value);
+            case 'clipBehavior': return parseEnum(Clip.values, value);
+            case 'shape': break;
+            case 'alignment': return parseAlignmentGeometry(value);
+            case 'scrollable': return parseBool(value);
+        }
+        return value;
+    }
+}
+
+class AlertDialog_adaptiveInflater extends Inflater {
+
+    @override
+    String get type => 'AlertDialog.adaptive';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    AlertDialog? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return AlertDialog.adaptive(
+            key: attributes['key'],
+            icon: attributes['icon'],
+            iconPadding: attributes['iconPadding'],
+            iconColor: attributes['iconColor'],
+            title: attributes['title'],
+            titlePadding: attributes['titlePadding'],
+            titleTextStyle: attributes['titleTextStyle'],
+            content: attributes['content'],
+            contentPadding: attributes['contentPadding'],
+            contentTextStyle: attributes['contentTextStyle'],
+            actions: attributes['actions'] != null ? [...attributes['actions']] : null,
+            actionsPadding: attributes['actionsPadding'],
+            actionsAlignment: attributes['actionsAlignment'],
+            actionsOverflowAlignment: attributes['actionsOverflowAlignment'],
+            actionsOverflowDirection: attributes['actionsOverflowDirection'],
+            actionsOverflowButtonSpacing: toDouble(attributes['actionsOverflowButtonSpacing']),
+            buttonPadding: attributes['buttonPadding'],
+            backgroundColor: attributes['backgroundColor'],
+            elevation: toDouble(attributes['elevation']),
+            shadowColor: attributes['shadowColor'],
+            surfaceTintColor: attributes['surfaceTintColor'],
+            semanticLabel: attributes['semanticLabel'],
+            insetPadding: attributes['insetPadding'],
+            clipBehavior: attributes['clipBehavior'],
+            shape: attributes['shape'],
+            alignment: attributes['alignment'],
+            scrollable: attributes['scrollable'],
+            scrollController: attributes['scrollController'],
+            actionScrollController: attributes['actionScrollController'],
+            insetAnimationDuration: attributes['insetAnimationDuration'],
+            insetAnimationCurve: attributes['insetAnimationCurve'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'icon': return parseIcon(value);
+            case 'iconPadding': return parseEdgeInsetsGeometry(value);
+            case 'iconColor': return parseColor(value);
+            case 'title': break;
+            case 'titlePadding': return parseEdgeInsetsGeometry(value);
+            case 'titleTextStyle': break;
+            case 'content': break;
+            case 'contentPadding': return parseEdgeInsetsGeometry(value);
+            case 'contentTextStyle': break;
+            case 'actions': break;
+            case 'actionsPadding': return parseEdgeInsetsGeometry(value);
+            case 'actionsAlignment': return parseEnum(MainAxisAlignment.values, value);
+            case 'actionsOverflowAlignment': return parseEnum(OverflowBarAlignment.values, value);
+            case 'actionsOverflowDirection': return parseEnum(VerticalDirection.values, value);
+            case 'actionsOverflowButtonSpacing': return parseDouble(value);
+            case 'buttonPadding': return parseEdgeInsetsGeometry(value);
+            case 'backgroundColor': return parseColor(value);
+            case 'elevation': return parseDouble(value);
+            case 'shadowColor': return parseColor(value);
+            case 'surfaceTintColor': return parseColor(value);
+            case 'semanticLabel': return value;
+            case 'insetPadding': return parseEdgeInsets(value);
+            case 'clipBehavior': return parseEnum(Clip.values, value);
+            case 'shape': break;
+            case 'alignment': return parseAlignmentGeometry(value);
+            case 'scrollable': return parseBool(value);
+            case 'scrollController': break;
+            case 'actionScrollController': break;
+            case 'insetAnimationDuration': return parseDuration(value);
+            case 'insetAnimationCurve': return parseCurve(value);
+        }
+        return value;
+    }
+}
+
+class AlwaysStoppedAnimationInflater extends Inflater {
+
+    @override
+    String get type => 'AlwaysStoppedAnimation';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    AlwaysStoppedAnimation? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return AlwaysStoppedAnimation(
+            attributes['value'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'value': break;
+        }
+        return value;
+    }
+}
+
+class AlwaysStoppedAnimationColorInflater extends Inflater {
+
+    @override
+    String get type => 'AlwaysStoppedAnimationColor';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    AlwaysStoppedAnimation? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return AlwaysStoppedAnimation<Color>(
+            attributes['value'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'value': return parseColor(value);
+        }
+        return value;
+    }
+}
+
+class AlwaysStoppedAnimationIntInflater extends Inflater {
+
+    @override
+    String get type => 'AlwaysStoppedAnimationInt';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    AlwaysStoppedAnimation? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return AlwaysStoppedAnimation<int>(
+            attributes['value'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'value': return parseInt(value);
+        }
+        return value;
+    }
+}
+
+class AnimatedCrossFadeInflater extends Inflater {
+
+    @override
+    String get type => 'AnimatedCrossFade';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    AnimatedCrossFade? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return AnimatedCrossFade(
+            key: attributes['key'],
+            firstChild: attributes['firstChild'],
+            secondChild: attributes['secondChild'],
+            firstCurve: attributes['firstCurve'] ?? Curves.linear,
+            secondCurve: attributes['secondCurve'] ?? Curves.linear,
+            sizeCurve: attributes['sizeCurve'] ?? Curves.linear,
+            alignment: attributes['alignment'] ?? Alignment.topCenter,
+            crossFadeState: attributes['crossFadeState'],
+            duration: attributes['duration'],
+            reverseDuration: attributes['reverseDuration'],
+            layoutBuilder: attributes['layoutBuilder'] ?? AnimatedCrossFade.defaultLayoutBuilder,
+            excludeBottomFocus: attributes['excludeBottomFocus'] ?? true,
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'firstChild': break;
+            case 'secondChild': break;
+            case 'firstCurve': return parseCurve(value);
+            case 'secondCurve': return parseCurve(value);
+            case 'sizeCurve': return parseCurve(value);
+            case 'alignment': return parseAlignmentGeometry(value);
+            case 'crossFadeState': return parseEnum(CrossFadeState.values, value);
+            case 'duration': return parseDuration(value);
+            case 'reverseDuration': return parseDuration(value);
+            case 'layoutBuilder': break;
+            case 'excludeBottomFocus': return parseBool(value);
+        }
+        return value;
+    }
+}
+
 class AppBarInflater extends Inflater {
 
     @override
@@ -27,8 +323,8 @@ class AppBarInflater extends Inflater {
             actions: attributes['actions'] != null ? [...attributes['actions']] : null,
             flexibleSpace: attributes['flexibleSpace'],
             bottom: attributes['bottom'],
-            elevation: attributes['elevation'],
-            scrolledUnderElevation: attributes['scrolledUnderElevation'],
+            elevation: toDouble(attributes['elevation']),
+            scrolledUnderElevation: toDouble(attributes['scrolledUnderElevation']),
             notificationPredicate: attributes['notificationPredicate'] ?? defaultScrollNotificationPredicate,
             shadowColor: attributes['shadowColor'],
             surfaceTintColor: attributes['surfaceTintColor'],
@@ -40,11 +336,11 @@ class AppBarInflater extends Inflater {
             primary: attributes['primary'] ?? true,
             centerTitle: attributes['centerTitle'],
             excludeHeaderSemantics: attributes['excludeHeaderSemantics'] ?? false,
-            titleSpacing: attributes['titleSpacing'],
-            toolbarOpacity: attributes['toolbarOpacity'] ?? 1.0,
-            bottomOpacity: attributes['bottomOpacity'] ?? 1.0,
-            toolbarHeight: attributes['toolbarHeight'],
-            leadingWidth: attributes['leadingWidth'],
+            titleSpacing: toDouble(attributes['titleSpacing']),
+            toolbarOpacity: toDouble(attributes['toolbarOpacity']) ?? 1.0,
+            bottomOpacity: toDouble(attributes['bottomOpacity']) ?? 1.0,
+            toolbarHeight: toDouble(attributes['toolbarHeight']),
+            leadingWidth: toDouble(attributes['leadingWidth']),
             toolbarTextStyle: attributes['toolbarTextStyle'],
             titleTextStyle: attributes['titleTextStyle'],
             systemOverlayStyle: attributes['systemOverlayStyle'],
@@ -63,8 +359,8 @@ class AppBarInflater extends Inflater {
             case 'actions': break;
             case 'flexibleSpace': break;
             case 'bottom': break;
-            case 'elevation': return double.parse(value);
-            case 'scrolledUnderElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'scrolledUnderElevation': return parseDouble(value);
             case 'notificationPredicate': break;
             case 'shadowColor': return parseColor(value);
             case 'surfaceTintColor': return parseColor(value);
@@ -76,16 +372,217 @@ class AppBarInflater extends Inflater {
             case 'primary': return parseBool(value);
             case 'centerTitle': return parseBool(value);
             case 'excludeHeaderSemantics': return parseBool(value);
-            case 'titleSpacing': return double.parse(value);
-            case 'toolbarOpacity': return double.parse(value);
-            case 'bottomOpacity': return double.parse(value);
-            case 'toolbarHeight': return double.parse(value);
-            case 'leadingWidth': return double.parse(value);
+            case 'titleSpacing': return parseDouble(value);
+            case 'toolbarOpacity': return parseDouble(value);
+            case 'bottomOpacity': return parseDouble(value);
+            case 'toolbarHeight': return parseDouble(value);
+            case 'leadingWidth': return parseDouble(value);
             case 'toolbarTextStyle': break;
             case 'titleTextStyle': break;
             case 'systemOverlayStyle': break;
             case 'forceMaterialTransparency': return parseBool(value);
             case 'clipBehavior': return parseEnum(Clip.values, value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraintsInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints(
+            minWidth: toDouble(attributes['minWidth']) ?? 0.0,
+            maxWidth: toDouble(attributes['maxWidth']) ?? double.infinity,
+            minHeight: toDouble(attributes['minHeight']) ?? 0.0,
+            maxHeight: toDouble(attributes['maxHeight']) ?? double.infinity,
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'minWidth': return parseDouble(value);
+            case 'maxWidth': return parseDouble(value);
+            case 'minHeight': return parseDouble(value);
+            case 'maxHeight': return parseDouble(value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraints_tightInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints.tight';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints.tight(
+            attributes['size'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'size': return parseSize(value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraints_tightForInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints.tightFor';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints.tightFor(
+            width: toDouble(attributes['width']),
+            height: toDouble(attributes['height']),
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'width': return parseDouble(value);
+            case 'height': return parseDouble(value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraints_tightForFiniteInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints.tightForFinite';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints.tightForFinite(
+            width: toDouble(attributes['width']) ?? double.infinity,
+            height: toDouble(attributes['height']) ?? double.infinity,
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'width': return parseDouble(value);
+            case 'height': return parseDouble(value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraints_looseInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints.loose';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints.loose(
+            attributes['size'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'size': return parseSize(value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraints_expandInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints.expand';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints.expand(
+            width: toDouble(attributes['width']),
+            height: toDouble(attributes['height']),
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'width': return parseDouble(value);
+            case 'height': return parseDouble(value);
+        }
+        return value;
+    }
+}
+
+class BoxConstraints_fromViewConstraintsInflater extends Inflater {
+
+    @override
+    String get type => 'BoxConstraints.fromViewConstraints';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return BoxConstraints.fromViewConstraints(
+            attributes['constraints'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'constraints': break;
         }
         return value;
     }
@@ -106,8 +603,8 @@ class CenterInflater extends Inflater {
     Center? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return Center(
             key: attributes['key'],
-            widthFactor: attributes['widthFactor'],
-            heightFactor: attributes['heightFactor'],
+            widthFactor: toDouble(attributes['widthFactor']),
+            heightFactor: toDouble(attributes['heightFactor']),
             child: XWidgetUtils.getOnlyChild('Center', children, null),
         );
     }
@@ -116,8 +613,96 @@ class CenterInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'key': return parseKey(value);
-            case 'widthFactor': return double.parse(value);
-            case 'heightFactor': return double.parse(value);
+            case 'widthFactor': return parseDouble(value);
+            case 'heightFactor': return parseDouble(value);
+        }
+        return value;
+    }
+}
+
+class CircularProgressIndicatorInflater extends Inflater {
+
+    @override
+    String get type => 'CircularProgressIndicator';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    CircularProgressIndicator? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return CircularProgressIndicator(
+            key: attributes['key'],
+            value: toDouble(attributes['value']),
+            backgroundColor: attributes['backgroundColor'],
+            color: attributes['color'],
+            valueColor: attributes['valueColor'],
+            strokeWidth: toDouble(attributes['strokeWidth']) ?? 4.0,
+            strokeAlign: toDouble(attributes['strokeAlign']) ?? 0.0,
+            semanticsLabel: attributes['semanticsLabel'],
+            semanticsValue: attributes['semanticsValue'],
+            strokeCap: attributes['strokeCap'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'value': return parseDouble(value);
+            case 'backgroundColor': return parseColor(value);
+            case 'color': return parseColor(value);
+            case 'valueColor': break;
+            case 'strokeWidth': return parseDouble(value);
+            case 'strokeAlign': return parseDouble(value);
+            case 'semanticsLabel': return value;
+            case 'semanticsValue': return value;
+            case 'strokeCap': return parseEnum(StrokeCap.values, value);
+        }
+        return value;
+    }
+}
+
+class CircularProgressIndicator_adaptiveInflater extends Inflater {
+
+    @override
+    String get type => 'CircularProgressIndicator.adaptive';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    CircularProgressIndicator? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return CircularProgressIndicator.adaptive(
+            key: attributes['key'],
+            value: toDouble(attributes['value']),
+            backgroundColor: attributes['backgroundColor'],
+            valueColor: attributes['valueColor'],
+            strokeWidth: toDouble(attributes['strokeWidth']) ?? 4.0,
+            semanticsLabel: attributes['semanticsLabel'],
+            semanticsValue: attributes['semanticsValue'],
+            strokeCap: attributes['strokeCap'],
+            strokeAlign: toDouble(attributes['strokeAlign']) ?? 0.0,
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'key': return parseKey(value);
+            case 'value': return parseDouble(value);
+            case 'backgroundColor': return parseColor(value);
+            case 'valueColor': break;
+            case 'strokeWidth': return parseDouble(value);
+            case 'semanticsLabel': return value;
+            case 'semanticsValue': return value;
+            case 'strokeCap': return parseEnum(StrokeCap.values, value);
+            case 'strokeAlign': return parseDouble(value);
         }
         return value;
     }
@@ -187,11 +772,11 @@ class FloatingActionButtonInflater extends Inflater {
             hoverColor: attributes['hoverColor'],
             splashColor: attributes['splashColor'],
             heroTag: attributes['heroTag'] ?? '<default FloatingActionButton hero tag>',
-            elevation: attributes['elevation'],
-            focusElevation: attributes['focusElevation'],
-            hoverElevation: attributes['hoverElevation'],
-            highlightElevation: attributes['highlightElevation'],
-            disabledElevation: attributes['disabledElevation'],
+            elevation: toDouble(attributes['elevation']),
+            focusElevation: toDouble(attributes['focusElevation']),
+            hoverElevation: toDouble(attributes['hoverElevation']),
+            highlightElevation: toDouble(attributes['highlightElevation']),
+            disabledElevation: toDouble(attributes['disabledElevation']),
             onPressed: attributes['onPressed'],
             mouseCursor: attributes['mouseCursor'],
             mini: attributes['mini'] ?? false,
@@ -216,11 +801,11 @@ class FloatingActionButtonInflater extends Inflater {
             case 'hoverColor': return parseColor(value);
             case 'splashColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'mini': return parseBool(value);
@@ -259,11 +844,11 @@ class FloatingActionButton_smallInflater extends Inflater {
             hoverColor: attributes['hoverColor'],
             splashColor: attributes['splashColor'],
             heroTag: attributes['heroTag'] ?? '<default FloatingActionButton hero tag>',
-            elevation: attributes['elevation'],
-            focusElevation: attributes['focusElevation'],
-            hoverElevation: attributes['hoverElevation'],
-            highlightElevation: attributes['highlightElevation'],
-            disabledElevation: attributes['disabledElevation'],
+            elevation: toDouble(attributes['elevation']),
+            focusElevation: toDouble(attributes['focusElevation']),
+            hoverElevation: toDouble(attributes['hoverElevation']),
+            highlightElevation: toDouble(attributes['highlightElevation']),
+            disabledElevation: toDouble(attributes['disabledElevation']),
             onPressed: attributes['onPressed'],
             mouseCursor: attributes['mouseCursor'],
             shape: attributes['shape'],
@@ -286,11 +871,11 @@ class FloatingActionButton_smallInflater extends Inflater {
             case 'hoverColor': return parseColor(value);
             case 'splashColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'shape': break;
@@ -327,11 +912,11 @@ class FloatingActionButton_largeInflater extends Inflater {
             hoverColor: attributes['hoverColor'],
             splashColor: attributes['splashColor'],
             heroTag: attributes['heroTag'] ?? '<default FloatingActionButton hero tag>',
-            elevation: attributes['elevation'],
-            focusElevation: attributes['focusElevation'],
-            hoverElevation: attributes['hoverElevation'],
-            highlightElevation: attributes['highlightElevation'],
-            disabledElevation: attributes['disabledElevation'],
+            elevation: toDouble(attributes['elevation']),
+            focusElevation: toDouble(attributes['focusElevation']),
+            hoverElevation: toDouble(attributes['hoverElevation']),
+            highlightElevation: toDouble(attributes['highlightElevation']),
+            disabledElevation: toDouble(attributes['disabledElevation']),
             onPressed: attributes['onPressed'],
             mouseCursor: attributes['mouseCursor'],
             shape: attributes['shape'],
@@ -354,11 +939,11 @@ class FloatingActionButton_largeInflater extends Inflater {
             case 'hoverColor': return parseColor(value);
             case 'splashColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'shape': break;
@@ -393,12 +978,12 @@ class FloatingActionButton_extendedInflater extends Inflater {
             focusColor: attributes['focusColor'],
             hoverColor: attributes['hoverColor'],
             heroTag: attributes['heroTag'] ?? '<default FloatingActionButton hero tag>',
-            elevation: attributes['elevation'],
-            focusElevation: attributes['focusElevation'],
-            hoverElevation: attributes['hoverElevation'],
+            elevation: toDouble(attributes['elevation']),
+            focusElevation: toDouble(attributes['focusElevation']),
+            hoverElevation: toDouble(attributes['hoverElevation']),
             splashColor: attributes['splashColor'],
-            highlightElevation: attributes['highlightElevation'],
-            disabledElevation: attributes['disabledElevation'],
+            highlightElevation: toDouble(attributes['highlightElevation']),
+            disabledElevation: toDouble(attributes['disabledElevation']),
             onPressed: attributes['onPressed'],
             mouseCursor: attributes['mouseCursor'] ?? SystemMouseCursors.click,
             shape: attributes['shape'],
@@ -407,7 +992,7 @@ class FloatingActionButton_extendedInflater extends Inflater {
             clipBehavior: attributes['clipBehavior'] ?? Clip.none,
             focusNode: attributes['focusNode'],
             autofocus: attributes['autofocus'] ?? false,
-            extendedIconLabelSpacing: attributes['extendedIconLabelSpacing'],
+            extendedIconLabelSpacing: toDouble(attributes['extendedIconLabelSpacing']),
             extendedPadding: attributes['extendedPadding'],
             extendedTextStyle: attributes['extendedTextStyle'],
             icon: attributes['icon'],
@@ -426,12 +1011,12 @@ class FloatingActionButton_extendedInflater extends Inflater {
             case 'focusColor': return parseColor(value);
             case 'hoverColor': return parseColor(value);
             case 'heroTag': break;
-            case 'elevation': return double.parse(value);
-            case 'focusElevation': return double.parse(value);
-            case 'hoverElevation': return double.parse(value);
+            case 'elevation': return parseDouble(value);
+            case 'focusElevation': return parseDouble(value);
+            case 'hoverElevation': return parseDouble(value);
             case 'splashColor': return parseColor(value);
-            case 'highlightElevation': return double.parse(value);
-            case 'disabledElevation': return double.parse(value);
+            case 'highlightElevation': return parseDouble(value);
+            case 'disabledElevation': return parseDouble(value);
             case 'onPressed': break;
             case 'mouseCursor': break;
             case 'shape': break;
@@ -440,7 +1025,7 @@ class FloatingActionButton_extendedInflater extends Inflater {
             case 'clipBehavior': return parseEnum(Clip.values, value);
             case 'focusNode': break;
             case 'autofocus': return parseBool(value);
-            case 'extendedIconLabelSpacing': return double.parse(value);
+            case 'extendedIconLabelSpacing': return parseDouble(value);
             case 'extendedPadding': return parseEdgeInsetsGeometry(value);
             case 'extendedTextStyle': break;
             case 'icon': return parseIcon(value);
@@ -467,15 +1052,16 @@ class IconInflater extends Inflater {
         return Icon(
             attributes['icon'],
             key: attributes['key'],
-            size: attributes['size'],
-            fill: attributes['fill'],
-            weight: attributes['weight'],
-            grade: attributes['grade'],
-            opticalSize: attributes['opticalSize'],
+            size: toDouble(attributes['size']),
+            fill: toDouble(attributes['fill']),
+            weight: toDouble(attributes['weight']),
+            grade: toDouble(attributes['grade']),
+            opticalSize: toDouble(attributes['opticalSize']),
             color: attributes['color'],
             shadows: attributes['shadows'] != null ? [...attributes['shadows']] : null,
             semanticLabel: attributes['semanticLabel'],
             textDirection: attributes['textDirection'],
+            applyTextScaling: attributes['applyTextScaling'],
         );
     }
 
@@ -484,15 +1070,16 @@ class IconInflater extends Inflater {
         switch (name) {
             case 'icon': return parseIcon(value);
             case 'key': return parseKey(value);
-            case 'size': return double.parse(value);
-            case 'fill': return double.parse(value);
-            case 'weight': return double.parse(value);
-            case 'grade': return double.parse(value);
-            case 'opticalSize': return double.parse(value);
+            case 'size': return parseDouble(value);
+            case 'fill': return parseDouble(value);
+            case 'weight': return parseDouble(value);
+            case 'grade': return parseDouble(value);
+            case 'opticalSize': return parseDouble(value);
             case 'color': return parseColor(value);
             case 'shadows': break;
             case 'semanticLabel': return value;
             case 'textDirection': return parseEnum(TextDirection.values, value);
+            case 'applyTextScaling': return parseBool(value);
         }
         return value;
     }
@@ -516,11 +1103,12 @@ class MaterialAppInflater extends Inflater {
             navigatorKey: attributes['navigatorKey'],
             scaffoldMessengerKey: attributes['scaffoldMessengerKey'],
             home: attributes['home'],
-            routes: attributes['routes'] ?? const <String, WidgetBuilder>{},
+            routes: attributes['routes'] != null ? {...attributes['routes']} : const <String, WidgetBuilder>{},
             initialRoute: attributes['initialRoute'],
             onGenerateRoute: attributes['onGenerateRoute'],
             onGenerateInitialRoutes: attributes['onGenerateInitialRoutes'],
             onUnknownRoute: attributes['onUnknownRoute'],
+            onNavigationNotification: attributes['onNavigationNotification'],
             navigatorObservers: attributes['navigatorObservers'] != null ? [...attributes['navigatorObservers']] : const <NavigatorObserver>[],
             builder: attributes['builder'],
             title: attributes['title'] ?? '',
@@ -544,10 +1132,11 @@ class MaterialAppInflater extends Inflater {
             checkerboardOffscreenLayers: attributes['checkerboardOffscreenLayers'] ?? false,
             showSemanticsDebugger: attributes['showSemanticsDebugger'] ?? false,
             debugShowCheckedModeBanner: attributes['debugShowCheckedModeBanner'] ?? true,
-            shortcuts: attributes['shortcuts'],
-            actions: attributes['actions'],
+            shortcuts: attributes['shortcuts'] != null ? {...attributes['shortcuts']} : null,
+            actions: attributes['actions'] != null ? {...attributes['actions']} : null,
             restorationScopeId: attributes['restorationScopeId'],
             scrollBehavior: attributes['scrollBehavior'],
+            themeAnimationStyle: attributes['themeAnimationStyle'],
         );
     }
 
@@ -563,6 +1152,7 @@ class MaterialAppInflater extends Inflater {
             case 'onGenerateRoute': break;
             case 'onGenerateInitialRoutes': break;
             case 'onUnknownRoute': break;
+            case 'onNavigationNotification': break;
             case 'navigatorObservers': break;
             case 'builder': break;
             case 'title': return value;
@@ -590,6 +1180,7 @@ class MaterialAppInflater extends Inflater {
             case 'actions': break;
             case 'restorationScopeId': return value;
             case 'scrollBehavior': break;
+            case 'themeAnimationStyle': break;
         }
         return value;
     }
@@ -619,6 +1210,7 @@ class MaterialApp_routerInflater extends Inflater {
             builder: attributes['builder'],
             title: attributes['title'] ?? '',
             onGenerateTitle: attributes['onGenerateTitle'],
+            onNavigationNotification: attributes['onNavigationNotification'],
             color: attributes['color'],
             theme: attributes['theme'],
             darkTheme: attributes['darkTheme'],
@@ -638,10 +1230,11 @@ class MaterialApp_routerInflater extends Inflater {
             checkerboardOffscreenLayers: attributes['checkerboardOffscreenLayers'] ?? false,
             showSemanticsDebugger: attributes['showSemanticsDebugger'] ?? false,
             debugShowCheckedModeBanner: attributes['debugShowCheckedModeBanner'] ?? true,
-            shortcuts: attributes['shortcuts'],
-            actions: attributes['actions'],
+            shortcuts: attributes['shortcuts'] != null ? {...attributes['shortcuts']} : null,
+            actions: attributes['actions'] != null ? {...attributes['actions']} : null,
             restorationScopeId: attributes['restorationScopeId'],
             scrollBehavior: attributes['scrollBehavior'],
+            themeAnimationStyle: attributes['themeAnimationStyle'],
         );
     }
 
@@ -658,6 +1251,7 @@ class MaterialApp_routerInflater extends Inflater {
             case 'builder': break;
             case 'title': return value;
             case 'onGenerateTitle': break;
+            case 'onNavigationNotification': break;
             case 'color': return parseColor(value);
             case 'theme': break;
             case 'darkTheme': break;
@@ -681,6 +1275,7 @@ class MaterialApp_routerInflater extends Inflater {
             case 'actions': break;
             case 'restorationScopeId': return value;
             case 'scrollBehavior': break;
+            case 'themeAnimationStyle': break;
         }
         return value;
     }
@@ -721,7 +1316,7 @@ class ScaffoldInflater extends Inflater {
             extendBody: attributes['extendBody'] ?? false,
             extendBodyBehindAppBar: attributes['extendBodyBehindAppBar'] ?? false,
             drawerScrimColor: attributes['drawerScrimColor'],
-            drawerEdgeDragWidth: attributes['drawerEdgeDragWidth'],
+            drawerEdgeDragWidth: toDouble(attributes['drawerEdgeDragWidth']),
             drawerEnableOpenDragGesture: attributes['drawerEnableOpenDragGesture'] ?? true,
             endDrawerEnableOpenDragGesture: attributes['endDrawerEnableOpenDragGesture'] ?? true,
             restorationId: attributes['restorationId'],
@@ -738,7 +1333,7 @@ class ScaffoldInflater extends Inflater {
             case 'floatingActionButtonLocation': break;
             case 'floatingActionButtonAnimator': break;
             case 'persistentFooterButtons': break;
-            case 'persistentFooterAlignment': break;
+            case 'persistentFooterAlignment': return parseAlignmentDirectional(value);
             case 'drawer': break;
             case 'onDrawerChanged': break;
             case 'endDrawer': break;
@@ -752,7 +1347,7 @@ class ScaffoldInflater extends Inflater {
             case 'extendBody': return parseBool(value);
             case 'extendBodyBehindAppBar': return parseBool(value);
             case 'drawerScrimColor': return parseColor(value);
-            case 'drawerEdgeDragWidth': return double.parse(value);
+            case 'drawerEdgeDragWidth': return parseDouble(value);
             case 'drawerEnableOpenDragGesture': return parseBool(value);
             case 'endDrawerEnableOpenDragGesture': return parseBool(value);
             case 'restorationId': return value;
@@ -784,7 +1379,7 @@ class TextInflater extends Inflater {
             locale: attributes['locale'],
             softWrap: attributes['softWrap'],
             overflow: attributes['overflow'],
-            textScaleFactor: attributes['textScaleFactor'],
+            textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
             textWidthBasis: attributes['textWidthBasis'],
@@ -805,8 +1400,8 @@ class TextInflater extends Inflater {
             case 'locale': return parseLocale(value);
             case 'softWrap': return parseBool(value);
             case 'overflow': return parseEnum(TextOverflow.values, value);
-            case 'textScaleFactor': return double.parse(value);
-            case 'maxLines': return int.parse(value);
+            case 'textScaler': break;
+            case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
@@ -839,7 +1434,7 @@ class Text_richInflater extends Inflater {
             locale: attributes['locale'],
             softWrap: attributes['softWrap'],
             overflow: attributes['overflow'],
-            textScaleFactor: attributes['textScaleFactor'],
+            textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
             textWidthBasis: attributes['textWidthBasis'],
@@ -860,8 +1455,8 @@ class Text_richInflater extends Inflater {
             case 'locale': return parseLocale(value);
             case 'softWrap': return parseBool(value);
             case 'overflow': return parseEnum(TextOverflow.values, value);
-            case 'textScaleFactor': return double.parse(value);
-            case 'maxLines': return int.parse(value);
+            case 'textScaler': break;
+            case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
@@ -888,13 +1483,13 @@ class TextStyleInflater extends Inflater {
             inherit: attributes['inherit'] ?? true,
             color: attributes['color'],
             backgroundColor: attributes['backgroundColor'],
-            fontSize: attributes['fontSize'],
+            fontSize: toDouble(attributes['fontSize']),
             fontWeight: attributes['fontWeight'],
             fontStyle: attributes['fontStyle'],
-            letterSpacing: attributes['letterSpacing'],
-            wordSpacing: attributes['wordSpacing'],
+            letterSpacing: toDouble(attributes['letterSpacing']),
+            wordSpacing: toDouble(attributes['wordSpacing']),
             textBaseline: attributes['textBaseline'],
-            height: attributes['height'],
+            height: toDouble(attributes['height']),
             leadingDistribution: attributes['leadingDistribution'],
             locale: attributes['locale'],
             foreground: attributes['foreground'],
@@ -905,7 +1500,7 @@ class TextStyleInflater extends Inflater {
             decoration: attributes['decoration'],
             decorationColor: attributes['decorationColor'],
             decorationStyle: attributes['decorationStyle'],
-            decorationThickness: attributes['decorationThickness'],
+            decorationThickness: toDouble(attributes['decorationThickness']),
             debugLabel: attributes['debugLabel'],
             fontFamily: attributes['fontFamily'],
             fontFamilyFallback: attributes['fontFamilyFallback'] != null ? [...attributes['fontFamilyFallback']] : null,
@@ -920,13 +1515,13 @@ class TextStyleInflater extends Inflater {
             case 'inherit': return parseBool(value);
             case 'color': return parseColor(value);
             case 'backgroundColor': return parseColor(value);
-            case 'fontSize': return double.parse(value);
+            case 'fontSize': return parseDouble(value);
             case 'fontWeight': return parseFontWeight(value);
             case 'fontStyle': return parseEnum(FontStyle.values, value);
-            case 'letterSpacing': return double.parse(value);
-            case 'wordSpacing': return double.parse(value);
+            case 'letterSpacing': return parseDouble(value);
+            case 'wordSpacing': return parseDouble(value);
             case 'textBaseline': return parseEnum(TextBaseline.values, value);
-            case 'height': return parseHeight(value);
+            case 'height': return parseDouble(value);
             case 'leadingDistribution': return parseEnum(TextLeadingDistribution.values, value);
             case 'locale': return parseLocale(value);
             case 'foreground': break;
@@ -937,7 +1532,7 @@ class TextStyleInflater extends Inflater {
             case 'decoration': return parseTextDecoration(value);
             case 'decorationColor': return parseColor(value);
             case 'decorationStyle': return parseEnum(TextDecorationStyle.values, value);
-            case 'decorationThickness': return double.parse(value);
+            case 'decorationThickness': return parseDouble(value);
             case 'debugLabel': return value;
             case 'fontFamily': return value;
             case 'fontFamilyFallback': return parseListOfStrings(value);
@@ -962,6 +1557,7 @@ class ThemeDataInflater extends Inflater {
     @override
     ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData(
+            adaptations: attributes['adaptations'],
             applyElevationOverlayColor: attributes['applyElevationOverlayColor'],
             cupertinoOverrideTheme: attributes['cupertinoOverrideTheme'],
             extensions: attributes['extensions'],
@@ -1055,6 +1651,7 @@ class ThemeDataInflater extends Inflater {
     @override
     dynamic parseAttribute(String name, String value) {
         switch (name) {
+            case 'adaptations': break;
             case 'applyElevationOverlayColor': return parseBool(value);
             case 'cupertinoOverrideTheme': break;
             case 'extensions': break;
@@ -1161,9 +1758,10 @@ class ThemeData_rawInflater extends Inflater {
     @override
     ThemeData? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
         return ThemeData.raw(
+            adaptationMap: attributes['adaptationMap'] != null ? {...attributes['adaptationMap']} : {},
             applyElevationOverlayColor: attributes['applyElevationOverlayColor'],
             cupertinoOverrideTheme: attributes['cupertinoOverrideTheme'],
-            extensions: attributes['extensions'],
+            extensions: attributes['extensions'] != null ? {...attributes['extensions']} : {},
             inputDecorationTheme: attributes['inputDecorationTheme'],
             materialTapTargetSize: attributes['materialTapTargetSize'],
             pageTransitionsTheme: attributes['pageTransitionsTheme'],
@@ -1248,6 +1846,7 @@ class ThemeData_rawInflater extends Inflater {
     @override
     dynamic parseAttribute(String name, String value) {
         switch (name) {
+            case 'adaptationMap': break;
             case 'applyElevationOverlayColor': return parseBool(value);
             case 'cupertinoOverrideTheme': break;
             case 'extensions': break;
@@ -1447,8 +2046,23 @@ class ThemeData_fallbackInflater extends Inflater {
 }
 
 void registerXWidgetInflaters() {
+    XWidget.registerInflater(AlertDialogInflater());
+    XWidget.registerInflater(AlertDialog_adaptiveInflater());
+    XWidget.registerInflater(AlwaysStoppedAnimationInflater());
+    XWidget.registerInflater(AlwaysStoppedAnimationColorInflater());
+    XWidget.registerInflater(AlwaysStoppedAnimationIntInflater());
+    XWidget.registerInflater(AnimatedCrossFadeInflater());
     XWidget.registerInflater(AppBarInflater());
+    XWidget.registerInflater(BoxConstraintsInflater());
+    XWidget.registerInflater(BoxConstraints_tightInflater());
+    XWidget.registerInflater(BoxConstraints_tightForInflater());
+    XWidget.registerInflater(BoxConstraints_tightForFiniteInflater());
+    XWidget.registerInflater(BoxConstraints_looseInflater());
+    XWidget.registerInflater(BoxConstraints_expandInflater());
+    XWidget.registerInflater(BoxConstraints_fromViewConstraintsInflater());
     XWidget.registerInflater(CenterInflater());
+    XWidget.registerInflater(CircularProgressIndicatorInflater());
+    XWidget.registerInflater(CircularProgressIndicator_adaptiveInflater());
     XWidget.registerInflater(ColumnInflater());
     XWidget.registerInflater(FloatingActionButtonInflater());
     XWidget.registerInflater(FloatingActionButton_smallInflater());

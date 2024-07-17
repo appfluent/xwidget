@@ -11,18 +11,20 @@ class DivisionExpression extends Expression<dynamic> {
     final leftValue = Expression.evaluateValue(left);
     final rightValue = Expression.evaluateValue(right);
 
-    // check null conditions
     if (leftValue == null) throw Exception("Dividend cannot be 'null'");
     if (rightValue == null) throw Exception("Divisor cannot be 'null'");
-
     if (rightValue is num) {
       if (rightValue == 0) throw Exception("Cannot divide by '0'");
-      if (leftValue is num) return leftValue / rightValue;
-      if (leftValue is Duration && rightValue is int) return leftValue ~/ rightValue;
+      if (leftValue is Duration && rightValue is int) {
+        return leftValue ~/ rightValue;
+      }
     }
 
-    final leftType = leftValue.runtimeType;
-    final rightType = rightValue.runtimeType;
-    throw Exception("Division not applicable to types '$leftType' and '$rightType'");
+    try {
+      return leftValue / rightValue;
+    } catch(e) {
+      throw Exception("Division is not applicable to types "
+          "'${leftValue.runtimeType}' and '${rightValue.runtimeType}'");
+    }
   }
 }
