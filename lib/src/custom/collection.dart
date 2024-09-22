@@ -107,11 +107,14 @@ class MapEntryInflater extends Inflater {
       List<dynamic> children,
       List<String> text
   ) {
-    return MapEntry(
-      attributes["key"],
-      XWidgetUtils.getOnlyChild("Entry", children, attributes['value'])
-          ?? XWidgetUtils.joinStrings(text),
-    );
+    var value = XWidgetUtils.getOnlyChild("param", children);
+    if (value == null) {
+      value = attributes["value"];
+      if (value == null && text.length > 0) {
+        value = XWidgetUtils.joinStrings(text);
+      }
+    }
+    return MapEntry(attributes["key"], value);
   }
 
   @override
@@ -136,11 +139,14 @@ class ParamInflater extends Inflater {
       List<dynamic> children,
       List<String> text
   ) {
-    return MapEntry(
-      attributes["name"],
-      XWidgetUtils.getOnlyChild("param", children, attributes['value'])
-          ?? XWidgetUtils.joinStrings(text),
-    );
+    var value = XWidgetUtils.getOnlyChild("param", children);
+    if (value == null) {
+      value = attributes["value"];
+      if (value == null && text.length > 0) {
+        value = XWidgetUtils.joinStrings(text);
+      }
+    }
+    return MapEntry(attributes["name"], value);
   }
 
   @override

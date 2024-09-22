@@ -24,6 +24,7 @@ import 'utils/logging.dart';
 import 'utils/functions/converters.dart';
 import 'utils/resources.dart';
 import 'utils/functions/validators.dart';
+import 'utils/model/model.dart';
 
 
 class XWidget {
@@ -109,8 +110,22 @@ class XWidget {
     registerControllerFactoryForName(T.toString(), factory);
   }
 
-  static void registerControllerFactoryForName(String name, XWidgetControllerFactory factory) {
+  static void registerControllerFactoryForName(
+    String name,
+    XWidgetControllerFactory factory
+  ) {
     _controllerFactories[name] = factory;
+  }
+
+  static void registerModel<T extends Model>(
+    ModelFactory<T> factory, [
+    List<PropertyTransformer>? transformers]
+  ) {
+    Models.register<T>(factory, transformers);
+  }
+
+  static void registerTypeConverter<T>(TypeConverter<T> function) {
+    TypeConverters.register<T>(function);
   }
 
   static Controller createController(String name) {

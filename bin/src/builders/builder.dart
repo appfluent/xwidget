@@ -198,35 +198,6 @@ class BuilderConfig {
   }
 }
 
-class ControllerConfig {
-  String target = "";
-  Set<String> imports = {};
-  Set<String> sources = {};
-  bool isValid() {
-    var valid = true;
-    if (isBlank(target) && sources.isNotEmpty) {
-      CliLog.error("Config missing 'controllers' output target.");
-      valid = false;
-    }
-    return valid;
-  }
-}
-
-class IconConfig {
-  String target = "";
-  Set<String> imports = {};
-  Set<String> sources = {};
-
-  bool isValid() {
-    var valid = true;
-    if (isBlank(target) && sources.isNotEmpty) {
-      CliLog.error("Config missing 'icons' output target.");
-      valid = false;
-    }
-    return valid;
-  }
-}
-
 class SchemaConfig with ConfigMixin {
   String target = "";
   String template = "";
@@ -251,11 +222,11 @@ class SchemaConfig with ConfigMixin {
 
   bool isValid(InflaterConfig inflaterConfig) {
     var valid = true;
-    if (isBlank(target) && inflaterConfig.sources.isNotEmpty) {
+    if (isEmpty(target) && inflaterConfig.sources.isNotEmpty) {
       CliLog.error("Config missing 'schema' output target.");
       valid = false;
     }
-    if (isBlank(template) && inflaterConfig.sources.isNotEmpty) {
+    if (isEmpty(template) && inflaterConfig.sources.isNotEmpty) {
       CliLog.error("Config missing 'schema' template.");
       valid = false;
     }
@@ -307,8 +278,38 @@ class InflaterConfig with ConfigMixin {
 
   bool isValid() {
     var valid = true;
-    if (isBlank(target) && sources.isNotEmpty) {
+    if (isEmpty(target) && sources.isNotEmpty) {
       CliLog.error("Config missing 'inflaters' output target.");
+      valid = false;
+    }
+    return valid;
+  }
+}
+
+class ControllerConfig {
+  String target = "";
+  Set<String> imports = {};
+  Set<String> sources = {};
+
+  bool isValid() {
+    var valid = true;
+    if (isEmpty(target) && sources.isNotEmpty) {
+      CliLog.error("Config missing 'controllers' output target.");
+      valid = false;
+    }
+    return valid;
+  }
+}
+
+class IconConfig {
+  String target = "";
+  Set<String> imports = {};
+  Set<String> sources = {};
+
+  bool isValid() {
+    var valid = true;
+    if (isEmpty(target) && sources.isNotEmpty) {
+      CliLog.error("Config missing 'icons' output target.");
       valid = false;
     }
     return valid;

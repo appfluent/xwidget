@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
-import '../../../bin/src/builder/builder.dart';
-import '../../../bin/src/builder/inflater_builder.dart';
+import '../../../bin/src/builders/builder.dart';
+import '../../../bin/src/builders/inflaters.dart';
 
 
 void main() {

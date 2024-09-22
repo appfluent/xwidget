@@ -49,6 +49,71 @@ class DurationFormat {
 
 const defaultDurationFormat = DurationFormat(" d"," hr"," min"," sec"," ms");
 
+bool deepEquals(dynamic obj1, dynamic obj2) {
+  if (identical(obj1, obj2)) return true;
+  if (obj1.runtimeType != obj2.runtimeType) return false;
+  if (obj1 is Map && obj2 is Map) {
+    // compare maps
+    if (obj1.length != obj2.length) return false;
+    for (final key in obj1.keys) {
+      if (!obj2.containsKey(key)) return false;
+      final value1 = obj1[key];
+      final value2 = obj2[key];
+      if (!deepEquals(value1, value2)) return false;
+    }
+    return true;
+  } else if (obj1 is List && obj2 is List) {
+    // compare lists
+    if (obj1.length != obj2.length) return false;
+    for (int i = 0; i < obj1.length; i++) {
+      if (!deepEquals(obj1[i], obj2[i])) return false;
+    }
+    return true;
+  } else if (obj1 is Set && obj2 is Set) {
+    // compare sets
+    if (obj1.length != obj2.length) return false;
+    for (var element in obj1) {
+      if (!obj2.contains(element)) return false;
+    }
+    return true;
+  } else {
+    // compare all other objects
+    return obj1 == obj2;
+  }
+}
+
+int deepHashCode(dynamic value) {
+  if (value is Map) {
+    // Compute hash code for maps
+    int hash = 0;
+    for (var entry in value.entries) {
+      int keyHash = entry.key.hashCode;
+      int valueHash = deepHashCode(entry.value);
+
+      // Combine hash codes of the key and value
+      hash = hash ^ (keyHash * 31 + valueHash);
+    }
+    return hash;
+  } else if (value is List) {
+    // Compute hash code for lists
+    int hash = 0;
+    for (var item in value) {
+      hash = hash ^ deepHashCode(item);
+    }
+    return hash;
+  } else if (value is Set) {
+    // Compute hash code for sets
+    int hash = 0;
+    for (var item in value) {
+      hash = hash ^ deepHashCode(item);
+    }
+    return hash;
+  } else {
+    // Compute hash code for other values
+    return value.hashCode;
+  }
+}
+
 Duration diffDateTime(DateTime left, DateTime right) {
   final diff = left.difference(right);
   return (diff < const Duration(microseconds: 0)) ? (-diff) : diff;
@@ -117,6 +182,18 @@ int length(dynamic value) {
       "'${value.runtimeType}'. Valid types are String, List, Map, and Set.");
 }
 
+bool mapsEqual(Map a, Map b) {
+  if (a.length != b.length) {
+    return false;
+  }
+  for (var key in a.keys) {
+    if (!b.containsKey(key) || a[key] != b[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 String? replaceAll(String? value, String regExp, String replacement) {
   if (value == null) return null;
   final regex = RegExp(regExp);
@@ -129,10 +206,21 @@ String? replaceFirst(String? value, String regExp, String replacement, [int star
   return value.replaceFirst(regex, replacement, startIndex);
 }
 
+Type typeOf<T>() {
+  return T;
+}
+
 String? substring(String? value, int start, [int end = -1]) {
   if (value == null) return null;
   final maxEnd = value.length;
   return value.substring(start, end > 0 && end <= maxEnd ? end : maxEnd);
+}
+
+String nonNullType(Type type) {
+  final typeString = type.toString();
+  return typeString.endsWith("?")
+      ? typeString.substring(0, typeString.length - 1)
+      : typeString;
 }
 
 DateTime now() => DateTime.now();

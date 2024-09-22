@@ -1,9 +1,9 @@
 import 'package:args/args.dart';
 
-import 'builder/builder.dart';
-import 'builder/controller_builder.dart';
-import 'builder/icons_builder.dart';
-import 'builder/inflater_builder.dart';
+import 'builders/builder.dart';
+import 'builders/controllers.dart';
+import 'builders/icons.dart';
+import 'builders/inflaters.dart';
 import 'utils/cli_log.dart';
 import 'utils/config_loader.dart';
 

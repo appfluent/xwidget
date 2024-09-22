@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../lib/xwidget.dart';
+import '../../../lib/xwidget.dart' hide startsWith;
+import '../testing_utils.dart';
 
 main() {
 
@@ -27,10 +28,14 @@ main() {
     expect(data.getValue("topicsFollowed.top_news.test"), true);
   });
 
-  test('Assert replace', () {
+  test('Assert invalid reference throws an Exception', () {
     final data = <String, dynamic>{};
     data.setValue("topicsFollowed", []);
-    expect(() => data.setValue("topicsFollowed.top_news", true), throwsException);
+    expect(
+      () => data.setValue("topicsFollowed.top_news", true),
+      exceptionStartsWith("Exception: Unable to read value at index 'top_news' "
+          "from Iterable collection of type 'List<dynamic>")
+    );
   });
 
   test('Assert single-term path returns a null and not an exception', () {
@@ -45,12 +50,16 @@ main() {
 
   test('Assert single-term non-nullable path throws an exception', () {
     final data = Model({"a": "a"});
-    expect(() => data.getValue("b!"), throwsException);
+    expect(
+        () => data.getValue("b!"),
+        exceptionStartsWith("Exception: Value at path 'b!' is null.")
+    );
   });
 
-  test('Assert multi-term path where a non-terminating term is null throws an exception', () {
+  test('Assert null is returned when multi-term path where a non-terminating term is null', () {
     final data = Model({"a": "a"});
-    expect(() => data.getValue("b.a"), throwsException);
+    final value = data.getValue("b.a");
+    expect(value, null);
   });
 
   test('Assert multi-path null-safety test', () {
@@ -65,7 +74,7 @@ main() {
   });
 
   test('Assert is immutable', () {
-    final data = Model.immutable({"a": "a"});
+    final data = Model({"a": "a"}, immutable: true);
     expect(() => data.setValue("b.c", "c"), throwsUnimplementedError);
   });
 
@@ -109,7 +118,7 @@ main() {
   });
 
   test('Assert can add listeners to empty Model', () {
-    final data = Model();
+    final data = Model({});
 
     int usersChanged = 0;
     final usersNotifier = data.listenForChanges("users", null, null);
@@ -128,7 +137,7 @@ main() {
   });
 
   test('Assert parent listen not called when adding child listeners', () {
-    final data = Model();
+    final data = Model({});
 
     int usersChanged = 0;
     final usersNotifier = data.listenForChanges("users", null, null);
@@ -169,7 +178,6 @@ main() {
     expect([usersChanged, user1Changed, user2Changed], [1,0,1]);
   });
 
-
   test('Assert nothing', () {
     // don't do this - no types
     final model = Model({
@@ -187,4 +195,125 @@ main() {
     print(profileChanged);
   });
 
+  test('Assert hasPath returns TRUE when map path exists', () {
+    final model = Model({
+      "profile": {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final hasPath = model.hasPath("profile.username");
+    expect(hasPath, true);
+  });
+
+  test('Assert hasPath returns FALSE when map path does not exist', () {
+    final model = Model({
+      "profile": {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final hasPath = model.hasPath("profile.dob");
+    expect(hasPath, false);
+  });
+
+  test('Assert hasPath returns TRUE when list path exists', () {
+    final model = Model({
+      "profile": {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final hasPath = model.hasPath("profile.emails[0]");
+    expect(hasPath, true);
+  });
+
+  test('Assert hasPath returns FALSE when list path does not exist', () {
+    final model = Model({
+      "profile": {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final hasPath = model.hasPath("profile.emails[2]");
+    expect(hasPath, false);
+  });
+
+  test("Assert map 'key' is returned when referencing map 'key' by index", () {
+    final model = Model({
+      "profile": {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final key = model.getValue("profile[1]._key");
+    expect(key, "emails");
+  });
+
+  test("Assert map 'value' is returned when referencing map 'value' by index", () {
+    final model = Model({
+      "profile": {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final value = model.getValue("profile[1]._value");
+    expect(value, [ "1@example.com", "2@example.com" ]);
+  });
+
+  test('Assert MapEntry is returned when referencing map entries value by index', () {
+    final model = Model({
+      "profile": const {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final entry = model.getValue("profile[1]");
+    expect(entry.toString(), const MapEntry("emails", [ "1@example.com", "2@example.com" ]).toString());
+  });
+
+  test('Assert can access nested values from MapEntry using List index', () {
+    final model = Model({
+      "profile": const {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final email = model.getValue("profile[1][0]");
+    expect(email, "1@example.com");
+  });
+
+  test("Assert can access nested values from MapEntry using '_value' and List index", () {
+    final model = Model({
+      "profile": const {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final email = model.getValue("profile[1]._value[0]");
+    expect(email, "1@example.com");
+  });
+
+  test("Assert can access MapEntry using List index", () {
+    final model = Model({
+      "profile": const {
+        "username": "user1",
+        "emails": [ "1@example.com", "2@example.com" ]
+      }
+    });
+
+    final entry = model.getValue("profile[1]").toString();
+    expect(entry, const MapEntry(
+        "emails", [ "1@example.com", "2@example.com" ]
+    ).toString());
+  });
 }

@@ -1,12 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xml/xml.dart';
 
-
 import '../../lib/xwidget.dart';
 
-
 void main() {
-  test('Test map inside array', () {
+  test('Test map inside list', () {
     final deps = Dependencies();
     deps.setValue("users[0].name", "chris");
     expect(deps.getValue("users"), [{"name":"chris"}] );
@@ -53,7 +51,7 @@ void main() {
     final element = XmlElement(XmlName("ValueListener"));
     final valueListener = ValueListener(element: element, dependencies: deps, varName: "global.user");
     await tester.pumpWidget(valueListener);
-    expect(deps["global.user"].runtimeType.toString(), "DataValueNotifier");
+    expect(deps["global.user"].runtimeType.toString(), "ModelValueNotifier");
   });
 
   test('Test formatted data', () {

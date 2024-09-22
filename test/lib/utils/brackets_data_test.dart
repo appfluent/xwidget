@@ -4,7 +4,7 @@ import '../../../lib/xwidget.dart';
 
 
 main() {
-  test('Assert setValue', () {
+  test('Assert can get nested data', () {
     final account = Account({"number": "001", "amount": 99999999999999});
     final user = User({"name": "Chris", "account": account});
 
@@ -13,15 +13,16 @@ main() {
   });
 }
 
-
 class User extends Model {
   String get name => this["name"];
   String get account => this["account"];
-  User(Map<String, dynamic> super.params, [super.immutable = true]);
+
+  User(super.data);
 }
 
 class Account extends Model {
   String get number => this["number"];
   int get amount => this["amount"];
-  Account(Map<String, dynamic> super.params, [super.immutable = true]);
+
+  Account(super.data);
 }

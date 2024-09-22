@@ -1,3 +1,15 @@
+### 0.0.44 (August 23, 2024)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Added ability for models to transform data during import using `PropertyTransformer`
+  and `PropertyTranslation`. This lays the groundwork for auto generating models.
+  Please see the Loading Data guide for more information.
+* Export math and misc functions.
+* Allow EL `==` expressions to compare `enum` to `String`.
+* Fixed `<param>` bug where null values where defaulted to an empty string (`""`).
+* Documentation updates
+
 ### 0.0.43 (July 16, 2024)
 
 #### Please run `dart run xwidget:generate` after upgrading.

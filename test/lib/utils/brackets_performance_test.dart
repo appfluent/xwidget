@@ -26,16 +26,3 @@ main() {
     expect(millis, {'topicsFollowed': {'top_news': true}});
   });
 }
-
-
-class User extends Model {
-  String get name => this["name"];
-  String get account => this["account"];
-  User(Map<String, dynamic> params, [bool immutable = true]): super(params, immutable);
-}
-
-class Account extends Model {
-  String get number => this["number"];
-  int get amount => this["amount"];
-  Account(Map<String, dynamic> super.params, [super.immutable = true]);
-}

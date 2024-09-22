@@ -1,6 +1,6 @@
 import 'package:petitparser/petitparser.dart';
 
-import '../utils/model.dart';
+import '../../xwidget.dart';
 import 'expressions/conditional_expression.dart';
 import 'expressions/equal_to.dart';
 import 'expressions/dynamic.dart';
@@ -199,38 +199,14 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   @override
   Parser reference() => super.reference().map((reference) {
-    final referenceRoot = reference[0];
-    final referenceParts = reference[1];
-    final resolved = _getDataStore(referenceRoot);
-    var value = resolved.key != "" ? resolved.value[resolved.key] : resolved.value;
-    if (value != null) {
-      // root value is not null
-      value = value is ModelValueNotifier ? value.value : value;
-      for (final nextParts in referenceParts) {
-        // process the remaining parts of the identifier
-        final nextKey = nextParts[1];
-        if (nextKey != null && value != null) {
-          final key = nextKey is Expression ? nextKey.evaluate() : nextKey;
-          if (value is List && key is int && key >= value.length) {
-            // List index is out of range
-            value = null;
-            break;
-          } else if (value is List && key is! int){
-            // List index is not an integer
-            throw Exception("Cannot reference List '${resolved.key}' using "
-                "non-integer index '$key'.");
-          } else {
-            // looks good - proceed
-            value = value[key];
-            value = value is ModelValueNotifier ? value.value : value;
-          }
-        } else {
-          value = null;
-          break;
-        }
-      }
+    try {
+      final path = _joinReference(reference);
+      final store = _getDataStore(path);
+      final value = store.value.getValue(store.key);
+      return ConstantExpression(value);
+    } catch(e) {
+      print(e);
     }
-    return ConstantExpression(value);
   });
 
   @override
@@ -275,6 +251,22 @@ class ELParserDefinition extends ELGrammarDefinition {
   //===================================
   // private methods
   //===================================
+
+  String _joinReference(List reference) {
+    String str = "";
+    for (final item in reference) {
+      if (item is String) {
+        str += item;
+      } else if (item is ConstantExpression) {
+        str += item.value.toString();
+      } else if (item is List) {
+        str += _joinReference(item);
+      } else {
+        throw Exception("Unknown reference item type ${item.runtimeType}.");
+      }
+    }
+    return str;
+  }
 
   Expression _createFunctionExpression(String functionName, List<Expression> parameters) {
     final resolved = _getDataStore(functionName);

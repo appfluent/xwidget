@@ -14,7 +14,15 @@ import 'parsers.dart';
  const millisMins = 60000;
  const millisSecs = 1000;
 
-bool? toBool(dynamic value) {
+bool? toBool(
+  dynamic value, [
+  Set<dynamic>? trueValues,
+  Set<dynamic>? falseValues
+]) {
+  if (trueValues != null || falseValues != null) {
+    return trueValues?.contains(value) == true &&
+        falseValues?.contains(value) == false;
+  }
   if (value == null) return null;
   if (value is bool) return value;
   if (value is int) return value != 0;

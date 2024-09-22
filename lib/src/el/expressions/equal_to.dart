@@ -16,9 +16,18 @@ class EqualToExpression extends Expression<bool> {
     if (leftValue == null) return false;
     if (rightValue == null) return false;
 
-    if (leftValue is DateTime && rightValue is DateTime) return leftValue.isAtSameMomentAs(rightValue);
-    if (leftValue is String && rightValue is String) return leftValue.compareTo(rightValue) == 0;
-
+    if (leftValue is DateTime && rightValue is DateTime) {
+      return leftValue.isAtSameMomentAs(rightValue);
+    }
+    if (leftValue is String && rightValue is String) {
+      return leftValue.compareTo(rightValue) == 0;
+    }
+    if (leftValue is Enum && rightValue is String) {
+      return leftValue.name == rightValue;
+    }
+    if (leftValue is String && rightValue is Enum) {
+      return leftValue == rightValue.name;
+    }
     return leftValue == rightValue;
   }
 }

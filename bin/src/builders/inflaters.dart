@@ -269,7 +269,7 @@ class InflaterBuilder extends SpecBuilder {
       // expecting an InstanceCreationExpressionImpl object
       final expression = variable.constantInitializer;
 
-      return expression != null ? expression.toString() : null;
+      return expression?.toString();
     } on NoSuchMethodError catch (_) {
       // ignore this error because we're hacking the analyzer to retrieve
       // a property that is not exposed by the api.
