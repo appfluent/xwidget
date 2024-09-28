@@ -10,3 +10,10 @@ dart run tool/markdown.dart -f README.md
 ```shell
 dart pub publish --dry-run
 ```
+
+### Delete tag
+
+```shell
+git push --delete origin TAGNAME
+git tag -d TAGNAME
+```
