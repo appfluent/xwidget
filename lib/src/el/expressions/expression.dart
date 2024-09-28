@@ -1,13 +1,18 @@
-abstract class Expression<T> {
-  T evaluate();
+import '../../xwidget.dart';
 
-  static T evaluateValue<T>(dynamic value) {
+abstract class Expression<T> {
+  T evaluate(Dependencies dependencies);
+
+  T evaluateValue<T>(dynamic value, Dependencies dependencies) {
     if (value is Expression) {
-      final result = value.evaluate();
-      if (result is T) return result;
+      final result = value.evaluate(dependencies);
+      if (result is T) {
+        return result;
+      }
     } else if (value is T) {
       return value;
     }
-    throw Exception("Unexpected type for $value. Was expecting a subclass of 'Expression<$T>' or '$T'");
+    throw Exception("Unexpected type for $value. Was expecting a subclass"
+        " of 'Expression<$T>' or '$T'");
   }
 }

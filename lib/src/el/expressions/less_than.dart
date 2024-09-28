@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class LessThanExpression extends Expression<bool> {
@@ -7,9 +8,9 @@ class LessThanExpression extends Expression<bool> {
   LessThanExpression(this.left, this.right);
 
   @override
-  bool evaluate() {
-    final leftValue = Expression.evaluateValue(left);
-    final rightValue = Expression.evaluateValue(right);
+  bool evaluate(Dependencies dependencies) {
+    final leftValue = evaluateValue(left, dependencies);
+    final rightValue = evaluateValue(right, dependencies);
 
     // check null conditions
     if (leftValue == null && rightValue == null) return false;

@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class ConversionExpression<TFrom, TTo extends TFrom> extends Expression<TTo> {
@@ -6,7 +7,7 @@ class ConversionExpression<TFrom, TTo extends TFrom> extends Expression<TTo> {
   ConversionExpression(this.value);
 
   @override
-  TTo evaluate() {
-    return value.evaluate() as TTo;
+  TTo evaluate(Dependencies dependencies) {
+    return value.evaluate(dependencies) as TTo;
   }
 }

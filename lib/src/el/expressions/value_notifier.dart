@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class ValueNotifierExpression<T> extends Expression<T> {
@@ -8,7 +9,7 @@ class ValueNotifierExpression<T> extends Expression<T> {
   ValueNotifierExpression(this.value);
 
   @override
-  T evaluate() {
+  T evaluate(Dependencies dependencies) {
     return value.value;
   }
 }

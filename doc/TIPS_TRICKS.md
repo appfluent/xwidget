@@ -1,14 +1,14 @@
 # Tips and Tricks
 
-### Regenerate inflaters after upgrading Flutter
+## Regenerate inflaters after upgrading Flutter
 
 *Add documentation here.*
 
-### Use controllers to create reusable components
+## Use controllers to create reusable components
 
 *Add documentation here.*
 
-### Specify generic types with literals when your model is mutable.
+## Specify generic types with literals when your model is mutable.
 
 When listening for changes using `<ValueListener>` or `listenForChanges`, XWidget wraps a
 `ModelValueNotifier` around the data that is being listening to. Therefore, it is important
@@ -37,7 +37,7 @@ final model = Model({
   }
 });
 // this now works.
-// NOTE: You typically wouldn't call `listenForChanges' directly. You would use <ValueListener> 
-// in your fragment instead.
+// NOTE: You typically wouldn't call `listenForChanges' directly. You would use
+// <ValueListener> in your fragment instead.
 final user1Notifier = model.listenForChanges("users.user1", null, null);
 ```

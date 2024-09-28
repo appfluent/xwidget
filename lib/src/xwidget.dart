@@ -86,6 +86,9 @@ class XWidget {
   /// DEFAULT: false
   static bool xmlCacheEnabled = true;
 
+  // EL parser
+  static final elParser = ELParserDefinition().build();
+
   //===================================
   // Public Methods
   //===================================
@@ -379,11 +382,8 @@ class XWidget {
 
   static dynamic parseExpression(String expression, Dependencies dependencies) {
     if (expression.isEmpty) return expression;
-
-    final parser = dependencies.getExpressionParser();
-    final result = parser.parse(expression);
-    if (result is Success) return result.value.evaluate();
-
+    final result = elParser.parse(expression);
+    if (result is Success) return result.value.evaluate(dependencies);
     throw Exception("Failed to parse EL expression '$expression'. ${result.message}");
   }
 
@@ -490,7 +490,6 @@ class InflaterDef {
 }
 
 class Dependencies {
-  static const _expressionParser = "_expressionParser";
   static final _globalData = <String, dynamic>{};
 
   final _data = <String, dynamic>{};
@@ -542,7 +541,9 @@ class Dependencies {
   /// For example, `dependencies.getValue('user.email[0]');`
   dynamic getValue(String path) {
     final resolved = _getDataStore(path);
-    return resolved.value.getValue(resolved.key);
+    return resolved.key.isNotEmpty
+        ? resolved.value.getValue(resolved.key)
+        : resolved.value;
   }
 
   /// Removes the dependency referenced by [key].
@@ -576,18 +577,6 @@ class Dependencies {
     }
   }
 
-  /// Gets the expression parser bound to this instance, or creates and binds a
-  /// new one if one doesn't exist.
-  Parser getExpressionParser() {
-    var parser = _data[_expressionParser];
-    if (parser == null) {
-      final definition = ELParserDefinition(data: _data, globalData: _globalData);
-      parser = definition.build();
-      _data[_expressionParser] = parser;
-    }
-    return parser as Parser;
-  }
-
   /// Creates a shallow copy.
   ///
   /// The copy excludes the expression parser, if there is one, because the
@@ -595,7 +584,6 @@ class Dependencies {
   /// created and bound to the copy when needed.
   Dependencies copy({Map<String, dynamic>? addData, List<String>? preserveData}) {
     final copy = Dependencies(_data);
-    copy._data.remove(_expressionParser);
     if (addData != null) {
       copy._data.addAll(addData);
       if (preserveData != null) {

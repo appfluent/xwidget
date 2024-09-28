@@ -36,7 +36,11 @@ class ELGrammarDefinition extends GrammarDefinition {
 
   Parser literal() => ref1(
       token,
-      ref0(doubleNumber) | ref0(integerNumber) | ref0(boolTrue) | ref0(boolFalse) | ref0(singleLineString)
+      ref0(doubleNumber) |
+      ref0(integerNumber) |
+      ref0(boolTrue) |
+      ref0(boolFalse) |
+      ref0(singleLineString)
   );
 
   Parser identifier() =>
@@ -44,8 +48,16 @@ class ELGrammarDefinition extends GrammarDefinition {
       (ref0(letterOrUnderscore) | ref0(digit)).star()).flatten();
 
   Parser reference() =>
+      ref0(identifier) & ref0(referenceSubPath);
+
+  Parser referenceSubPath() =>
+      (ref0(arrayReference) | (char('.') & (ref0(functionReference) | ref0(identifier)))).star();
+
+  Parser functionReference() =>
       ref0(identifier) &
-      (ref0(arrayReference) | (char('.') & ref0(identifier))).star();
+      ref1(token, '(') &
+      ref0(functionParameters).optional() &
+      ref1(token, ')');
 
   Parser arrayReference() =>
       char('[') &
@@ -77,7 +89,7 @@ class ELGrammarDefinition extends GrammarDefinition {
   Parser unaryNegateOperator() => ref1(token, '-') | ref1(token, '!');
 
   Parser expressionInParentheses() =>
-      ref1(token, '(') & ref0(expression) & ref1(token, ')');
+      ref1(token, '(') & ref0(expression) & ref1(token, ')') & ref0(referenceSubPath);
 
   Parser expression() => ref0(conditionalExpression);
 

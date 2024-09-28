@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class AdditionExpression extends Expression<dynamic> {
@@ -7,9 +8,9 @@ class AdditionExpression extends Expression<dynamic> {
   AdditionExpression(this.left, this.right);
 
   @override
-  dynamic evaluate() {
-    final leftValue = Expression.evaluateValue(left);
-    final rightValue = Expression.evaluateValue(right);
+  dynamic evaluate(Dependencies dependencies) {
+    final leftValue = evaluateValue(left, dependencies);
+    final rightValue = evaluateValue(right, dependencies);
 
     if (leftValue == null && rightValue == null) return null;
     if (leftValue == null) return rightValue;

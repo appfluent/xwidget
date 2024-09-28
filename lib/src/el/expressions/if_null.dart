@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class IfNullExpression extends Expression {
@@ -7,7 +8,7 @@ class IfNullExpression extends Expression {
   IfNullExpression(this.left, this.right);
 
   @override
-  dynamic evaluate() {
-    return left.evaluate() ?? right.evaluate();
+  dynamic evaluate(Dependencies dependencies) {
+    return left.evaluate(dependencies) ?? right.evaluate(dependencies);
   }
 }

@@ -1,4 +1,14 @@
-### 0.0.44 (August 23, 2024)
+### 0.0.45 (September 28, 2024)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Added EL functions to references i.e. `person.name.toUpperCase()`.
+* Added EL functions to parenthesis expressions i.e. `('abc' + 'xyz').toUpperCase()`. 
+* Minor performance improvements to EL parsing. Using a singleton instead of creating a new
+  parser for each `Dependency` instance.
+* Documentation
+
+### 0.0.44 (September 21, 2024)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
 
@@ -7,7 +17,7 @@
   Please see the Loading Data guide for more information.
 * Export math and misc functions.
 * Allow EL `==` expressions to compare `enum` to `String`.
-* Fixed `<param>` bug where null values where defaulted to an empty string (`""`).
+* Fixed `<param>` bug where null values were defaulted to an empty string (`""`).
 * Documentation updates
 
 ### 0.0.43 (July 16, 2024)

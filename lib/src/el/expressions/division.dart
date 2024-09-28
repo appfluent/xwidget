@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class DivisionExpression extends Expression<dynamic> {
@@ -7,9 +8,9 @@ class DivisionExpression extends Expression<dynamic> {
   DivisionExpression(this.left, this.right);
 
   @override
-  dynamic evaluate() {
-    final leftValue = Expression.evaluateValue(left);
-    final rightValue = Expression.evaluateValue(right);
+  dynamic evaluate(Dependencies dependencies) {
+    final leftValue = evaluateValue(left, dependencies);
+    final rightValue = evaluateValue(right, dependencies);
 
     if (leftValue == null) throw Exception("Dividend cannot be 'null'");
     if (rightValue == null) throw Exception("Divisor cannot be 'null'");

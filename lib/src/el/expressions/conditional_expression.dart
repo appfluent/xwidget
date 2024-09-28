@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class ConditionalExpression<T> extends Expression<T> {
@@ -8,7 +9,9 @@ class ConditionalExpression<T> extends Expression<T> {
   ConditionalExpression(this.condition, this.trueValue, this.falseValue);
 
   @override
-  T evaluate() {
-    return condition.evaluate() ? trueValue.evaluate() : falseValue.evaluate();
+  T evaluate(Dependencies dependencies) {
+    return condition.evaluate(dependencies)
+        ? trueValue.evaluate(dependencies)
+        : falseValue.evaluate(dependencies);
   }
 }

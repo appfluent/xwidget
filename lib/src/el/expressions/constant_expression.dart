@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class ConstantExpression<T> extends Expression<T> {
@@ -6,7 +7,7 @@ class ConstantExpression<T> extends Expression<T> {
   ConstantExpression(this.value);
 
   @override
-  T evaluate() {
+  T evaluate(Dependencies dependencies) {
     return value;
   }
 }

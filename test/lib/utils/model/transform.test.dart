@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:type_plus/type_plus.dart';
 
 import '../../../../lib/xwidget.dart' hide startsWith;
 import '../../testing_utils.dart';

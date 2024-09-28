@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class NegationExpression extends Expression<dynamic> {
@@ -6,8 +7,8 @@ class NegationExpression extends Expression<dynamic> {
   NegationExpression(this.value);
 
   @override
-  dynamic evaluate() {
-    final evaluated = Expression.evaluateValue(value);
+  dynamic evaluate(Dependencies dependencies) {
+    final evaluated = evaluateValue(value, dependencies);
 
     // check for null
     if (evaluated == null) return null;

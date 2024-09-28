@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class MutableExpression<T> extends Expression<T> {
@@ -6,7 +7,7 @@ class MutableExpression<T> extends Expression<T> {
   MutableExpression(this.value);
 
   @override
-  T evaluate() {
+  T evaluate(Dependencies dependencies) {
     return value;
   }
 

@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class NullableToNonNullableExpression<T> extends Expression<T> {
@@ -6,8 +7,8 @@ class NullableToNonNullableExpression<T> extends Expression<T> {
   NullableToNonNullableExpression(this.value);
 
   @override
-  T evaluate() {
-    var result = value.evaluate();
+  T evaluate(Dependencies dependencies) {
+    var result = value.evaluate(dependencies);
     if (result == null) {
       throw Exception('Instance of type $T is null and can\'t be converted to non-nullable');
     }

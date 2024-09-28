@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class LogicalOrExpression extends Expression<bool> {
@@ -7,7 +8,7 @@ class LogicalOrExpression extends Expression<bool> {
   LogicalOrExpression(this.left, this.right);
 
   @override
-  bool evaluate() {
-    return left.evaluate() || right.evaluate();
+  bool evaluate(Dependencies dependencies) {
+    return left.evaluate(dependencies) || right.evaluate(dependencies);
   }
 }

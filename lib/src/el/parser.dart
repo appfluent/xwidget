@@ -1,9 +1,8 @@
 import 'package:petitparser/petitparser.dart';
 
-import '../../xwidget.dart';
 import 'expressions/conditional_expression.dart';
+import 'expressions/dynamic_function.dart';
 import 'expressions/equal_to.dart';
-import 'expressions/dynamic.dart';
 import 'expressions/if_null.dart';
 import 'expressions/less_than.dart';
 
@@ -20,22 +19,12 @@ import 'expressions/logical_or.dart';
 import 'expressions/modulo.dart';
 import 'expressions/multiplication.dart';
 import 'expressions/negation.dart';
+import 'expressions/reference.dart';
 import 'expressions/subtraction.dart';
-import 'functions.dart';
 import 'grammar.dart';
 
 class ELParserDefinition extends ELGrammarDefinition {
-  final Map<String, dynamic> data;
-  final Map<String, dynamic> globalData;
-  late final BuiltInFunctions _builtInFunctions;
   late Parser _parser;
-
-  ELParserDefinition({
-    required this.data,
-    required this.globalData,
-  }) {
-    _builtInFunctions = BuiltInFunctions(_getParser);
-  }
 
   @override
   Parser<T> build<T>({
@@ -98,7 +87,9 @@ class ELParserDefinition extends ELGrammarDefinition {
   });
 
   @override
-  Parser expressionInParentheses() => super.expressionInParentheses().map((c) => c[1]);
+  Parser expressionInParentheses() => super.expressionInParentheses().map((c) {
+    return ReferenceExpression(c[1], "", c[3]);
+  });
 
   @override
   Parser unaryExpression() => super.unaryExpression().map((c) {
@@ -199,14 +190,7 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   @override
   Parser reference() => super.reference().map((reference) {
-    try {
-      final path = _joinReference(reference);
-      final store = _getDataStore(path);
-      final value = store.value.getValue(store.key);
-      return ConstantExpression(value);
-    } catch(e) {
-      print(e);
-    }
+    return ReferenceExpression(null, reference[0], reference[1]);
   });
 
   @override
@@ -239,7 +223,9 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   @override
   Parser function() => super.function().map((c) {
-    return _createFunctionExpression(c[0], c[2] ?? []);
+    return c[0] == "eval"
+      ? EvalFunction(c[2][0], _parser)
+      : DynamicFunction(c[0], null, c[2]);
   });
 
   @override
@@ -247,45 +233,4 @@ class ELParserDefinition extends ELGrammarDefinition {
 
   @override
   Parser boolFalse() => super.boolFalse().map((c) => ConstantExpression<bool>(c.value != 'false'));
-
-  //===================================
-  // private methods
-  //===================================
-
-  String _joinReference(List reference) {
-    String str = "";
-    for (final item in reference) {
-      if (item is String) {
-        str += item;
-      } else if (item is ConstantExpression) {
-        str += item.value.toString();
-      } else if (item is List) {
-        str += _joinReference(item);
-      } else {
-        throw Exception("Unknown reference item type ${item.runtimeType}.");
-      }
-    }
-    return str;
-  }
-
-  Expression _createFunctionExpression(String functionName, List<Expression> parameters) {
-    final resolved = _getDataStore(functionName);
-    final func = _builtInFunctions[functionName] ?? resolved.value[resolved.key];
-    if (func != null) {
-      if (func is Function) {
-        return DynamicFunction(func, parameters);
-      }
-      throw Exception("Not a function: '$functionName'\n$func");
-    }
-    throw Exception("Function not found: '$functionName'");
-  }
-
-  /// Gets local or global data depending on the key prefix
-  MapEntry<String, Map<String, dynamic>> _getDataStore(String key) {
-    if (key == "global") return MapEntry("", globalData);
-    if (key.startsWith("global.")) return MapEntry(key.substring(7), globalData);
-    return MapEntry(key, data);
-  }
-
-  Parser _getParser() => _parser;
 }

@@ -1,3 +1,4 @@
+import '../../xwidget.dart';
 import 'expression.dart';
 
 class ModuloExpression extends Expression<dynamic> {
@@ -7,9 +8,9 @@ class ModuloExpression extends Expression<dynamic> {
   ModuloExpression(this.left, this.right);
 
   @override
-  dynamic evaluate() {
-    final leftValue = Expression.evaluateValue(left);
-    final rightValue = Expression.evaluateValue(right);
+  dynamic evaluate(Dependencies dependencies) {
+    final leftValue = evaluateValue(left, dependencies);
+    final rightValue = evaluateValue(right, dependencies);
 
     // check null conditions
     if (leftValue == null) throw Exception("Dividend cannot be 'null'");
