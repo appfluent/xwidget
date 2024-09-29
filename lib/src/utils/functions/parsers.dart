@@ -307,7 +307,7 @@ InputBorder? parseInputBorder(String? value) {
   return null;
 }
 
-int? parseInt(String? value, {int radix = 10}) {
+int? parseInt(String? value, {int? radix}) {
   if (value != null && value.isNotEmpty) {
     return int.parse(value, radix: radix);
   }

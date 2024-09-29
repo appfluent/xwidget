@@ -1,14 +1,18 @@
-### 0.0.45 (September 28, 2024)
+### 0.0.46 (Sep 28, 2024)
+
+* Fixed `parseInt` bug.
+
+### 0.0.45 (Sep 28, 2024)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
 
-* Added EL functions to references i.e. `person.name.toUpperCase()`.
-* Added EL functions to parenthesis expressions i.e. `('abc' + 'xyz').toUpperCase()`. 
+* Added EL functions to references i.e. `${person.name.toUpperCase()}`.
+* Added EL functions to parenthesis expressions i.e. `${('abc' + 'xyz').toUpperCase()}`. 
 * Minor performance improvements to EL parsing. Using a singleton instead of creating a new
-  parser for each `Dependency` instance.
+  parser for each `Dependencies` instance.
 * Documentation
 
-### 0.0.44 (September 21, 2024)
+### 0.0.44 (Sep 21, 2024)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
 
@@ -20,7 +24,7 @@
 * Fixed `<param>` bug where null values were defaulted to an empty string (`""`).
 * Documentation updates
 
-### 0.0.43 (July 16, 2024)
+### 0.0.43 (Jul 16, 2024)
 
 #### Please run `dart run xwidget:generate` after upgrading.
 
@@ -32,7 +36,7 @@
 * Updated EL arithmetic operators (`+`,`-`,`*`,`/`,`%`,`~/`) to work with any class that
   overrides them.
 
-### 0.0.42 (July 2, 2024)
+### 0.0.42 (Jul 2, 2024)
 
 #### Please run `dart run xwidget:generate` after upgrading.
 
@@ -220,14 +224,14 @@
     "MaterialStateProperty<Size>": "parseMaterialStateSize(value)"
   ```
 
-### 0.0.38 (April 29, 2024)
+### 0.0.38 (Apr 29, 2024)
 
 * Fixed EL `RangeError` when referencing data using an out of range index i.e. `${items[2].name}`
   where `items.length == 2` now returns a null. This is consistent with how null property
   references are handled i.e `${person.name}` where `person == null`. Maybe in the future we'll add
   a `strict` mode that throws Exceptions.
 
-### 0.0.37 (March 28, 2024)
+### 0.0.37 (Mar 28, 2024)
 
 * Added `toDouble` and `toInt` EL functions.
 * Minor documentation updates
