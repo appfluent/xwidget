@@ -1,3 +1,10 @@
+### 0.0.47 (Oct 11, 2024)
+
+* Fixed project initialization script bug.
+* Created an Android Studio plugin for XWidget. Go to 'Settings' -> 'Plugins' -> 'Marketplace'
+  and search for XWidget. It's free, so check it out!
+  [Flutter XWidget plugin](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)
+
 ### 0.0.46 (Sep 28, 2024)
 
 * Fixed `parseInt` bug.

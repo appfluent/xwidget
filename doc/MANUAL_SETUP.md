@@ -108,3 +108,7 @@ setup a new project.
      return XWidget.inflateFragment("hello_world", Dependencies()); 
    }
    ```
+
+Don't forget to install the [Flutter XWidget](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)
+plugin for Android Studio. It provides EL syntax highlighting, contextual navigation, component
+generation and more.

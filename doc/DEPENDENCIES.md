@@ -10,7 +10,7 @@ received from a previous *inflate* method invocation.
 ### `copy`
 ### `inherit`
 ### `new`
-### `Auto Scoped
+### Auto Scope
 
 ## Features
 

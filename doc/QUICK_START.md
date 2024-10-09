@@ -39,6 +39,10 @@ below.
     ```shell
     $ dart run xwidget:generate --only inflaters
     ```
-   
+
+5. Install the [Flutter XWidget](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)
+   plugin for Android Studio. This step is optional, but recommended. It provide EL syntax
+   highlighting, contextual navigation, component generation and more.
+
    See [Inflaters](#inflaters), [Components](#components) and [Fragments](#fragments) for
    more information.

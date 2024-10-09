@@ -22,7 +22,7 @@ const initFiles = {
   "$exampleDir/lib/xwidget/icon_spec.dart": "lib/xwidget/icon_spec.dart",
   "$exampleDir/lib/xwidget/inflater_spec.dart": "lib/xwidget/inflater_spec.dart",
   "$exampleDir/resources/values/colors.xml": "resources/values/colors.xml",
-  "$exampleDir/resources/values/strings.xml": "resources/values/string.xml",
+  "$exampleDir/resources/values/strings.xml": "resources/values/strings.xml",
 };
 
 const newAppFiles = {
