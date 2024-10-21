@@ -1,8 +1,13 @@
-### 0.0.47 (Oct 11, 2024)
+### 0.0.48 (Oct 21, 2024)
+
+* Fixed a bug where duplicate inflater declarations would generate invalid code.
+* Fixed a bug where duplicate icon declarations would generate duplicate code.
+
+### 0.0.47 (Oct 8, 2024)
 
 * Fixed project initialization script bug.
 * Created an Android Studio plugin for XWidget. Go to 'Settings' -> 'Plugins' -> 'Marketplace'
-  and search for XWidget. It's free, so check it out!
+  and search for 'XWidget'. It's free, so check it out!
   [Flutter XWidget plugin](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)
 
 ### 0.0.46 (Sep 28, 2024)

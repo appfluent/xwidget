@@ -38,7 +38,7 @@ class IconsBuilder extends SpecBuilder {
                 final classElements = <ClassElement>[];
                 if (element.name == "icons") {
                   // found a list of icons
-                  final icons = element.variable.computeConstantValue()?.toListValue();
+                  final icons = element.variable.computeConstantValue()?.toListValue()?.toSet();
                   if (icons != null) {
                     for (final icon in icons) {
                       final variable = icon.variable;

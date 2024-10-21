@@ -56,7 +56,7 @@ class InflaterBuilder extends SpecBuilder {
                 final inflaterTypes = <InflaterType>[];
                 if (element.name == "inflaters") {
                   // found a list of inflaters
-                  final computedValues = element.variable.computeConstantValue()?.toListValue();
+                  final computedValues = element.variable.computeConstantValue()?.toListValue()?.toSet();
                   if (computedValues != null) {
                     for (final computedValue in computedValues) {
                       final typeValue = computedValue.toTypeValue();
