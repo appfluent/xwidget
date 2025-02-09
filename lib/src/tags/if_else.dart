@@ -1,6 +1,6 @@
 import 'package:xml/xml.dart';
 
-import '../xwidget.dart';
+import '../../xwidget.dart';
 
 /// A pair of tags that conditionally render portions of the UI.
 ///

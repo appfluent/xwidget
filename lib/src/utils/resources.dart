@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:xml/xml.dart';
+import 'package:xwidget_el/xwidget_el.dart';
 
 import 'extensions.dart';
 import 'path.dart';
-import 'functions/validators.dart';
+
 
 class Resources {
   static final instance = Resources()..addResourceBundles([

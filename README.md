@@ -1,6 +1,8 @@
-<!-- This file includes generated content. Run 'dart run tool/markdown -f' to update this file. -->
+<!-- This file was generated. Run 'dart run tool/markdown.dart -i doc/README.md -o README.md' to update this file. -->
 
-<!-- #include doc/HEADER.md -->
+<!-- README.md template -->
+
+<!-- #include HEADER.md -->
 <p align="center">
     <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/doc/assets/xwidget_logo_full.png"
         alt="XWidget Logo"
@@ -24,7 +26,7 @@
 ### *Note: This document is very much still a work in progress.*
 <!-- // end of #include -->
 
-<!-- #include doc/INTRO.md -->
+<!-- #include INTRO.md -->
 # What is XWidget?
 
 XWidget is a not-so-opinionated library for building dynamic UIs in Flutter using an expressive,
@@ -60,7 +62,7 @@ helper classes in your configuration will bloat your app size. This is because c
 every component you specify and thus neutralizes Flutter's tree-shaking.
 <!-- // end of #include -->
 
-<!-- #include doc/TOC.md -->
+<!-- #include TOC.md -->
 # Table of Contents
 
 1. [Quick Start](#quick-start)
@@ -123,7 +125,7 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
 20. [Known Issues](#known-issues)
 <!-- // end of #include -->
 
-<!-- #include doc/QUICK_START.md -->
+<!-- #include QUICK_START.md -->
 # Quick Start
 
 This Quick Start guide will help you get up and running with XWidget in just a few minutes. For a
@@ -174,7 +176,7 @@ below.
    more information.
 <!-- // end of #include -->
 
-<!-- #include doc/MANUAL_SETUP.md -->
+<!-- #include MANUAL_SETUP.md -->
 # Manual Setup
 
 This Manual Setup guide primarily exists to give you a deeper understanding of how XWidget is
@@ -291,8 +293,7 @@ plugin for Android Studio. It provides EL syntax highlighting, contextual naviga
 generation and more.
 <!-- // end of #include -->
 
-
-<!-- #include doc/EXAMPLE.md -->
+<!-- #include EXAMPLE.md -->
 # Example
 
 Please see the [example](https://github.com/appfluent/xwidget/tree/main/example) folder of this
@@ -311,7 +312,7 @@ Here are some apps using XWidget:
 - [MoneyMagnate (Google Play)](https://play.google.com/store/apps/details?id=us.appfluent.moneymagnate.moneymagnate)
 <!-- // end of #include -->
 
-<!-- #include doc/CONFIGURATION.md -->
+<!-- #include CONFIGURATION.md -->
 # Configuration
 
 By default, XWidget's code generator looks for a custom configuration file named `xwidget_config.yaml`
@@ -491,7 +492,7 @@ const iconSets = [
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/CODE_GENERATION.md -->
+<!-- #include CODE_GENERATION.md -->
 # Code Generation
 
 *Add documentation here.*
@@ -517,7 +518,7 @@ $ dart run xwidget:generate --allow-deprecated
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/INFLATERS.md -->
+<!-- #include INFLATERS.md -->
 # Inflaters
 
 Inflaters are the heart of XWidget. They are responsible for building the UI at runtime by parsing
@@ -626,106 +627,119 @@ Next, you'll need to make sure you import the dart file that contains your parse
 *Add documentation here.*
 <!-- // end of #include -->
 
-<!-- #include doc/DEPENDENCIES.md -->
+<!-- #include DEPENDENCIES.md -->
 # Dependencies
 
-In the context of XWidget, dependencies are data, objects, and functions needed to render a fragment.
-The ```Dependencies``` object, at its core, is just a map of dependencies as defined above. Every
-*inflate* method call requires a ```Dependencies``` object. It can be a new instance or one that was
-received from a previous *inflate* method invocation.
+The Dependencies class provides a structured and dynamic way to store and manage data, objects,
+and functions used in expression evaluation. At its core, it functions as a flexible key-value map,
+allowing nested data access via dot and bracket notation. Reads automatically resolve to null if
+a collection does not exist, while writes create the necessary structures. This makes handling
+complex data models seamless and intuitive.
 
-## Scoping
+Beyond standard mapping behavior, Dependencies supports global data that can be shared across
+instances, simplifying cross-component communication. It also integrates with listeners to
+enable UI updates when data changes, making it a powerful tool for reactive applications.
+Additionally, while Dependencies supports the bracket operator ([]), it maintains ordinary
+map behavior, ensuring compatibility with traditional Dart collections.
 
-### `copy`
-### `inherit`
-### `new`
-### Auto Scope
+## Dot/Bracket Notation
 
-## Features
+Values can be referenced using dot/bracket notation for easy access to nested collections. Nulls
+are handled automatically. If the underlying collection does not exist, reads will resolve to
+null and writes will create the appropriate collections and store the data.
 
-```Dependencies``` objects have a few characteristics that make them a little more interesting than plain
-old maps.
+```dart
+// example using setValue
+final dependencies = Dependencies();
+dependencies.setValue("users[0].name", "John Flutter");
+dependencies.setValue("users[0].email", "name@example.com");
 
-1. Values can be referenced using dot/bracket notation for easy access to nested collections. Nulls
-   are handled automatically. If the underlying collection does not exist, reads will resolve to
-   null and writes will create the appropriate collections and store the data.<br><br>
+print(dependencies.getValue("users"));
+```
 
-   Dart example:
-   ```dart
-   // example using setValue
-   final dependencies = Dependencies();
-   dependencies.setValue("users[0].name", "John Flutter");
-   dependencies.setValue("users[0].email", "name@example.com");
-   
-   print(dependencies.getValue("users[0].name"));
-   print(dependencies.getValue("users[0].email"));
-   ```
-   Or you could use the constructor:
-   ```dart
-   // example setting values via Dependencies constructor
-   final dependencies = Dependencies({
-     "users[0].name": "John Flutter",
-     "users[0].email": "name@example.com"
-   });
-   
-   print(dependencies.getValue("users[0].name"));
-   print(dependencies.getValue("users[0].email"));
-   ```
-   Markup usage example:
-   ```xml
-   <!-- example iterating over a collection -->
-   <forEach var="user" items="${users}">
-     <Row>
-       <Text data="${user.name}"/>
-       <Text data="${user.email}"/>
-     </Row>
-   </forEach>
-   ```
-2. Supports global data. Sometimes you just need to access data from multiple parts of an
-   application without a lot of fuss. Global data are accessible across all ```Dependencies```
-   instances by adding a ```global``` prefix to the key notation.<br><br>
+Or you could use the constructor:
 
-   Dart example:
-    ```dart
-   // example setting global values
-    final dependencies = Dependencies({
-      "global.users[0].name": "John Flutter",
-      "global.users[0].email": "name@example.com"
-    });
-   
-    print(dependencies.getValue("global.users[0].name"));
-    print(dependencies.getValue("global.users[0].email"));
-    ```
+```dart
+// example setting values via Dependencies constructor
+final dependencies = Dependencies({
+  "users[0].name": "John Flutter",
+  "users[0].email": "name@example.com"
+});
 
-   Markup usage example:
-   ```xml
-   <!-- example iterating over a global collection -->
-   <forEach var="user" items="${global.users}">
-     <Row>
-       <Text data="${user.name}"/>
-       <Text data="${user.email}"/>
-     </Row>
-   </forEach>
-   ```
-3. When combined with the ```ValueListener``` custom widget, the UI can listen for data changes and
-   update itself. In the following example, if the user's email address changes, then the ```Text```
-   widget is rebuilt.
+print(dependencies.getValue("users"));
+```
 
-   ```xml
-   <!-- example listening to value changes -->
-   <ValueListener varName="user.email">
-       <Text data="${user.email}"/>
-   </ValueListener>
-   ```
+Fragment usage example:
 
-**Note:** ```Dependencies``` also supports the bracket operator []; however, it behaves like an
-ordinary map.
+```xml
+<!-- example iterating over a collection -->
+<forEach var="user" items="${users}">
+  <Row>
+    <Text data="${user.name}"/>
+    <Text data="${user.email}"/>
+  </Row>
+</forEach>
+```
+
+**Note:** The Dependencies class supports the bracket operator ([]) directly, i.e.
+`dependencies[<key>]`, however, it functions like a standard map, without the advanced features
+provided by `getValue` and `setValue`.
+
+## Global Data
+
+Sometimes you just need to access data from multiple parts of an application without a lot
+of fuss. Global data are accessible across all ```Dependencies``` instances by adding a
+```global``` prefix to the key notation.
+
+```dart
+// example setting global values
+final dependencies = Dependencies({
+  "global.users[0].name": "John Flutter",
+  "global.users[0].email": "name@example.com"
+});
+
+print(dependencies.getValue("global.users"));
+```
+
+Fragment usage example:
+
+```xml
+<!-- example iterating over a global collection -->
+<forEach var="user" items="${global.users}">
+  <Row>
+    <Text data="${user.name}"/>
+    <Text data="${user.email}"/>
+  </Row>
+</forEach>
+```
+
+## Listen for Changes
+
+```dart
+// example listening to changes
+final dependencies = Dependencies({
+  "users[0].name": "John Flutter",
+  "users[0].email": "name@example.com"
+});
+```
+
+Fragment usage example:
+
+```xml
+<!-- example listening to value changes -->
+<ValueListener varName="user.email">
+    <Text data="${user.email}"/>
+</ValueListener>
+```
 <!-- // end of #include -->
 
-<!-- #include doc/MODEL.md -->
+<!-- #include MODEL.md -->
 # Model
 
-*Add documentation here.*
+The Model class serves as the base class for representing structured data in a standardized
+format. It provides a flexible and dynamic way to manage properties, offering built-in support
+for data transformation, instance management, and null safety. Models can be initialized with
+raw data maps and are equipped with utility methods to access and modify properties efficiently.
 
 ```dart
 class Topic extends Model {
@@ -733,7 +747,6 @@ class Topic extends Model {
   // getters
   String get key => getValue("key!");
   String get label => getValue("label!");
-  String get color => getValue("color!");
   String? get rank => getValue("rank");
 
   // setters
@@ -745,19 +758,20 @@ class Topic extends Model {
 
 ## Null Safety
 
-*Add documentation here.*
-
-### `!`
-
-### `?`
+The Model class ensures null safety through strict property access rules. The ! operator is used
+to assert that a value is non-null. When accessing properties using `getValue("property!")`,
+it enforces that the value must be present. If the value is missing, an error is thrown,
+helping developers catch issues early. Otherwise,
 
 ## Instance Management
 
-*Add documentation here.*
+Instance management ensures that models are consistently instantiated, avoiding duplicate objects
+representing the same data. The following factory methods facilitate controlled instance creation.
 
 ### `singleInstance`
 
-*Add documentation here.*
+Ensures that only one instance of a model exists for a given data set. If an instance already
+exists, it is returned instead of creating a new one.
 
 ```dart
 class Topic extends Model {
@@ -780,10 +794,11 @@ class Topic extends Model {
 
 ### `keyedInstance`
 
-*Add documentation here.*
+Creates and retrieves model instances based on a unique key. This ensures that multiple instances
+representing the same entity use the same underlying object.
 
 ```dart
-XWidget.registerModel<Topic>(Topic.new, const [
+Models.register<Topic>(Topic.new, const [
   PropertyTransformer<String>("key", isKey: true),
   PropertyTransformer<String?>("name"),
 ]);
@@ -808,35 +823,38 @@ class Topic extends Model {
 
 ### `hasInstance`
 
-*Add documentation here.*
+Checks whether an instance of a model exists for the given data. This is useful when determining
+whether to create a new instance or retrieve an existing one.
 
 ### `clearInstances`
 
-*Add documentation here.*
+Removes all stored instances, ensuring that future calls to singleInstance or keyedInstance
+generate new objects. This is useful for refreshing models when underlying data changes
+significantly.
 
 ## Loading Data
 
 When loading data into your models, you may need to first transform its structure or convert its
-properties to different types. To do this, use `PropertyTransformer` and `PropertyTranslation` 
+properties to different types. To do this, use `PropertyTransformer` and `PropertyTranslation`
 classes to define the target format and data mappings.
 
 ### PropertyTransformer
 
 Each `PropertyTransformer` instance represents a property in your model. It describes a property's
 name, data type, and default value. They define the structure of your model. When you register a
-model using `XWidget.registerModel()` you can optionally pass a list of `PropertyTransformer`s.
+model using `Models.register` you can optionally pass a list of `PropertyTransformer`s.
 These transformers will automatically be used whenever you create a new model instance.
 
 ```dart
 // register Content model class
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<List<Image>>("images"),
 ]);
 
 // register Image model class
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
     PropertyTransformer<String>("url"),
     PropertyTransformer<String?>("caption"),
     PropertyTransformer<bool>("active", defaultValue: true),
@@ -853,10 +871,10 @@ class Image extends Model {
 
 The following property types are natively supported:
 
-* Anything that extends `Model`, provided it's registered using with `XWidget.registerModel()`.
+* Anything that extends `Model`, provided it's registered using with `Models.register`.
 * The Basic types `String`, `int`, `double`, and `bool`.
 * The types `Color`, `DateTime`, and `Duration`.
-* The collections `List`, `Set` and `Map`. Prefer using a subclass of `Model` class over `Map`, 
+* The collections `List`, `Set` and `Map`. Prefer using a subclass of `Model` class over `Map`,
   if possible.
 * `List<List>` is not well supported at the moment
 * Custom types are supported by registering transform functions.
@@ -875,7 +893,7 @@ will default to using the same name for the source property.
 // translate 'firstName' to 'first' and 'lastName' to 'last' translation. Since all other source
 // property names match the target property names, they will be imported without translation.
 
-XWidget.registerModel<Person>(Person.new, const [
+Models.register<Person>(Person.new, const [
   PropertyTransformer<String>("first"),
   PropertyTransformer<String>("last"),
   PropertyTransformer<bool>("employee"),
@@ -907,13 +925,13 @@ expect(person, {
 ```dart
 // this example shows how to load data into a nested model, 'Image'.
 
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<Image>("image"),
 ]);
 
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
   PropertyTransformer<String>("url"),
   PropertyTransformer<String?>("caption"),
 ]);
@@ -946,13 +964,13 @@ expect(content, {
 ```dart
 // this example shows how to add multiple models to a List.
 
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<List<Image>>("images"),
 ]);
 
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
   PropertyTransformer<String>("url"),
   PropertyTransformer<String?>("caption"),
 ]);
@@ -991,13 +1009,13 @@ expect(content, {
 ```dart
 // this example shows how to add multiple unindexed models to a list.
 
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<List<Image>>("images"),
 ]);
 
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
   PropertyTransformer<String>("url"),
   PropertyTransformer<String?>("caption"),
 ]);
@@ -1035,15 +1053,15 @@ expect(model, {
 
 ### Type Converters
 
-When importing model data, XWidget converts source data types into the target's data types using
+When importing data, Model converts source data types into the target's data types using
 converter functions. There are preregistered converter functions for `String`, `int`,
 `double`, `bool`, `DateTime`, `Duration`, `Color` and `dynamic`. You can also define custom
-type converters using the `XWidget.registerTypeConverter` method. Typically, you should 
+type converters using the `TypeConverters.register` method. Typically, you should
 registration your custom functions in `main()`.
 
 ```dart
 main() {
-  XWidget.registerTypeConverter<Money>((value) {
+  TypeConverters.register<Money>((value) {
     if (value is Money) {
       return value;
     } else if (value is String) {
@@ -1058,45 +1076,55 @@ main() {
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/FRAGMENTS.md -->
+<!-- #include FRAGMENTS.md -->
 # Fragments
 
 *Add documentation here.*
 <!-- // end of #include -->
 
-<!-- #include doc/CONTROLLERS.md -->
+<!-- #include CONTROLLERS.md -->
 # Controllers
 
 *Add documentation here.*
 <!-- // end of #include -->
 
-<!-- #include doc/EL.md -->
+<!-- #include EL.md -->
 # Expression Language (EL)
 
-*Add documentation here.*
+XWidget EL is a powerful expression language that enables dynamic evaluation of expressions
+within a structured data model. It supports arithmetic, logical, conditional, relational
+operators, and functions, allowing for complex calculations and decision-making.
 
-### Operators
+Beyond evaluation, it supports model change notifications and model transformations,
+ensuring data-driven applications stay responsive, making it ideal for UI updates, workflow
+automation, reactive processing, real-time computation, and dynamic content adaptation.
+
+## Evaluation Rules
 
 Below is the operator precedence and associativity table. Operators are executed according
 to their precedence level. If two operators share an operand, the operator with higher precedence
 will be executed first. If the operators have the same precedence level, it depends on the
 associativity. Both the precedence level and associativity can be seen in the table below.
 
-| Level | Operator                   | Category                                  | Associativity |
-|-------|----------------------------|-------------------------------------------|---------------|
-| 10    | `()`<br>`[]`<br>`.`        | Function call, scope, array/member access |               |
-| 9     | `-expr`<br>`!expr`         | Unary Prefix                              |               |
-| 8     | `*`<br>`/`<br>`~/`<br>`%`  | Multiplicative                            | Left-to-right |
-| 7     | `+`<br>`-`                 | Additive                                  | Left-to-right |
-| 6     | `<`<br>`>`<br>`<=`<br>`>=` | Relational                                |               |
-| 5     | `==`<br>`!=`               | Equality                                  |               |
-| 4     | `&&`                       | Logical AND                               | Left-to-right |
-| 3     | <code>&#124;&#124;</code>  | Logical OR                                | Left-to-right |
-| 2     | `expr1 ?? expr2`           | If null                                   | Left-to-right |
-| 1     | `expr ? expr1 : expr2`     | Conditional (ternary)                     | Right-to-left |
+| Level | Operator                       | Category                                                   | Associativity |
+|-------|--------------------------------|------------------------------------------------------------|---------------|
+| 11    | identifier<br>'string'<br>123  | Primary Expressions (references, string literals, numbers) | N/A           |
+| 10    | `()`<br>`[]`<br>`.`            | Function call, scope, array/member access                  | Right-to-left |
+| 9     | `-expr`<br>`!expr`             | Unary Prefix (negation, NOT)                               | Left-to-right |
+| 8     | `*`<br>`/`<br>`~/`<br>`%`      | Multiplicative Operators                                   | Left-to-right |
+| 7     | `+`<br>`-`                     | Additive Operators                                         | Left-to-right |
+| 6     | `<`<br>`>`<br>`<=`<br>`>=`     | Relational Operators                                       | Left-to-right |
+| 5     | `==`<br>`!=`                   | Equality Operators                                         | Left-to-right |
+| 4     | `&&`                           | Logical AND                                                | Left-to-right |
+| 3     | <code>&#124;&#124;</code>      | Logical OR                                                 | Left-to-right |
+| 2     | `expr1 ?? expr2`               | Null Coalescing (If null)                                  | Left-to-right |
+| 1     | `expr ? expr1 : expr2`         | Conditional (ternary) Operator                             | Right-to-left |
 
 
-### Static Functions
+**Important Note:** Strings must be enclosed in single quotes ('). Double quotes (") are not
+supported at this time.
+
+## Static Functions
 
 These functions are universally accessible within every EL (Expression Language) expression,
 providing powerful tools for manipulation and evaluation. They are designed to accept other
@@ -1167,45 +1195,60 @@ String? tryToString(dynamic value);
 ```
 Some examples:
 
-```dart
-// Absolute Value
-${abs(-42)}  // Returns 42
+```xml
+<!-- Absolute Value - Returns 42 -->
+<Text data="${abs(-42)}"/>
 
-// Rounding a Number
-${round(3.7)}  // Returns 4
+<!-- Rounding a Number - Returns 4 -->
+<Text data="${round(3.7)}"/>
 
-// Checking if a String Contains a Substring
-${contains('Hello, World!', 'World')}  // Returns true
+<!-- Checking if a String Contains a Substring - Returns true -->
+<if test="${contains('Hello, World!', 'World')}">
+  <!-- true condition -->
+  <else>
+      <!-- optional false condition -->
+  </else>
+</if>
 
-// Getting Current Date and Time
-${now()}  // Returns the current date and time
+<!-- Getting Current Date and Time - Returns the current date and time -->
+<Text data="${now()}"/>
 
-// Formatting a Date
-${formatDateTime('yyyy-MM-dd', now())}  // Returns current date in YYYY-MM-DD format
+<!-- Formatting a Date - Returns current date in YYYY-MM-DD format -->
+<Text data="${formatDateTime('yyyy-MM-dd', now())}"/>
 
-// Checking if a Collection is Empty
-${isEmpty(myList)}  // Returns true if myList is empty
+<!-- Checking if a Collection is Empty - Returns true if myList is empty -->
+<if test="${isEmpty(myList)}">
+  <!-- true condition -->
+  <else>
+      <!-- optional false condition -->
+  </else>
+</if>
 
-// Generating a Random Integer
-${randomInt(100)}  // Returns a random integer between 0 and 99
+<!-- Generating a Random Integer - Returns a random integer between 0 and 99 -->
+<Text data="${randomInt(100)}"/>
 
-// Replacing a Substring
-${replaceAll('I love programming', 'love', 'enjoy')}  // Returns 'I enjoy programming'
+<!-- Replacing a Substring - Returns 'I love programming' -->
+<Text data="${replaceAll('I enjoy programming', 'enjoy', 'love')}"/>
 
-// Checking if a String Starts With a Substring
-${startsWith('Dart is fun', 'Dart')}  // Returns true
+<!-- Checking if a String Starts With a Substring - Returns true -->
+<if test="${startsWith('Dart is fun', 'Dart')}">
+  <!-- true condition -->
+  <else>
+      <!-- optional false condition -->
+  </else>
+</if>
 
-// Converting to Integer
-${toInt('123')}  // Returns 123
+<!-- Converting to Integer - Returns 123 -->
+<Text data="${toInt('123')}"/>
 
-// Getting the Length of a String
-${length('Hello')}  // Returns 5
+<!-- Getting the Length of a String - Returns 5 -->
+<Text data="${length('Hello')}"/>
 
-// Evaluating an Expression
-${eval('2 + 2')}  // Returns 4
+<!-- Evaluating an Expression - Returns 4 -->
+<Text data="${eval('2 + 2')}"/>
 ```
 
-### Instance Functions
+## Instance Functions
 
 In addition to using static functions, you can call instance functions on references and
 expressions. This allows you to access and manipulate their properties dynamically.
@@ -1275,21 +1318,26 @@ Iterable<V> values();
 ```
 Some examples:
 
-```dart
-// List Operations
-${myList.length()}  // Returns the number of elements in myList
+```xml
+<!-- List Operations - Returns the number of elements in myList -->
+<Text data="${myList.length()}"/>
 
-// Map Access
-${myMap.containsKey('key1')}  // Checks if 'key1' exists in myMap
+<!-- Map Access - checks if 'key1' exists in myMap -->
+<if test="${myMap.containsKey('key1')}">
+    <!-- true condition -->
+    <else>
+        <!-- optional false condition -->
+    </else>
+</if>
 
-// String Manipulation
-${(person.firstName + ' ' + person.lastName).toUpperCase()} // Converts expression to uppercase
+<!-- String Manipulation - Concatenation and uppercase conversion -->
+<Text data="${(person.firstName + ' ' + person.lastName).toUpperCase()}"/>
 ```
 
-### Custom Functions
+## Custom Functions
 
 Custom functions are user-defined functions that you can add to any `Dependencies` instance.
-While they behave similarly to static functions, they are specifically bound to a single
+While they behave similarly to static functions, they are bound to a single
 `Dependencies` instance.
 
 It's important to note that custom functions can only accept positional arguments, which
@@ -1303,17 +1351,18 @@ void greet(String name) {
   return 'Hello, $name!';
 }
 
-// Add the custom function to the Dependencies instance
+// Add the custom function to your Dependencies instance
+final dependencies = Dependencies();
 dependencies.setValue("greet", greet);
 ```
 
-```dart
-// Call 'greet' custom function
-${greet('Sally')} // Returns: Hello, Sally!
+```xml
+<!--  Call 'greet' custom function -->
+<Text data="${greet('Sally')}"/>
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/RESOURCES.md -->
+<!-- #include RESOURCES.md -->
 # Resources
 
 *Add documentation here.*
@@ -1343,7 +1392,7 @@ ${greet('Sally')} // Returns: Hello, Sally!
 *Add documentation here.*
 <!-- // end of #include -->
 
-<!-- #include doc/COMPONENTS.md -->
+<!-- #include COMPONENTS.md -->
 # Components
 
 *Add documentation here.*
@@ -1397,7 +1446,7 @@ ${greet('Sally')} // Returns: Hello, Sally!
 *Add documentation here.*
 <!-- // end of #include -->
 
-<!-- #include doc/TAGS.md -->
+<!-- #include TAGS.md -->
 # Tags
 
 Tags are XML elements that do not, themselves, add components to the widget tree. They provide
@@ -1568,7 +1617,7 @@ A tag that renders a UI fragment
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/BEST_PRACTICES.md -->
+<!-- #include BEST_PRACTICES.md -->
 # Best Practices
 
 ### Do use fragment folders
@@ -1695,7 +1744,7 @@ project
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/TIPS_TRICKS.md -->
+<!-- #include TIPS_TRICKS.md -->
 # Tips and Tricks
 
 ## Regenerate inflaters after upgrading Flutter
@@ -1741,7 +1790,7 @@ final user1Notifier = model.listenForChanges("users.user1", null, null);
 ```
 <!-- // end of #include -->
 
-<!-- #include doc/TROUBLE_SHOOTING.md -->
+<!-- #include TROUBLE_SHOOTING.md -->
 # Trouble Shooting
 
 ## The generated inflater code has errors
@@ -1775,7 +1824,7 @@ build function of your widget. If you are using a Controller, simply override th
 `bindDependencies()` method with your implementation and XWidget will handle the rest.
 <!-- // end of #include -->
 
-<!-- #include doc/FAQ.md -->
+<!-- #include FAQ.md -->
 # FAQ
 
 ## 1. What problems does XWidget solve?
@@ -1809,32 +1858,19 @@ anywhere else. Please read the [Fragments](#fragments), [Controllers](#controlle
 [Resources](#resources) sections above.
 <!-- // end of #include -->
 
-<!-- #include doc/ROADMAP.md -->
+<!-- #include ROADMAP.md -->
 # Roadmap
 
-The primary focus right now is documentation, critical bug fixes, more documentation, minor
-improvements, and oh, even more documentation. The implementation is already fairly stable, but
-lacks test coverage. Once the documentation is complete, we'll bump the minor version and
-concentrate on testing.
+## 2025
 
-## 0.0.x Releases (2023)
-
-* Write README and API documentation
-* Critical bug fixes
-* Minor improvements
-
-## 0.x Releases (2024)
-
-* Write unit, widget, UI, and performance tests
-* Critical and major bug fixes
-* Refine and add documentation as needed
-
-## 1.0.0 Release (mid 2024)
-
+* Fragment debugging
+* Improve test coverage
+* Improve documentation
+* Bug fixes
 * Stable release
 <!-- // end of #include -->
 
-<!-- #include doc/KNOWN_ISSUES.md -->
+<!-- #include KNOWN_ISSUES.md -->
 # Known Issues
 
 None at the moment :smile:

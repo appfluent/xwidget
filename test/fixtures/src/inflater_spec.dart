@@ -21,6 +21,7 @@ const inflaters = [
   MaterialApp,
   Scaffold,
   Text,
+  TextButton,
   TextStyle,
   ThemeData,
 ];

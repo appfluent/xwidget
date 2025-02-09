@@ -1,3 +1,10 @@
+### 0.0.49 (Feb 9, 2025)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Moved EL functionality to it's own project. [XWidget EL](https://pub.dev/packages/xwidget_el)
+* Improved documentation
+
 ### 0.0.48 (Oct 21, 2024)
 
 * Fixed a bug where duplicate inflater declarations would generate invalid code.

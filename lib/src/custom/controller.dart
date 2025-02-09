@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/functions/parsers.dart';
-import '../utils/utils.dart';
-import '../xwidget.dart';
-import 'async.dart';
+import '../../xwidget.dart';
+
 
 typedef XWidgetControllerFactory<T extends Controller> = T Function();
 

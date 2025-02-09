@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../utils/logging.dart';
-import '../utils/functions/parsers.dart';
-import '../xwidget.dart';
+import '../../xwidget.dart';
+
 
 typedef InitializerFunction = dynamic Function(
     BuildContext context,

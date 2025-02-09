@@ -259,6 +259,7 @@ class ColorScheme_fromSeedInflater extends Inflater {
             seedColor: attributes['seedColor'],
             brightness: attributes['brightness'] ?? Brightness.light,
             dynamicSchemeVariant: attributes['dynamicSchemeVariant'] ?? DynamicSchemeVariant.tonalSpot,
+            contrastLevel: toDouble(attributes['contrastLevel']) ?? 0.0,
             primary: attributes['primary'],
             onPrimary: attributes['onPrimary'],
             primaryContainer: attributes['primaryContainer'],
@@ -314,6 +315,7 @@ class ColorScheme_fromSeedInflater extends Inflater {
             case 'seedColor': return parseColor(value);
             case 'brightness': return parseEnum(Brightness.values, value);
             case 'dynamicSchemeVariant': return parseEnum(DynamicSchemeVariant.values, value);
+            case 'contrastLevel': return parseDouble(value);
             case 'primary': return parseColor(value);
             case 'onPrimary': return parseColor(value);
             case 'primaryContainer': return parseColor(value);
@@ -1739,11 +1741,11 @@ class ThemeDataInflater extends Inflater {
             splashFactory: attributes['splashFactory'],
             useMaterial3: attributes['useMaterial3'],
             visualDensity: attributes['visualDensity'],
+            colorScheme: attributes['colorScheme'],
             brightness: attributes['brightness'],
+            colorSchemeSeed: attributes['colorSchemeSeed'],
             canvasColor: attributes['canvasColor'],
             cardColor: attributes['cardColor'],
-            colorScheme: attributes['colorScheme'],
-            colorSchemeSeed: attributes['colorSchemeSeed'],
             dialogBackgroundColor: attributes['dialogBackgroundColor'],
             disabledColor: attributes['disabledColor'],
             dividerColor: attributes['dividerColor'],
@@ -1776,7 +1778,6 @@ class ThemeDataInflater extends Inflater {
             bottomAppBarTheme: attributes['bottomAppBarTheme'],
             bottomNavigationBarTheme: attributes['bottomNavigationBarTheme'],
             bottomSheetTheme: attributes['bottomSheetTheme'],
-            buttonBarTheme: attributes['buttonBarTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
             checkboxTheme: attributes['checkboxTheme'],
@@ -1833,11 +1834,11 @@ class ThemeDataInflater extends Inflater {
             case 'splashFactory': break;
             case 'useMaterial3': return parseBool(value);
             case 'visualDensity': return parseVisualDensity(value);
+            case 'colorScheme': break;
             case 'brightness': return parseEnum(Brightness.values, value);
+            case 'colorSchemeSeed': return parseColor(value);
             case 'canvasColor': return parseColor(value);
             case 'cardColor': return parseColor(value);
-            case 'colorScheme': break;
-            case 'colorSchemeSeed': return parseColor(value);
             case 'dialogBackgroundColor': return parseColor(value);
             case 'disabledColor': return parseColor(value);
             case 'dividerColor': return parseColor(value);
@@ -1870,7 +1871,6 @@ class ThemeDataInflater extends Inflater {
             case 'bottomAppBarTheme': break;
             case 'bottomNavigationBarTheme': break;
             case 'bottomSheetTheme': break;
-            case 'buttonBarTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
             case 'checkboxTheme': break;
@@ -1940,9 +1940,9 @@ class ThemeData_rawInflater extends Inflater {
             splashFactory: attributes['splashFactory'],
             useMaterial3: attributes['useMaterial3'],
             visualDensity: attributes['visualDensity'],
+            colorScheme: attributes['colorScheme'],
             canvasColor: attributes['canvasColor'],
             cardColor: attributes['cardColor'],
-            colorScheme: attributes['colorScheme'],
             dialogBackgroundColor: attributes['dialogBackgroundColor'],
             disabledColor: attributes['disabledColor'],
             dividerColor: attributes['dividerColor'],
@@ -1971,7 +1971,6 @@ class ThemeData_rawInflater extends Inflater {
             bottomAppBarTheme: attributes['bottomAppBarTheme'],
             bottomNavigationBarTheme: attributes['bottomNavigationBarTheme'],
             bottomSheetTheme: attributes['bottomSheetTheme'],
-            buttonBarTheme: attributes['buttonBarTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
             checkboxTheme: attributes['checkboxTheme'],
@@ -2028,9 +2027,9 @@ class ThemeData_rawInflater extends Inflater {
             case 'splashFactory': break;
             case 'useMaterial3': return parseBool(value);
             case 'visualDensity': return parseVisualDensity(value);
+            case 'colorScheme': break;
             case 'canvasColor': return parseColor(value);
             case 'cardColor': return parseColor(value);
-            case 'colorScheme': break;
             case 'dialogBackgroundColor': return parseColor(value);
             case 'disabledColor': return parseColor(value);
             case 'dividerColor': return parseColor(value);
@@ -2059,7 +2058,6 @@ class ThemeData_rawInflater extends Inflater {
             case 'bottomAppBarTheme': break;
             case 'bottomNavigationBarTheme': break;
             case 'bottomSheetTheme': break;
-            case 'buttonBarTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
             case 'checkboxTheme': break;

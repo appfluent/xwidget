@@ -8,18 +8,23 @@ import 'include.dart';
 import 'space.dart';
 
 
-const usageHint = "<!-- This file includes generated content. "
-    "Run 'dart run tool/markdown -f' to update this file. -->";
+const usageHint = "<!-- This file was generated. "
+    "Run 'dart run tool/markdown.dart -i doc/README.md -o README.md' "
+    "to update this file. -->";
 
 extension on FileSystemEntity {
   bool get isMarkdownFile => this is File && path.toLowerCase().endsWith('.md');
 }
 
-void processFile(File file) {
-  CliLog.info("Processing ${file.path}...");
-  final content = file.readAsStringSync();
-  final result = processContent(file, content);
-  file.writeAsStringSync(result);
+void processFile(String inputPath, [String? outputPath]) {
+  outputPath ??= inputPath;
+  CliLog.info("Processing $inputPath -> $outputPath...");
+
+  final input = File(inputPath);
+  final output = File(outputPath);
+  final content = input.readAsStringSync();
+  final result = processContent(input, content);
+  output.writeAsStringSync(result);
 }
 
 String processContent(File file, String content) {

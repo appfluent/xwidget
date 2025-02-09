@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/functions/parsers.dart';
-import '../utils/functions/validators.dart';
-import '../xwidget.dart';
+import '../../xwidget.dart';
 
 /// This tag allows you to bind an event handler with custom arguments. If you don't need to pass any
 /// arguments, then just bind the handler using EL, like so: `<TextButton onPressed="${onPressed}"/>`.

@@ -1,6 +1,9 @@
 # Model
 
-*Add documentation here.*
+The Model class serves as the base class for representing structured data in a standardized
+format. It provides a flexible and dynamic way to manage properties, offering built-in support
+for data transformation, instance management, and null safety. Models can be initialized with
+raw data maps and are equipped with utility methods to access and modify properties efficiently.
 
 ```dart
 class Topic extends Model {
@@ -8,7 +11,6 @@ class Topic extends Model {
   // getters
   String get key => getValue("key!");
   String get label => getValue("label!");
-  String get color => getValue("color!");
   String? get rank => getValue("rank");
 
   // setters
@@ -20,19 +22,20 @@ class Topic extends Model {
 
 ## Null Safety
 
-*Add documentation here.*
-
-### `!`
-
-### `?`
+The Model class ensures null safety through strict property access rules. The ! operator is used
+to assert that a value is non-null. When accessing properties using `getValue("property!")`,
+it enforces that the value must be present. If the value is missing, an error is thrown,
+helping developers catch issues early. Otherwise,
 
 ## Instance Management
 
-*Add documentation here.*
+Instance management ensures that models are consistently instantiated, avoiding duplicate objects
+representing the same data. The following factory methods facilitate controlled instance creation.
 
 ### `singleInstance`
 
-*Add documentation here.*
+Ensures that only one instance of a model exists for a given data set. If an instance already
+exists, it is returned instead of creating a new one.
 
 ```dart
 class Topic extends Model {
@@ -55,10 +58,11 @@ class Topic extends Model {
 
 ### `keyedInstance`
 
-*Add documentation here.*
+Creates and retrieves model instances based on a unique key. This ensures that multiple instances
+representing the same entity use the same underlying object.
 
 ```dart
-XWidget.registerModel<Topic>(Topic.new, const [
+Models.register<Topic>(Topic.new, const [
   PropertyTransformer<String>("key", isKey: true),
   PropertyTransformer<String?>("name"),
 ]);
@@ -83,35 +87,38 @@ class Topic extends Model {
 
 ### `hasInstance`
 
-*Add documentation here.*
+Checks whether an instance of a model exists for the given data. This is useful when determining
+whether to create a new instance or retrieve an existing one.
 
 ### `clearInstances`
 
-*Add documentation here.*
+Removes all stored instances, ensuring that future calls to singleInstance or keyedInstance
+generate new objects. This is useful for refreshing models when underlying data changes
+significantly.
 
 ## Loading Data
 
 When loading data into your models, you may need to first transform its structure or convert its
-properties to different types. To do this, use `PropertyTransformer` and `PropertyTranslation` 
+properties to different types. To do this, use `PropertyTransformer` and `PropertyTranslation`
 classes to define the target format and data mappings.
 
 ### PropertyTransformer
 
 Each `PropertyTransformer` instance represents a property in your model. It describes a property's
 name, data type, and default value. They define the structure of your model. When you register a
-model using `XWidget.registerModel()` you can optionally pass a list of `PropertyTransformer`s.
+model using `Models.register` you can optionally pass a list of `PropertyTransformer`s.
 These transformers will automatically be used whenever you create a new model instance.
 
 ```dart
 // register Content model class
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<List<Image>>("images"),
 ]);
 
 // register Image model class
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
     PropertyTransformer<String>("url"),
     PropertyTransformer<String?>("caption"),
     PropertyTransformer<bool>("active", defaultValue: true),
@@ -128,10 +135,10 @@ class Image extends Model {
 
 The following property types are natively supported:
 
-* Anything that extends `Model`, provided it's registered using with `XWidget.registerModel()`.
+* Anything that extends `Model`, provided it's registered using with `Models.register`.
 * The Basic types `String`, `int`, `double`, and `bool`.
 * The types `Color`, `DateTime`, and `Duration`.
-* The collections `List`, `Set` and `Map`. Prefer using a subclass of `Model` class over `Map`, 
+* The collections `List`, `Set` and `Map`. Prefer using a subclass of `Model` class over `Map`,
   if possible.
 * `List<List>` is not well supported at the moment
 * Custom types are supported by registering transform functions.
@@ -150,7 +157,7 @@ will default to using the same name for the source property.
 // translate 'firstName' to 'first' and 'lastName' to 'last' translation. Since all other source
 // property names match the target property names, they will be imported without translation.
 
-XWidget.registerModel<Person>(Person.new, const [
+Models.register<Person>(Person.new, const [
   PropertyTransformer<String>("first"),
   PropertyTransformer<String>("last"),
   PropertyTransformer<bool>("employee"),
@@ -182,13 +189,13 @@ expect(person, {
 ```dart
 // this example shows how to load data into a nested model, 'Image'.
 
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<Image>("image"),
 ]);
 
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
   PropertyTransformer<String>("url"),
   PropertyTransformer<String?>("caption"),
 ]);
@@ -221,13 +228,13 @@ expect(content, {
 ```dart
 // this example shows how to add multiple models to a List.
 
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<List<Image>>("images"),
 ]);
 
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
   PropertyTransformer<String>("url"),
   PropertyTransformer<String?>("caption"),
 ]);
@@ -266,13 +273,13 @@ expect(content, {
 ```dart
 // this example shows how to add multiple unindexed models to a list.
 
-XWidget.registerModel<Content>(Content.new, const [
+Models.register<Content>(Content.new, const [
   PropertyTransformer<String>("title"),
   PropertyTransformer<String?>("summary"),
   PropertyTransformer<List<Image>>("images"),
 ]);
 
-XWidget.registerModel<Image>(Image.new, const [
+Models.register<Image>(Image.new, const [
   PropertyTransformer<String>("url"),
   PropertyTransformer<String?>("caption"),
 ]);
@@ -310,15 +317,15 @@ expect(model, {
 
 ### Type Converters
 
-When importing model data, XWidget converts source data types into the target's data types using
+When importing data, Model converts source data types into the target's data types using
 converter functions. There are preregistered converter functions for `String`, `int`,
 `double`, `bool`, `DateTime`, `Duration`, `Color` and `dynamic`. You can also define custom
-type converters using the `XWidget.registerTypeConverter` method. Typically, you should 
+type converters using the `TypeConverters.register` method. Typically, you should
 registration your custom functions in `main()`.
 
 ```dart
 main() {
-  XWidget.registerTypeConverter<Money>((value) {
+  TypeConverters.register<Money>((value) {
     if (value is Money) {
       return value;
     } else if (value is String) {

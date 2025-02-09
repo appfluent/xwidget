@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
-import '../utils/functions/parsers.dart';
-import '../utils/functions/validators.dart';
-import '../utils/utils.dart';
-import '../xwidget.dart';
+import '../../xwidget.dart';
 
 /// A tag that wraps its children in a builder function.
 ///

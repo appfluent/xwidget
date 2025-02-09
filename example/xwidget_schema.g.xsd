@@ -1138,7 +1138,12 @@ is just a simple rectangle.</p><br/>
 <p>A shadow is only displayed if the [elevation] is greater than
 zero.
 {@endtemplate}</p><br/>
-<p>See also:</p><br/>
+<p>{@tool dartpad}
+This sample demonstrates how to implement a custom app bar shape for the
+[shape] property.</p><br/>
+<p>** See code in examples/api/lib/material/app_bar/app_bar.4.dart **
+{@end-tool}
+See also:</p><br/>
 <ul>
 <li>[elevation], which defines the size of the shadow below the app bar.</li>
 <li>[shadowColor], which is the color of the shadow below the app bar.</li>
@@ -1637,7 +1642,7 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The background color for widgets like [Card].</p><br/>
+<p>The background color for widgets like [Scaffold].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -1696,9 +1701,14 @@ constructed by <code>dynamicSchemeVariant.tonalSpot</code> has pastel palettes a
 won't be too &quot;colorful&quot; even if the <code>seedColor</code> has a high chroma value.
 If the resulting color scheme is too dark, consider setting <code>dynamicSchemeVariant</code>
 to [DynamicSchemeVariant.fidelity], whose palettes match the seed color.</p><br/>
+<p>The <code>contrastLevel</code> parameter indicates the contrast level between color
+pairs, such as [primary] and [onPrimary]. 0.0 is the default (normal);
+-1.0 is the lowest; 1.0 is the highest. From Material Design guideline, the
+medium and high contrast correspond to 0.5 and 1.0 respectively.</p><br/>
 <p>{@tool dartpad}
 This sample shows how to use [ColorScheme.fromSeed] to create dynamic
-color schemes with different [DynamicSchemeVariant]s.</p><br/>
+color schemes with different [DynamicSchemeVariant]s and different
+contrast level.</p><br/>
 <p>** See code in examples/api/lib/material/color_scheme/color_scheme.0.dart **
 {@end-tool}</p><br/>
 <p>See also:</p><br/>
@@ -1724,6 +1734,7 @@ used to generate the tonal palettes needed for the scheme.</li>
                         </xs:annotation>
                     </xs:attribute>
                     <xs:attribute name="dynamicSchemeVariant" type="DynamicSchemeVariantAttributeType"/>
+                    <xs:attribute name="contrastLevel"/>
                     <xs:attribute name="primary">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -1810,7 +1821,7 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The background color for widgets like [Card].</p><br/>
+<p>The background color for widgets like [Scaffold].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -1964,7 +1975,7 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The background color for widgets like [Card].</p><br/>
+<p>The background color for widgets like [Scaffold].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2125,7 +2136,7 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The background color for widgets like [Card].</p><br/>
+<p>The background color for widgets like [Scaffold].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2169,7 +2180,8 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
 matches the <a href="https://material.io/design/color/the-color-system.html#color-theme-creation">baseline Material 2 color scheme</a>.</p><br/>
 <p>This constructor shouldn't be used to update the Material 3 color scheme.</p><br/>
 <p>For Material 3, use [ColorScheme.fromSeed] to create a color scheme
-from a single seed color based on the Material 3 color system.</p><br/>
+from a single seed color based on the Material 3 color system. To create a
+high-contrast color scheme, set <code>contrastLevel</code> to 1.0.</p><br/>
 <p>{@tool snippet}
 This example demonstrates how to create a color scheme similar to [ColorScheme.highContrastLight]
 using the [ColorScheme.fromSeed] constructor:</p><br/>
@@ -2281,7 +2293,7 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The background color for widgets like [Card].</p><br/>
+<p>The background color for widgets like [Scaffold].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2327,7 +2339,8 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
 <p>For Material 3, use [ColorScheme.fromSeed] to create a color scheme
 from a single seed color based on the Material 3 color system.
 Override the <code>brightness</code> property of [ColorScheme.fromSeed] to create a
-dark color scheme.</p><br/>
+dark color scheme. To create a high-contrast color scheme, set
+<code>contrastLevel</code> to 1.0.</p><br/>
 <p>{@tool snippet}
 This example demonstrates how to create a color scheme similar to [ColorScheme.highContrastDark]
 using the [ColorScheme.fromSeed] constructor:</p><br/>
@@ -2442,7 +2455,7 @@ filter chips, while expanding the opportunity for color expression.</p><br/>
                     <xs:attribute name="surface">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
-<p>The background color for widgets like [Card].</p><br/>
+<p>The background color for widgets like [Scaffold].</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2767,11 +2780,11 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.foregroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [ColorScheme.onSecondary] color of [ThemeData.colorScheme]
-is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2780,10 +2793,11 @@ is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.backgroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3092,11 +3106,11 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.foregroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [ColorScheme.onSecondary] color of [ThemeData.colorScheme]
-is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3105,10 +3119,11 @@ is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.backgroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3389,11 +3404,11 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.foregroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [ColorScheme.onSecondary] color of [ThemeData.colorScheme]
-is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3402,10 +3417,11 @@ is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.backgroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3689,11 +3705,11 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.foregroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [ColorScheme.onSecondary] color of [ThemeData.colorScheme]
-is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3702,10 +3718,11 @@ is used.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the
-[FloatingActionButtonThemeData.backgroundColor] of
-[ThemeData.floatingActionButtonTheme] is used. If that property is also
-null, then the [Theme]'s [ColorScheme.secondary] color is used.</p><br/>
+<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
+of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
+is used. If [ThemeData.useMaterial3] is set to false, then the
+[ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -4609,7 +4626,7 @@ const MaterialApp(
 <li>[GlobalMaterialLocalizations], a [localizationsDelegates] value
 which provides material localizations for many languages.</li>
 <li>The Flutter Internationalization Tutorial,
-<a href="https://flutter.dev/tutorials/internationalization/">https://flutter.dev/tutorials/internationalization/</a>.</li>
+<a href="https://flutter.dev/to/internationalization/">https://flutter.dev/to/internationalization/</a>.</li>
 </ul>
 
                             </xs:documentation>
@@ -4645,7 +4662,7 @@ applications.</li>
 <li>[GlobalMaterialLocalizations], a [localizationsDelegates] value
 which provides material localizations for many languages.</li>
 <li>The Flutter Internationalization Tutorial,
-<a href="https://flutter.dev/tutorials/internationalization/">https://flutter.dev/tutorials/internationalization/</a>.</li>
+<a href="https://flutter.dev/to/internationalization/">https://flutter.dev/to/internationalization/</a>.</li>
 </ul>
 
                             </xs:documentation>
@@ -4671,7 +4688,7 @@ Material apps.</p><br/>
 <p>Turns on a performance overlay.</p><br/>
 <p>See also:</p><br/>
 <ul>
-<li><a href="https://flutter.dev/debugging/#performance-overlay">https://flutter.dev/debugging/#performance-overlay</a></li>
+<li><a href="https://flutter.dev/to/performance-overlay">https://flutter.dev/to/performance-overlay</a></li>
 </ul>
 
                             </xs:documentation>
@@ -5194,7 +5211,7 @@ const MaterialApp(
 <li>[GlobalMaterialLocalizations], a [localizationsDelegates] value
 which provides material localizations for many languages.</li>
 <li>The Flutter Internationalization Tutorial,
-<a href="https://flutter.dev/tutorials/internationalization/">https://flutter.dev/tutorials/internationalization/</a>.</li>
+<a href="https://flutter.dev/to/internationalization/">https://flutter.dev/to/internationalization/</a>.</li>
 </ul>
 
                             </xs:documentation>
@@ -5230,7 +5247,7 @@ applications.</li>
 <li>[GlobalMaterialLocalizations], a [localizationsDelegates] value
 which provides material localizations for many languages.</li>
 <li>The Flutter Internationalization Tutorial,
-<a href="https://flutter.dev/tutorials/internationalization/">https://flutter.dev/tutorials/internationalization/</a>.</li>
+<a href="https://flutter.dev/to/internationalization/">https://flutter.dev/to/internationalization/</a>.</li>
 </ul>
 
                             </xs:documentation>
@@ -5256,7 +5273,7 @@ Material apps.</p><br/>
 <p>Turns on a performance overlay.</p><br/>
 <p>See also:</p><br/>
 <ul>
-<li><a href="https://flutter.dev/debugging/#performance-overlay">https://flutter.dev/debugging/#performance-overlay</a></li>
+<li><a href="https://flutter.dev/to/performance-overlay">https://flutter.dev/to/performance-overlay</a></li>
 </ul>
 
                             </xs:documentation>
@@ -6326,13 +6343,12 @@ parent text span, or, for the root text spans, with the line box.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The height of this text span, as a multiple of the font size.</p><br/>
-<p>When [height] is null or omitted, the line height will be determined
-by the font's metrics directly, which may differ from the fontSize.
-When [height] is non-null, the line height of the span of text will be a
-multiple of [fontSize] and be exactly <code>fontSize * height</code> logical pixels
-tall.</p><br/>
-<p>For most fonts, setting [height] to 1.0 is not the same as omitting or
-setting height to null because the [fontSize] sets the height of the EM-square,
+<p>When [height] is [kTextHeightNone], the line height will be determined by
+the font's metrics directly, which may differ from the fontSize. Otherwise
+the line height of the span of text will be a multiple of [fontSize],
+and be exactly <code>fontSize * height</code> logical pixels tall.</p><br/>
+<p>For most fonts, setting [height] to 1.0 is not the same as setting height
+to [kTextHeightNone] because the [fontSize] sets the height of the EM-square,
 which is different than the font provided metrics for line height. The
 following diagram illustrates the difference between the font-metrics
 defined line height and the line height produced with <code>height: 1.0</code>
@@ -6623,8 +6639,8 @@ or [bottomNavigationBarTheme].</p><br/>
 <p>See also:</p><br/>
 <ul>
 <li>[ThemeData.from], which creates a ThemeData from a [ColorScheme].</li>
-<li>[ThemeData.light], which creates a light blue theme.</li>
-<li>[ThemeData.dark], which creates dark theme with a teal secondary [ColorScheme] color.</li>
+<li>[ThemeData.light], which creates the default light theme.</li>
+<li>[ThemeData.dark], which creates the deafult dark theme.</li>
 <li>[ColorScheme.fromSeed], which is used to create a [ColorScheme] from a seed color.</li>
 </ul>
 
@@ -6913,7 +6929,21 @@ use [ThemeData.iconButtonTheme] instead.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="colorScheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
+<p>This property was added much later than the theme's set of highly specific
+colors, like [cardColor], [canvasColor] etc. New components can be defined
+exclusively in terms of [colorScheme]. Existing components will gradually
+migrate to it, to the extent that is possible without significant
+backwards compatibility breaks.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="brightness" type="BrightnessAttributeType"/>
+                    <xs:attribute name="colorSchemeSeed"/>
                     <xs:attribute name="canvasColor">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6930,20 +6960,6 @@ use [ThemeData.iconButtonTheme] instead.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="colorScheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
-<p>This property was added much later than the theme's set of highly specific
-colors, like [cardColor], [canvasColor] etc. New components can be defined
-exclusively in terms of [colorScheme]. Existing components will gradually
-migrate to it, to the extent that is possible without significant
-backwards compatibility breaks.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="colorSchemeSeed"/>
                     <xs:attribute name="dialogBackgroundColor">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -7196,14 +7212,6 @@ widgets.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>A theme for customizing the color, elevation, and shape of a bottom sheet.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="buttonBarTheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A theme for customizing the appearance and layout of [ButtonBar] widgets.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7842,6 +7850,19 @@ use [ThemeData.iconButtonTheme] instead.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="colorScheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
+<p>This property was added much later than the theme's set of highly specific
+colors, like [cardColor], [canvasColor] etc. New components can be defined
+exclusively in terms of [colorScheme]. Existing components will gradually
+migrate to it, to the extent that is possible without significant
+backwards compatibility breaks.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="canvasColor">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -7854,19 +7875,6 @@ use [ThemeData.iconButtonTheme] instead.
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color of [Material] when it is used as a [Card].</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="colorScheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>{@macro flutter.material.color_scheme.ColorScheme}</p><br/>
-<p>This property was added much later than the theme's set of highly specific
-colors, like [cardColor], [canvasColor] etc. New components can be defined
-exclusively in terms of [colorScheme]. Existing components will gradually
-migrate to it, to the extent that is possible without significant
-backwards compatibility breaks.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -8119,14 +8127,6 @@ widgets.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>A theme for customizing the color, elevation, and shape of a bottom sheet.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="buttonBarTheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A theme for customizing the appearance and layout of [ButtonBar] widgets.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>

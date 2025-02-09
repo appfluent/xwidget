@@ -1,29 +1,39 @@
 # Expression Language (EL)
 
-*Add documentation here.*
+XWidget EL is a powerful expression language that enables dynamic evaluation of expressions
+within a structured data model. It supports arithmetic, logical, conditional, relational
+operators, and functions, allowing for complex calculations and decision-making.
 
-### Operators
+Beyond evaluation, it supports model change notifications and model transformations,
+ensuring data-driven applications stay responsive, making it ideal for UI updates, workflow
+automation, reactive processing, real-time computation, and dynamic content adaptation.
+
+## Evaluation Rules
 
 Below is the operator precedence and associativity table. Operators are executed according
 to their precedence level. If two operators share an operand, the operator with higher precedence
 will be executed first. If the operators have the same precedence level, it depends on the
 associativity. Both the precedence level and associativity can be seen in the table below.
 
-| Level | Operator                   | Category                                  | Associativity |
-|-------|----------------------------|-------------------------------------------|---------------|
-| 10    | `()`<br>`[]`<br>`.`        | Function call, scope, array/member access |               |
-| 9     | `-expr`<br>`!expr`         | Unary Prefix                              |               |
-| 8     | `*`<br>`/`<br>`~/`<br>`%`  | Multiplicative                            | Left-to-right |
-| 7     | `+`<br>`-`                 | Additive                                  | Left-to-right |
-| 6     | `<`<br>`>`<br>`<=`<br>`>=` | Relational                                |               |
-| 5     | `==`<br>`!=`               | Equality                                  |               |
-| 4     | `&&`                       | Logical AND                               | Left-to-right |
-| 3     | <code>&#124;&#124;</code>  | Logical OR                                | Left-to-right |
-| 2     | `expr1 ?? expr2`           | If null                                   | Left-to-right |
-| 1     | `expr ? expr1 : expr2`     | Conditional (ternary)                     | Right-to-left |
+| Level | Operator                       | Category                                                   | Associativity |
+|-------|--------------------------------|------------------------------------------------------------|---------------|
+| 11    | identifier<br>'string'<br>123  | Primary Expressions (references, string literals, numbers) | N/A           |
+| 10    | `()`<br>`[]`<br>`.`            | Function call, scope, array/member access                  | Right-to-left |
+| 9     | `-expr`<br>`!expr`             | Unary Prefix (negation, NOT)                               | Left-to-right |
+| 8     | `*`<br>`/`<br>`~/`<br>`%`      | Multiplicative Operators                                   | Left-to-right |
+| 7     | `+`<br>`-`                     | Additive Operators                                         | Left-to-right |
+| 6     | `<`<br>`>`<br>`<=`<br>`>=`     | Relational Operators                                       | Left-to-right |
+| 5     | `==`<br>`!=`                   | Equality Operators                                         | Left-to-right |
+| 4     | `&&`                           | Logical AND                                                | Left-to-right |
+| 3     | <code>&#124;&#124;</code>      | Logical OR                                                 | Left-to-right |
+| 2     | `expr1 ?? expr2`               | Null Coalescing (If null)                                  | Left-to-right |
+| 1     | `expr ? expr1 : expr2`         | Conditional (ternary) Operator                             | Right-to-left |
 
 
-### Static Functions
+**Important Note:** Strings must be enclosed in single quotes ('). Double quotes (") are not
+supported at this time.
+
+## Static Functions
 
 These functions are universally accessible within every EL (Expression Language) expression,
 providing powerful tools for manipulation and evaluation. They are designed to accept other
@@ -94,45 +104,60 @@ String? tryToString(dynamic value);
 ```
 Some examples:
 
-```dart
-// Absolute Value
-${abs(-42)}  // Returns 42
+```xml
+<!-- Absolute Value - Returns 42 -->
+<Text data="${abs(-42)}"/>
 
-// Rounding a Number
-${round(3.7)}  // Returns 4
+<!-- Rounding a Number - Returns 4 -->
+<Text data="${round(3.7)}"/>
 
-// Checking if a String Contains a Substring
-${contains('Hello, World!', 'World')}  // Returns true
+<!-- Checking if a String Contains a Substring - Returns true -->
+<if test="${contains('Hello, World!', 'World')}">
+  <!-- true condition -->
+  <else>
+      <!-- optional false condition -->
+  </else>
+</if>
 
-// Getting Current Date and Time
-${now()}  // Returns the current date and time
+<!-- Getting Current Date and Time - Returns the current date and time -->
+<Text data="${now()}"/>
 
-// Formatting a Date
-${formatDateTime('yyyy-MM-dd', now())}  // Returns current date in YYYY-MM-DD format
+<!-- Formatting a Date - Returns current date in YYYY-MM-DD format -->
+<Text data="${formatDateTime('yyyy-MM-dd', now())}"/>
 
-// Checking if a Collection is Empty
-${isEmpty(myList)}  // Returns true if myList is empty
+<!-- Checking if a Collection is Empty - Returns true if myList is empty -->
+<if test="${isEmpty(myList)}">
+  <!-- true condition -->
+  <else>
+      <!-- optional false condition -->
+  </else>
+</if>
 
-// Generating a Random Integer
-${randomInt(100)}  // Returns a random integer between 0 and 99
+<!-- Generating a Random Integer - Returns a random integer between 0 and 99 -->
+<Text data="${randomInt(100)}"/>
 
-// Replacing a Substring
-${replaceAll('I love programming', 'love', 'enjoy')}  // Returns 'I enjoy programming'
+<!-- Replacing a Substring - Returns 'I love programming' -->
+<Text data="${replaceAll('I enjoy programming', 'enjoy', 'love')}"/>
 
-// Checking if a String Starts With a Substring
-${startsWith('Dart is fun', 'Dart')}  // Returns true
+<!-- Checking if a String Starts With a Substring - Returns true -->
+<if test="${startsWith('Dart is fun', 'Dart')}">
+  <!-- true condition -->
+  <else>
+      <!-- optional false condition -->
+  </else>
+</if>
 
-// Converting to Integer
-${toInt('123')}  // Returns 123
+<!-- Converting to Integer - Returns 123 -->
+<Text data="${toInt('123')}"/>
 
-// Getting the Length of a String
-${length('Hello')}  // Returns 5
+<!-- Getting the Length of a String - Returns 5 -->
+<Text data="${length('Hello')}"/>
 
-// Evaluating an Expression
-${eval('2 + 2')}  // Returns 4
+<!-- Evaluating an Expression - Returns 4 -->
+<Text data="${eval('2 + 2')}"/>
 ```
 
-### Instance Functions
+## Instance Functions
 
 In addition to using static functions, you can call instance functions on references and
 expressions. This allows you to access and manipulate their properties dynamically.
@@ -202,21 +227,26 @@ Iterable<V> values();
 ```
 Some examples:
 
-```dart
-// List Operations
-${myList.length()}  // Returns the number of elements in myList
+```xml
+<!-- List Operations - Returns the number of elements in myList -->
+<Text data="${myList.length()}"/>
 
-// Map Access
-${myMap.containsKey('key1')}  // Checks if 'key1' exists in myMap
+<!-- Map Access - checks if 'key1' exists in myMap -->
+<if test="${myMap.containsKey('key1')}">
+    <!-- true condition -->
+    <else>
+        <!-- optional false condition -->
+    </else>
+</if>
 
-// String Manipulation
-${(person.firstName + ' ' + person.lastName).toUpperCase()} // Converts expression to uppercase
+<!-- String Manipulation - Concatenation and uppercase conversion -->
+<Text data="${(person.firstName + ' ' + person.lastName).toUpperCase()}"/>
 ```
 
-### Custom Functions
+## Custom Functions
 
 Custom functions are user-defined functions that you can add to any `Dependencies` instance.
-While they behave similarly to static functions, they are specifically bound to a single
+While they behave similarly to static functions, they are bound to a single
 `Dependencies` instance.
 
 It's important to note that custom functions can only accept positional arguments, which
@@ -230,11 +260,12 @@ void greet(String name) {
   return 'Hello, $name!';
 }
 
-// Add the custom function to the Dependencies instance
+// Add the custom function to your Dependencies instance
+final dependencies = Dependencies();
 dependencies.setValue("greet", greet);
 ```
 
-```dart
-// Call 'greet' custom function
-${greet('Sally')} // Returns: Hello, Sally!
+```xml
+<!--  Call 'greet' custom function -->
+<Text data="${greet('Sally')}"/>
 ```

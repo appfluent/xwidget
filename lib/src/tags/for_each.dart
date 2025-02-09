@@ -1,7 +1,6 @@
 import 'package:xml/xml.dart';
 
-import '../utils/functions/converters.dart';
-import '../xwidget.dart';
+import '../../xwidget.dart';
 
 class ForEachTag implements Tag {
   @override

@@ -1,4 +1,5 @@
-import 'functions/validators.dart';
+import 'package:xwidget_el/xwidget_el.dart';
+
 
 class Path {
   static const _separator = "/";
@@ -22,7 +23,8 @@ class Path {
           if (parsedPath.isNotEmpty) {
             parsedPath.removeLast();
           } else {
-            throw Exception("Unable resolve relative path '$path'. Try Using 'parseRelativeTo' instead.");
+            throw Exception("Unable resolve relative path '$path'. Try Using "
+                "'parseRelativeTo' instead.");
           }
         } else if (index == segments.length - 1 && segment.contains(".")) {
           fileName = segment;

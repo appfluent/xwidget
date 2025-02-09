@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../lib/xwidget.dart';
+import 'package:xwidget/xwidget.dart';
 
 
 main() {
@@ -11,6 +9,4 @@ main() {
     print(path);
     // expect(data, {'topicsFollowed': {'top_news': true}});
   });
-
-
 }

@@ -1,7 +1,6 @@
 import 'package:xml/xml.dart';
 
-import '../utils/logging.dart';
-import '../xwidget.dart';
+import '../../xwidget.dart';
 
 /// A simple tag that logs a debug message
 class DebugTag implements Tag {

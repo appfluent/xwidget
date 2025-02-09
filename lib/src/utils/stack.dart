@@ -11,7 +11,7 @@ class Stack<E> {
   E? pop() => _list.isNotEmpty ? _list.removeLast() : null;
 
   /// Returns the last item pushed to the stack without popping it.
-  E? get peek => _list.isNotEmpty ? _list.last : null;
+  E? peek() => _list.isNotEmpty ? _list.last : null;
 
   /// Checks to see if the stack is empty
   bool get isEmpty => _list.isEmpty;
