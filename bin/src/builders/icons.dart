@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:path/path.dart';
 
 import '../utils/cli_log.dart';
+import '../utils/extensions.dart';
 import '../utils/path_resolver.dart';
 import '../utils/source_analyzer.dart';
 import 'builder.dart';
@@ -38,13 +39,13 @@ class IconsBuilder extends SpecBuilder {
                 final classElements = <ClassElement>[];
                 if (element.name == "icons") {
                   // found a list of icons
-                  final icons = element.variable.computeConstantValue()?.toListValue()?.toSet();
+                  final icons = element.variable2?.computeConstantValue()?.toListValue()?.toSet();
                   if (icons != null) {
                     for (final icon in icons) {
                       final variable = icon.variable;
                       final enclosingElement = variable?.enclosingElement;
                       if (variable != null && enclosingElement != null) {
-                        final iconType = icon.type?.getDisplayString(withNullability: false);
+                        final iconType = icon.type?.displayStringWithoutNullability();
                         if (iconType == "IconData") {
                           registrations.write(_buildRegisterIconCall(enclosingElement.displayName, variable.displayName));
                         } else {
@@ -58,7 +59,7 @@ class IconsBuilder extends SpecBuilder {
                   }
                 } else if (element.name == "iconSets") {
                   // found a list of icon sets
-                  final iconSets = element.variable.computeConstantValue()?.toListValue();
+                  final iconSets = element.variable2?.computeConstantValue()?.toListValue();
                   if (iconSets != null) {
                     for (final iconSet in iconSets) {
                       final element = iconSet.toTypeValue()?.element;
@@ -75,7 +76,7 @@ class IconsBuilder extends SpecBuilder {
                 for (final classElement in classElements) {
                   for (final fieldElement in classElement.fields) {
                     if (fieldElement.isConst) {
-                      final fieldTypeName = fieldElement.type.getDisplayString(withNullability: false);
+                      final fieldTypeName = fieldElement.type.displayStringWithoutNullability();
                       if (fieldTypeName == "IconData") {
                         registrations.write(_buildRegisterIconCall(classElement.displayName, fieldElement.displayName));
                       }

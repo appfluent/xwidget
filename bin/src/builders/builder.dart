@@ -5,6 +5,7 @@ import 'package:markdown/markdown.dart';
 
 import '../utils/cli_log.dart';
 import '../utils/config_loader.dart';
+import '../utils/extensions.dart';
 import '../utils/utils.dart';
 
 abstract class SpecBuilder {
@@ -24,7 +25,10 @@ abstract class SpecBuilder {
     return comments.toString();
   }
 
-  String buildImports(Iterable<LibraryElement?> libraries, [Iterable<String>? configuredImports]) {
+  String buildImports(
+      Iterable<LibraryElement?> libraries,
+      [Iterable<String>? configuredImports]
+  ) {
     final code = StringBuffer();
     final locations = <String>{}; // used for duplicate checking
 
@@ -119,23 +123,19 @@ abstract class SpecBuilder {
               final fieldName = field.displayName;
               final fieldValue = constValue.getField(fieldName);
               if (fieldValue != null && fieldValue.hasKnownValue) {
-                final fieldType = fieldValue.type?.getDisplayString();
+                final fieldType = fieldValue.type?.displayStringWithoutNullability();
                 if (fieldType != null) {
                   switch (fieldType) {
                     case "String":
-                    case "String?":
                       fieldValues[fieldName] = fieldValue.toStringValue();
                       break;
                     case "Int":
-                    case "Int?":
                       fieldValues[fieldName] = fieldValue.toIntValue();
                       break;
                     case "double":
-                    case "double?":
                       fieldValues[fieldName] = fieldValue.toDoubleValue();
                       break;
                     case "bool":
-                    case "bool?":
                       fieldValues[fieldName] = fieldValue.toBoolValue();
                       break;
                   }
@@ -154,11 +154,9 @@ abstract class SpecBuilder {
   /// Private means that it should not appear in the schema as an attribute and
   /// it should be a 'private' reference in Dependencies (prepend '_' to Dependencies key).
   bool isPrivateAccessParam(ParameterElement param, bool isCustomWidget) {
-    final paramType = param.type.getDisplayString();
-    return (paramType == "Dependencies"  ||
-            paramType == "Dependencies?" ||
-            paramType == "XmlElement"    ||
-            paramType == "XmlElement?")  &&
+    final paramType = param.type.displayStringWithoutNullability();
+    return (paramType == "Dependencies" ||
+            paramType == "XmlElement")  &&
            isCustomWidget;
   }
 }
@@ -259,7 +257,11 @@ class InflaterConfig with ConfigMixin {
   Map<String, String> constructorArgDefaults = {};
   Map<String, String> constructorArgParsers = {};
 
-  String? findConstructorArgDefault(String? inflaterType, String? paramName, [String? defaultValue]) {
+  String? findConstructorArgDefault(
+      String? inflaterType,
+      String? paramName,
+      [String? defaultValue]
+  ) {
     List<String> keys = _searchKeys(inflaterType, paramName);
     for (final key in keys) {
       final value = constructorArgDefaults[key];
@@ -268,7 +270,11 @@ class InflaterConfig with ConfigMixin {
     return defaultValue;
   }
 
-  String? findConstructorArgParser(String? inflaterType, String? paramName, String? paramType) {
+  String? findConstructorArgParser(
+      String? inflaterType,
+      String? paramName,
+      String? paramType
+  ) {
     List<String> keys = _searchKeys(inflaterType, paramName);
     if (paramType != null) {
       keys.add(paramType.replaceAll("?", ""));

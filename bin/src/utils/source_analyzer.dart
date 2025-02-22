@@ -12,7 +12,9 @@ import 'cli_log.dart';
 import 'path_resolver.dart';
 
 class SourceAnalyzer {
-  Future<Map<String, LibraryElement>> getLibraryElements(Iterable<String> sources) async {
+  Future<Map<String, LibraryElement>> getLibraryElements(
+      Iterable<String> sources
+  ) async {
     final libraryElements = <String, LibraryElement>{};
     final manifest = await getSourceManifest(sources);
     final collection = AnalysisContextCollection(
@@ -29,7 +31,10 @@ class SourceAnalyzer {
     return libraryElements;
   }
 
-  Future<SourceManifest> getSourceManifest(Iterable<String> sources, [List<String> noFilesOk = const []]) async {
+  Future<SourceManifest> getSourceManifest(
+      Iterable<String> sources,
+      [List<String> noFilesOk = const []]
+  ) async {
     final files = <File>[];
     final paths = <String>{};
     for (final source in sources) {
@@ -45,8 +50,9 @@ class SourceAnalyzer {
               paths.add(entityPath);
             }
           } else if (basename(absolutePath) == basename(entityPath)) {
-            CliLog.warn("Glob '$source' matches a directory. "
-                "Add a file name or use globs (**.dart) to match specific files or file patterns.");
+            CliLog.warn("Glob '$source' matches a directory. Add a file "
+                "name or use globs (**.dart) to match specific files or "
+                "file patterns.");
           }
         }
       } else if (!noFilesOk.contains(source)) {

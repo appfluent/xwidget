@@ -29,13 +29,20 @@ class Files {
     }
   }
 
-  static Future<void> copyFiles(Map<String, String> files, [bool replace = false]) async {
+  static Future<void> copyFiles(
+      Map<String, String> files,
+      [bool replace = false]
+  ) async {
     for (final file in files.entries) {
       await copyFile(file.key, file.value, replace);
     }
   }
 
-  static Future<void> copyFile(String src, String dst, [bool replace = false]) async {
+  static Future<void> copyFile(
+      String src,
+      String dst,
+      [bool replace = false]
+  ) async {
     try {
       final srcPath = await PathResolver.relativeToAbsolute(src);
       final srcFile = File(srcPath.path);

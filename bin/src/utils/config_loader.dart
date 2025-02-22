@@ -33,7 +33,8 @@ class ConfigLoader {
           if (item is String) {
             set.add(item);
           } else {
-            CliLog.warn("'$key' has invalid item '$value'. Must be of type String.");
+            CliLog.warn("'$key' has invalid item '$value'. Must be of "
+                "type String.");
           }
         }
       } else if (value is List<String>) {
@@ -41,7 +42,8 @@ class ConfigLoader {
       } else if (value is String) {
         set.add(value);
       } else {
-        CliLog.warn("'$key' is of type ${value.runtimeType}. Must be of type YamlList, List<String>, or String.");
+        CliLog.warn("'$key' is of type ${value.runtimeType}. Must be of "
+            "type YamlList, List<String>, or String.");
       }
     }
   }
@@ -60,7 +62,8 @@ class ConfigLoader {
       } else if (value is Map<String, String>) {
         map.addAll(value);
       } else {
-        CliLog.warn("'$key' is of type ${value.runtimeType}. Must be of type YamlMap or Map<String, String>.");
+        CliLog.warn("'$key' is of type ${value.runtimeType}. Must be of type "
+            "YamlMap or Map<String, String>.");
       }
     }
   }

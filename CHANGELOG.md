@@ -1,3 +1,8 @@
+### 0.0.51 (Feb 22, 2025)
+
+* Removed deprecated usages
+* Fixed package dependencies
+
 ### 0.0.50 (Feb 22, 2025)
 
 * Removed deprecated usages

@@ -56,7 +56,7 @@ class InflaterBuilder extends SpecBuilder {
                 final inflaterTypes = <InflaterType>[];
                 if (element.name == "inflaters") {
                   // found a list of inflaters
-                  final computedValues = element.variable.computeConstantValue()?.toListValue()?.toSet();
+                  final computedValues = element.variable2?.computeConstantValue()?.toListValue()?.toSet();
                   if (computedValues != null) {
                     for (final computedValue in computedValues) {
                       final typeValue = computedValue.toTypeValue();
@@ -154,7 +154,7 @@ class InflaterBuilder extends SpecBuilder {
     final parseCases = StringBuffer();
     final constructorName = constructor.displayName;
     final typedConstructorName = _buildTypedConstructorName(type, constructorName);
-    final className = _buildInflaterName(type, constructorName, "_") + "Inflater";
+    final className = "${_buildInflaterName(type, constructorName, "_")}Inflater";
     final isCustomWidget = annotations.containsKey(inflaterDefAnnotation);
     final inflaterKey = annotations[inflaterDefAnnotation]?[inflaterTypeParam] ?? _buildInflaterName(type, constructorName, ".");
     final inflatesOwnChildren = annotations[inflaterDefAnnotation]?[inflatesOwnChildrenParam] ?? false;
@@ -162,7 +162,7 @@ class InflaterBuilder extends SpecBuilder {
 
     for (final param in constructor.parameters) {
       if (!param.hasDeprecated || config.allowDeprecated) {
-        final paramType = param.type.getDisplayString(withNullability: false);
+        final paramType = param.type.displayStringWithoutNullability();
         if (paramType != "InvalidType") {
           if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name)) {
             final privateAccess = isPrivateAccessParam(param, isCustomWidget);
@@ -201,7 +201,7 @@ class InflaterBuilder extends SpecBuilder {
     } else {
       final attributeValue = "attributes['${privateAccess ? "_" : ""}${param.name}']";
       final defaultValue = inflaterConfig.findConstructorArgDefault(constructorName, param.name) ?? _calcParamDefault(param);
-      final paramTypeName = param.type.getDisplayString(withNullability: true);
+      final paramTypeName = param.type.getDisplayString();
       if (isTypeList(paramTypeName)) {
         final required = isTypeRequired(paramTypeName);
         final newDefaultValue = defaultValue == null && required ? "[]" : defaultValue;
@@ -280,7 +280,7 @@ class InflaterBuilder extends SpecBuilder {
   String _buildInflaterParseCase(String constructorName, String paramName, DartType paramType) {
     final code = StringBuffer();
     final parser = inflaterConfig.findConstructorArgParser(constructorName, paramName, paramType.toString());
-    code.write("            case '${paramName}': ");
+    code.write("            case '$paramName': ");
     if (parser != null) {
       code.write("return $parser");
     } else if (paramType.element is EnumElement) {
@@ -477,7 +477,7 @@ class InflaterType<T> {
   final List<TypeParameterElement> parameters;
   late final List<String> argumentNames;
 
-  InflaterType(this.element, this.arguments) : this.parameters = element.typeParameters {
+  InflaterType(this.element, this.arguments) : parameters = element.typeParameters {
     int dynamicCount = 0;
     final args = <String>[];
     for (final argument in arguments) {
