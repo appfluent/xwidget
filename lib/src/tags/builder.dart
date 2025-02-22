@@ -5,22 +5,28 @@ import '../../xwidget.dart';
 
 /// A tag that wraps its children in a builder function.
 ///
-/// This tag is extremely useful when the parent requires a builder function, such as
+/// This tag is very useful when the parent requires a builder function, such as
 /// [PageView.builder](https://api.flutter.dev/flutter/widgets/PageView/PageView.builder.html).
-/// Use `vars`, `multiChild`, and `nullable` attributes to configure the builder function's signature.
-/// When the builder function executes, the values of named arguments defined in `vars` are stored
-/// as dependencies in the current `Dependencies` instance. The values of placeholder arguments (_) are
-/// simply ignored. The `BuildContext` is never stored as a dependency, even if explicitly named,
-/// because it would cause a memory leak.
+/// Use `vars`, `multiChild`, and `nullable` attributes to configure the
+/// builder function's signature. When the builder function executes, the
+/// values of named arguments defined in `vars` are stored as dependencies in
+/// the current `Dependencies` instance. The values of placeholder arguments
+/// (_) are simply ignored. The `BuildContext` is never stored as a
+/// dependency, even if explicitly named, because it would cause a memory leak.
 ///
 /// Attributes:
-/// - for (required): The name of the parent attribute that will be assigned the builder function.
-/// - vars (optional): A comma separated list of named and placeholder function arguments. Named arguments are added to
-///       `Dependencies`. Supports up to five arguments.
-/// - multiChild (optional): Whether the builder function should return an array or a single widget. Defaults to `false`.
-/// - nullable (optional): Whether the builder function can return null. Defaults to `false`.
-/// - dependenciesScope (optional): Defines the method for passing Dependencies to immediate children. Valid
-///       values are `new`, `copy`, and `inherit`. The default is `inherit`.
+/// - for (required): The name of the parent attribute that will be assigned
+///   the builder function.
+/// - vars (optional): A comma separated list of named and placeholder
+///   function arguments. Named arguments are added to  `Dependencies`.
+///   Supports up to five arguments.
+/// - multiChild (optional): Whether the builder function should return
+///   an array or a single widget. Defaults to `false`.
+/// - nullable (optional): Whether the builder function can return null.
+///   Defaults to `false`.
+/// - dependenciesScope (optional): Defines the method for passing
+///   Dependencies to immediate children. Valid values are `new`, `copy`,
+///   and `inherit`. The default is `inherit`.
 ///
 /// Example:
 /// ```xml
@@ -47,7 +53,7 @@ class BuilderTag implements Tag {
     // 'vars' max length is 5
     final vars = parseListOfStrings(element.getAttribute("vars"));
     if (vars != null && vars.length > 5){
-      throw Exception("<$name> 'vars' attribute only accepts up to 5 variables");
+      throw Exception("<$name> 'vars' attribute accepts up to 5 variables");
     }
 
     // 'for' is a required attribute.
@@ -87,7 +93,9 @@ class BuilderTag implements Tag {
         // a fragment that returns a list of items.
         children = children[0];
       }
-      return isList ? children : XWidgetUtils.getOnlyChild("<$name> tag", children);
+      return isList
+          ? children
+          : XWidgetUtils.getOnlyChild("<$name> tag", children);
     }
 
     Widget singleWidgetBuilder([p0, p1, p2, p3, p4]) {

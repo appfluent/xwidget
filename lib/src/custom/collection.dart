@@ -110,7 +110,7 @@ class MapEntryInflater extends Inflater {
     var value = XWidgetUtils.getOnlyChild("param", children);
     if (value == null) {
       value = attributes["value"];
-      if (value == null && text.length > 0) {
+      if (value == null && text.isNotEmpty) {
         value = XWidgetUtils.joinStrings(text);
       }
     }
@@ -142,7 +142,7 @@ class ParamInflater extends Inflater {
     var value = XWidgetUtils.getOnlyChild("param", children);
     if (value == null) {
       value = attributes["value"];
-      if (value == null && text.length > 0) {
+      if (value == null && text.isNotEmpty) {
         value = XWidgetUtils.joinStrings(text);
       }
     }

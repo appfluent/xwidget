@@ -55,7 +55,11 @@ class ValueListenerState extends State<ValueListener> {
           excludeText: true,
           excludeAttributes: true,
         );
-        return XWidgetUtils.getOnlyChild(widget.element.qualifiedName, children.objects, const SizedBox());
+        return XWidgetUtils.getOnlyChild(
+            widget.element.qualifiedName,
+            children.objects,
+            const SizedBox()
+        );
       }
     );
   }
@@ -89,8 +93,10 @@ class ValueListenerState extends State<ValueListener> {
       // client requested disposal of variable
       if (notifier is ModelValueNotifier) {
         // notifier is the right class, so we can continue
-        if ((widget.varDisposal == VariableDisposal.byOwner && notifier.isOwner(_notifierOwnerKey)) ||
-            (widget.varDisposal == VariableDisposal.byLastListener && notifier.hasNoListeners)) {
+        if ((widget.varDisposal == VariableDisposal.byOwner &&
+             notifier.isOwner(_notifierOwnerKey)) ||
+            (widget.varDisposal == VariableDisposal.byLastListener &&
+             notifier.hasNoListeners)) {
           // we are the owner or the last listener
           notifier.dispose();
           return true;

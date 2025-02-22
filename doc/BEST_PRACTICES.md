@@ -2,17 +2,31 @@
 
 ### Do use fragment folders
 
-*Add documentation here.*
+Using fragment folders helps keep your project organized by grouping related UI components
+together. Fragments should be stored in appropriately named folders to improve
+maintainability and scalability. Ensure that each fragment is self-contained and
+follows a consistent naming convention.
 
 ### Don't specify unused widgets
 
-*Add documentation here.*
+Only include references to widgets and icons in your specification files 
+(`inflater_spec.dart`, `icon_spec.dart`) if you intend to use them in your application. 
+This is because all referenced elements will be bundled with your app, regardless of
+whether they are used, and will not be removed by Flutter’s tree shaking optimization.
 
 ### Do check-in generated files into source control
 
-*Add documentation here.*
+Since the generated code is used dynamically and is highly dependent on the installed version
+of Flutter, we believe it is best to check in XWidget’s generated files to ensure build
+stability. This prevents inconsistencies that may arise from differences in Flutter versions
+or code generation tools across development environments. By committing these files, we
+ensure that all team members and CI/CD pipelines work with a consistent, tested version of
+the generated code, reducing the risk of unexpected issues caused by regeneration discrepancies. 
 
 ### Instantiate a new Dependencies object for each page
+
+Each page should have its own Dependencies object to ensure proper dependency isolation.
+This prevents unintended side effects from shared dependencies and maintains modularity.
 
 ```dart
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -22,11 +36,14 @@
     }));
 ```
 
-*Add documentation here.*
+### Prefer automatic scoping of Dependencies within Fragments
 
-### Prefer automatic scoping of Dependencies
-
-*Add documentation here.*
+Automatic scoping of dependencies ensures that each component receives the correct dependencies
+based on its usage. This can reduce unexpected side effects when dependencies are 
+scoped incorrectly. Use the `dependenciesScope` attribute on tags that support it i.e.
+[<builder>](#builder), [<callback>](#callback), [<forEach>](#foreach), [<forLoop>](#forloop),
+[<fragment>](#fragment). Possible values are `new`, `copy`, `inherit` - leave empty for
+auto scoping.
 
 ### Do extend Model and create constructors with explicit properties
 
@@ -110,7 +127,8 @@ class Profile extends Model {
 
 ### Recommended folder structure
 
-*Add documentation here.*
+A well-structured project enhances maintainability and code clarity. Below is a recommended
+folder structure for organizing XWidget-based projects:
 
 ```markdown
 project
@@ -122,3 +140,6 @@ project
     ├── fragments  # holds all fragments
     └── values     # holds all resource values i.e strings.xml, bools.xml, colors.xml, etc.
 ```
+
+Following this structure ensures a clean separation of concerns, making the project easier
+to navigate and manage.

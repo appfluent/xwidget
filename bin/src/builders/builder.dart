@@ -119,13 +119,25 @@ abstract class SpecBuilder {
               final fieldName = field.displayName;
               final fieldValue = constValue.getField(fieldName);
               if (fieldValue != null && fieldValue.hasKnownValue) {
-                final fieldType = fieldValue.type?.getDisplayString(withNullability: false);
+                final fieldType = fieldValue.type?.getDisplayString();
                 if (fieldType != null) {
                   switch (fieldType) {
-                    case "String": fieldValues[fieldName] = fieldValue.toStringValue(); break;
-                    case "Int": fieldValues[fieldName] = fieldValue.toIntValue(); break;
-                    case "double": fieldValues[fieldName] = fieldValue.toDoubleValue(); break;
-                    case "bool": fieldValues[fieldName] = fieldValue.toBoolValue(); break;
+                    case "String":
+                    case "String?":
+                      fieldValues[fieldName] = fieldValue.toStringValue();
+                      break;
+                    case "Int":
+                    case "Int?":
+                      fieldValues[fieldName] = fieldValue.toIntValue();
+                      break;
+                    case "double":
+                    case "double?":
+                      fieldValues[fieldName] = fieldValue.toDoubleValue();
+                      break;
+                    case "bool":
+                    case "bool?":
+                      fieldValues[fieldName] = fieldValue.toBoolValue();
+                      break;
                   }
                 }
               }
@@ -142,8 +154,12 @@ abstract class SpecBuilder {
   /// Private means that it should not appear in the schema as an attribute and
   /// it should be a 'private' reference in Dependencies (prepend '_' to Dependencies key).
   bool isPrivateAccessParam(ParameterElement param, bool isCustomWidget) {
-    final paramType = param.type.getDisplayString(withNullability: false);
-    return (paramType == "Dependencies" || paramType == "XmlElement") && isCustomWidget;
+    final paramType = param.type.getDisplayString();
+    return (paramType == "Dependencies"  ||
+            paramType == "Dependencies?" ||
+            paramType == "XmlElement"    ||
+            paramType == "XmlElement?")  &&
+           isCustomWidget;
   }
 }
 

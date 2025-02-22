@@ -2,11 +2,25 @@
 
 ## Regenerate inflaters after upgrading Flutter
 
-*Add documentation here.*
+Whenever you upgrade Flutter, the framework may introduce changes that affect widget APIs
+or dependencies. Regenerating inflaters ensures:
+
+- Compatibility with the latest Flutter updates, preventing potential runtime issues.
+- Proper mapping of XML elements to Flutter widgets, aligning with any new or modified widget
+  behaviors.
+- Avoiding deprecated or broken references, ensuring your app functions as expected after
+  an upgrade.
 
 ## Use controllers to create reusable components
 
-*Add documentation here.*
+Controllers help modularize business logic and enhance reusability across your application.
+Using controllers provides:
+
+- Separation of concerns, keeping UI definitions clean while handling logic separately.
+- Reusability, allowing the same logic to be shared across different fragments without
+  duplication.
+- Better maintainability, making it easier to update or extend functionality without
+  modifying XML layouts.
 
 ## Specify generic types with literals when your model is mutable.
 

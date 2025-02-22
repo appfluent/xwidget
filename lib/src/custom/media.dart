@@ -26,7 +26,12 @@ class MediaQueryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
+    final deps = XWidget.scopeDependencies(
+        element,
+        dependencies,
+        dependenciesScope,
+        "copy"
+    );
     final query = MediaQuery.of(context);
 
     final size = query.size;
@@ -57,7 +62,11 @@ class MediaQueryWidget extends StatelessWidget {
     deps.setValue("$varName.highContrast", query.highContrast);
     deps.setValue("$varName.disableAnimations", query.disableAnimations);
 
-    final children = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
+    final children = XWidget.inflateXmlElementChildren(
+        element,
+        deps,
+        excludeText: true
+    );
     return XWidgetUtils.getOnlyChild("MediaQuery", children.objects);
   }
 }

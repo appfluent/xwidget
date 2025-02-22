@@ -1,6 +1,9 @@
 import '../../xwidget.dart';
 
-typedef EventListenerCallback<T extends Enum> = void Function(T event, dynamic payload);
+typedef EventListenerCallback<T extends Enum> = void Function(
+    T event,
+    dynamic payload
+);
 
 void registerXWidgetEvents(List<Enum> events) {
   for (final event in events) {

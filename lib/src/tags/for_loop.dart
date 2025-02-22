@@ -25,10 +25,19 @@ class ForLoopTag implements Tag {
     if (step == 0) throw Exception("<$name> 'step' cannot be zero.");
 
     final children = Children();
-    for (var index = begin; step > 0 ? index < end : index > end; index += step) {
-      final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
+    for (var index = begin;step > 0 ? index < end : index > end;index += step) {
+      final deps = XWidget.scopeDependencies(
+          element,
+          dependencies,
+          dependenciesScope,
+          "copy"
+      );
       deps[varName] = index;
-      final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
+      final tagChildren = XWidget.inflateXmlElementChildren(
+          element,
+          deps,
+          excludeText: true
+      );
       children.addAll(tagChildren);
     }
     return children;

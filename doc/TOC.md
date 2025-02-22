@@ -54,7 +54,4 @@
     - [Hot reload/restart clears dependency values](#hot-reloadrestart-clears-dependency-values)
 18. [FAQ](#faq)
 19. [Roadmap](#roadmap)
-    - [0.0.x Releases (2023)](#00x-releases-2023)
-    - [0.x Releases (2024)](#0x-releases-2024)
-    - [1.0.0 Release (mid 2024)](#100-release-mid-2024)
 20. [Known Issues](#known-issues)

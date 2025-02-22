@@ -102,7 +102,9 @@ class XWidget {
     _tags[tag.name] = tag;
   }
 
-  static void registerControllerFactory<T extends Controller>(XWidgetControllerFactory<T> factory) {
+  static void registerControllerFactory<T extends Controller>(
+      XWidgetControllerFactory<T> factory
+  ) {
     registerControllerFactoryForName(T.toString(), factory);
   }
 
@@ -183,7 +185,8 @@ class XWidget {
 
         // we only want to evaluate the 'visible' attribute if one was provided;
         // otherwise, the component is visible by default.
-        if (!attributes.containsKey("visible") || toBool(attributes["visible"]) == true) {
+        if (!attributes.containsKey("visible") ||
+            toBool(attributes["visible"]) == true) {
           // widget is visible, so let's continue
           if (inflater.inflatesCustomWidget) {
             // inflating a custom widget or object, so include the element and
@@ -199,7 +202,11 @@ class XWidget {
               onlyAttributes: inflater.inflatesOwnChildren
           );
           attributes.addAll(children.attributes);
-          returnValue = inflater.inflate(attributes, children.objects, children.text);
+          returnValue = inflater.inflate(
+              attributes,
+              children.objects,
+              children.text
+          );
         }
         return returnValue;
       }
@@ -221,7 +228,9 @@ class XWidget {
   }) {
     final children = Children();
     for (final child in element.children) {
-      if (!excludeText && !onlyAttributes && (child is XmlText || child is XmlCDATA)) {
+      if (!excludeText &&
+          !onlyAttributes &&
+          (child is XmlText || child is XmlCDATA)) {
         if (child.value != null && child.value!.isNotEmpty) {
           children.text.add(child.value!);
         }
@@ -282,7 +291,10 @@ class XWidget {
     Iterable<XmlAttribute>? inheritedAttributes,
   }) {
     final attributes = <String, dynamic>{};
-    final mergedAttributes = mergeXmlAttributes(element.attributes, inheritedAttributes);
+    final mergedAttributes = mergeXmlAttributes(
+        element.attributes,
+        inheritedAttributes
+    );
     for (final attribute in mergedAttributes) {
       try {
         final attributeName = attribute.qualifiedName;
@@ -315,7 +327,10 @@ class XWidget {
     if (attributeValue == null || attributeValue.isEmpty) return null;
     if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
       // the attribute value is an expression that needs to be parsed
-      final value = parseExpression(attributeValue.substring(2, attributeValue.length - 1), dependencies);
+      final value = parseExpression(
+          attributeValue.substring(2, attributeValue.length - 1),
+          dependencies
+      );
       return (inflater != null && value is String)
           ? inflater.parseAttribute(attributeName, value)
           : value;
@@ -323,19 +338,24 @@ class XWidget {
     if (attributeValue.startsWith("@")) {
       // possible directive
       if (attributeValue.startsWith("@color/")) {
-        return Resources.instance.getColor(attributeValue.substring(7, attributeValue.length));
+        final param = attributeValue.substring(7, attributeValue.length);
+        return Resources.instance.getColor(param);
       }
       if (attributeValue.startsWith("@string/")) {
-        return Resources.instance.getString(attributeValue.substring(8, attributeValue.length));
+        final param = attributeValue.substring(8, attributeValue.length);
+        return Resources.instance.getString(param);
       }
       if (attributeValue.startsWith("@bool/")) {
-        return Resources.instance.getBool(attributeValue.substring(6, attributeValue.length));
+        final param = attributeValue.substring(6, attributeValue.length);
+        return Resources.instance.getBool(param);
       }
       if (attributeValue.startsWith("@int/")) {
-        return Resources.instance.getInt(attributeValue.substring(5, attributeValue.length));
+        final param = attributeValue.substring(5, attributeValue.length);
+        return Resources.instance.getInt(param);
       }
       if (attributeValue.startsWith("@double/")) {
-        return Resources.instance.getDouble(attributeValue.substring(8, attributeValue.length));
+        final param = attributeValue.substring(8, attributeValue.length);
+        return Resources.instance.getDouble(param);
       }
     }
 
@@ -367,7 +387,7 @@ class XWidget {
     // using a regexp
     if (input.contains("\${")) {
       // possible embedded expression
-      return input.replaceAllMapped(_attributeContainsExpressions, (Match match) {
+      return input.replaceAllMapped(_attributeContainsExpressions,(Match match){
         // parse embedded expression
         final value = parseExpression(match[1]!, dependencies);
         return value != null ? value.toString() : "";
@@ -419,8 +439,8 @@ class XWidget {
   }
 
   static dump(XmlElement element, Dependencies dependencies) {
-    return "\n------- XML Element --------\n${element.toXmlString(pretty: true)}"
-        "\n------- Dependencies -------\n$dependencies";
+    return "\n----- XML Element -----\n${element.toXmlString(pretty: true)}"
+        "\n----- Dependencies -----\n$dependencies";
   }
 }
 

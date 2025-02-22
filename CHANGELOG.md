@@ -1,3 +1,9 @@
+### 0.0.50 (Feb 22, 2025)
+
+* Removed deprecated usages
+* Documentation updates
+* Package updates
+
 ### 0.0.49 (Feb 9, 2025)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.

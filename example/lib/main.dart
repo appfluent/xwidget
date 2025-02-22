@@ -24,8 +24,9 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
-  // See 'resources/fragments/my_app.xml' for the example fragment. You can break up your
-  // UI into fragments and reuse them, iterate over them, use control tags on them, etc.
+  // See 'resources/fragments/my_app.xml' for the example fragment. You
+  // can break up your UI into fragments and reuse them, iterate over them,
+  // use control tags on them, etc.
   @override
   Widget build(BuildContext context) {
     return XWidget.inflateFragment("my_app", Dependencies());

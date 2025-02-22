@@ -26,14 +26,18 @@ class Resources {
   void addResourceBundles(List<ResourceBundle> bundles) {
     for (final bundle in bundles) {
       if (_resourceBundlesByType.containsKey(bundle.runtimeType)) {
-        throw Exception("Resource bundle of type '${bundle.runtimeType}' handling path segment ${bundle.pathSegment} "
-            "conflicts with an existing bundle of the same type. Use 'replaceResourceBundles(List<ResourceBundle>)' "
-            "to replace existing bundles.");
+        throw Exception("Resource bundle of type '${bundle.runtimeType}' "
+            "handling path segment ${bundle.pathSegment} conflicts with an "
+            "existing bundle of the same type. Use "
+            "'replaceResourceBundles(List<ResourceBundle>)' to replace "
+            "existing bundles.");
       }
       if (_resourceBundlesByPath.containsKey(bundle.pathSegment)) {
-        throw Exception("Resource bundle of type '${bundle.runtimeType}' handling path segment ${bundle.pathSegment} "
-            "conflicts with an existing bundle handling the same path. Use 'replaceResourceBundles(List<ResourceBundle>)' "
-            "to replace existing bundles.");
+        throw Exception("Resource bundle of type '${bundle.runtimeType}' "
+            "handling path segment ${bundle.pathSegment} conflicts with "
+            "an existing bundle handling the same path. Use "
+            "'replaceResourceBundles(List<ResourceBundle>)' to replace "
+            "existing bundles.");
       }
 
       // add new bundle
@@ -46,11 +50,15 @@ class Resources {
     for (final bundle in bundles) {
       // remove conflicting types
       final removedByType = _resourceBundlesByType.remove(bundles.runtimeType);
-      if (removedByType != null) _resourceBundlesByPath.remove(removedByType.pathSegment);
+      if (removedByType != null) {
+        _resourceBundlesByPath.remove(removedByType.pathSegment);
+      }
 
       // remove conflicting paths
       final removedByPath = _resourceBundlesByPath.remove(bundle.pathSegment);
-      if (removedByPath != null) _resourceBundlesByType.remove(removedByPath.runtimeType);
+      if (removedByPath != null) {
+        _resourceBundlesByType.remove(removedByPath.runtimeType);
+      }
 
       // add new bundle
       _resourceBundlesByType[bundle.runtimeType] = bundle;
@@ -58,7 +66,10 @@ class Resources {
     }
   }
 
-  Future<void> loadResources(String rootPath, [AssetBundle? assetBundle]) async {
+  Future<void> loadResources(
+      String rootPath,
+      [AssetBundle? assetBundle]
+  ) async {
     final resRegExp = RegExp(
         r'^' '$rootPath'
         r'/((?<res>([a-zA-Z0-9_]+))/){0,1}(?<path>([a-zA-Z0-9_]+/)*)'
@@ -76,7 +87,13 @@ class Resources {
         final resExt = match.namedGroup("ext") ?? "";
         final resBundle = _resourceBundlesByPath[res];
         if (resBundle != null) {
-          await resBundle.loadResources(fileName, resPath, resName, resExt, activeAssetBundle);
+          await resBundle.loadResources(
+              fileName,
+              resPath,
+              resName,
+              resExt,
+              activeAssetBundle
+          );
         }
       }
     }
@@ -88,7 +105,13 @@ abstract class ResourceBundle {
 
   ResourceBundle(this.pathSegment);
 
-  Future<void> loadResources(String fileName, String resPath, String resName, String resExt, AssetBundle assetBundle);
+  Future<void> loadResources(
+      String fileName,
+      String resPath,
+      String resName,
+      String resExt,
+      AssetBundle assetBundle
+  );
 }
 
 //=====================================
@@ -105,7 +128,13 @@ class ValueResources extends ResourceBundle {
   ValueResources(super.pathSegment);
 
   @override
-  Future<void> loadResources(String fileName, String resPath, String resName, String resExt, AssetBundle assetBundle) async {
+  Future<void> loadResources(
+      String fileName,
+      String resPath,
+      String resName,
+      String resExt,
+      AssetBundle assetBundle
+  ) async {
     if (resExt == "xml") {
       final xml = await assetBundle.loadString(fileName);
       final document = XmlDocument.parse(xml);
@@ -117,12 +146,23 @@ class ValueResources extends ResourceBundle {
           final resourceValue = element.innerText.trim();
           if (resourceName != null && resourceValue.isNotEmpty) {
             switch (resourceType) {
-              case "string": _strings[resourceName] = element.innerText; break;
-              case "bool": _bools[resourceName] = resourceValue.parseBool(); break;
-              case "int": _ints[resourceName] = int.parse(resourceValue); break;
-              case "double": _doubles[resourceName] = double.parse(resourceValue); break;
-              case "color": _colors[resourceName] = ColorExt.parse(resourceValue); break;
-              default: throw Exception("Unknown resource type '$resourceType'");
+              case "string":
+                _strings[resourceName] = element.innerText;
+                break;
+              case "bool":
+                _bools[resourceName] = resourceValue.parseBool();
+                break;
+              case "int":
+                _ints[resourceName] = int.parse(resourceValue);
+                break;
+              case "double":
+                _doubles[resourceName] = double.parse(resourceValue);
+                break;
+              case "color":
+                _colors[resourceName] = ColorExt.parse(resourceValue);
+                break;
+              default:
+                throw Exception("Unknown resource type '$resourceType'");
             }
           }
         }
@@ -167,17 +207,29 @@ class ValueResources extends ResourceBundle {
 }
 
 extension ValueResourceExt on Resources {
-  String getString(String name) => Resources.of<ValueResources>().getString(name);
+  String getString(String name) {
+    return  Resources.of<ValueResources>().getString(name);
+  }
 
-  bool getBool(String name) => Resources.of<ValueResources>().getBool(name);
+  bool getBool(String name) {
+    return Resources.of<ValueResources>().getBool(name);
+  }
 
-  int getInt(String name) => Resources.of<ValueResources>().getInt(name);
+  int getInt(String name) {
+    return Resources.of<ValueResources>().getInt(name);
+  }
 
-  double getDouble(String name) => Resources.of<ValueResources>().getDouble(name);
+  double getDouble(String name) {
+    return Resources.of<ValueResources>().getDouble(name);
+  }
 
-  Color getColor(String name) => Resources.of<ValueResources>().getColor(name);
+  Color getColor(String name) {
+    return Resources.of<ValueResources>().getColor(name);
+  }
 
-  String getColorString(String name) => Resources.of<ValueResources>().getColorString(name);
+  String getColorString(String name) {
+    return Resources.of<ValueResources>().getColorString(name);
+  }
 }
 
 //=====================================
@@ -190,7 +242,13 @@ class FragmentResources extends ResourceBundle {
   FragmentResources(super.pathSegment);
 
   @override
-  Future<void> loadResources(String fileName, String resPath, String resName, String resExt, AssetBundle assetBundle) async {
+  Future<void> loadResources(
+      String fileName,
+      String resPath,
+      String resName,
+      String resExt,
+      AssetBundle assetBundle
+  ) async {
     if (resExt == "xml") {
       final xml = await assetBundle.loadString(fileName);
       _fragments["$resPath$resName.$resExt"] = xml;
@@ -200,22 +258,26 @@ class FragmentResources extends ResourceBundle {
   String getFragment(String fqn) {
     final value = _fragments[fqn];
     if (value != null) return value;
-    throw Exception("Fragment resource '$fqn' not found. If the fragment name references a subdirectory, "
-        "i.e. includes a forward slash ('/') in the name, please make sure to add the subdirectory to the "
-        "'assets' section in pubspec.yaml.");
+    throw Exception("Fragment resource '$fqn' not found. If the fragment name "
+        "references a subdirectory, i.e. includes a forward slash ('/') in "
+        "the name, please make sure to add the subdirectory to the 'assets' "
+        "section in pubspec.yaml.");
   }
 
   String getFragmentFqn(String name, [String? relativeTo]) {
     final fqn = _getFragmentFqn(name, relativeTo);
     if (fqn != null) return fqn;
-    throw Exception("Fragment resource '$name' not found. Tried looking relative to '$relativeTo'. If the fragment name"
-        " references a subdirectory, i.e. includes a forward slash ('/') in the name, please make sure to add the"
-        " subdirectory to the 'assets' section in pubspec.yaml.");
+    throw Exception("Fragment resource '$name' not found. Tried looking "
+        "relative to '$relativeTo'. If the fragment name references a "
+        "subdirectory, i.e. includes a forward slash ('/') in the name, "
+        "please make sure to add the subdirectory to the 'assets' section "
+        "in pubspec.yaml.");
   }
 
   String? _getFragmentFqn(String name, [String? relativeTo]) {
     if (!name.endsWith(".xml")) {
-      return _getFragmentFqn("$name/index.xml", relativeTo) ?? _getFragmentFqn("$name.xml", relativeTo);
+      return _getFragmentFqn("$name/index.xml", relativeTo) ??
+             _getFragmentFqn("$name.xml", relativeTo);
     }
     if (_fragments.containsKey(name)) {
       return name;
@@ -229,7 +291,11 @@ class FragmentResources extends ResourceBundle {
 }
 
 extension FragmentResourcesExt on Resources {
-  String getFragment(String fqn) => Resources.of<FragmentResources>().getFragment(fqn);
+  String getFragment(String fqn) {
+    return Resources.of<FragmentResources>().getFragment(fqn);
+  }
 
-  String getFragmentFqn(String name, [String? relativeTo]) => Resources.of<FragmentResources>().getFragmentFqn(name, relativeTo);
+  String getFragmentFqn(String name, [String? relativeTo]) {
+    return Resources.of<FragmentResources>().getFragmentFqn(name, relativeTo);
+  }
 }

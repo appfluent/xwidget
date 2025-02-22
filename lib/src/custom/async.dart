@@ -76,9 +76,14 @@ class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
 
   Widget _asyncBuilder(BuildContext context, AsyncSnapshot snapshot) {
     if (snapshot.hasError) {
-      _log.error("Problem initializing DynamicBuilderState", snapshot.error, snapshot.stackTrace);
+      _log.error(
+          "Problem initializing DynamicBuilderState",
+          snapshot.error,
+          snapshot.stackTrace
+      );
       return widget.errorWidget ?? ErrorWidget(snapshot.error!);
-    } else if (snapshot.connectionState == ConnectionState.done || snapshot.connectionState == ConnectionState.active) {
+    } else if (snapshot.connectionState == ConnectionState.done ||
+               snapshot.connectionState == ConnectionState.active) {
       try {
         return widget.builder(context, widget.dependencies, snapshot.data);
       } catch (error) {

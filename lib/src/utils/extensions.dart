@@ -28,8 +28,8 @@ extension StringExt on String {
 extension UriExt on Uri {
   static String encodeQueryParameters(Map<String, String> params) {
     return params.entries
-        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-        .join('&');
+      .map((e)=>'${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
   }
 
   static Uri emailUri({required String to, String? subject, String? body}) {
@@ -50,7 +50,8 @@ extension AssetBundleExt on AssetBundle {
     try {
       jsonString = await loadString(key);
     } catch (e) {
-      // An exception here means the asset was not found. This is allowed so just return null.
+      // An exception here means the asset was not found. This is allowed
+      // so just return null.
     }
     return jsonString.isNotEmpty ? json.decode(jsonString) : null;
   }

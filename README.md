@@ -119,9 +119,6 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
     - [Hot reload/restart clears dependency values](#hot-reloadrestart-clears-dependency-values)
 18. [FAQ](#faq)
 19. [Roadmap](#roadmap)
-    - [0.0.x Releases (2023)](#00x-releases-2023)
-    - [0.x Releases (2024)](#0x-releases-2024)
-    - [1.0.0 Release (mid 2024)](#100-release-mid-2024)
 20. [Known Issues](#known-issues)
 <!-- // end of #include -->
 
@@ -495,35 +492,49 @@ const iconSets = [
 <!-- #include CODE_GENERATION.md -->
 # Code Generation
 
-*Add documentation here.*
+XWidget provides a command-line tool for generating inflaters, controllers, icons, and schema
+files based on your configuration. The generated code ensures that XML-based UI definitions
+can be properly interpreted and rendered within your Flutter application.
 
+## Running Code Generation
+
+To generate inflaters, controllers, and other required files, run the following command:
 ```shell
-$ dart run xwidget:generate 
+$ dart run xwidget:generate
 ```
 
+To see available options and flags, use:
 ```shell
-$ dart run xwidget:generate --help 
+$ dart run xwidget:generate --help
 ```
 
+You can also specify a custom configuration file:
 ```shell
-$ dart run xwidget:generate --config "my_config.yaml" 
+$ dart run xwidget:generate --config "my_config.yaml"
 ```
 
+To generate only specific components, use the --only flag:
 ```shell
-$ dart run xwidget:generate --only inflaters,controllers,icons 
+$ dart run xwidget:generate --only inflaters,controllers,icons
 ```
 
+If you need to support deprecated APIs, use:
 ```shell
-$ dart run xwidget:generate --allow-deprecated 
+$ dart run xwidget:generate --allow-deprecated
 ```
+
+The generated files will be placed in the appropriate directories as specified
+in xwidget_config.yaml.
 <!-- // end of #include -->
 
 <!-- #include INFLATERS.md -->
 # Inflaters
 
-Inflaters are the heart of XWidget. They are responsible for building the UI at runtime by parsing
-attribute values and constructing the components defined in fragments. In other words, they are the
-primary mechanism by which your XML markup gets transformed from this:
+Inflaters are responsible for dynamically constructing Flutter widgets from XML markup at runtime.
+They parse attributes and generate widget instances accordingly. XWidget allows developers to 
+define inflaters for any Flutter widget, as well as custom components.
+
+For example,
 
 ```XML
 <Container height="50" width="50">
@@ -531,7 +542,7 @@ primary mechanism by which your XML markup gets transformed from this:
 </Container>
 ```
 
-into the widget tree represented by this:
+will construct the following widgets:
 
 ```Dart
 Container({
@@ -540,12 +551,6 @@ Container({
   child: Text("Hello world!")
 });
 ```
-
-A good analogy is the relationship between a recipe, a chef and a meal. The recipe describes how to
-create the meal. It lists the ingredients, preparation instructions, etc. The chef does all the work
-described in the recipe. The meal is the finished product. Your XML markup is the recipe, the
-inflaters are the chefs in the kitchen, and the instantiated widget tree is the meal, which is then
-served to the end user.
 
 Inflaters are generated from a user (a developer using XWidget) defined specification written in
 Dart. The specification is very simple and its sole purpose is to tell the code generator which
@@ -620,11 +625,20 @@ Next, you'll need to make sure you import the dart file that contains your parse
 
 ### XML Schema
 
-*Add documentation here.*
+The generated XML schema ('xwidget_schema.g.xsd') defines the structure of valid XWidget fragments.
+Register this schema in your IDE for better code completion, validation, and documentation
+tooltips when editing fragments.
 
 ### Code Completion & Tooltip Documentation
 
-*Add documentation here.*
+When the schema is registered, your IDE will provide:
+
+- Code completion for available widgets and attributes
+- Inline documentation for attributes and supported widgets
+- Validation of XML fragments
+
+To enable this, ensure your IDE supports XML schema registration and point it to
+`xwidget_schema.g.xsd`.
 <!-- // end of #include -->
 
 <!-- #include DEPENDENCIES.md -->
@@ -1079,13 +1093,115 @@ main() {
 <!-- #include FRAGMENTS.md -->
 # Fragments
 
-*Add documentation here.*
+Fragments are reusable UI components defined in XML. They allow modular design, making it easy
+to structure and maintain UI layouts. Fragments can be used anywhere within an
+XWidget-powered application.
+
+## Example Fragment
+
+```xml
+<Column xmlns="http://www.appfluent.us/xwidget">
+    <Text data="Hello World">
+        <TextStyle for="style" fontWeight="bold" color="#262626"/>
+    </Text>
+    <Text>Welcome to XWidget!</Text>
+</Column>
+```
+
+Store your fragment files in your assets folder and ensure that all relevant
+directories are correctly registered in your pubspec.yaml file.
+
+```yaml
+flutter:
+
+  assets:
+    # fragments
+    - resources/fragments/
+```
+
+## Using Fragments in Dart
+
+Fragments can be inflated and added to the widget tree using `XWidget.inflateFragment`:
+
+```dart
+Container(
+  child: XWidget.inflateFragment("hello_world", Dependencies())
+);
+```
 <!-- // end of #include -->
 
 <!-- #include CONTROLLERS.md -->
 # Controllers
 
-*Add documentation here.*
+XWidget allows you to define and register custom controllers to manage business logic and
+dynamic behaviors within your fragments. Controllers act as the bridge between your
+fragments and the underlying data or event handling mechanisms.
+
+## Creating Controllers
+
+Define controllers in `lib/xwidget/controllers/`:
+
+```dart
+import 'package:xwidget/xwidget.dart';
+
+class CounterController extends Controller {
+  var count = 0;
+  
+  @override
+  void bindDependencies() {
+    dependencies.setValue("count", count);
+    dependencies.setValue("increment", increment);
+  }
+
+  void increment() {
+    dependencies.setValue("count", ++count);
+  }
+}
+```
+
+## Generating Controller Bindings
+
+To generate controller bindings, run the following command:
+
+```shell
+$ dart run xwidget:generate --only controllers
+```
+
+This command processes your project’s controller definitions and generates the necessary
+Dart files to integrate them into your application.
+
+## Registering Controllers in Your Application
+
+Once the controllers have been generated, you need to register them during your app’s
+initialization. Update your main function as follows:
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  ...
+  // register XWidget components
+  registerXWidgetInflaters();
+  registerXWidgetControllers();
+  ...
+}
+```
+
+## Using Controllers in Your Fragments
+
+Bind controllers to UI elements:
+
+```xml
+<Controller name="CounterController">
+    <!-- listen for changes to 'count' and update children -->
+    <ValueListener varName="count">
+        <Text data="${toString(count)}"/>
+    </ValueListener>
+    <Button onPressed="${increment}">
+        <Text>Increment</Text>
+    </Button>
+</Controller>
+```
 <!-- // end of #include -->
 
 <!-- #include EL.md -->
@@ -1622,17 +1738,31 @@ A tag that renders a UI fragment
 
 ### Do use fragment folders
 
-*Add documentation here.*
+Using fragment folders helps keep your project organized by grouping related UI components
+together. Fragments should be stored in appropriately named folders to improve
+maintainability and scalability. Ensure that each fragment is self-contained and
+follows a consistent naming convention.
 
 ### Don't specify unused widgets
 
-*Add documentation here.*
+Only include references to widgets and icons in your specification files 
+(`inflater_spec.dart`, `icon_spec.dart`) if you intend to use them in your application. 
+This is because all referenced elements will be bundled with your app, regardless of
+whether they are used, and will not be removed by Flutter’s tree shaking optimization.
 
 ### Do check-in generated files into source control
 
-*Add documentation here.*
+Since the generated code is used dynamically and is highly dependent on the installed version
+of Flutter, we believe it is best to check in XWidget’s generated files to ensure build
+stability. This prevents inconsistencies that may arise from differences in Flutter versions
+or code generation tools across development environments. By committing these files, we
+ensure that all team members and CI/CD pipelines work with a consistent, tested version of
+the generated code, reducing the risk of unexpected issues caused by regeneration discrepancies. 
 
 ### Instantiate a new Dependencies object for each page
+
+Each page should have its own Dependencies object to ensure proper dependency isolation.
+This prevents unintended side effects from shared dependencies and maintains modularity.
 
 ```dart
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -1642,11 +1772,14 @@ A tag that renders a UI fragment
     }));
 ```
 
-*Add documentation here.*
+### Prefer automatic scoping of Dependencies within Fragments
 
-### Prefer automatic scoping of Dependencies
-
-*Add documentation here.*
+Automatic scoping of dependencies ensures that each component receives the correct dependencies
+based on its usage. This can reduce unexpected side effects when dependencies are 
+scoped incorrectly. Use the `dependenciesScope` attribute on tags that support it i.e.
+[<builder>](#builder), [<callback>](#callback), [<forEach>](#foreach), [<forLoop>](#forloop),
+[<fragment>](#fragment). Possible values are `new`, `copy`, `inherit` - leave empty for
+auto scoping.
 
 ### Do extend Model and create constructors with explicit properties
 
@@ -1730,7 +1863,8 @@ class Profile extends Model {
 
 ### Recommended folder structure
 
-*Add documentation here.*
+A well-structured project enhances maintainability and code clarity. Below is a recommended
+folder structure for organizing XWidget-based projects:
 
 ```markdown
 project
@@ -1742,6 +1876,9 @@ project
     ├── fragments  # holds all fragments
     └── values     # holds all resource values i.e strings.xml, bools.xml, colors.xml, etc.
 ```
+
+Following this structure ensures a clean separation of concerns, making the project easier
+to navigate and manage.
 <!-- // end of #include -->
 
 <!-- #include TIPS_TRICKS.md -->
@@ -1749,11 +1886,25 @@ project
 
 ## Regenerate inflaters after upgrading Flutter
 
-*Add documentation here.*
+Whenever you upgrade Flutter, the framework may introduce changes that affect widget APIs
+or dependencies. Regenerating inflaters ensures:
+
+- Compatibility with the latest Flutter updates, preventing potential runtime issues.
+- Proper mapping of XML elements to Flutter widgets, aligning with any new or modified widget
+  behaviors.
+- Avoiding deprecated or broken references, ensuring your app functions as expected after
+  an upgrade.
 
 ## Use controllers to create reusable components
 
-*Add documentation here.*
+Controllers help modularize business logic and enhance reusability across your application.
+Using controllers provides:
+
+- Separation of concerns, keeping UI definitions clean while handling logic separately.
+- Reusability, allowing the same logic to be shared across different fragments without
+  duplication.
+- Better maintainability, making it easier to update or extend functionality without
+  modifying XML layouts.
 
 ## Specify generic types with literals when your model is mutable.
 

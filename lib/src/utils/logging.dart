@@ -1,6 +1,10 @@
 import 'package:logger/logger.dart' hide FileOutput;
 
-typedef CommonLogCallback = bool Function(LogLevel, dynamic, [dynamic, StackTrace?]);
+typedef CommonLogCallback = bool Function(
+    LogLevel,
+    dynamic,
+    [dynamic, StackTrace?]
+);
 
 enum LogLevel { debug, info, warn, error }
 
@@ -8,9 +12,10 @@ enum LogLevel { debug, info, warn, error }
 ///
 /// Adds these features:
 /// 1. Custom styling by parsing predefined style tags in the message.
-/// 2. Adds a callback BEFORE calling the filter's shouldLog method. This allows the callback
-///    to decide if the message should be logged. The specific use case in mind is with Firebase.
-///    In production, you may want to continue to log to Crashlytics, but not to the console.
+/// 2. Adds a callback BEFORE calling the filter's shouldLog method. This
+///    allows the callback to decide if the message should be logged. The
+///    specific use case in mind is with Firebase. In production, you may
+///    want to continue to log to Crashlytics, but not to the console.
 ///
 /// Style tags:
 ///   black: {{black}}
@@ -49,7 +54,9 @@ class CommonLog {
   static const _bold = "\u001b[1m";
   static const _reset = "\x1B[0m";
 
-  static final _colorRegExp = RegExp("\\{\\{(black|red|green|yellow|blue|magenta|cyan|white|bold|reset)\\}\\}");
+  static final _colorRegExp = RegExp(
+    "\\{\\{(black|red|green|yellow|blue|magenta|cyan|white|bold|reset)\\}\\}"
+  );
 
   static Logger _logger = _defaultLogger;
   static CommonLogCallback? _callback;
@@ -102,7 +109,7 @@ class CommonLog {
   /// Log a [message] at level [LogLevel.warn].
   warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
-    if (_callback == null || _callback!(LogLevel.warn, msg, error, stackTrace)) {
+    if (_callback==null || _callback!(LogLevel.warn, msg, error, stackTrace)) {
       _logger.w(msg, error: error, stackTrace: stackTrace);
     }
   }
@@ -110,7 +117,7 @@ class CommonLog {
   /// Log a [message] at level [LogLevel.error].
   error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
-    if (_callback == null || _callback!(LogLevel.error, msg, error, stackTrace)) {
+    if (_callback==null || _callback!(LogLevel.error, msg, error, stackTrace)) {
       _logger.e(msg, error: error, stackTrace: stackTrace);
     }
   }

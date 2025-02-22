@@ -74,7 +74,11 @@ abstract class Controller extends State<ControllerWidget> {
       excludeText: true,
       excludeAttributes: true,
     );
-    return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
+    return XWidgetUtils.getOnlyChild(
+        "Controller",
+        children.objects,
+        const SizedBox.shrink()
+    );
   }
 }
 
@@ -101,7 +105,7 @@ class ControllerWidgetInflater extends Inflater {
       dependencies: attributes['_dependencies'],
       errorWidget: attributes['errorWidget'],
       progressWidget: attributes['progressWidget'],
-      options: attributes['options'] != null ? {...attributes['options']} : null,
+      options: attributes['options'] != null ? {...attributes['options']} : null
     );
   }
 

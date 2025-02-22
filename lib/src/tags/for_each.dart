@@ -25,7 +25,8 @@ class ForEachTag implements Tag {
     // check for iterable object
     final iterable = items is Map ? items.entries : items;
     if (iterable is! Iterable) {
-      throw Exception("<$name> 'items' attribute does not reference an iterable object");
+      throw Exception("<$name> 'items' attribute does not reference "
+          "an iterable object");
     }
 
     // 'indexVar' is an optional attribute
@@ -42,21 +43,31 @@ class ForEachTag implements Tag {
     final children = Children();
 
     for (final item in iterable) {
-      dynamic depItem = item is MapEntry ? {"key": item.key, "value": item.value} : item;
-      int depIndex = index ~/ groupSize;
+      dynamic depItem = item is MapEntry
+          ? {"key": item.key, "value": item.value}
+          : item;
 
+      int depIndex = index ~/ groupSize;
       if (groupSize > 1) {
         itemGroup.add(depItem);
         depItem = itemGroup;
       }
-
       if ((index + 1) % groupSize == 0 || index == iterable.length - 1) {
-        final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
+        final deps = XWidget.scopeDependencies(
+            element,
+            dependencies,
+            dependenciesScope,
+            "copy"
+        );
         deps[varName] = depItem;
         if (indexVarName != null && indexVarName.isNotEmpty) {
           deps[indexVarName] = depIndex;
         }
-        final tagChildren = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
+        final tagChildren = XWidget.inflateXmlElementChildren(
+            element,
+            deps,
+            excludeText: true
+        );
         children.addAll(tagChildren);
         itemGroup = [];
       }

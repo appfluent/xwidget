@@ -1,11 +1,22 @@
 class XWidgetUtils {
-  /// Gets the first child in a list of children or throws an [Exception] if there are multiple children.
+  /// Gets the first child in a list of children or throws an [Exception]
+  /// if there are multiple children.
   ///
-  /// The expected primary use for this method is by inflaters. We want inflaters to fail loudly if it can't render all
-  /// of its children. Silently rendering only the first child leads to UI bugs that are difficult to find.
-  static dynamic getOnlyChild(String widgetName, List<dynamic> children,[dynamic defaultValue]) {
-    if (children.isEmpty) return defaultValue;
-    if (children.length > 1) throw Exception("'$widgetName' cannot have multiple children");
+  /// The expected primary use for this method is by inflaters. We want
+  /// inflaters to fail loudly if it can't render all of its children.
+  /// Silently rendering only the first child leads to UI bugs that are
+  /// difficult to find.
+  static dynamic getOnlyChild(
+      String widgetName,
+      List<dynamic> children,
+      [dynamic defaultValue]
+  ) {
+    if (children.isEmpty) {
+      return defaultValue;
+    }
+    if (children.length > 1) {
+      throw Exception("'$widgetName' cannot have multiple children");
+    }
     return children[0];
   }
 

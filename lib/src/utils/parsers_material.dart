@@ -39,7 +39,8 @@ AlignmentDirectional? parseAlignmentDirectional(String? value) {
       case 'bottomStart': return AlignmentDirectional.bottomStart;
       case 'bottomCenter': return AlignmentDirectional.bottomCenter;
       case 'bottomEnd': return AlignmentDirectional.bottomEnd;
-      default: throw Exception("Problem parsing AlignmentDirectional value: $value");
+      default: throw Exception("Problem parsing AlignmentDirectional "
+          "value: $value");
     }
   }
   return null;
@@ -63,7 +64,8 @@ AlignmentGeometry? parseAlignmentGeometry(String? value) {
       case 'bottomCenter': return AlignmentDirectional.bottomCenter;
       case 'bottomEnd': return AlignmentDirectional.bottomEnd;
       case 'bottomRight': return Alignment.bottomRight;
-      default: throw Exception("Problem parsing AlignmentGeometry value: $value");
+      default: throw Exception("Problem parsing AlignmentGeometry "
+          "value: $value");
     }
   }
   return null;
@@ -274,9 +276,13 @@ WidgetStateProperty<double>? parseWidgetStateDouble(String? value) {
   return (db != null) ? WidgetStateProperty.all<double>(db) : null;
 }
 
-WidgetStateProperty<EdgeInsetsGeometry>? parseWidgetStateEdgeInsets(String? value) {
+WidgetStateProperty<EdgeInsetsGeometry>? parseWidgetStateEdgeInsets(
+    String? value
+) {
   final padding = parseEdgeInsetsGeometry(value);
-  return (padding != null) ? WidgetStateProperty.all<EdgeInsetsGeometry>(padding) : null;
+  return (padding != null)
+      ? WidgetStateProperty.all<EdgeInsetsGeometry>(padding)
+      : null;
 }
 
 WidgetStateProperty<Size>? parseWidgetStateSize(String? value) {
@@ -389,8 +395,14 @@ VisualDensity? parseVisualDensity(String? value) {
   final doubles = parseListOfDoubles(value);
   if (doubles != null && doubles.isNotEmpty) {
     switch (doubles.length) {
-      case 1: return VisualDensity(horizontal: doubles[0], vertical: doubles[0]);
-      case 2: return VisualDensity(horizontal: doubles[0], vertical: doubles[1]);
+      case 1: return VisualDensity(
+        horizontal: doubles[0],
+        vertical: doubles[0]
+      );
+      case 2: return VisualDensity(
+        horizontal: doubles[0],
+        vertical: doubles[1]
+      );
     }
     throw Exception("Problem parsing VisualDensity value: $value");
   }

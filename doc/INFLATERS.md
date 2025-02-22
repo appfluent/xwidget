@@ -1,8 +1,10 @@
 # Inflaters
 
-Inflaters are the heart of XWidget. They are responsible for building the UI at runtime by parsing
-attribute values and constructing the components defined in fragments. In other words, they are the
-primary mechanism by which your XML markup gets transformed from this:
+Inflaters are responsible for dynamically constructing Flutter widgets from XML markup at runtime.
+They parse attributes and generate widget instances accordingly. XWidget allows developers to 
+define inflaters for any Flutter widget, as well as custom components.
+
+For example,
 
 ```XML
 <Container height="50" width="50">
@@ -10,7 +12,7 @@ primary mechanism by which your XML markup gets transformed from this:
 </Container>
 ```
 
-into the widget tree represented by this:
+will construct the following widgets:
 
 ```Dart
 Container({
@@ -19,12 +21,6 @@ Container({
   child: Text("Hello world!")
 });
 ```
-
-A good analogy is the relationship between a recipe, a chef and a meal. The recipe describes how to
-create the meal. It lists the ingredients, preparation instructions, etc. The chef does all the work
-described in the recipe. The meal is the finished product. Your XML markup is the recipe, the
-inflaters are the chefs in the kitchen, and the instantiated widget tree is the meal, which is then
-served to the end user.
 
 Inflaters are generated from a user (a developer using XWidget) defined specification written in
 Dart. The specification is very simple and its sole purpose is to tell the code generator which
@@ -99,8 +95,17 @@ Next, you'll need to make sure you import the dart file that contains your parse
 
 ### XML Schema
 
-*Add documentation here.*
+The generated XML schema ('xwidget_schema.g.xsd') defines the structure of valid XWidget fragments.
+Register this schema in your IDE for better code completion, validation, and documentation
+tooltips when editing fragments.
 
 ### Code Completion & Tooltip Documentation
 
-*Add documentation here.*
+When the schema is registered, your IDE will provide:
+
+- Code completion for available widgets and attributes
+- Inline documentation for attributes and supported widgets
+- Validation of XML fragments
+
+To enable this, ensure your IDE supports XML schema registration and point it to
+`xwidget_schema.g.xsd`.
