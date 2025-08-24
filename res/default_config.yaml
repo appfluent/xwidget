@@ -30,6 +30,7 @@ inflaters:
     "FloatingActionButton.small:heroTag": "'<default FloatingActionButton hero tag>'"
     "FloatingActionButton.large:heroTag": "'<default FloatingActionButton hero tag>'"
     "FloatingActionButton.extended:heroTag": "'<default FloatingActionButton hero tag>'"
+    "Scaffold:bottomSheetScrimBuilder" : "defaultBottomSheetScrimBuilder"
     "SlidableAction:backgroundColor": "Colors.white"
     "Text:data": "XWidgetUtils.joinStrings(text)"
     "WidgetSpan:alignment": "PlaceholderAlignment.middle"

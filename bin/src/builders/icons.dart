@@ -43,7 +43,7 @@ class IconsBuilder extends SpecBuilder {
                   if (icons != null) {
                     for (final icon in icons) {
                       final variable = icon.variable;
-                      final enclosingElement = variable?.enclosingElement;
+                      final enclosingElement = variable?.enclosingElement3;
                       if (variable != null && enclosingElement != null) {
                         final iconType = icon.type?.displayStringWithoutNullability();
                         if (iconType == "IconData") {

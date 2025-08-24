@@ -396,6 +396,44 @@
         </xs:union>
     </xs:simpleType>
 
+    <xs:simpleType name="BlendModeAttributeType">
+        <xs:union memberTypes="expressionAttributeType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="clear"/>
+                    <xs:enumeration value="src"/>
+                    <xs:enumeration value="dst"/>
+                    <xs:enumeration value="srcOver"/>
+                    <xs:enumeration value="dstOver"/>
+                    <xs:enumeration value="srcIn"/>
+                    <xs:enumeration value="dstIn"/>
+                    <xs:enumeration value="srcOut"/>
+                    <xs:enumeration value="dstOut"/>
+                    <xs:enumeration value="srcATop"/>
+                    <xs:enumeration value="dstATop"/>
+                    <xs:enumeration value="xor"/>
+                    <xs:enumeration value="plus"/>
+                    <xs:enumeration value="modulate"/>
+                    <xs:enumeration value="screen"/>
+                    <xs:enumeration value="overlay"/>
+                    <xs:enumeration value="darken"/>
+                    <xs:enumeration value="lighten"/>
+                    <xs:enumeration value="colorDodge"/>
+                    <xs:enumeration value="colorBurn"/>
+                    <xs:enumeration value="hardLight"/>
+                    <xs:enumeration value="softLight"/>
+                    <xs:enumeration value="difference"/>
+                    <xs:enumeration value="exclusion"/>
+                    <xs:enumeration value="multiply"/>
+                    <xs:enumeration value="hue"/>
+                    <xs:enumeration value="saturation"/>
+                    <xs:enumeration value="color"/>
+                    <xs:enumeration value="luminosity"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
     <xs:simpleType name="ThemeModeAttributeType">
         <xs:union memberTypes="expressionAttributeType">
             <xs:simpleType>
@@ -1165,8 +1203,8 @@ overall theme's brightness is [Brightness.light], and [ColorScheme.surface]
 if the overall theme's brightness is [Brightness.dark].
 In Material v3 (i.e., when [ThemeData.useMaterial3] is true),
 then [AppBar] uses the overall theme's [ColorScheme.surface]</p><br/>
-<p>If this color is a [MaterialStateColor] it will be resolved against
-[MaterialState.scrolledUnder] when the content of the app's
+<p>If this color is a [WidgetStateColor] it will be resolved against
+[WidgetState.scrolledUnder] when the content of the app's
 primary scrollable overlaps the app bar.
 {@endtemplate}</p><br/>
 <p>See also:</p><br/>
@@ -1441,10 +1479,50 @@ must pass through the app bar to widgets beneath the app bar (i.e. with
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="useDefaultSemanticsOrder" type="boolAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@template flutter.material.appbar.useDefaultSemanticsOrder}
+Whether to use the default semantic ordering for the app bar's children for
+accessibility traversal order.</p><br/>
+<p>If this is set to true, the app bar will use the default semantic ordering,
+which places the flexible space after the main content in the semantics tree.
+This affects how screen readers and other assistive technologies navigate the app bar's content.</p><br/>
+<p>Set this to false if you want to customize semantics traversal order in the app bar.
+You can then assign [SemanticsSortKey]s to app bar's children to control the order.</p><br/>
+<p>Defaults to true.</p><br/>
+<p>See also:</p><br/>
+<ul>
+<li>[SemanticsSortKey], which are keys used to define the accessibility traversal order.
+{@endtemplate}</li>
+</ul>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="clipBehavior" type="ClipAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.Material.clipBehavior}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="actionsPadding">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@template flutter.material.appbar.actionsPadding}
+The padding between the [actions] and the end of the AppBar.</p><br/>
+<p>Defaults to zero.
+{@endtemplate}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="animateColor" type="boolAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>Whether the color should be animated.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -2671,6 +2749,14 @@ way for the framework to know the correct baseline <em>a priori</em>.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="spacing">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>{@macro flutter.rendering.RenderFlex.spacing}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="children">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -2949,7 +3035,7 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [MaterialStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3021,7 +3107,7 @@ shape as well.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>True if this is an &quot;extended&quot; floating action button.</p><br/>
-<p>Typically [extended] buttons have a [StadiumBorder] [shape]
+<p>Typically &quot;extended&quot; buttons have a [StadiumBorder] [shape]
 and have been created with the [FloatingActionButton.extended]
 constructor.</p><br/>
 <p>The [Scaffold] animates the appearance of ordinary floating
@@ -3275,7 +3361,7 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [MaterialStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3573,7 +3659,7 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [MaterialStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3874,7 +3960,7 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [MaterialStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -3894,7 +3980,7 @@ shape as well.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>True if this is an &quot;extended&quot; floating action button.</p><br/>
-<p>Typically [extended] buttons have a [StadiumBorder] [shape]
+<p>Typically &quot;extended&quot; buttons have a [StadiumBorder] [shape]
 and have been created with the [FloatingActionButton.extended]
 constructor.</p><br/>
 <p>The [Scaffold] animates the appearance of ordinary floating
@@ -4182,7 +4268,7 @@ equivalent as order produces differing transparency.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>Semantic label for the icon.</p><br/>
-<p>Announced in accessibility modes (e.g TalkBack/VoiceOver).
+<p>Announced by assistive technologies (e.g TalkBack/VoiceOver).
 This label does not show in the UI.</p><br/>
 <ul>
 <li>[SemanticsProperties.label], which is set to [semanticLabel] in the
@@ -4218,6 +4304,23 @@ scaling the text without scaling the icon would result in a confusing
 interface.</p><br/>
 <p>Defaults to the nearest [IconTheme]'s
 [IconThemeData.applyTextScaling].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="blendMode" type="BlendModeAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>The [BlendMode] to apply to the foreground of the icon.</p><br/>
+<p>Defaults to [BlendMode.srcOver]</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="fontWeight" type="FontWeightAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>The typeface thickness to use when painting the text (e.g., bold).</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -4303,7 +4406,7 @@ directly manipulated without first obtaining it from a [BuildContext] via
 <p>The application's top-level routing table.</p><br/>
 <p>When a named route is pushed with [Navigator.pushNamed], the route name is
 looked up in this map. If the name is present, the associated
-[widgets.WidgetBuilder] is used to construct a [MaterialPageRoute] that
+[WidgetBuilder] is used to construct a [MaterialPageRoute] that
 performs an appropriate transition, including [Hero] animations, to the
 new route.</p><br/>
 <p>{@macro flutter.widgets.widgetsApp.routes}</p><br/>
@@ -5547,6 +5650,21 @@ persistently visible, even if the [body] of the scaffold scrolls.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="persistentFooterDecoration">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>Decoration for the container that holds the [persistentFooterButtons].</p><br/>
+<p>By default, this container has a top border with a width of 1.0, created by
+[Divider.createBorderSide].</p><br/>
+<p>See also:</p><br/>
+<ul>
+<li>[persistentFooterButtons], which defines the buttons to show in the footer.</li>
+<li>[persistentFooterAlignment], which defines the alignment of the footer buttons.</li>
+</ul>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="drawer">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -5716,6 +5834,17 @@ to the top of the scaffold.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="drawerBarrierDismissible" type="boolAttributeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>Whether the drawer can be dismissed by tapping on the barrier.</p><br/>
+<p>If false, and a [drawer] is specified, then the barrier behind the drawer
+will not respond to a tap event and thus remains open.</p><br/>
+<p>Defaults to true, in which case the drawer will close upon the user tapping on the barrier.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="extendBodyBehindAppBar" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -5740,6 +5869,21 @@ of the scaffold.</li>
 <p>The color to use for the scrim that obscures primary content while a drawer is open.</p><br/>
 <p>If this is null, then [DrawerThemeData.scrimColor] is used. If that
 is also null, then it defaults to [Colors.black54].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="bottomSheetScrimBuilder">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A builder for the widget that obscures primary content while a bottom sheet is open.</p><br/>
+<p>The builder receives the current [BuildContext] and an [Animation] as parameters.
+The [Animation] ranges from 0.0 to 1.0 based on how much the bottom sheet covers the screen.
+A value of 0.0 represents when the bottom sheet covers 70% of the screen,
+and 1.0 represents when the bottom sheet fully covers the screen.</p><br/>
+<p>If this is null, then a non-dismissable [ModalBarrier] with [Colors.black] is used. The
+barrier is animated to fade in and out as the bottom sheet is opened and closed.</p><br/>
+<p>If the builder returns null, then no scrim is shown.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -5970,6 +6114,18 @@ text value:</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="semanticsIdentifier">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A unique identifier for the semantics node for this widget.</p><br/>
+<p>This is useful for cases where the text widget needs to have a uniquely
+identifiable ID that is recognized through the automation tools without
+having a dependency on the actual content of the text that can possibly be
+dynamic in nature.</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="textWidthBasis" type="TextWidthBasisAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6167,6 +6323,18 @@ text value:</p><br/>
 <pre><code class="language-dart">const Text(r'$$', semanticsLabel: 'Double dollars')
 </code></pre>
 <p>{@endtemplate}</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="semanticsIdentifier">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A unique identifier for the semantics node for this widget.</p><br/>
+<p>This is useful for cases where the text widget needs to have a uniquely
+identifiable ID that is recognized through the automation tools without
+having a dependency on the actual content of the text that can possibly be
+dynamic in nature.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -6636,11 +6804,15 @@ brightness is [Brightness.light], and white for [Brightness.dark].</p><br/>
 <p>To override the appearance of specific components, provide
 a component theme parameter like [sliderTheme], [toggleButtonsTheme],
 or [bottomNavigationBarTheme].</p><br/>
+<p>When [useSystemColors] is true and the platform supports system colors, then the system colors
+will be used to override certain theme colors. The [colorScheme], [textTheme],
+[elevatedButtonTheme], [outlinedButtonTheme], [textButtonTheme], [filledButtonTheme], and
+[floatingActionButtonTheme] are overriden by the system colors.</p><br/>
 <p>See also:</p><br/>
 <ul>
 <li>[ThemeData.from], which creates a ThemeData from a [ColorScheme].</li>
 <li>[ThemeData.light], which creates the default light theme.</li>
-<li>[ThemeData.dark], which creates the deafult dark theme.</li>
+<li>[ThemeData.dark], which creates the default dark theme.</li>
 <li>[ColorScheme.fromSeed], which is used to create a [ColorScheme] from a seed color.</li>
 </ul>
 
@@ -6896,6 +7068,7 @@ scheme depending on [useMaterial3].</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="useSystemColors" type="boolAttributeType"/>
                     <xs:attribute name="visualDensity">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -6920,11 +7093,16 @@ logical pixels. However, this is not a strict relationship since
 components interpret the density values appropriately for their needs.</p><br/>
 <p>A larger value translates to a spacing increase (less dense), and a
 smaller value translates to a spacing decrease (more dense).</p><br/>
-<p>In Material Design 3, the [visualDensity] does not override the value of
-[IconButton.visualDensity] which defaults to [VisualDensity.standard]
-for all platforms. To override the default value of [IconButton.visualDensity],
-use [ThemeData.iconButtonTheme] instead.
-{@endtemplate}</p><br/>
+<p>In Material Design 3, the [visualDensity] does not override the default
+visual for the following components which are set to [VisualDensity.standard]
+for all platforms:</p><br/>
+<ul>
+<li>[IconButton] - To override the default value of [IconButton.visualDensity],
+use [ThemeData.iconButtonTheme] instead.</li>
+<li>[Checkbox] - To override the default value of [Checkbox.visualDensity],
+use [ThemeData.checkboxTheme] instead.
+{@endtemplate}</li>
+</ul>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -6956,14 +7134,6 @@ backwards compatibility breaks.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color of [Material] when it is used as a [Card].</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="dialogBackgroundColor">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>The background color of [Dialog] elements.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7020,14 +7190,6 @@ indicate an item in a menu is selected.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The hover color used to indicate when a pointer is hovering over a
 component.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="indicatorColor">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>The color of the selected tab indicator in a tab bar.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7230,6 +7392,14 @@ and [ButtonBar].</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The colors and styles used to render [Card].</p><br/>
 <p>This is the value returned from [CardTheme.of].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="carouselViewTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of [CarouselView] widgets.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7841,11 +8011,16 @@ logical pixels. However, this is not a strict relationship since
 components interpret the density values appropriately for their needs.</p><br/>
 <p>A larger value translates to a spacing increase (less dense), and a
 smaller value translates to a spacing decrease (more dense).</p><br/>
-<p>In Material Design 3, the [visualDensity] does not override the value of
-[IconButton.visualDensity] which defaults to [VisualDensity.standard]
-for all platforms. To override the default value of [IconButton.visualDensity],
-use [ThemeData.iconButtonTheme] instead.
-{@endtemplate}</p><br/>
+<p>In Material Design 3, the [visualDensity] does not override the default
+visual for the following components which are set to [VisualDensity.standard]
+for all platforms:</p><br/>
+<ul>
+<li>[IconButton] - To override the default value of [IconButton.visualDensity],
+use [ThemeData.iconButtonTheme] instead.</li>
+<li>[Checkbox] - To override the default value of [Checkbox.visualDensity],
+use [ThemeData.checkboxTheme] instead.
+{@endtemplate}</li>
+</ul>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7875,14 +8050,6 @@ backwards compatibility breaks.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
 <p>The color of [Material] when it is used as a [Card].</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="dialogBackgroundColor">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>The background color of [Dialog] elements.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7939,14 +8106,6 @@ indicate an item in a menu is selected.</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The hover color used to indicate when a pointer is hovering over a
 component.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="indicatorColor">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>The color of the selected tab indicator in a tab bar.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -8145,6 +8304,14 @@ and [ButtonBar].</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The colors and styles used to render [Card].</p><br/>
 <p>This is the value returned from [CardTheme.of].</p><br/>
+
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="carouselViewTheme">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">
+<p>A theme for customizing the appearance and layout of [CarouselView] widgets.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>

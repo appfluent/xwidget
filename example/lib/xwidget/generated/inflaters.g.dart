@@ -49,7 +49,10 @@ class AppBarInflater extends Inflater {
             titleTextStyle: attributes['titleTextStyle'],
             systemOverlayStyle: attributes['systemOverlayStyle'],
             forceMaterialTransparency: attributes['forceMaterialTransparency'] ?? false,
+            useDefaultSemanticsOrder: attributes['useDefaultSemanticsOrder'] ?? true,
             clipBehavior: attributes['clipBehavior'],
+            actionsPadding: attributes['actionsPadding'],
+            animateColor: attributes['animateColor'] ?? false,
         );
     }
 
@@ -85,7 +88,10 @@ class AppBarInflater extends Inflater {
             case 'titleTextStyle': break;
             case 'systemOverlayStyle': break;
             case 'forceMaterialTransparency': return parseBool(value);
+            case 'useDefaultSemanticsOrder': return parseBool(value);
             case 'clipBehavior': return parseEnum(Clip.values, value);
+            case 'actionsPadding': return parseEdgeInsetsGeometry(value);
+            case 'animateColor': return parseBool(value);
         }
         return value;
     }
@@ -901,6 +907,7 @@ class ColumnInflater extends Inflater {
             textDirection: attributes['textDirection'],
             verticalDirection: attributes['verticalDirection'] ?? VerticalDirection.down,
             textBaseline: attributes['textBaseline'],
+            spacing: toDouble(attributes['spacing']) ?? 0.0,
             children: [...children, ...?attributes['children']],
         );
     }
@@ -915,6 +922,7 @@ class ColumnInflater extends Inflater {
             case 'textDirection': return parseEnum(TextDirection.values, value);
             case 'verticalDirection': return parseEnum(VerticalDirection.values, value);
             case 'textBaseline': return parseEnum(TextBaseline.values, value);
+            case 'spacing': return parseDouble(value);
             case 'children': break;
         }
         return value;
@@ -1234,6 +1242,8 @@ class IconInflater extends Inflater {
             semanticLabel: attributes['semanticLabel'],
             textDirection: attributes['textDirection'],
             applyTextScaling: attributes['applyTextScaling'],
+            blendMode: attributes['blendMode'],
+            fontWeight: attributes['fontWeight'],
         );
     }
 
@@ -1252,6 +1262,8 @@ class IconInflater extends Inflater {
             case 'semanticLabel': return value;
             case 'textDirection': return parseEnum(TextDirection.values, value);
             case 'applyTextScaling': return parseBool(value);
+            case 'blendMode': return parseEnum(BlendMode.values, value);
+            case 'fontWeight': return parseFontWeight(value);
         }
         return value;
     }
@@ -1380,7 +1392,7 @@ class MaterialApp_routerInflater extends Inflater {
             routerConfig: attributes['routerConfig'],
             backButtonDispatcher: attributes['backButtonDispatcher'],
             builder: attributes['builder'],
-            title: attributes['title'] ?? '',
+            title: attributes['title'],
             onGenerateTitle: attributes['onGenerateTitle'],
             onNavigationNotification: attributes['onNavigationNotification'],
             color: attributes['color'],
@@ -1475,6 +1487,7 @@ class ScaffoldInflater extends Inflater {
             floatingActionButtonAnimator: attributes['floatingActionButtonAnimator'],
             persistentFooterButtons: attributes['persistentFooterButtons'] != null ? [...attributes['persistentFooterButtons']] : null,
             persistentFooterAlignment: attributes['persistentFooterAlignment'] ?? AlignmentDirectional.centerEnd,
+            persistentFooterDecoration: attributes['persistentFooterDecoration'],
             drawer: attributes['drawer'],
             onDrawerChanged: attributes['onDrawerChanged'],
             endDrawer: attributes['endDrawer'],
@@ -1486,8 +1499,10 @@ class ScaffoldInflater extends Inflater {
             primary: attributes['primary'] ?? true,
             drawerDragStartBehavior: attributes['drawerDragStartBehavior'] ?? DragStartBehavior.start,
             extendBody: attributes['extendBody'] ?? false,
+            drawerBarrierDismissible: attributes['drawerBarrierDismissible'] ?? true,
             extendBodyBehindAppBar: attributes['extendBodyBehindAppBar'] ?? false,
             drawerScrimColor: attributes['drawerScrimColor'],
+            bottomSheetScrimBuilder: attributes['bottomSheetScrimBuilder'] ?? defaultBottomSheetScrimBuilder,
             drawerEdgeDragWidth: toDouble(attributes['drawerEdgeDragWidth']),
             drawerEnableOpenDragGesture: attributes['drawerEnableOpenDragGesture'] ?? true,
             endDrawerEnableOpenDragGesture: attributes['endDrawerEnableOpenDragGesture'] ?? true,
@@ -1506,6 +1521,7 @@ class ScaffoldInflater extends Inflater {
             case 'floatingActionButtonAnimator': break;
             case 'persistentFooterButtons': break;
             case 'persistentFooterAlignment': return parseAlignmentDirectional(value);
+            case 'persistentFooterDecoration': break;
             case 'drawer': break;
             case 'onDrawerChanged': break;
             case 'endDrawer': break;
@@ -1517,8 +1533,10 @@ class ScaffoldInflater extends Inflater {
             case 'primary': return parseBool(value);
             case 'drawerDragStartBehavior': return parseEnum(DragStartBehavior.values, value);
             case 'extendBody': return parseBool(value);
+            case 'drawerBarrierDismissible': return parseBool(value);
             case 'extendBodyBehindAppBar': return parseBool(value);
             case 'drawerScrimColor': return parseColor(value);
+            case 'bottomSheetScrimBuilder': break;
             case 'drawerEdgeDragWidth': return parseDouble(value);
             case 'drawerEnableOpenDragGesture': return parseBool(value);
             case 'endDrawerEnableOpenDragGesture': return parseBool(value);
@@ -1554,6 +1572,7 @@ class TextInflater extends Inflater {
             textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
+            semanticsIdentifier: attributes['semanticsIdentifier'],
             textWidthBasis: attributes['textWidthBasis'],
             textHeightBehavior: attributes['textHeightBehavior'],
             selectionColor: attributes['selectionColor'],
@@ -1575,6 +1594,7 @@ class TextInflater extends Inflater {
             case 'textScaler': break;
             case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
+            case 'semanticsIdentifier': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
             case 'selectionColor': return parseColor(value);
@@ -1609,6 +1629,7 @@ class Text_richInflater extends Inflater {
             textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
+            semanticsIdentifier: attributes['semanticsIdentifier'],
             textWidthBasis: attributes['textWidthBasis'],
             textHeightBehavior: attributes['textHeightBehavior'],
             selectionColor: attributes['selectionColor'],
@@ -1630,6 +1651,7 @@ class Text_richInflater extends Inflater {
             case 'textScaler': break;
             case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
+            case 'semanticsIdentifier': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
             case 'selectionColor': return parseColor(value);
@@ -1740,20 +1762,19 @@ class ThemeDataInflater extends Inflater {
             scrollbarTheme: attributes['scrollbarTheme'],
             splashFactory: attributes['splashFactory'],
             useMaterial3: attributes['useMaterial3'],
+            useSystemColors: attributes['useSystemColors'],
             visualDensity: attributes['visualDensity'],
             colorScheme: attributes['colorScheme'],
             brightness: attributes['brightness'],
             colorSchemeSeed: attributes['colorSchemeSeed'],
             canvasColor: attributes['canvasColor'],
             cardColor: attributes['cardColor'],
-            dialogBackgroundColor: attributes['dialogBackgroundColor'],
             disabledColor: attributes['disabledColor'],
             dividerColor: attributes['dividerColor'],
             focusColor: attributes['focusColor'],
             highlightColor: attributes['highlightColor'],
             hintColor: attributes['hintColor'],
             hoverColor: attributes['hoverColor'],
-            indicatorColor: attributes['indicatorColor'],
             primaryColor: attributes['primaryColor'],
             primaryColorDark: attributes['primaryColorDark'],
             primaryColorLight: attributes['primaryColorLight'],
@@ -1780,6 +1801,7 @@ class ThemeDataInflater extends Inflater {
             bottomSheetTheme: attributes['bottomSheetTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
+            carouselViewTheme: attributes['carouselViewTheme'],
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
@@ -1833,20 +1855,19 @@ class ThemeDataInflater extends Inflater {
             case 'scrollbarTheme': break;
             case 'splashFactory': break;
             case 'useMaterial3': return parseBool(value);
+            case 'useSystemColors': return parseBool(value);
             case 'visualDensity': return parseVisualDensity(value);
             case 'colorScheme': break;
             case 'brightness': return parseEnum(Brightness.values, value);
             case 'colorSchemeSeed': return parseColor(value);
             case 'canvasColor': return parseColor(value);
             case 'cardColor': return parseColor(value);
-            case 'dialogBackgroundColor': return parseColor(value);
             case 'disabledColor': return parseColor(value);
             case 'dividerColor': return parseColor(value);
             case 'focusColor': return parseColor(value);
             case 'highlightColor': return parseColor(value);
             case 'hintColor': return parseColor(value);
             case 'hoverColor': return parseColor(value);
-            case 'indicatorColor': return parseColor(value);
             case 'primaryColor': return parseColor(value);
             case 'primaryColorDark': return parseColor(value);
             case 'primaryColorLight': return parseColor(value);
@@ -1873,6 +1894,7 @@ class ThemeDataInflater extends Inflater {
             case 'bottomSheetTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
+            case 'carouselViewTheme': break;
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
@@ -1943,14 +1965,12 @@ class ThemeData_rawInflater extends Inflater {
             colorScheme: attributes['colorScheme'],
             canvasColor: attributes['canvasColor'],
             cardColor: attributes['cardColor'],
-            dialogBackgroundColor: attributes['dialogBackgroundColor'],
             disabledColor: attributes['disabledColor'],
             dividerColor: attributes['dividerColor'],
             focusColor: attributes['focusColor'],
             highlightColor: attributes['highlightColor'],
             hintColor: attributes['hintColor'],
             hoverColor: attributes['hoverColor'],
-            indicatorColor: attributes['indicatorColor'],
             primaryColor: attributes['primaryColor'],
             primaryColorDark: attributes['primaryColorDark'],
             primaryColorLight: attributes['primaryColorLight'],
@@ -1973,6 +1993,7 @@ class ThemeData_rawInflater extends Inflater {
             bottomSheetTheme: attributes['bottomSheetTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
+            carouselViewTheme: attributes['carouselViewTheme'],
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
@@ -2009,6 +2030,8 @@ class ThemeData_rawInflater extends Inflater {
             timePickerTheme: attributes['timePickerTheme'],
             toggleButtonsTheme: attributes['toggleButtonsTheme'],
             tooltipTheme: attributes['tooltipTheme'],
+            dialogBackgroundColor: attributes['dialogBackgroundColor'],
+            indicatorColor: attributes['indicatorColor'],
         );
     }
 
@@ -2030,14 +2053,12 @@ class ThemeData_rawInflater extends Inflater {
             case 'colorScheme': break;
             case 'canvasColor': return parseColor(value);
             case 'cardColor': return parseColor(value);
-            case 'dialogBackgroundColor': return parseColor(value);
             case 'disabledColor': return parseColor(value);
             case 'dividerColor': return parseColor(value);
             case 'focusColor': return parseColor(value);
             case 'highlightColor': return parseColor(value);
             case 'hintColor': return parseColor(value);
             case 'hoverColor': return parseColor(value);
-            case 'indicatorColor': return parseColor(value);
             case 'primaryColor': return parseColor(value);
             case 'primaryColorDark': return parseColor(value);
             case 'primaryColorLight': return parseColor(value);
@@ -2060,6 +2081,7 @@ class ThemeData_rawInflater extends Inflater {
             case 'bottomSheetTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
+            case 'carouselViewTheme': break;
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
@@ -2096,6 +2118,8 @@ class ThemeData_rawInflater extends Inflater {
             case 'timePickerTheme': break;
             case 'toggleButtonsTheme': break;
             case 'tooltipTheme': break;
+            case 'dialogBackgroundColor': return parseColor(value);
+            case 'indicatorColor': return parseColor(value);
         }
         return value;
     }

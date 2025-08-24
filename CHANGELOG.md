@@ -1,3 +1,12 @@
+### 0.0.52 (Aug 23, 2025)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Fixed an issue with inflater generator where it was not generating deprecated, required constructor 
+  parameters.
+* Upgraded `xwidget_el` dependency to ^0.2.0
+* Upgraded `analyzer` dependency to ^7.7.1
+
 ### 0.0.51 (Feb 22, 2025)
 
 * Removed deprecated usages

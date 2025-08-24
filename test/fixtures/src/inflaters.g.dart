@@ -6,302 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:xwidget/xwidget.dart';
 import 'package:flutter/gestures.dart';
 
-class AlertDialogInflater extends Inflater {
-
-    @override
-    String get type => 'AlertDialog';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    AlertDialog? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return AlertDialog(
-            key: attributes['key'],
-            icon: attributes['icon'],
-            iconPadding: attributes['iconPadding'],
-            iconColor: attributes['iconColor'],
-            title: attributes['title'],
-            titlePadding: attributes['titlePadding'],
-            titleTextStyle: attributes['titleTextStyle'],
-            content: attributes['content'],
-            contentPadding: attributes['contentPadding'],
-            contentTextStyle: attributes['contentTextStyle'],
-            actions: attributes['actions'] != null ? [...attributes['actions']] : null,
-            actionsPadding: attributes['actionsPadding'],
-            actionsAlignment: attributes['actionsAlignment'],
-            actionsOverflowAlignment: attributes['actionsOverflowAlignment'],
-            actionsOverflowDirection: attributes['actionsOverflowDirection'],
-            actionsOverflowButtonSpacing: toDouble(attributes['actionsOverflowButtonSpacing']),
-            buttonPadding: attributes['buttonPadding'],
-            backgroundColor: attributes['backgroundColor'],
-            elevation: toDouble(attributes['elevation']),
-            shadowColor: attributes['shadowColor'],
-            surfaceTintColor: attributes['surfaceTintColor'],
-            semanticLabel: attributes['semanticLabel'],
-            insetPadding: attributes['insetPadding'],
-            clipBehavior: attributes['clipBehavior'] ?? Clip.none,
-            shape: attributes['shape'],
-            alignment: attributes['alignment'],
-            scrollable: attributes['scrollable'] ?? false,
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'key': return parseKey(value);
-            case 'icon': return parseIcon(value);
-            case 'iconPadding': return parseEdgeInsetsGeometry(value);
-            case 'iconColor': return parseColor(value);
-            case 'title': break;
-            case 'titlePadding': return parseEdgeInsetsGeometry(value);
-            case 'titleTextStyle': break;
-            case 'content': break;
-            case 'contentPadding': return parseEdgeInsetsGeometry(value);
-            case 'contentTextStyle': break;
-            case 'actions': break;
-            case 'actionsPadding': return parseEdgeInsetsGeometry(value);
-            case 'actionsAlignment': return parseEnum(MainAxisAlignment.values, value);
-            case 'actionsOverflowAlignment': return parseEnum(OverflowBarAlignment.values, value);
-            case 'actionsOverflowDirection': return parseEnum(VerticalDirection.values, value);
-            case 'actionsOverflowButtonSpacing': return parseDouble(value);
-            case 'buttonPadding': return parseEdgeInsetsGeometry(value);
-            case 'backgroundColor': return parseColor(value);
-            case 'elevation': return parseDouble(value);
-            case 'shadowColor': return parseColor(value);
-            case 'surfaceTintColor': return parseColor(value);
-            case 'semanticLabel': return value;
-            case 'insetPadding': return parseEdgeInsets(value);
-            case 'clipBehavior': return parseEnum(Clip.values, value);
-            case 'shape': break;
-            case 'alignment': return parseAlignmentGeometry(value);
-            case 'scrollable': return parseBool(value);
-        }
-        return value;
-    }
-}
-
-class AlertDialog_adaptiveInflater extends Inflater {
-
-    @override
-    String get type => 'AlertDialog.adaptive';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    AlertDialog? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return AlertDialog.adaptive(
-            key: attributes['key'],
-            icon: attributes['icon'],
-            iconPadding: attributes['iconPadding'],
-            iconColor: attributes['iconColor'],
-            title: attributes['title'],
-            titlePadding: attributes['titlePadding'],
-            titleTextStyle: attributes['titleTextStyle'],
-            content: attributes['content'],
-            contentPadding: attributes['contentPadding'],
-            contentTextStyle: attributes['contentTextStyle'],
-            actions: attributes['actions'] != null ? [...attributes['actions']] : null,
-            actionsPadding: attributes['actionsPadding'],
-            actionsAlignment: attributes['actionsAlignment'],
-            actionsOverflowAlignment: attributes['actionsOverflowAlignment'],
-            actionsOverflowDirection: attributes['actionsOverflowDirection'],
-            actionsOverflowButtonSpacing: toDouble(attributes['actionsOverflowButtonSpacing']),
-            buttonPadding: attributes['buttonPadding'],
-            backgroundColor: attributes['backgroundColor'],
-            elevation: toDouble(attributes['elevation']),
-            shadowColor: attributes['shadowColor'],
-            surfaceTintColor: attributes['surfaceTintColor'],
-            semanticLabel: attributes['semanticLabel'],
-            insetPadding: attributes['insetPadding'],
-            clipBehavior: attributes['clipBehavior'],
-            shape: attributes['shape'],
-            alignment: attributes['alignment'],
-            scrollable: attributes['scrollable'],
-            scrollController: attributes['scrollController'],
-            actionScrollController: attributes['actionScrollController'],
-            insetAnimationDuration: attributes['insetAnimationDuration'],
-            insetAnimationCurve: attributes['insetAnimationCurve'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'key': return parseKey(value);
-            case 'icon': return parseIcon(value);
-            case 'iconPadding': return parseEdgeInsetsGeometry(value);
-            case 'iconColor': return parseColor(value);
-            case 'title': break;
-            case 'titlePadding': return parseEdgeInsetsGeometry(value);
-            case 'titleTextStyle': break;
-            case 'content': break;
-            case 'contentPadding': return parseEdgeInsetsGeometry(value);
-            case 'contentTextStyle': break;
-            case 'actions': break;
-            case 'actionsPadding': return parseEdgeInsetsGeometry(value);
-            case 'actionsAlignment': return parseEnum(MainAxisAlignment.values, value);
-            case 'actionsOverflowAlignment': return parseEnum(OverflowBarAlignment.values, value);
-            case 'actionsOverflowDirection': return parseEnum(VerticalDirection.values, value);
-            case 'actionsOverflowButtonSpacing': return parseDouble(value);
-            case 'buttonPadding': return parseEdgeInsetsGeometry(value);
-            case 'backgroundColor': return parseColor(value);
-            case 'elevation': return parseDouble(value);
-            case 'shadowColor': return parseColor(value);
-            case 'surfaceTintColor': return parseColor(value);
-            case 'semanticLabel': return value;
-            case 'insetPadding': return parseEdgeInsets(value);
-            case 'clipBehavior': return parseEnum(Clip.values, value);
-            case 'shape': break;
-            case 'alignment': return parseAlignmentGeometry(value);
-            case 'scrollable': return parseBool(value);
-            case 'scrollController': break;
-            case 'actionScrollController': break;
-            case 'insetAnimationDuration': return parseDuration(value);
-            case 'insetAnimationCurve': return parseCurve(value);
-        }
-        return value;
-    }
-}
-
-class AlwaysStoppedAnimationInflater extends Inflater {
-
-    @override
-    String get type => 'AlwaysStoppedAnimation';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    AlwaysStoppedAnimation? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return AlwaysStoppedAnimation(
-            attributes['value'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'value': break;
-        }
-        return value;
-    }
-}
-
-class AlwaysStoppedAnimationColorInflater extends Inflater {
-
-    @override
-    String get type => 'AlwaysStoppedAnimationColor';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    AlwaysStoppedAnimation? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return AlwaysStoppedAnimation<Color>(
-            attributes['value'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'value': return parseColor(value);
-        }
-        return value;
-    }
-}
-
-class AlwaysStoppedAnimationIntInflater extends Inflater {
-
-    @override
-    String get type => 'AlwaysStoppedAnimationInt';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    AlwaysStoppedAnimation? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return AlwaysStoppedAnimation<int>(
-            attributes['value'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'value': return parseInt(value);
-        }
-        return value;
-    }
-}
-
-class AnimatedCrossFadeInflater extends Inflater {
-
-    @override
-    String get type => 'AnimatedCrossFade';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    AnimatedCrossFade? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return AnimatedCrossFade(
-            key: attributes['key'],
-            firstChild: attributes['firstChild'],
-            secondChild: attributes['secondChild'],
-            firstCurve: attributes['firstCurve'] ?? Curves.linear,
-            secondCurve: attributes['secondCurve'] ?? Curves.linear,
-            sizeCurve: attributes['sizeCurve'] ?? Curves.linear,
-            alignment: attributes['alignment'] ?? Alignment.topCenter,
-            crossFadeState: attributes['crossFadeState'],
-            duration: attributes['duration'],
-            reverseDuration: attributes['reverseDuration'],
-            layoutBuilder: attributes['layoutBuilder'] ?? AnimatedCrossFade.defaultLayoutBuilder,
-            excludeBottomFocus: attributes['excludeBottomFocus'] ?? true,
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'key': return parseKey(value);
-            case 'firstChild': break;
-            case 'secondChild': break;
-            case 'firstCurve': return parseCurve(value);
-            case 'secondCurve': return parseCurve(value);
-            case 'sizeCurve': return parseCurve(value);
-            case 'alignment': return parseAlignmentGeometry(value);
-            case 'crossFadeState': return parseEnum(CrossFadeState.values, value);
-            case 'duration': return parseDuration(value);
-            case 'reverseDuration': return parseDuration(value);
-            case 'layoutBuilder': break;
-            case 'excludeBottomFocus': return parseBool(value);
-        }
-        return value;
-    }
-}
-
 class AppBarInflater extends Inflater {
 
     @override
@@ -345,7 +49,10 @@ class AppBarInflater extends Inflater {
             titleTextStyle: attributes['titleTextStyle'],
             systemOverlayStyle: attributes['systemOverlayStyle'],
             forceMaterialTransparency: attributes['forceMaterialTransparency'] ?? false,
+            useDefaultSemanticsOrder: attributes['useDefaultSemanticsOrder'] ?? true,
             clipBehavior: attributes['clipBehavior'],
+            actionsPadding: attributes['actionsPadding'],
+            animateColor: attributes['animateColor'] ?? false,
         );
     }
 
@@ -381,208 +88,10 @@ class AppBarInflater extends Inflater {
             case 'titleTextStyle': break;
             case 'systemOverlayStyle': break;
             case 'forceMaterialTransparency': return parseBool(value);
+            case 'useDefaultSemanticsOrder': return parseBool(value);
             case 'clipBehavior': return parseEnum(Clip.values, value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraintsInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints(
-            minWidth: toDouble(attributes['minWidth']) ?? 0.0,
-            maxWidth: toDouble(attributes['maxWidth']) ?? double.infinity,
-            minHeight: toDouble(attributes['minHeight']) ?? 0.0,
-            maxHeight: toDouble(attributes['maxHeight']) ?? double.infinity,
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'minWidth': return parseDouble(value);
-            case 'maxWidth': return parseDouble(value);
-            case 'minHeight': return parseDouble(value);
-            case 'maxHeight': return parseDouble(value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraints_tightInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints.tight';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints.tight(
-            attributes['size'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'size': return parseSize(value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraints_tightForInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints.tightFor';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints.tightFor(
-            width: toDouble(attributes['width']),
-            height: toDouble(attributes['height']),
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'width': return parseDouble(value);
-            case 'height': return parseDouble(value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraints_tightForFiniteInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints.tightForFinite';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints.tightForFinite(
-            width: toDouble(attributes['width']) ?? double.infinity,
-            height: toDouble(attributes['height']) ?? double.infinity,
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'width': return parseDouble(value);
-            case 'height': return parseDouble(value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraints_looseInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints.loose';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints.loose(
-            attributes['size'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'size': return parseSize(value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraints_expandInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints.expand';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints.expand(
-            width: toDouble(attributes['width']),
-            height: toDouble(attributes['height']),
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'width': return parseDouble(value);
-            case 'height': return parseDouble(value);
-        }
-        return value;
-    }
-}
-
-class BoxConstraints_fromViewConstraintsInflater extends Inflater {
-
-    @override
-    String get type => 'BoxConstraints.fromViewConstraints';
-
-    @override
-    bool get inflatesOwnChildren => false;
-
-    @override
-    bool get inflatesCustomWidget => false;
-
-    @override
-    BoxConstraints? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return BoxConstraints.fromViewConstraints(
-            attributes['constraints'],
-        );
-    }
-
-    @override
-    dynamic parseAttribute(String name, String value) {
-        switch (name) {
-            case 'constraints': break;
+            case 'actionsPadding': return parseEdgeInsetsGeometry(value);
+            case 'animateColor': return parseBool(value);
         }
         return value;
     }
@@ -620,10 +129,10 @@ class CenterInflater extends Inflater {
     }
 }
 
-class CircularProgressIndicatorInflater extends Inflater {
+class ColorSchemeInflater extends Inflater {
 
     @override
-    String get type => 'CircularProgressIndicator';
+    String get type => 'ColorScheme';
 
     @override
     bool get inflatesOwnChildren => false;
@@ -632,43 +141,117 @@ class CircularProgressIndicatorInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    CircularProgressIndicator? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return CircularProgressIndicator(
-            key: attributes['key'],
-            value: toDouble(attributes['value']),
-            backgroundColor: attributes['backgroundColor'],
-            color: attributes['color'],
-            valueColor: attributes['valueColor'],
-            strokeWidth: toDouble(attributes['strokeWidth']) ?? 4.0,
-            strokeAlign: toDouble(attributes['strokeAlign']) ?? 0.0,
-            semanticsLabel: attributes['semanticsLabel'],
-            semanticsValue: attributes['semanticsValue'],
-            strokeCap: attributes['strokeCap'],
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme(
+            brightness: attributes['brightness'],
+            primary: attributes['primary'],
+            onPrimary: attributes['onPrimary'],
+            primaryContainer: attributes['primaryContainer'],
+            onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
+            secondary: attributes['secondary'],
+            onSecondary: attributes['onSecondary'],
+            secondaryContainer: attributes['secondaryContainer'],
+            onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
+            tertiary: attributes['tertiary'],
+            onTertiary: attributes['onTertiary'],
+            tertiaryContainer: attributes['tertiaryContainer'],
+            onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
+            error: attributes['error'],
+            onError: attributes['onError'],
+            errorContainer: attributes['errorContainer'],
+            onErrorContainer: attributes['onErrorContainer'],
+            surface: attributes['surface'],
+            onSurface: attributes['onSurface'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
+            onSurfaceVariant: attributes['onSurfaceVariant'],
+            outline: attributes['outline'],
+            outlineVariant: attributes['outlineVariant'],
+            shadow: attributes['shadow'],
+            scrim: attributes['scrim'],
+            inverseSurface: attributes['inverseSurface'],
+            onInverseSurface: attributes['onInverseSurface'],
+            inversePrimary: attributes['inversePrimary'],
+            surfaceTint: attributes['surfaceTint'],
         );
     }
 
     @override
     dynamic parseAttribute(String name, String value) {
         switch (name) {
-            case 'key': return parseKey(value);
-            case 'value': return parseDouble(value);
-            case 'backgroundColor': return parseColor(value);
-            case 'color': return parseColor(value);
-            case 'valueColor': break;
-            case 'strokeWidth': return parseDouble(value);
-            case 'strokeAlign': return parseDouble(value);
-            case 'semanticsLabel': return value;
-            case 'semanticsValue': return value;
-            case 'strokeCap': return parseEnum(StrokeCap.values, value);
+            case 'brightness': return parseEnum(Brightness.values, value);
+            case 'primary': return parseColor(value);
+            case 'onPrimary': return parseColor(value);
+            case 'primaryContainer': return parseColor(value);
+            case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
+            case 'secondary': return parseColor(value);
+            case 'onSecondary': return parseColor(value);
+            case 'secondaryContainer': return parseColor(value);
+            case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
+            case 'tertiary': return parseColor(value);
+            case 'onTertiary': return parseColor(value);
+            case 'tertiaryContainer': return parseColor(value);
+            case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
+            case 'error': return parseColor(value);
+            case 'onError': return parseColor(value);
+            case 'errorContainer': return parseColor(value);
+            case 'onErrorContainer': return parseColor(value);
+            case 'surface': return parseColor(value);
+            case 'onSurface': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
+            case 'onSurfaceVariant': return parseColor(value);
+            case 'outline': return parseColor(value);
+            case 'outlineVariant': return parseColor(value);
+            case 'shadow': return parseColor(value);
+            case 'scrim': return parseColor(value);
+            case 'inverseSurface': return parseColor(value);
+            case 'onInverseSurface': return parseColor(value);
+            case 'inversePrimary': return parseColor(value);
+            case 'surfaceTint': return parseColor(value);
         }
         return value;
     }
 }
 
-class CircularProgressIndicator_adaptiveInflater extends Inflater {
+class ColorScheme_fromSeedInflater extends Inflater {
 
     @override
-    String get type => 'CircularProgressIndicator.adaptive';
+    String get type => 'ColorScheme.fromSeed';
 
     @override
     bool get inflatesOwnChildren => false;
@@ -677,32 +260,627 @@ class CircularProgressIndicator_adaptiveInflater extends Inflater {
     bool get inflatesCustomWidget => false;
 
     @override
-    CircularProgressIndicator? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
-        return CircularProgressIndicator.adaptive(
-            key: attributes['key'],
-            value: toDouble(attributes['value']),
-            backgroundColor: attributes['backgroundColor'],
-            valueColor: attributes['valueColor'],
-            strokeWidth: toDouble(attributes['strokeWidth']) ?? 4.0,
-            semanticsLabel: attributes['semanticsLabel'],
-            semanticsValue: attributes['semanticsValue'],
-            strokeCap: attributes['strokeCap'],
-            strokeAlign: toDouble(attributes['strokeAlign']) ?? 0.0,
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme.fromSeed(
+            seedColor: attributes['seedColor'],
+            brightness: attributes['brightness'] ?? Brightness.light,
+            dynamicSchemeVariant: attributes['dynamicSchemeVariant'] ?? DynamicSchemeVariant.tonalSpot,
+            contrastLevel: toDouble(attributes['contrastLevel']) ?? 0.0,
+            primary: attributes['primary'],
+            onPrimary: attributes['onPrimary'],
+            primaryContainer: attributes['primaryContainer'],
+            onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
+            secondary: attributes['secondary'],
+            onSecondary: attributes['onSecondary'],
+            secondaryContainer: attributes['secondaryContainer'],
+            onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
+            tertiary: attributes['tertiary'],
+            onTertiary: attributes['onTertiary'],
+            tertiaryContainer: attributes['tertiaryContainer'],
+            onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
+            error: attributes['error'],
+            onError: attributes['onError'],
+            errorContainer: attributes['errorContainer'],
+            onErrorContainer: attributes['onErrorContainer'],
+            outline: attributes['outline'],
+            outlineVariant: attributes['outlineVariant'],
+            surface: attributes['surface'],
+            onSurface: attributes['onSurface'],
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
+            onSurfaceVariant: attributes['onSurfaceVariant'],
+            inverseSurface: attributes['inverseSurface'],
+            onInverseSurface: attributes['onInverseSurface'],
+            inversePrimary: attributes['inversePrimary'],
+            shadow: attributes['shadow'],
+            scrim: attributes['scrim'],
+            surfaceTint: attributes['surfaceTint'],
         );
     }
 
     @override
     dynamic parseAttribute(String name, String value) {
         switch (name) {
-            case 'key': return parseKey(value);
-            case 'value': return parseDouble(value);
+            case 'seedColor': return parseColor(value);
+            case 'brightness': return parseEnum(Brightness.values, value);
+            case 'dynamicSchemeVariant': return parseEnum(DynamicSchemeVariant.values, value);
+            case 'contrastLevel': return parseDouble(value);
+            case 'primary': return parseColor(value);
+            case 'onPrimary': return parseColor(value);
+            case 'primaryContainer': return parseColor(value);
+            case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
+            case 'secondary': return parseColor(value);
+            case 'onSecondary': return parseColor(value);
+            case 'secondaryContainer': return parseColor(value);
+            case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
+            case 'tertiary': return parseColor(value);
+            case 'onTertiary': return parseColor(value);
+            case 'tertiaryContainer': return parseColor(value);
+            case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
+            case 'error': return parseColor(value);
+            case 'onError': return parseColor(value);
+            case 'errorContainer': return parseColor(value);
+            case 'onErrorContainer': return parseColor(value);
+            case 'outline': return parseColor(value);
+            case 'outlineVariant': return parseColor(value);
+            case 'surface': return parseColor(value);
+            case 'onSurface': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
+            case 'onSurfaceVariant': return parseColor(value);
+            case 'inverseSurface': return parseColor(value);
+            case 'onInverseSurface': return parseColor(value);
+            case 'inversePrimary': return parseColor(value);
+            case 'shadow': return parseColor(value);
+            case 'scrim': return parseColor(value);
+            case 'surfaceTint': return parseColor(value);
+        }
+        return value;
+    }
+}
+
+class ColorScheme_lightInflater extends Inflater {
+
+    @override
+    String get type => 'ColorScheme.light';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme.light(
+            brightness: attributes['brightness'] ?? Brightness.light,
+            primary: attributes['primary'] ?? const Color(0xff6200ee),
+            onPrimary: attributes['onPrimary'] ?? Colors.white,
+            primaryContainer: attributes['primaryContainer'],
+            onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
+            secondary: attributes['secondary'] ?? const Color(0xff03dac6),
+            onSecondary: attributes['onSecondary'] ?? Colors.black,
+            secondaryContainer: attributes['secondaryContainer'],
+            onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
+            tertiary: attributes['tertiary'],
+            onTertiary: attributes['onTertiary'],
+            tertiaryContainer: attributes['tertiaryContainer'],
+            onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
+            error: attributes['error'] ?? const Color(0xffb00020),
+            onError: attributes['onError'] ?? Colors.white,
+            errorContainer: attributes['errorContainer'],
+            onErrorContainer: attributes['onErrorContainer'],
+            surface: attributes['surface'] ?? Colors.white,
+            onSurface: attributes['onSurface'] ?? Colors.black,
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
+            onSurfaceVariant: attributes['onSurfaceVariant'],
+            outline: attributes['outline'],
+            outlineVariant: attributes['outlineVariant'],
+            shadow: attributes['shadow'],
+            scrim: attributes['scrim'],
+            inverseSurface: attributes['inverseSurface'],
+            onInverseSurface: attributes['onInverseSurface'],
+            inversePrimary: attributes['inversePrimary'],
+            surfaceTint: attributes['surfaceTint'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'brightness': return parseEnum(Brightness.values, value);
+            case 'primary': return parseColor(value);
+            case 'onPrimary': return parseColor(value);
+            case 'primaryContainer': return parseColor(value);
+            case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
+            case 'secondary': return parseColor(value);
+            case 'onSecondary': return parseColor(value);
+            case 'secondaryContainer': return parseColor(value);
+            case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
+            case 'tertiary': return parseColor(value);
+            case 'onTertiary': return parseColor(value);
+            case 'tertiaryContainer': return parseColor(value);
+            case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
+            case 'error': return parseColor(value);
+            case 'onError': return parseColor(value);
+            case 'errorContainer': return parseColor(value);
+            case 'onErrorContainer': return parseColor(value);
+            case 'surface': return parseColor(value);
+            case 'onSurface': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
+            case 'onSurfaceVariant': return parseColor(value);
+            case 'outline': return parseColor(value);
+            case 'outlineVariant': return parseColor(value);
+            case 'shadow': return parseColor(value);
+            case 'scrim': return parseColor(value);
+            case 'inverseSurface': return parseColor(value);
+            case 'onInverseSurface': return parseColor(value);
+            case 'inversePrimary': return parseColor(value);
+            case 'surfaceTint': return parseColor(value);
+        }
+        return value;
+    }
+}
+
+class ColorScheme_darkInflater extends Inflater {
+
+    @override
+    String get type => 'ColorScheme.dark';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme.dark(
+            brightness: attributes['brightness'] ?? Brightness.dark,
+            primary: attributes['primary'] ?? const Color(0xffbb86fc),
+            onPrimary: attributes['onPrimary'] ?? Colors.black,
+            primaryContainer: attributes['primaryContainer'],
+            onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
+            secondary: attributes['secondary'] ?? const Color(0xff03dac6),
+            onSecondary: attributes['onSecondary'] ?? Colors.black,
+            secondaryContainer: attributes['secondaryContainer'],
+            onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
+            tertiary: attributes['tertiary'],
+            onTertiary: attributes['onTertiary'],
+            tertiaryContainer: attributes['tertiaryContainer'],
+            onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
+            error: attributes['error'] ?? const Color(0xffcf6679),
+            onError: attributes['onError'] ?? Colors.black,
+            errorContainer: attributes['errorContainer'],
+            onErrorContainer: attributes['onErrorContainer'],
+            surface: attributes['surface'] ?? const Color(0xff121212),
+            onSurface: attributes['onSurface'] ?? Colors.white,
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
+            onSurfaceVariant: attributes['onSurfaceVariant'],
+            outline: attributes['outline'],
+            outlineVariant: attributes['outlineVariant'],
+            shadow: attributes['shadow'],
+            scrim: attributes['scrim'],
+            inverseSurface: attributes['inverseSurface'],
+            onInverseSurface: attributes['onInverseSurface'],
+            inversePrimary: attributes['inversePrimary'],
+            surfaceTint: attributes['surfaceTint'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'brightness': return parseEnum(Brightness.values, value);
+            case 'primary': return parseColor(value);
+            case 'onPrimary': return parseColor(value);
+            case 'primaryContainer': return parseColor(value);
+            case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
+            case 'secondary': return parseColor(value);
+            case 'onSecondary': return parseColor(value);
+            case 'secondaryContainer': return parseColor(value);
+            case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
+            case 'tertiary': return parseColor(value);
+            case 'onTertiary': return parseColor(value);
+            case 'tertiaryContainer': return parseColor(value);
+            case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
+            case 'error': return parseColor(value);
+            case 'onError': return parseColor(value);
+            case 'errorContainer': return parseColor(value);
+            case 'onErrorContainer': return parseColor(value);
+            case 'surface': return parseColor(value);
+            case 'onSurface': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
+            case 'onSurfaceVariant': return parseColor(value);
+            case 'outline': return parseColor(value);
+            case 'outlineVariant': return parseColor(value);
+            case 'shadow': return parseColor(value);
+            case 'scrim': return parseColor(value);
+            case 'inverseSurface': return parseColor(value);
+            case 'onInverseSurface': return parseColor(value);
+            case 'inversePrimary': return parseColor(value);
+            case 'surfaceTint': return parseColor(value);
+        }
+        return value;
+    }
+}
+
+class ColorScheme_highContrastLightInflater extends Inflater {
+
+    @override
+    String get type => 'ColorScheme.highContrastLight';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme.highContrastLight(
+            brightness: attributes['brightness'] ?? Brightness.light,
+            primary: attributes['primary'] ?? const Color(0xff0000ba),
+            onPrimary: attributes['onPrimary'] ?? Colors.white,
+            primaryContainer: attributes['primaryContainer'],
+            onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
+            secondary: attributes['secondary'] ?? const Color(0xff66fff9),
+            onSecondary: attributes['onSecondary'] ?? Colors.black,
+            secondaryContainer: attributes['secondaryContainer'],
+            onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
+            tertiary: attributes['tertiary'],
+            onTertiary: attributes['onTertiary'],
+            tertiaryContainer: attributes['tertiaryContainer'],
+            onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
+            error: attributes['error'] ?? const Color(0xff790000),
+            onError: attributes['onError'] ?? Colors.white,
+            errorContainer: attributes['errorContainer'],
+            onErrorContainer: attributes['onErrorContainer'],
+            surface: attributes['surface'] ?? Colors.white,
+            onSurface: attributes['onSurface'] ?? Colors.black,
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
+            onSurfaceVariant: attributes['onSurfaceVariant'],
+            outline: attributes['outline'],
+            outlineVariant: attributes['outlineVariant'],
+            shadow: attributes['shadow'],
+            scrim: attributes['scrim'],
+            inverseSurface: attributes['inverseSurface'],
+            onInverseSurface: attributes['onInverseSurface'],
+            inversePrimary: attributes['inversePrimary'],
+            surfaceTint: attributes['surfaceTint'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'brightness': return parseEnum(Brightness.values, value);
+            case 'primary': return parseColor(value);
+            case 'onPrimary': return parseColor(value);
+            case 'primaryContainer': return parseColor(value);
+            case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
+            case 'secondary': return parseColor(value);
+            case 'onSecondary': return parseColor(value);
+            case 'secondaryContainer': return parseColor(value);
+            case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
+            case 'tertiary': return parseColor(value);
+            case 'onTertiary': return parseColor(value);
+            case 'tertiaryContainer': return parseColor(value);
+            case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
+            case 'error': return parseColor(value);
+            case 'onError': return parseColor(value);
+            case 'errorContainer': return parseColor(value);
+            case 'onErrorContainer': return parseColor(value);
+            case 'surface': return parseColor(value);
+            case 'onSurface': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
+            case 'onSurfaceVariant': return parseColor(value);
+            case 'outline': return parseColor(value);
+            case 'outlineVariant': return parseColor(value);
+            case 'shadow': return parseColor(value);
+            case 'scrim': return parseColor(value);
+            case 'inverseSurface': return parseColor(value);
+            case 'onInverseSurface': return parseColor(value);
+            case 'inversePrimary': return parseColor(value);
+            case 'surfaceTint': return parseColor(value);
+        }
+        return value;
+    }
+}
+
+class ColorScheme_highContrastDarkInflater extends Inflater {
+
+    @override
+    String get type => 'ColorScheme.highContrastDark';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme.highContrastDark(
+            brightness: attributes['brightness'] ?? Brightness.dark,
+            primary: attributes['primary'] ?? const Color(0xffefb7ff),
+            onPrimary: attributes['onPrimary'] ?? Colors.black,
+            primaryContainer: attributes['primaryContainer'],
+            onPrimaryContainer: attributes['onPrimaryContainer'],
+            primaryFixed: attributes['primaryFixed'],
+            primaryFixedDim: attributes['primaryFixedDim'],
+            onPrimaryFixed: attributes['onPrimaryFixed'],
+            onPrimaryFixedVariant: attributes['onPrimaryFixedVariant'],
+            secondary: attributes['secondary'] ?? const Color(0xff66fff9),
+            onSecondary: attributes['onSecondary'] ?? Colors.black,
+            secondaryContainer: attributes['secondaryContainer'],
+            onSecondaryContainer: attributes['onSecondaryContainer'],
+            secondaryFixed: attributes['secondaryFixed'],
+            secondaryFixedDim: attributes['secondaryFixedDim'],
+            onSecondaryFixed: attributes['onSecondaryFixed'],
+            onSecondaryFixedVariant: attributes['onSecondaryFixedVariant'],
+            tertiary: attributes['tertiary'],
+            onTertiary: attributes['onTertiary'],
+            tertiaryContainer: attributes['tertiaryContainer'],
+            onTertiaryContainer: attributes['onTertiaryContainer'],
+            tertiaryFixed: attributes['tertiaryFixed'],
+            tertiaryFixedDim: attributes['tertiaryFixedDim'],
+            onTertiaryFixed: attributes['onTertiaryFixed'],
+            onTertiaryFixedVariant: attributes['onTertiaryFixedVariant'],
+            error: attributes['error'] ?? const Color(0xff9b374d),
+            onError: attributes['onError'] ?? Colors.black,
+            errorContainer: attributes['errorContainer'],
+            onErrorContainer: attributes['onErrorContainer'],
+            surface: attributes['surface'] ?? const Color(0xff121212),
+            onSurface: attributes['onSurface'] ?? Colors.white,
+            surfaceDim: attributes['surfaceDim'],
+            surfaceBright: attributes['surfaceBright'],
+            surfaceContainerLowest: attributes['surfaceContainerLowest'],
+            surfaceContainerLow: attributes['surfaceContainerLow'],
+            surfaceContainer: attributes['surfaceContainer'],
+            surfaceContainerHigh: attributes['surfaceContainerHigh'],
+            surfaceContainerHighest: attributes['surfaceContainerHighest'],
+            onSurfaceVariant: attributes['onSurfaceVariant'],
+            outline: attributes['outline'],
+            outlineVariant: attributes['outlineVariant'],
+            shadow: attributes['shadow'],
+            scrim: attributes['scrim'],
+            inverseSurface: attributes['inverseSurface'],
+            onInverseSurface: attributes['onInverseSurface'],
+            inversePrimary: attributes['inversePrimary'],
+            surfaceTint: attributes['surfaceTint'],
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'brightness': return parseEnum(Brightness.values, value);
+            case 'primary': return parseColor(value);
+            case 'onPrimary': return parseColor(value);
+            case 'primaryContainer': return parseColor(value);
+            case 'onPrimaryContainer': return parseColor(value);
+            case 'primaryFixed': return parseColor(value);
+            case 'primaryFixedDim': return parseColor(value);
+            case 'onPrimaryFixed': return parseColor(value);
+            case 'onPrimaryFixedVariant': return parseColor(value);
+            case 'secondary': return parseColor(value);
+            case 'onSecondary': return parseColor(value);
+            case 'secondaryContainer': return parseColor(value);
+            case 'onSecondaryContainer': return parseColor(value);
+            case 'secondaryFixed': return parseColor(value);
+            case 'secondaryFixedDim': return parseColor(value);
+            case 'onSecondaryFixed': return parseColor(value);
+            case 'onSecondaryFixedVariant': return parseColor(value);
+            case 'tertiary': return parseColor(value);
+            case 'onTertiary': return parseColor(value);
+            case 'tertiaryContainer': return parseColor(value);
+            case 'onTertiaryContainer': return parseColor(value);
+            case 'tertiaryFixed': return parseColor(value);
+            case 'tertiaryFixedDim': return parseColor(value);
+            case 'onTertiaryFixed': return parseColor(value);
+            case 'onTertiaryFixedVariant': return parseColor(value);
+            case 'error': return parseColor(value);
+            case 'onError': return parseColor(value);
+            case 'errorContainer': return parseColor(value);
+            case 'onErrorContainer': return parseColor(value);
+            case 'surface': return parseColor(value);
+            case 'onSurface': return parseColor(value);
+            case 'surfaceDim': return parseColor(value);
+            case 'surfaceBright': return parseColor(value);
+            case 'surfaceContainerLowest': return parseColor(value);
+            case 'surfaceContainerLow': return parseColor(value);
+            case 'surfaceContainer': return parseColor(value);
+            case 'surfaceContainerHigh': return parseColor(value);
+            case 'surfaceContainerHighest': return parseColor(value);
+            case 'onSurfaceVariant': return parseColor(value);
+            case 'outline': return parseColor(value);
+            case 'outlineVariant': return parseColor(value);
+            case 'shadow': return parseColor(value);
+            case 'scrim': return parseColor(value);
+            case 'inverseSurface': return parseColor(value);
+            case 'onInverseSurface': return parseColor(value);
+            case 'inversePrimary': return parseColor(value);
+            case 'surfaceTint': return parseColor(value);
+        }
+        return value;
+    }
+}
+
+class ColorScheme_fromSwatchInflater extends Inflater {
+
+    @override
+    String get type => 'ColorScheme.fromSwatch';
+
+    @override
+    bool get inflatesOwnChildren => false;
+
+    @override
+    bool get inflatesCustomWidget => false;
+
+    @override
+    ColorScheme? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
+        return ColorScheme.fromSwatch(
+            primarySwatch: attributes['primarySwatch'] ?? Colors.blue,
+            accentColor: attributes['accentColor'],
+            cardColor: attributes['cardColor'],
+            backgroundColor: attributes['backgroundColor'],
+            errorColor: attributes['errorColor'],
+            brightness: attributes['brightness'] ?? Brightness.light,
+        );
+    }
+
+    @override
+    dynamic parseAttribute(String name, String value) {
+        switch (name) {
+            case 'primarySwatch': break;
+            case 'accentColor': return parseColor(value);
+            case 'cardColor': return parseColor(value);
             case 'backgroundColor': return parseColor(value);
-            case 'valueColor': break;
-            case 'strokeWidth': return parseDouble(value);
-            case 'semanticsLabel': return value;
-            case 'semanticsValue': return value;
-            case 'strokeCap': return parseEnum(StrokeCap.values, value);
-            case 'strokeAlign': return parseDouble(value);
+            case 'errorColor': return parseColor(value);
+            case 'brightness': return parseEnum(Brightness.values, value);
         }
         return value;
     }
@@ -729,6 +907,7 @@ class ColumnInflater extends Inflater {
             textDirection: attributes['textDirection'],
             verticalDirection: attributes['verticalDirection'] ?? VerticalDirection.down,
             textBaseline: attributes['textBaseline'],
+            spacing: toDouble(attributes['spacing']) ?? 0.0,
             children: [...children, ...?attributes['children']],
         );
     }
@@ -743,6 +922,7 @@ class ColumnInflater extends Inflater {
             case 'textDirection': return parseEnum(TextDirection.values, value);
             case 'verticalDirection': return parseEnum(VerticalDirection.values, value);
             case 'textBaseline': return parseEnum(TextBaseline.values, value);
+            case 'spacing': return parseDouble(value);
             case 'children': break;
         }
         return value;
@@ -1062,6 +1242,8 @@ class IconInflater extends Inflater {
             semanticLabel: attributes['semanticLabel'],
             textDirection: attributes['textDirection'],
             applyTextScaling: attributes['applyTextScaling'],
+            blendMode: attributes['blendMode'],
+            fontWeight: attributes['fontWeight'],
         );
     }
 
@@ -1080,6 +1262,8 @@ class IconInflater extends Inflater {
             case 'semanticLabel': return value;
             case 'textDirection': return parseEnum(TextDirection.values, value);
             case 'applyTextScaling': return parseBool(value);
+            case 'blendMode': return parseEnum(BlendMode.values, value);
+            case 'fontWeight': return parseFontWeight(value);
         }
         return value;
     }
@@ -1208,7 +1392,7 @@ class MaterialApp_routerInflater extends Inflater {
             routerConfig: attributes['routerConfig'],
             backButtonDispatcher: attributes['backButtonDispatcher'],
             builder: attributes['builder'],
-            title: attributes['title'] ?? '',
+            title: attributes['title'],
             onGenerateTitle: attributes['onGenerateTitle'],
             onNavigationNotification: attributes['onNavigationNotification'],
             color: attributes['color'],
@@ -1303,6 +1487,7 @@ class ScaffoldInflater extends Inflater {
             floatingActionButtonAnimator: attributes['floatingActionButtonAnimator'],
             persistentFooterButtons: attributes['persistentFooterButtons'] != null ? [...attributes['persistentFooterButtons']] : null,
             persistentFooterAlignment: attributes['persistentFooterAlignment'] ?? AlignmentDirectional.centerEnd,
+            persistentFooterDecoration: attributes['persistentFooterDecoration'],
             drawer: attributes['drawer'],
             onDrawerChanged: attributes['onDrawerChanged'],
             endDrawer: attributes['endDrawer'],
@@ -1314,8 +1499,10 @@ class ScaffoldInflater extends Inflater {
             primary: attributes['primary'] ?? true,
             drawerDragStartBehavior: attributes['drawerDragStartBehavior'] ?? DragStartBehavior.start,
             extendBody: attributes['extendBody'] ?? false,
+            drawerBarrierDismissible: attributes['drawerBarrierDismissible'] ?? true,
             extendBodyBehindAppBar: attributes['extendBodyBehindAppBar'] ?? false,
             drawerScrimColor: attributes['drawerScrimColor'],
+            bottomSheetScrimBuilder: attributes['bottomSheetScrimBuilder'] ?? defaultBottomSheetScrimBuilder,
             drawerEdgeDragWidth: toDouble(attributes['drawerEdgeDragWidth']),
             drawerEnableOpenDragGesture: attributes['drawerEnableOpenDragGesture'] ?? true,
             endDrawerEnableOpenDragGesture: attributes['endDrawerEnableOpenDragGesture'] ?? true,
@@ -1334,6 +1521,7 @@ class ScaffoldInflater extends Inflater {
             case 'floatingActionButtonAnimator': break;
             case 'persistentFooterButtons': break;
             case 'persistentFooterAlignment': return parseAlignmentDirectional(value);
+            case 'persistentFooterDecoration': break;
             case 'drawer': break;
             case 'onDrawerChanged': break;
             case 'endDrawer': break;
@@ -1345,8 +1533,10 @@ class ScaffoldInflater extends Inflater {
             case 'primary': return parseBool(value);
             case 'drawerDragStartBehavior': return parseEnum(DragStartBehavior.values, value);
             case 'extendBody': return parseBool(value);
+            case 'drawerBarrierDismissible': return parseBool(value);
             case 'extendBodyBehindAppBar': return parseBool(value);
             case 'drawerScrimColor': return parseColor(value);
+            case 'bottomSheetScrimBuilder': break;
             case 'drawerEdgeDragWidth': return parseDouble(value);
             case 'drawerEnableOpenDragGesture': return parseBool(value);
             case 'endDrawerEnableOpenDragGesture': return parseBool(value);
@@ -1382,6 +1572,7 @@ class TextInflater extends Inflater {
             textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
+            semanticsIdentifier: attributes['semanticsIdentifier'],
             textWidthBasis: attributes['textWidthBasis'],
             textHeightBehavior: attributes['textHeightBehavior'],
             selectionColor: attributes['selectionColor'],
@@ -1403,6 +1594,7 @@ class TextInflater extends Inflater {
             case 'textScaler': break;
             case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
+            case 'semanticsIdentifier': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
             case 'selectionColor': return parseColor(value);
@@ -1437,6 +1629,7 @@ class Text_richInflater extends Inflater {
             textScaler: attributes['textScaler'],
             maxLines: attributes['maxLines'],
             semanticsLabel: attributes['semanticsLabel'],
+            semanticsIdentifier: attributes['semanticsIdentifier'],
             textWidthBasis: attributes['textWidthBasis'],
             textHeightBehavior: attributes['textHeightBehavior'],
             selectionColor: attributes['selectionColor'],
@@ -1458,6 +1651,7 @@ class Text_richInflater extends Inflater {
             case 'textScaler': break;
             case 'maxLines': return parseInt(value);
             case 'semanticsLabel': return value;
+            case 'semanticsIdentifier': return value;
             case 'textWidthBasis': return parseEnum(TextWidthBasis.values, value);
             case 'textHeightBehavior': break;
             case 'selectionColor': return parseColor(value);
@@ -1568,20 +1762,19 @@ class ThemeDataInflater extends Inflater {
             scrollbarTheme: attributes['scrollbarTheme'],
             splashFactory: attributes['splashFactory'],
             useMaterial3: attributes['useMaterial3'],
+            useSystemColors: attributes['useSystemColors'],
             visualDensity: attributes['visualDensity'],
+            colorScheme: attributes['colorScheme'],
             brightness: attributes['brightness'],
+            colorSchemeSeed: attributes['colorSchemeSeed'],
             canvasColor: attributes['canvasColor'],
             cardColor: attributes['cardColor'],
-            colorScheme: attributes['colorScheme'],
-            colorSchemeSeed: attributes['colorSchemeSeed'],
-            dialogBackgroundColor: attributes['dialogBackgroundColor'],
             disabledColor: attributes['disabledColor'],
             dividerColor: attributes['dividerColor'],
             focusColor: attributes['focusColor'],
             highlightColor: attributes['highlightColor'],
             hintColor: attributes['hintColor'],
             hoverColor: attributes['hoverColor'],
-            indicatorColor: attributes['indicatorColor'],
             primaryColor: attributes['primaryColor'],
             primaryColorDark: attributes['primaryColorDark'],
             primaryColorLight: attributes['primaryColorLight'],
@@ -1606,9 +1799,9 @@ class ThemeDataInflater extends Inflater {
             bottomAppBarTheme: attributes['bottomAppBarTheme'],
             bottomNavigationBarTheme: attributes['bottomNavigationBarTheme'],
             bottomSheetTheme: attributes['bottomSheetTheme'],
-            buttonBarTheme: attributes['buttonBarTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
+            carouselViewTheme: attributes['carouselViewTheme'],
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
@@ -1662,20 +1855,19 @@ class ThemeDataInflater extends Inflater {
             case 'scrollbarTheme': break;
             case 'splashFactory': break;
             case 'useMaterial3': return parseBool(value);
+            case 'useSystemColors': return parseBool(value);
             case 'visualDensity': return parseVisualDensity(value);
+            case 'colorScheme': break;
             case 'brightness': return parseEnum(Brightness.values, value);
+            case 'colorSchemeSeed': return parseColor(value);
             case 'canvasColor': return parseColor(value);
             case 'cardColor': return parseColor(value);
-            case 'colorScheme': break;
-            case 'colorSchemeSeed': return parseColor(value);
-            case 'dialogBackgroundColor': return parseColor(value);
             case 'disabledColor': return parseColor(value);
             case 'dividerColor': return parseColor(value);
             case 'focusColor': return parseColor(value);
             case 'highlightColor': return parseColor(value);
             case 'hintColor': return parseColor(value);
             case 'hoverColor': return parseColor(value);
-            case 'indicatorColor': return parseColor(value);
             case 'primaryColor': return parseColor(value);
             case 'primaryColorDark': return parseColor(value);
             case 'primaryColorLight': return parseColor(value);
@@ -1700,9 +1892,9 @@ class ThemeDataInflater extends Inflater {
             case 'bottomAppBarTheme': break;
             case 'bottomNavigationBarTheme': break;
             case 'bottomSheetTheme': break;
-            case 'buttonBarTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
+            case 'carouselViewTheme': break;
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
@@ -1770,17 +1962,15 @@ class ThemeData_rawInflater extends Inflater {
             splashFactory: attributes['splashFactory'],
             useMaterial3: attributes['useMaterial3'],
             visualDensity: attributes['visualDensity'],
+            colorScheme: attributes['colorScheme'],
             canvasColor: attributes['canvasColor'],
             cardColor: attributes['cardColor'],
-            colorScheme: attributes['colorScheme'],
-            dialogBackgroundColor: attributes['dialogBackgroundColor'],
             disabledColor: attributes['disabledColor'],
             dividerColor: attributes['dividerColor'],
             focusColor: attributes['focusColor'],
             highlightColor: attributes['highlightColor'],
             hintColor: attributes['hintColor'],
             hoverColor: attributes['hoverColor'],
-            indicatorColor: attributes['indicatorColor'],
             primaryColor: attributes['primaryColor'],
             primaryColorDark: attributes['primaryColorDark'],
             primaryColorLight: attributes['primaryColorLight'],
@@ -1801,9 +1991,9 @@ class ThemeData_rawInflater extends Inflater {
             bottomAppBarTheme: attributes['bottomAppBarTheme'],
             bottomNavigationBarTheme: attributes['bottomNavigationBarTheme'],
             bottomSheetTheme: attributes['bottomSheetTheme'],
-            buttonBarTheme: attributes['buttonBarTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
+            carouselViewTheme: attributes['carouselViewTheme'],
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
@@ -1840,6 +2030,8 @@ class ThemeData_rawInflater extends Inflater {
             timePickerTheme: attributes['timePickerTheme'],
             toggleButtonsTheme: attributes['toggleButtonsTheme'],
             tooltipTheme: attributes['tooltipTheme'],
+            dialogBackgroundColor: attributes['dialogBackgroundColor'],
+            indicatorColor: attributes['indicatorColor'],
         );
     }
 
@@ -1858,17 +2050,15 @@ class ThemeData_rawInflater extends Inflater {
             case 'splashFactory': break;
             case 'useMaterial3': return parseBool(value);
             case 'visualDensity': return parseVisualDensity(value);
+            case 'colorScheme': break;
             case 'canvasColor': return parseColor(value);
             case 'cardColor': return parseColor(value);
-            case 'colorScheme': break;
-            case 'dialogBackgroundColor': return parseColor(value);
             case 'disabledColor': return parseColor(value);
             case 'dividerColor': return parseColor(value);
             case 'focusColor': return parseColor(value);
             case 'highlightColor': return parseColor(value);
             case 'hintColor': return parseColor(value);
             case 'hoverColor': return parseColor(value);
-            case 'indicatorColor': return parseColor(value);
             case 'primaryColor': return parseColor(value);
             case 'primaryColorDark': return parseColor(value);
             case 'primaryColorLight': return parseColor(value);
@@ -1889,9 +2079,9 @@ class ThemeData_rawInflater extends Inflater {
             case 'bottomAppBarTheme': break;
             case 'bottomNavigationBarTheme': break;
             case 'bottomSheetTheme': break;
-            case 'buttonBarTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
+            case 'carouselViewTheme': break;
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
@@ -1928,6 +2118,8 @@ class ThemeData_rawInflater extends Inflater {
             case 'timePickerTheme': break;
             case 'toggleButtonsTheme': break;
             case 'tooltipTheme': break;
+            case 'dialogBackgroundColor': return parseColor(value);
+            case 'indicatorColor': return parseColor(value);
         }
         return value;
     }
@@ -2046,23 +2238,15 @@ class ThemeData_fallbackInflater extends Inflater {
 }
 
 void registerXWidgetInflaters() {
-    XWidget.registerInflater(AlertDialogInflater());
-    XWidget.registerInflater(AlertDialog_adaptiveInflater());
-    XWidget.registerInflater(AlwaysStoppedAnimationInflater());
-    XWidget.registerInflater(AlwaysStoppedAnimationColorInflater());
-    XWidget.registerInflater(AlwaysStoppedAnimationIntInflater());
-    XWidget.registerInflater(AnimatedCrossFadeInflater());
     XWidget.registerInflater(AppBarInflater());
-    XWidget.registerInflater(BoxConstraintsInflater());
-    XWidget.registerInflater(BoxConstraints_tightInflater());
-    XWidget.registerInflater(BoxConstraints_tightForInflater());
-    XWidget.registerInflater(BoxConstraints_tightForFiniteInflater());
-    XWidget.registerInflater(BoxConstraints_looseInflater());
-    XWidget.registerInflater(BoxConstraints_expandInflater());
-    XWidget.registerInflater(BoxConstraints_fromViewConstraintsInflater());
     XWidget.registerInflater(CenterInflater());
-    XWidget.registerInflater(CircularProgressIndicatorInflater());
-    XWidget.registerInflater(CircularProgressIndicator_adaptiveInflater());
+    XWidget.registerInflater(ColorSchemeInflater());
+    XWidget.registerInflater(ColorScheme_fromSeedInflater());
+    XWidget.registerInflater(ColorScheme_lightInflater());
+    XWidget.registerInflater(ColorScheme_darkInflater());
+    XWidget.registerInflater(ColorScheme_highContrastLightInflater());
+    XWidget.registerInflater(ColorScheme_highContrastDarkInflater());
+    XWidget.registerInflater(ColorScheme_fromSwatchInflater());
     XWidget.registerInflater(ColumnInflater());
     XWidget.registerInflater(FloatingActionButtonInflater());
     XWidget.registerInflater(FloatingActionButton_smallInflater());
@@ -2082,4 +2266,3 @@ void registerXWidgetInflaters() {
     XWidget.registerInflater(ThemeData_darkInflater());
     XWidget.registerInflater(ThemeData_fallbackInflater());
 }
-

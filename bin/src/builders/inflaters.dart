@@ -161,7 +161,7 @@ class InflaterBuilder extends SpecBuilder {
     final inflaterReturnType = type.element.name;
 
     for (final param in constructor.parameters) {
-      if (!param.hasDeprecated || config.allowDeprecated) {
+      if (!param.hasDeprecated || param.isRequired || config.allowDeprecated) {
         final paramType = param.type.displayStringWithoutNullability();
         if (paramType != "InvalidType") {
           if (inflaterConfig.isNotExcludedConstructorArg(constructorName, param.name)) {

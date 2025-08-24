@@ -10,6 +10,7 @@ export 'src/utils/logging.dart';
 export 'src/utils/parsers_material.dart';
 export 'src/utils/resources.dart';
 export 'src/utils/utils.dart';
+export 'src/defaults.dart';
 export 'src/xwidget.dart';
 
 export 'package:xwidget_el/xwidget_el.dart';
