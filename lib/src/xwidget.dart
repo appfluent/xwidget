@@ -438,7 +438,7 @@ class XWidget {
     }
   }
 
-  static dump(XmlElement element, Dependencies dependencies) {
+  static String dump(XmlElement element, Dependencies dependencies) {
     return "\n----- XML Element -----\n${element.toXmlString(pretty: true)}"
         "\n----- Dependencies -----\n$dependencies";
   }
@@ -458,7 +458,7 @@ class Children {
   /// Holds all parsed attributes
   final attributes = <String, dynamic>{};
 
-  addAll(Children? children) {
+  void addAll(Children? children) {
     if (children != null) {
       text.addAll(children.text);
       objects.addAll(children.objects);
@@ -466,7 +466,7 @@ class Children {
     }
   }
 
-  getWidgets() {
+  List<Widget> getWidgets() {
     final widgets = <Widget>[];
     for (var obj in objects) {
       if (obj is Widget) widgets.add(obj);
@@ -511,7 +511,7 @@ class InflaterDef {
 /// While it's possible to manually create an inflater by implementing this
 /// class, the best practice is to use the @InflaterDef annotation on your
 /// class and let XWidget generate the inflater by running
-/// `dart run xwidget:generate`.
+/// `dart run xwidget_builder:generate`.
 abstract class Inflater<T> {
   /// The XML element name for the inflater.
   String get type;

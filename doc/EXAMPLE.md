@@ -9,7 +9,7 @@ you're using an older version Flutter, you'll need to regenerate the inflaters u
 following command:
 
 ```shell
-$ dart run xwidget:generate --only inflaters 
+$ dart run xwidget_builder:generate --only inflaters 
 ```
 
 Here are some apps using XWidget:

@@ -4,16 +4,16 @@ import '../../xwidget.dart';
 
 /// A pair of tags that conditionally render portions of the UI.
 ///
-/// If the `test` expression evaluates to `true`, then <if>'s children are
-/// rendered, otherwise <else>'s children are rendered. The `test` expression
-/// must return a bool, otherwise an [Exception] is thrown. The <else> tag
-/// must be a direct child of an <if> tag, if present, otherwise it will be
+/// If the `test` expression evaluates to `true`, then `<if>`'s children are
+/// rendered, otherwise `<else>`'s children are rendered. The `test` expression
+/// must return a bool, otherwise an [Exception] is thrown. The `<else>` tag
+/// must be a direct child of an `<if>` tag, if present, otherwise it will be
 /// ignored.
 ///
-/// <if> Attributes:
+/// `<if>` Attributes:
 /// - test (required): A bool expression i.e. ${user.name == 'Mike'}
 ///
-/// <else> Attributes: none
+/// `<else>` Attributes: none
 class IfElseTag implements Tag {
   @override
   String get name => "if";
@@ -51,7 +51,7 @@ class IfElseTag implements Tag {
     return null;
   }
 
-  bool _isTrue(value) {
+  bool _isTrue(dynamic value) {
     return value is bool && value == true;
   }
 }

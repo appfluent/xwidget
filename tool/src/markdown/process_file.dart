@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../../../bin/src/utils/cli_log.dart';
-
+import '../utils/cli_log.dart';
 import 'code_utils.dart';
 import 'include.dart';
 import 'space.dart';

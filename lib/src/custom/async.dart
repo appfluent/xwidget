@@ -94,9 +94,9 @@ class DynamicBuilderState<T> extends State<DynamicBuilder<T>> {
     }
   }
 
-  Widget _defaultErrorWidget(error) {
+  Widget _defaultErrorWidget(dynamic e) {
     return Center(
-      child: ErrorWidget(error),
+      child: ErrorWidget(e),
     );
   }
 

@@ -8,12 +8,13 @@ below.
 
     ```shell
     $ flutter pub add xwidget
+    $ flutter pub add dev:xwidget_builder
     ```
 
 2. Initialize your project by running:
 
     ```shell
-    $ dart run xwidget:init --new-app
+    $ dart run xwidget_builder:init --new-app
     ```
    
    This will create and configure all the components required for a simple XWidget application.
@@ -22,7 +23,7 @@ below.
    following non-destructive initialization command:
 
     ```shell
-    $ dart run xwidget:init
+    $ dart run xwidget_builder:init
     ```
    
    The non-destructive command is intended for advanced users that want to add XWidget to an
@@ -37,7 +38,7 @@ below.
    and run:
 
     ```shell
-    $ dart run xwidget:generate --only inflaters
+    $ dart run xwidget_builder:generate --only inflaters
     ```
 
 5. Install the [Flutter XWidget](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)

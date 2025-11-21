@@ -1519,14 +1519,6 @@ The padding between the [actions] and the end of the AppBar.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="animateColor" type="boolAttributeType">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>Whether the color should be animated.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -4317,14 +4309,6 @@ interface.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="fontWeight" type="FontWeightAttributeType">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>The typeface thickness to use when painting the text (e.g., bold).</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -5650,21 +5634,6 @@ persistently visible, even if the [body] of the scaffold scrolls.</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="persistentFooterDecoration">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>Decoration for the container that holds the [persistentFooterButtons].</p><br/>
-<p>By default, this container has a top border with a width of 1.0, created by
-[Divider.createBorderSide].</p><br/>
-<p>See also:</p><br/>
-<ul>
-<li>[persistentFooterButtons], which defines the buttons to show in the footer.</li>
-<li>[persistentFooterAlignment], which defines the alignment of the footer buttons.</li>
-</ul>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="drawer">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -5834,17 +5803,6 @@ to the top of the scaffold.</li>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="drawerBarrierDismissible" type="boolAttributeType">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>Whether the drawer can be dismissed by tapping on the barrier.</p><br/>
-<p>If false, and a [drawer] is specified, then the barrier behind the drawer
-will not respond to a tap event and thus remains open.</p><br/>
-<p>Defaults to true, in which case the drawer will close upon the user tapping on the barrier.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="extendBodyBehindAppBar" type="boolAttributeType">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -5869,21 +5827,6 @@ of the scaffold.</li>
 <p>The color to use for the scrim that obscures primary content while a drawer is open.</p><br/>
 <p>If this is null, then [DrawerThemeData.scrimColor] is used. If that
 is also null, then it defaults to [Colors.black54].</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="bottomSheetScrimBuilder">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A builder for the widget that obscures primary content while a bottom sheet is open.</p><br/>
-<p>The builder receives the current [BuildContext] and an [Animation] as parameters.
-The [Animation] ranges from 0.0 to 1.0 based on how much the bottom sheet covers the screen.
-A value of 0.0 represents when the bottom sheet covers 70% of the screen,
-and 1.0 represents when the bottom sheet fully covers the screen.</p><br/>
-<p>If this is null, then a non-dismissable [ModalBarrier] with [Colors.black] is used. The
-barrier is animated to fade in and out as the bottom sheet is opened and closed.</p><br/>
-<p>If the builder returns null, then no scrim is shown.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>
@@ -7396,14 +7339,6 @@ and [ButtonBar].</p><br/>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="carouselViewTheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A theme for customizing the appearance and layout of [CarouselView] widgets.</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
                     <xs:attribute name="checkboxTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">
@@ -8304,14 +8239,6 @@ and [ButtonBar].</p><br/>
                             <xs:documentation xml:lang="en">
 <p>The colors and styles used to render [Card].</p><br/>
 <p>This is the value returned from [CardTheme.of].</p><br/>
-
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="carouselViewTheme">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="en">
-<p>A theme for customizing the appearance and layout of [CarouselView] widgets.</p><br/>
 
                             </xs:documentation>
                         </xs:annotation>

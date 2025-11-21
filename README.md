@@ -17,9 +17,13 @@
     />
 </p>
 
-<p data-control-type="install" role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; flex-direction: row; width: 245px; height: 48px; background: #333 url(https://plugins.jetbrains.com/static/versions/32235/button-install.png) no-repeat; background-size: contain; border-radius: 25px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .25); cursor: pointer; transition: background-color; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
-    <a href="https://plugins.jetbrains.com/plugin/25494-flutter-xwidget" rel="noopener noreferrer" target="_blank" style="color: #fff; text-decoration: none; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: .0015em;">
-        Android Studio Plugin
+
+<p align="center">
+    <a href="https://plugins.jetbrains.com/plugin/25494-flutter-xwidget" rel="noopener noreferrer" target="_blank">
+        <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/doc/assets/intellij_plugin.png"
+            alt="IntelliJ Plugin"
+            style="max-height:48px; height:100%; width:auto;"
+        />
     </a>
 </p>
 
@@ -133,12 +137,13 @@ below.
 
     ```shell
     $ flutter pub add xwidget
+    $ flutter pub add dev:xwidget_builder
     ```
 
 2. Initialize your project by running:
 
     ```shell
-    $ dart run xwidget:init --new-app
+    $ dart run xwidget_builder:init --new-app
     ```
    
    This will create and configure all the components required for a simple XWidget application.
@@ -147,7 +152,7 @@ below.
    following non-destructive initialization command:
 
     ```shell
-    $ dart run xwidget:init
+    $ dart run xwidget_builder:init
     ```
    
    The non-destructive command is intended for advanced users that want to add XWidget to an
@@ -162,7 +167,7 @@ below.
    and run:
 
     ```shell
-    $ dart run xwidget:generate --only inflaters
+    $ dart run xwidget_builder:generate --only inflaters
     ```
 
 5. Install the [Flutter XWidget](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)
@@ -214,7 +219,7 @@ setup a new project.
    See [Code Generation](#code-generation) for more.
 
     ```shell
-    $ dart run xwidget:generate 
+    $ dart run xwidget_builder:generate 
     ```
 
 4. Register the generated schema file `xwidget_scheme.g.xsd` with your IDE under the namespace
@@ -290,6 +295,22 @@ plugin for Android Studio. It provides EL syntax highlighting, contextual naviga
 generation and more.
 <!-- // end of #include -->
 
+<!-- #include UPGRADING.md -->
+# Upgrading
+
+## 0.0.x to 0.1.x
+
+Version 0.1.0 separates development tools from the runtime implementation. 
+
+Install development tools:
+
+```shell
+$ flutter pub add dev:xwidget_builder
+```
+
+Use `dart run xwidget_builder:generate` instead of `dart run xwidget:generate`
+<!-- // end of #include -->
+
 <!-- #include EXAMPLE.md -->
 # Example
 
@@ -302,7 +323,7 @@ you're using an older version Flutter, you'll need to regenerate the inflaters u
 following command:
 
 ```shell
-$ dart run xwidget:generate --only inflaters 
+$ dart run xwidget_builder:generate --only inflaters 
 ```
 
 Here are some apps using XWidget:
@@ -312,10 +333,10 @@ Here are some apps using XWidget:
 <!-- #include CONFIGURATION.md -->
 # Configuration
 
-By default, XWidget's code generator looks for a custom configuration file named `xwidget_config.yaml`
-in the project root. This custom configuration is layered on top of XWidget's own default configuration
-which handles most of the configuration burden. See `package:xwidget/res/default_config.yaml` for
-details.
+By default, the builder searches for a custom configuration file named `xwidget_config.yaml` in
+the project root. This configuration extends XWidget’s default settings, reducing the
+amount of manual setup. For reference, see `package:xwidget/res/default_config.yaml`, which defines
+the built-in defaults.
 
 Since the default config does most of the heavy lifting, the typical config can be relatively simple
 like this example:
@@ -496,31 +517,30 @@ XWidget provides a command-line tool for generating inflaters, controllers, icon
 files based on your configuration. The generated code ensures that XML-based UI definitions
 can be properly interpreted and rendered within your Flutter application.
 
-## Running Code Generation
-
 To generate inflaters, controllers, and other required files, run the following command:
+
 ```shell
-$ dart run xwidget:generate
+$ dart run xwidget_builder:generate
 ```
 
 To see available options and flags, use:
 ```shell
-$ dart run xwidget:generate --help
+$ dart run xwidget_builder:generate --help
 ```
 
 You can also specify a custom configuration file:
 ```shell
-$ dart run xwidget:generate --config "my_config.yaml"
+$ dart run xwidget_builder:generate --config "my_config.yaml"
 ```
 
 To generate only specific components, use the --only flag:
 ```shell
-$ dart run xwidget:generate --only inflaters,controllers,icons
+$ dart run xwidget_builder:generate --only inflaters,controllers,icons
 ```
 
 If you need to support deprecated APIs, use:
 ```shell
-$ dart run xwidget:generate --allow-deprecated
+$ dart run xwidget_builder:generate --allow-deprecated
 ```
 
 The generated files will be placed in the appropriate directories as specified
@@ -1164,7 +1184,7 @@ class CounterController extends Controller {
 To generate controller bindings, run the following command:
 
 ```shell
-$ dart run xwidget:generate --only controllers
+$ dart run xwidget_builder:generate --only controllers
 ```
 
 This command processes your project’s controller definitions and generates the necessary

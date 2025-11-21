@@ -32,7 +32,7 @@ class EventNotifier<T extends Enum> {
     listeners.add(listener);
   }
 
-  removeListener(T event, EventListenerCallback<T> listener) {
+  void removeListener(T event, EventListenerCallback<T> listener) {
     _log.debug("Removing event listener: event=$event");
     Set<EventListenerCallback<T>>? listeners = _listeners[event];
     if (listeners != null) {
@@ -40,7 +40,7 @@ class EventNotifier<T extends Enum> {
     }
   }
 
-  postEvent(T event, [dynamic payload]) {
+  void postEvent(T event, [dynamic payload]) {
     _log.debug("Posting event: event=$event, payload=$payload");
     Set<EventListenerCallback<T>>? listeners = _listeners[event];
     if (listeners != null) {

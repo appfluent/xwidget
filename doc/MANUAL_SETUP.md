@@ -38,7 +38,7 @@ setup a new project.
    See [Code Generation](#code-generation) for more.
 
     ```shell
-    $ dart run xwidget:generate 
+    $ dart run xwidget_builder:generate 
     ```
 
 4. Register the generated schema file `xwidget_scheme.g.xsd` with your IDE under the namespace

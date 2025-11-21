@@ -74,7 +74,7 @@ class CommonLog {
   // constructors and initializers
 
   /// Initializes CommonLog with a preconfigured [Logger] and callback function.
-  static initialize({Logger? logger, CommonLogCallback? callback}) {
+  static void initialize({Logger? logger, CommonLogCallback? callback}) {
     if (logger != null) {
       _logger = logger;
     }
@@ -91,7 +91,7 @@ class CommonLog {
   // public methods
 
   /// Log a [message] at level [LogLevel.debug].
-  debug(dynamic message) {
+  void debug(dynamic message) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.debug, msg)) {
       _logger.d(msg);
@@ -99,7 +99,7 @@ class CommonLog {
   }
 
   /// Log a [message] at level [LogLevel.info].
-  info(dynamic message) {
+  void info(dynamic message) {
     final msg = _buildMessage(message);
     if (_callback == null || _callback!(LogLevel.info, msg)) {
       _logger.i(msg);
@@ -107,7 +107,7 @@ class CommonLog {
   }
 
   /// Log a [message] at level [LogLevel.warn].
-  warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+  void warn(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
     if (_callback==null || _callback!(LogLevel.warn, msg, error, stackTrace)) {
       _logger.w(msg, error: error, stackTrace: stackTrace);
@@ -115,7 +115,7 @@ class CommonLog {
   }
 
   /// Log a [message] at level [LogLevel.error].
-  error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+  void error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     final msg = _buildMessage(message);
     if (_callback==null || _callback!(LogLevel.error, msg, error, stackTrace)) {
       _logger.e(msg, error: error, stackTrace: stackTrace);
@@ -124,7 +124,7 @@ class CommonLog {
 
   // private methods
 
-  _buildMessage(dynamic message) {
+  String? _buildMessage(dynamic message) {
     if (message == null) return null;
 
     final str = message.toString();

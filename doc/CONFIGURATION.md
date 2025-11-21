@@ -1,9 +1,9 @@
 # Configuration
 
-By default, XWidget's code generator looks for a custom configuration file named `xwidget_config.yaml`
-in the project root. This custom configuration is layered on top of XWidget's own default configuration
-which handles most of the configuration burden. See `package:xwidget/res/default_config.yaml` for
-details.
+By default, the builder searches for a custom configuration file named `xwidget_config.yaml` in
+the project root. This configuration extends XWidget’s default settings, reducing the
+amount of manual setup. For reference, see `package:xwidget/res/default_config.yaml`, which defines
+the built-in defaults.
 
 Since the default config does most of the heavy lifting, the typical config can be relatively simple
 like this example:

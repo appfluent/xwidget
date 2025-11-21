@@ -36,7 +36,7 @@ class Path {
     return Path(parsedPath, fileName);
   }
 
-  static parseRelativeTo(String? path, String? relativeTo) {
+  static Path parseRelativeTo(String? path, String? relativeTo) {
     if (path == null) return Path.parse("");
     final relativePath = Path.parse(relativeTo).pathToString();
     final separator = isNotEmpty(relativePath) && isNotEmpty(path)

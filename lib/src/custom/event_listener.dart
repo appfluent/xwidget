@@ -51,7 +51,7 @@ class EventListenerState extends State<EventListener> with EventNotifier {
     super.dispose();
   }
 
-  _handleEvent(Enum event, dynamic payload) {
+  void _handleEvent(Enum event, dynamic payload) {
     if (widget.onEvent != null) {
       widget.onEvent!(event, payload);
     }

@@ -19,7 +19,7 @@ Widget defaultBottomSheetScrimBuilder(BuildContext context, Animation<double> an
         _kMaxBottomSheetScrimOpacity - floatingButtonVisibilityValue,
       );
 
-      return ModalBarrier(dismissible: false, color: Colors.black.withOpacity(opacity));
+      return ModalBarrier(dismissible: false, color: Colors.black.withValues(alpha: opacity));
     },
   );
 }

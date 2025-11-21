@@ -1,7 +1,7 @@
 import 'package:args/args.dart';
 
+import '../utils/cli_log.dart';
 import 'process_file.dart';
-import '../../../bin/src/utils/cli_log.dart';
 
 
 void main(List<String> unparsedArgs) {

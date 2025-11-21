@@ -5,6 +5,12 @@
 dart run tool/markdown.dart -i doc/README.md -o README.md
 ```
 
+### Analyze
+
+```shell
+dart pub global run pana .
+```
+
 ### Publish
 
 ```shell

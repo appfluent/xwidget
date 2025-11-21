@@ -31,7 +31,7 @@ class CounterController extends Controller {
 To generate controller bindings, run the following command:
 
 ```shell
-$ dart run xwidget:generate --only controllers
+$ dart run xwidget_builder:generate --only controllers
 ```
 
 This command processes your project’s controller definitions and generates the necessary

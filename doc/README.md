@@ -15,6 +15,9 @@
 <!-- #include MANUAL_SETUP.md -->
 <!-- // end of #include -->
 
+<!-- #include UPGRADING.md -->
+<!-- // end of #include -->
+
 <!-- #include EXAMPLE.md -->
 <!-- // end of #include -->
 

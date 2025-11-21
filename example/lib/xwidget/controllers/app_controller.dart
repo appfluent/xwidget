@@ -9,7 +9,7 @@ class AppController extends Controller {
     dependencies.setValue("onPressed", onPressed);
   }
 
-  onPressed() {
+  void onPressed() {
     // Important: Use setValue to set the value and trigger the onChange
     // listeners. Assignment using the brackets operator [] will overwrite
     // the ValueNotifier created in the <ValueListener> component.

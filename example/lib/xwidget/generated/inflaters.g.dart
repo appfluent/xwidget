@@ -52,7 +52,6 @@ class AppBarInflater extends Inflater {
             useDefaultSemanticsOrder: attributes['useDefaultSemanticsOrder'] ?? true,
             clipBehavior: attributes['clipBehavior'],
             actionsPadding: attributes['actionsPadding'],
-            animateColor: attributes['animateColor'] ?? false,
         );
     }
 
@@ -91,7 +90,6 @@ class AppBarInflater extends Inflater {
             case 'useDefaultSemanticsOrder': return parseBool(value);
             case 'clipBehavior': return parseEnum(Clip.values, value);
             case 'actionsPadding': return parseEdgeInsetsGeometry(value);
-            case 'animateColor': return parseBool(value);
         }
         return value;
     }
@@ -1243,7 +1241,6 @@ class IconInflater extends Inflater {
             textDirection: attributes['textDirection'],
             applyTextScaling: attributes['applyTextScaling'],
             blendMode: attributes['blendMode'],
-            fontWeight: attributes['fontWeight'],
         );
     }
 
@@ -1263,7 +1260,6 @@ class IconInflater extends Inflater {
             case 'textDirection': return parseEnum(TextDirection.values, value);
             case 'applyTextScaling': return parseBool(value);
             case 'blendMode': return parseEnum(BlendMode.values, value);
-            case 'fontWeight': return parseFontWeight(value);
         }
         return value;
     }
@@ -1487,7 +1483,6 @@ class ScaffoldInflater extends Inflater {
             floatingActionButtonAnimator: attributes['floatingActionButtonAnimator'],
             persistentFooterButtons: attributes['persistentFooterButtons'] != null ? [...attributes['persistentFooterButtons']] : null,
             persistentFooterAlignment: attributes['persistentFooterAlignment'] ?? AlignmentDirectional.centerEnd,
-            persistentFooterDecoration: attributes['persistentFooterDecoration'],
             drawer: attributes['drawer'],
             onDrawerChanged: attributes['onDrawerChanged'],
             endDrawer: attributes['endDrawer'],
@@ -1499,10 +1494,8 @@ class ScaffoldInflater extends Inflater {
             primary: attributes['primary'] ?? true,
             drawerDragStartBehavior: attributes['drawerDragStartBehavior'] ?? DragStartBehavior.start,
             extendBody: attributes['extendBody'] ?? false,
-            drawerBarrierDismissible: attributes['drawerBarrierDismissible'] ?? true,
             extendBodyBehindAppBar: attributes['extendBodyBehindAppBar'] ?? false,
             drawerScrimColor: attributes['drawerScrimColor'],
-            bottomSheetScrimBuilder: attributes['bottomSheetScrimBuilder'] ?? defaultBottomSheetScrimBuilder,
             drawerEdgeDragWidth: toDouble(attributes['drawerEdgeDragWidth']),
             drawerEnableOpenDragGesture: attributes['drawerEnableOpenDragGesture'] ?? true,
             endDrawerEnableOpenDragGesture: attributes['endDrawerEnableOpenDragGesture'] ?? true,
@@ -1521,7 +1514,6 @@ class ScaffoldInflater extends Inflater {
             case 'floatingActionButtonAnimator': break;
             case 'persistentFooterButtons': break;
             case 'persistentFooterAlignment': return parseAlignmentDirectional(value);
-            case 'persistentFooterDecoration': break;
             case 'drawer': break;
             case 'onDrawerChanged': break;
             case 'endDrawer': break;
@@ -1533,10 +1525,8 @@ class ScaffoldInflater extends Inflater {
             case 'primary': return parseBool(value);
             case 'drawerDragStartBehavior': return parseEnum(DragStartBehavior.values, value);
             case 'extendBody': return parseBool(value);
-            case 'drawerBarrierDismissible': return parseBool(value);
             case 'extendBodyBehindAppBar': return parseBool(value);
             case 'drawerScrimColor': return parseColor(value);
-            case 'bottomSheetScrimBuilder': break;
             case 'drawerEdgeDragWidth': return parseDouble(value);
             case 'drawerEnableOpenDragGesture': return parseBool(value);
             case 'endDrawerEnableOpenDragGesture': return parseBool(value);
@@ -1801,7 +1791,6 @@ class ThemeDataInflater extends Inflater {
             bottomSheetTheme: attributes['bottomSheetTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
-            carouselViewTheme: attributes['carouselViewTheme'],
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
@@ -1894,7 +1883,6 @@ class ThemeDataInflater extends Inflater {
             case 'bottomSheetTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
-            case 'carouselViewTheme': break;
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;
@@ -1993,7 +1981,6 @@ class ThemeData_rawInflater extends Inflater {
             bottomSheetTheme: attributes['bottomSheetTheme'],
             buttonTheme: attributes['buttonTheme'],
             cardTheme: attributes['cardTheme'],
-            carouselViewTheme: attributes['carouselViewTheme'],
             checkboxTheme: attributes['checkboxTheme'],
             chipTheme: attributes['chipTheme'],
             dataTableTheme: attributes['dataTableTheme'],
@@ -2081,7 +2068,6 @@ class ThemeData_rawInflater extends Inflater {
             case 'bottomSheetTheme': break;
             case 'buttonTheme': break;
             case 'cardTheme': break;
-            case 'carouselViewTheme': break;
             case 'checkboxTheme': break;
             case 'chipTheme': break;
             case 'dataTableTheme': break;

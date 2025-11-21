@@ -1,3 +1,14 @@
+### 0.1.0 (Nov 20, 2025)
+
+#### BREAKING CHANGES: After upgrading, please run the following commands:
+
+```shell
+ $ flutter pub add dev:xwidget_builder
+ $ dart run xwidget_builder:generate
+```
+
+* Moved code generators and initializers to their own dev package. [XWidget Builder](https://pub.dev/packages/xwidget_builder)
+
 ### 0.0.52 (Aug 23, 2025)
 
 #### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
