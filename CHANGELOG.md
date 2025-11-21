@@ -1,3 +1,7 @@
+## 0.1.1 (Nov 20, 2025)
+
+* Minor documentation updates
+
 ### 0.1.0 (Nov 20, 2025)
 
 #### BREAKING CHANGES: After upgrading, please run the following commands:

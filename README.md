@@ -17,16 +17,6 @@
     />
 </p>
 
-
-<p align="center">
-    <a href="https://plugins.jetbrains.com/plugin/25494-flutter-xwidget" rel="noopener noreferrer" target="_blank">
-        <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/doc/assets/intellij_plugin.png"
-            alt="IntelliJ Plugin"
-            style="max-height:48px; height:100%; width:auto;"
-        />
-    </a>
-</p>
-
 ### *Note: This document is very much still a work in progress.*
 <!-- // end of #include -->
 
@@ -71,30 +61,31 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
 
 1. [Quick Start](#quick-start)
 2. [Manual Setup](#manual-setup)
-3. [Example](#example)
-4. [Configuration](#configuration)
-5. [Code Generation](#code-generation)
-6. [Inflaters](#inflaters)
-7. [Dependencies](#dependencies)
-8. [Model](#model)
+3. [Upgrading](#upgrading)
+4. [Example](#example)
+5. [Configuration](#configuration)
+6. [Code Generation](#code-generation)
+7. [Inflaters](#inflaters)
+8. [Dependencies](#dependencies)
+9. [Model](#model)
     - [Null Safety](#null-safety)
     - [Instance Management](#instance-management)
     - [Loading Data](#loading-data)
-9. [Fragments](#fragments)
-10. [Controllers](#controllers)
-11. [Expression Language (EL)](#expression-language-el)
+10. [Fragments](#fragments)
+11. [Controllers](#controllers)
+12. [Expression Language (EL)](#expression-language-el)
     - [Operators](#operators)
     - [Static Functions](#static-functions)
     - [Instance Functions](#instance-functions)
     - [Custom Functions](#custom-functions)
-12. [Resources](#resources)
+13. [Resources](#resources)
     - [Strings](#strings)
     - [Integers](#integers)
     - [Doubles](#doubles)
     - [Booleans](#booleans)
     - [Colors](#colors)
     - [Fragments](#fragments-1)
-13. [Components](#components)
+14. [Components](#components)
     - [Flutter](#flutter)
     - [Third Party](#third-party)
     - [Built-In](#built-in)
@@ -107,7 +98,7 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
         - [```<MediaQuery>```](#mediaquery)
         - [```<ValueListener>```](#valuelistener)
     - [Custom](#custom)
-14. [Tags](#tags)
+15. [Tags](#tags)
     - [```<builder>```](#builder)
     - [```<callback>```](#callback)
     - [```<debug>```](#debug)
@@ -116,14 +107,14 @@ every component you specify and thus neutralizes Flutter's tree-shaking.
     - [```<fragment>```](#fragment)
     - [```<if>/<else>```](#ifelse)
     - [```<var>```](#var)
-15. [Best Practices](#best-practices)
-16. [Tips and Tricks](#tips-and-tricks)
-17. [Trouble Shooting](#trouble-shooting)
+16. [Best Practices](#best-practices)
+17. [Tips and Tricks](#tips-and-tricks)
+18. [Trouble Shooting](#trouble-shooting)
     - [The generated inflater code has errors](#the-generated-inflater-code-has-errors)
     - [Hot reload/restart clears dependency values](#hot-reloadrestart-clears-dependency-values)
-18. [FAQ](#faq)
-19. [Roadmap](#roadmap)
-20. [Known Issues](#known-issues)
+19. [FAQ](#faq)
+20. [Roadmap](#roadmap)
+21. [Known Issues](#known-issues)
 <!-- // end of #include -->
 
 <!-- #include QUICK_START.md -->
