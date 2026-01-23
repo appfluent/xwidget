@@ -1,3 +1,13 @@
+## 0.2.0 (Jan 22, 2026)
+
+#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+
+* Support AssetManifest.bin with fallback to .json for older Flutter versions
+* Increased Flutter version constraint from >=1.17.0 to >=3.10.0
+* Increased Dart SDK constraint from >=2.19.6 to >=3.0.0
+* Updated xwidget_el dependency from 0.2.0 to 0.2.2
+* New documentation preview at docs.xwidget.dev
+
 ## 0.1.1 (Nov 20, 2025)
 
 * Minor documentation updates

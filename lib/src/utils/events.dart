@@ -20,7 +20,7 @@ Enum parseEvent(String value) {
       "'registerXWidgetEvents()' to register your application's events.");
 }
 
-class EventNotifier<T extends Enum> {
+mixin EventNotifier<T extends Enum> {
   static const _log = CommonLog("EventNotifier");
   static final _events  = <String, Enum>{};
   static final _listeners = <Enum, Set<EventListenerCallback>>{};

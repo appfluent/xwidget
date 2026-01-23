@@ -6,9 +6,8 @@ icons:
   ]
 
 inflaters:
-  imports: [
-    "package:flutter/gestures.dart",
-  ]
+  imports: [ ]
+
   sources: [
     "lib/xwidget/inflater_spec.dart"
   ]

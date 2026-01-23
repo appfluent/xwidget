@@ -2,7 +2,6 @@
 // ignore_for_file: camel_case_types
 
 import 'package:xwidget/xwidget.dart';
-
 import 'package:xwidget_example/xwidget/controllers/app_controller.dart';
 
 void registerXWidgetControllers() {

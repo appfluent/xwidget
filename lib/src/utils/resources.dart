@@ -76,8 +76,7 @@ class Resources {
         r'(?<name>[a-zA-Z0-9_]+).(?<ext>[a-zA-Z0-9_]+)'
     );
     final activeAssetBundle = assetBundle ?? rootBundle;
-    final manifest = await activeAssetBundle.loadString("AssetManifest.json");
-    final manifestMap = json.decode(manifest);
+    final manifestMap = await loadManifest(activeAssetBundle);
     for (final fileName in manifestMap.keys) {
       final match = resRegExp.firstMatch(fileName);
       if (match != null) {
@@ -96,6 +95,16 @@ class Resources {
           );
         }
       }
+    }
+  }
+
+  Future<dynamic> loadManifest(AssetBundle assetBundle) async {
+    try {
+      final data = await assetBundle.load('AssetManifest.bin');
+      return const StandardMessageCodec().decodeMessage(data);
+    } catch (_) {
+      final jsonStr = await assetBundle.loadString('AssetManifest.json');
+      return json.decode(jsonStr);
     }
   }
 }
