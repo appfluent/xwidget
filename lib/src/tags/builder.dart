@@ -46,13 +46,13 @@ class BuilderTag implements Tag {
 
   @override
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
   ) {
     // 'vars' max length is 5
     final vars = parseListOfStrings(element.getAttribute("vars"));
-    if (vars != null && vars.length > 5){
+    if (vars != null && vars.length > 5) {
       throw Exception("<$name> 'vars' attribute accepts up to 5 variables");
     }
 
@@ -72,20 +72,30 @@ class BuilderTag implements Tag {
           final varName = vars[paramIndex];
           if (isNotEmpty(varName) && !_ignoreVar.hasMatch(varName)) {
             switch (paramIndex) {
-              case 0: if (p0 is! BuildContext) params[varName] = p0; break;
-              case 1: if (p1 is! BuildContext) params[varName] = p1; break;
-              case 2: if (p2 is! BuildContext) params[varName] = p2; break;
-              case 3: if (p3 is! BuildContext) params[varName] = p3; break;
-              case 4: if (p4 is! BuildContext) params[varName] = p4; break;
+              case 0:
+                if (p0 is! BuildContext) params[varName] = p0;
+                break;
+              case 1:
+                if (p1 is! BuildContext) params[varName] = p1;
+                break;
+              case 2:
+                if (p2 is! BuildContext) params[varName] = p2;
+                break;
+              case 3:
+                if (p3 is! BuildContext) params[varName] = p3;
+                break;
+              case 4:
+                if (p4 is! BuildContext) params[varName] = p4;
+                break;
             }
           }
         }
       }
       final deps = XWidget.scopeDependencies(
-          element,
-          dependencies,
-          dependenciesScope,
-          params.isEmpty ? "inherit" : "copy"
+        element,
+        dependencies,
+        dependenciesScope,
+        params.isEmpty ? "inherit" : "copy",
       ).addAll(params);
       List children = XWidget.inflateXmlElementChildren(element, deps).objects;
       if (children.length == 1 && children[0] is List) {
@@ -93,9 +103,7 @@ class BuilderTag implements Tag {
         // a fragment that returns a list of items.
         children = children[0];
       }
-      return isList
-          ? children
-          : XWidgetUtils.getOnlyChild("<$name> tag", children);
+      return isList ? children : XWidgetUtils.getOnlyChild("<$name> tag", children);
     }
 
     Widget singleWidgetBuilder([p0, p1, p2, p3, p4]) {

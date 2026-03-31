@@ -17,9 +17,7 @@
                 <Column mainAxisAlignment="center">
                     <Text>You have pushed the button this many times:</Text>
                     <ValueListener varName="count" >
-                        <Text data="${toString(count)}">
-                            <TextStyle for="style" fontSize="32" fontWeight="bold"/>
-                        </Text>
+                        <fragment name="count"/>
                     </ValueListener>
                 </Column>
             </Center>

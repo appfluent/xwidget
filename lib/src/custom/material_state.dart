@@ -21,7 +21,7 @@ class MaterialStatePropertyOf<T> extends MaterialStateProperty<T> {
     this.selected,
     this.scrolledUnder,
     this.disabled,
-    this.error
+    this.error,
   });
 
   @override

@@ -20,10 +20,10 @@ class IfElseTag implements Tag {
 
   @override
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies)
-  {
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
+  ) {
     // 'test' is a required attribute
     if (!attributes.containsKey("test")) {
       throw Exception("<$name> 'test' attribute is required.");
@@ -33,10 +33,10 @@ class IfElseTag implements Tag {
     final elementOrElse = _isTrue(test) ? element : _findElseElement(element);
     if (elementOrElse != null) {
       return XWidget.inflateXmlElementChildren(
-          elementOrElse,
-          dependencies,
-          excludeElements: {"else"},
-          excludeText: true
+        elementOrElse,
+        dependencies,
+        excludeElements: {"else"},
+        excludeText: true,
       );
     }
     return null;

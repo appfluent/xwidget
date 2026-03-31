@@ -1,6 +1,5 @@
 import '../../xwidget.dart';
 
-
 class ListInflater extends Inflater {
   @override
   String get type => 'List';
@@ -12,11 +11,7 @@ class ListInflater extends Inflater {
   bool get inflatesCustomWidget => false;
 
   @override
-  List? inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
-  ) {
+  List? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     final items = [];
     final innerLists = attributes["innerLists"];
     for (final child in children) {
@@ -46,11 +41,7 @@ class ItemInflater extends Inflater {
   bool get inflatesCustomWidget => false;
 
   @override
-  dynamic inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
-  ) {
+  dynamic inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     return attributes["value"];
   }
 
@@ -71,11 +62,7 @@ class MapInflater extends Inflater {
   bool get inflatesCustomWidget => false;
 
   @override
-  Map inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
-  ) {
+  Map inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     final Map map = {};
     for (final child in children) {
       if (child is MapEntry) {
@@ -102,11 +89,7 @@ class MapEntryInflater extends Inflater {
   bool get inflatesCustomWidget => false;
 
   @override
-  MapEntry? inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
-  ) {
+  MapEntry? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     var value = XWidgetUtils.getOnlyChild("param", children);
     if (value == null) {
       value = attributes["value"];
@@ -134,11 +117,7 @@ class ParamInflater extends Inflater {
   bool get inflatesCustomWidget => false;
 
   @override
-  MapEntry? inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
-  ) {
+  MapEntry? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text) {
     var value = XWidgetUtils.getOnlyChild("param", children);
     if (value == null) {
       value = attributes["value"];

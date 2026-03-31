@@ -1,0 +1,3 @@
+<Text xmlns="http://www.appfluent.us/xwidget" data="${toString(count)}">
+    <TextStyle for="style" fontSize="32" fontWeight="bold"/>
+</Text>

@@ -7,4 +7,3 @@ import 'package:xwidget_example/xwidget/controllers/app_controller.dart';
 void registerXWidgetControllers() {
   XWidget.registerControllerFactory(() => AppController());
 }
-

@@ -69,7 +69,7 @@ class TestAssetBundle extends CachingAssetBundle {
     final dir = Directory.current.path;
     return dir.endsWith('/test') ? dir.replaceAll('/test', '') : dir;
   }
-  
+
   String _toRelativePath(String path) {
     if (!path.startsWith("/")) return path;
     if (path.startsWith(rootPath)) return path.substring(rootPath.length);

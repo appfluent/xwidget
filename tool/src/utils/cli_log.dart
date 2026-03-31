@@ -20,7 +20,7 @@ class CliLog {
     print("\x1B[31m[x]\x1B[0m \x1B[1m$msg\x1B[0m");
   }
 
-  static reset() {
+  static void reset() {
     warnings = 0;
     errors = 0;
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
 
 import '../../xwidget.dart';
-
 
 class ValueListener extends StatefulWidget {
   final XmlElement element;
@@ -27,7 +27,7 @@ class ValueListener extends StatefulWidget {
 }
 
 class ValueListenerState extends State<ValueListener> {
-  static const _log = CommonLog("ValueListenerState");
+  final _log = Logger("ValueListenerState");
 
   ValueNotifier? _notifier;
   Key? _notifierOwnerKey;
@@ -56,11 +56,11 @@ class ValueListenerState extends State<ValueListener> {
           excludeAttributes: true,
         );
         return XWidgetUtils.getOnlyChild(
-            widget.element.qualifiedName,
-            children.objects,
-            const SizedBox()
+          widget.element.qualifiedName,
+          children.objects,
+          const SizedBox(),
         );
-      }
+      },
     );
   }
 
@@ -78,9 +78,9 @@ class ValueListenerState extends State<ValueListener> {
 
   void _setValueNotifier() {
     final notifier = widget.dependencies.listenForChanges(
-        widget.varName,
-        widget.initialValue,
-        widget.defaultValue
+      widget.varName,
+      widget.initialValue,
+      widget.defaultValue,
     );
     if (notifier is ModelValueNotifier) {
       _notifierOwnerKey = notifier.takeOwnership();
@@ -94,31 +94,30 @@ class ValueListenerState extends State<ValueListener> {
       if (notifier is ModelValueNotifier) {
         // notifier is the right class, so we can continue
         if ((widget.varDisposal == VariableDisposal.byOwner &&
-             notifier.isOwner(_notifierOwnerKey)) ||
-            (widget.varDisposal == VariableDisposal.byLastListener &&
-             notifier.hasNoListeners)) {
+                notifier.isOwner(_notifierOwnerKey)) ||
+            (widget.varDisposal == VariableDisposal.byLastListener && notifier.hasNoListeners)) {
           // we are the owner or the last listener
           notifier.dispose();
           return true;
         }
       } else {
         // log improper disposal request
-        _log.warn("Improper variable disposal request '${widget.varDisposal}' "
-            "for varName '${widget.varName}' referencing a notifier of type "
-            "'${notifier.runtimeType}'. 'ValueListener' widget only knows how "
-            "to dispose of 'DataValueNotifier' instances. Use "
-            "'Dependencies.listenForChanges(String) to wrap your data in a "
-            "'DataValueNotifier' instance or let 'ValueListener' widget wrap "
-            "it automatically.");
+        _log.warning(
+          "Improper variable disposal request '${widget.varDisposal}' "
+          "for varName '${widget.varName}' referencing a notifier of type "
+          "'${notifier.runtimeType}'. 'ValueListener' widget only knows how "
+          "to dispose of 'DataValueNotifier' instances. Use "
+          "'Dependencies.listenForChanges(String) to wrap your data in a "
+          "'DataValueNotifier' instance or let 'ValueListener' widget wrap "
+          "it automatically.",
+        );
       }
     }
     return false;
   }
 }
 
-enum VariableDisposal {
-  none, byOwner, byLastListener
-}
+enum VariableDisposal { none, byOwner, byLastListener }
 
 class ValueListenerInflater extends Inflater {
   @override
@@ -132,10 +131,10 @@ class ValueListenerInflater extends Inflater {
 
   @override
   ValueListener? inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text)
-  {
+    Map<String, dynamic> attributes,
+    List<dynamic> children,
+    List<String> text,
+  ) {
     return ValueListener(
       key: attributes['key'],
       element: attributes['_element'],
@@ -150,11 +149,16 @@ class ValueListenerInflater extends Inflater {
   @override
   dynamic parseAttribute(String name, String value) {
     switch (name) {
-      case 'key': return parseKey(value);
-      case 'varName': return value;
-      case 'varDisposal': return parseEnum(VariableDisposal.values, value);
-      case 'initialValue': break;
-      case 'defaultValue': break;
+      case 'key':
+        return parseKey(value);
+      case 'varName':
+        return value;
+      case 'varDisposal':
+        return parseEnum(VariableDisposal.values, value);
+      case 'initialValue':
+        break;
+      case 'defaultValue':
+        break;
     }
     return value;
   }

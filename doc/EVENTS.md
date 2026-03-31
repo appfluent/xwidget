@@ -1,3 +1,0 @@
-# Events
-
-*Add documentation here.*

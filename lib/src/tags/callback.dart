@@ -33,9 +33,9 @@ class CallbackTag implements Tag {
 
   @override
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
   ) {
     // 'for' is a required attribute.
     final forAttribute = element.getAttribute("for");
@@ -68,21 +68,31 @@ class CallbackTag implements Tag {
           final varName = vars[paramIndex];
           if (isNotEmpty(varName) && !_ignoreVar.hasMatch(varName)) {
             switch (paramIndex) {
-              case 0: if (p0 is! BuildContext) params[varName] = p0; break;
-              case 1: if (p1 is! BuildContext) params[varName] = p1; break;
-              case 2: if (p2 is! BuildContext) params[varName] = p2; break;
-              case 3: if (p3 is! BuildContext) params[varName] = p3; break;
-              case 4: if (p4 is! BuildContext) params[varName] = p4; break;
+              case 0:
+                if (p0 is! BuildContext) params[varName] = p0;
+                break;
+              case 1:
+                if (p1 is! BuildContext) params[varName] = p1;
+                break;
+              case 2:
+                if (p2 is! BuildContext) params[varName] = p2;
+                break;
+              case 3:
+                if (p3 is! BuildContext) params[varName] = p3;
+                break;
+              case 4:
+                if (p4 is! BuildContext) params[varName] = p4;
+                break;
             }
           }
         }
       }
       final hasReturnVar = returnVar != null && returnVar.isNotEmpty;
       final deps = XWidget.scopeDependencies(
-          element,
-          dependencies,
-          dependenciesScope,
-          params.isEmpty && !hasReturnVar ? "inherit" : "copy"
+        element,
+        dependencies,
+        dependenciesScope,
+        params.isEmpty && !hasReturnVar ? "inherit" : "copy",
       ).addAll(params);
       final value = XWidget.parseExpression(action, deps);
       if (hasReturnVar) {

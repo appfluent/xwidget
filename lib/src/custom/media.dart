@@ -5,7 +5,6 @@ import 'package:xml/xml.dart';
 
 import '../../xwidget.dart';
 
-
 class MediaQueryWidget extends StatelessWidget {
   final XmlElement element;
   final Dependencies dependencies;
@@ -21,29 +20,30 @@ class MediaQueryWidget extends StatelessWidget {
     this.varName = "mediaQuery",
     this.smallMaxWidth = 640,
     this.mediumMaxWidth = 1024,
-    this.dependenciesScope
+    this.dependenciesScope,
   });
 
   @override
   Widget build(BuildContext context) {
-    final deps = XWidget.scopeDependencies(
-        element,
-        dependencies,
-        dependenciesScope,
-        "copy"
-    );
+    final deps = XWidget.scopeDependencies(element, dependencies, dependenciesScope, "copy");
     final query = MediaQuery.of(context);
 
     final size = query.size;
     deps.setValue("$varName.size.width", size.width);
     deps.setValue("$varName.size.height", size.height);
-    deps.setValue("$varName.size.layout", (size.width <= smallMaxWidth)
-        ? "small" : (size.width <= mediumMaxWidth) ? "medium" : "large");
+    deps.setValue(
+      "$varName.size.layout",
+      (size.width <= smallMaxWidth)
+          ? "small"
+          : (size.width <= mediumMaxWidth)
+          ? "medium"
+          : "large",
+    );
 
     final viewInsets = query.viewInsets;
     deps.setValue("$varName.viewInsets.horizontal", viewInsets.horizontal);
     deps.setValue("$varName.viewInsets.vertical", viewInsets.vertical);
-    deps.setValue("$varName.viewInsets.eft", viewInsets.left);
+    deps.setValue("$varName.viewInsets.left", viewInsets.left);
     deps.setValue("$varName.viewInsets.top", viewInsets.top);
     deps.setValue("$varName.viewInsets.right", viewInsets.right);
     deps.setValue("$varName.viewInsets.bottom", viewInsets.bottom);
@@ -62,11 +62,7 @@ class MediaQueryWidget extends StatelessWidget {
     deps.setValue("$varName.highContrast", query.highContrast);
     deps.setValue("$varName.disableAnimations", query.disableAnimations);
 
-    final children = XWidget.inflateXmlElementChildren(
-        element,
-        deps,
-        excludeText: true
-    );
+    final children = XWidget.inflateXmlElementChildren(element, deps, excludeText: true);
     return XWidgetUtils.getOnlyChild("MediaQuery", children.objects);
   }
 }
@@ -83,10 +79,10 @@ class MediaQueryWidgetInflater extends Inflater {
 
   @override
   MediaQueryWidget? inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text)
-  {
+    Map<String, dynamic> attributes,
+    List<dynamic> children,
+    List<String> text,
+  ) {
     return MediaQueryWidget(
       key: attributes['key'],
       element: attributes['_element'],
@@ -101,11 +97,16 @@ class MediaQueryWidgetInflater extends Inflater {
   @override
   dynamic parseAttribute(String name, String value) {
     switch (name) {
-      case 'key': return parseKey(value);
-      case 'varName': break;
-      case 'smallMaxWidth': return int.parse(value);
-      case 'mediumMaxWidth': return int.parse(value);
-      case 'dependenciesScope': break;
+      case 'key':
+        return parseKey(value);
+      case 'varName':
+        break;
+      case 'smallMaxWidth':
+        return int.parse(value);
+      case 'mediumMaxWidth':
+        return int.parse(value);
+      case 'dependenciesScope':
+        break;
     }
     return value;
   }

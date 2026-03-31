@@ -28,9 +28,9 @@ class FragmentTag implements Tag {
 
   @override
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
   ) {
     // 'name' is a required attribute.
     final String? fragmentName = attributes["name"];
@@ -47,27 +47,28 @@ class FragmentTag implements Tag {
 
     // process child tags for parameters only - need original deps here
     // todo: only allow processing of 'params', 'forEach', and 'if' elements
-    final params = _onlyParams(XWidget.inflateXmlElementChildren(
-        element,
-        dependencies,
-        excludeText: true
-    ));
+    final params = _onlyParams(
+      XWidget.inflateXmlElementChildren(element, dependencies, excludeText: true),
+    );
 
     // scope dependencies. if we're going to modify the dependencies via params,
     // then default the dependencies scope to 'copy'; otherwise default to
     // 'inherit'.
     final deps = XWidget.scopeDependencies(
-        element,
-        dependencies,
-        attributes["dependenciesScope"],
-        params.isNotEmpty || fragmentName.contains("?") ? "copy" : "inherit"
+      element,
+      dependencies,
+      attributes["dependenciesScope"],
+      params.isNotEmpty || fragmentName.contains("?") ? "copy" : "inherit",
     );
 
     // inflate named fragment
-    final object = XWidget.inflateFragment(fragmentName, deps, params: params,
-        inheritedAttributes: element.attributes.where((attribute) {
-          return !attributeNames.contains(attribute.localName);
-        }),
+    final object = XWidget.inflateFragment(
+      fragmentName,
+      deps,
+      params: params,
+      inheritedAttributes: element.attributes.where((attribute) {
+        return !attributeNames.contains(attribute.localName);
+      }),
     );
     if (object == null) return null;
 

@@ -1,15 +1,9 @@
-include: package:flutter_lints/flutter.yaml
+include: package:lints/recommended.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+formatter:
+  page_width: 100
 
 analyzer:
   exclude:
-    - build/**
-  errors:
-    lines_longer_than_80_chars: ignore
-
-linter:
-  rules:
-    - lines_longer_than_80_chars
-    - prefer_relative_imports
+    - test/**
+    - tool/**

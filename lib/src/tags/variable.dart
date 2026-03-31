@@ -8,9 +8,9 @@ class VariableTag implements Tag {
 
   @override
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
   ) {
     // 'name' is a required attribute
     final varName = attributes["name"];
@@ -30,8 +30,10 @@ class VariableTag implements Tag {
       if (value is Map<String, dynamic>) {
         dependencies.addAll(value);
       } else {
-        throw Exception("Invalid type '${value.runtimeType}' for spread "
-            "operator. Expected 'Data' or 'Map<String, dynamic>'.");
+        throw Exception(
+          "Invalid type '${value.runtimeType}' for spread "
+          "operator. Expected 'Data' or 'Map<String, dynamic>'.",
+        );
       }
     } else {
       dependencies.setValue(varName, value);

@@ -6,14 +6,15 @@ import 'package:xwidget/xwidget.dart';
 import '../../fixtures/src/inflaters.g.dart';
 import '../testing_utils.dart';
 
-main() {
-  final assetBundle = TestAssetBundle([
-    "test/fixtures/res"
-  ]);
+void main() {
+  final assetBundle = TestAssetBundle(["test/fixtures/res"]);
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await Resources.instance.loadResources("test/fixtures/res", assetBundle);
+    await XWidget.initialize(
+      fragmentsPath: 'test/fixtures/res/fragments',
+      assetBundle: assetBundle,
+    );
     registerXWidgetInflaters();
   });
 
@@ -31,9 +32,7 @@ main() {
       </MaterialApp>
     ''');
 
-    final dependencies = Dependencies({
-      "doSomething": (msg)  => "Your message: $msg"
-    });
+    final dependencies = Dependencies({"doSomething": (msg) => "Your message: $msg"});
 
     final testApp = XWidget.inflateFromXmlElement(xml.rootElement, dependencies);
     await tester.pumpWidget(testApp);

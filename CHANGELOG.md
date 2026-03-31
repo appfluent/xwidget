@@ -1,6 +1,23 @@
+## 0.3.0 (Mar 31, 2026)
+
+### Breaking Changes
+- `Resources.instance.loadResources()` has been replaced with `XWidget.initialize()`.
+- Replaced `package:logger/logger.dart` dependency with `package:logging/logging.dart`.
+- Updated minimum Dart SDK to 3.8.
+
+### Added
+- Cloud resource loading — download fragment and value bundles from XWidget Cloud at runtime with ETag-based caching and offline fallback.
+- Automatic analytics — fragment renders, bundle downloads, errors, and navigation transitions tracked with zero instrumentation.
+- `AnalyticsNavigatorObserver` auto-injected into `MaterialApp`, `CupertinoApp`, and `Navigator` when inflated from XML.
+- Session-based navigation tracking with configurable timeout.
+- `XWidget.initialize()` — unified initialization for resources, cloud configuration, and analytics.
+
+### Fixed
+- Fragment and value resource folder resolution.
+
 ## 0.2.0 (Jan 22, 2026)
 
-#### BREAKING CHANGES: Please run `dart run xwidget:generate` after upgrading.
+#### BREAKING CHANGES: Please run `dart run xwidget_builder:generate` after upgrading.
 
 * Support AssetManifest.bin with fallback to .json for older Flutter versions
 * Increased Flutter version constraint from >=1.17.0 to >=3.10.0

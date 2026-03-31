@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class WidgetStatePropertyOf<T> extends WidgetStateProperty<T> {
   final T primary;
   final T? hovered;
@@ -21,7 +20,7 @@ class WidgetStatePropertyOf<T> extends WidgetStateProperty<T> {
     this.selected,
     this.scrolledUnder,
     this.disabled,
-    this.error
+    this.error,
   });
 
   @override

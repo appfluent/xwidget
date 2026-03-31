@@ -4,7 +4,6 @@ import 'package:xml/xml.dart';
 
 import '../../xwidget.dart';
 
-
 typedef XWidgetControllerFactory<T extends Controller> = T Function();
 
 class ControllerWidget extends StatefulWidget {
@@ -23,7 +22,7 @@ class ControllerWidget extends StatefulWidget {
     this.errorWidget,
     this.progressWidget,
     Map<String, dynamic>? options,
-  }): options = options ?? {};
+  }) : options = options ?? {};
 
   @override
   // ignore: no_logic_in_create_state
@@ -50,8 +49,8 @@ abstract class Controller extends State<ControllerWidget> {
   @nonVirtual
   Widget build(BuildContext context) {
     return DynamicBuilder(
-      initializer: (_,__) => _initValue,
-      builder: (_,deps,__) => _inflateChildren(deps),
+      initializer: (_, __) => _initValue,
+      builder: (_, deps, __) => _inflateChildren(deps),
       dependencies: widget.dependencies,
       errorWidget: widget.errorWidget,
       progressWidget: widget.progressWidget,
@@ -74,11 +73,7 @@ abstract class Controller extends State<ControllerWidget> {
       excludeText: true,
       excludeAttributes: true,
     );
-    return XWidgetUtils.getOnlyChild(
-        "Controller",
-        children.objects,
-        const SizedBox.shrink()
-    );
+    return XWidgetUtils.getOnlyChild("Controller", children.objects, const SizedBox.shrink());
   }
 }
 
@@ -94,10 +89,10 @@ class ControllerWidgetInflater extends Inflater {
 
   @override
   ControllerWidget? inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text)
-  {
+    Map<String, dynamic> attributes,
+    List<dynamic> children,
+    List<String> text,
+  ) {
     return ControllerWidget(
       key: attributes['key'],
       name: attributes['name'],
@@ -105,18 +100,23 @@ class ControllerWidgetInflater extends Inflater {
       dependencies: attributes['_dependencies'],
       errorWidget: attributes['errorWidget'],
       progressWidget: attributes['progressWidget'],
-      options: attributes['options'] != null ? {...attributes['options']} : null
+      options: attributes['options'] != null ? {...attributes['options']} : null,
     );
   }
 
   @override
   dynamic parseAttribute(String name, String value) {
     switch (name) {
-      case 'key': return parseKey(value);
-      case 'name': return value;
-      case 'errorWidget': break;
-      case 'progressWidget': break;
-      case 'options': break;
+      case 'key':
+        return parseKey(value);
+      case 'name':
+        return value;
+      case 'errorWidget':
+        break;
+      case 'progressWidget':
+        break;
+      case 'options':
+        break;
     }
     return value;
   }

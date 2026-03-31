@@ -1,10 +1,11 @@
+import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
 
 import '../../xwidget.dart';
 
 /// A simple tag that logs a debug message
 class DebugTag implements Tag {
-  static const _log = CommonLog("DebugTag");
+  final _log = Logger("DebugTag");
 
   @override
   String get name => "debug";
@@ -14,11 +15,11 @@ class DebugTag implements Tag {
   /// Returns null (no children)
   @override
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
   ) {
-    _log.debug(attributes["message"]);
+    _log.fine(attributes["message"]);
     return null;
   }
 }

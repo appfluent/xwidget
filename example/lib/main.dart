@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:xwidget/xwidget.dart';
 
-import 'package:xwidget_example/xwidget/generated/controllers.g.dart';
-import 'package:xwidget_example/xwidget/generated/icons.g.dart';
-import 'package:xwidget_example/xwidget/generated/inflaters.g.dart';
-
+import 'xwidget/generated/controllers.g.dart';
+import 'xwidget/generated/icons.g.dart';
+import 'xwidget/generated/inflaters.g.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // load resources
-  await Resources.instance.loadResources("resources");
+  // Cloud settings should be loaded from Firebase's Remote Config
+  // or similar service.
+  await XWidget.initialize(
+    projectKey: '<your-project-key>',
+    storageKey: '<your-storage-key>',
+    channel: 'dev',
+    version: '1.0.1',
+  );
 
   // register XWidget components
   registerXWidgetIcons();

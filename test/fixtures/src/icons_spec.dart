@@ -5,11 +5,6 @@ import 'package:flutter/material.dart';
 
 const CupertinoIcons? _cupertinoIcons = null;
 
-const icons = [
-  Icons.add,
-  Icons.delete,
-];
+const icons = [Icons.add, Icons.delete];
 
-const iconSets = [
-  Icons,
-];
+const iconSets = [Icons];

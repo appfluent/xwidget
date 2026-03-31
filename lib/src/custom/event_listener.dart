@@ -3,7 +3,6 @@ import 'package:xml/xml.dart';
 
 import '../../xwidget.dart';
 
-
 class EventListener extends StatefulWidget {
   final XmlElement element;
   final Dependencies dependencies;
@@ -23,7 +22,6 @@ class EventListener extends StatefulWidget {
 }
 
 class EventListenerState extends State<EventListener> with EventNotifier {
-
   @override
   void initState() {
     super.initState();
@@ -32,17 +30,17 @@ class EventListenerState extends State<EventListener> with EventNotifier {
 
   @override
   Widget build(BuildContext context) {
-      final children = XWidget.inflateXmlElementChildren(
-        widget.element,
-        widget.dependencies,
-        excludeText: true,
-        excludeAttributes: true,
-      );
-      return XWidgetUtils.getOnlyChild(
-          widget.element.qualifiedName,
-          children.objects,
-          const SizedBox()
-      );
+    final children = XWidget.inflateXmlElementChildren(
+      widget.element,
+      widget.dependencies,
+      excludeText: true,
+      excludeAttributes: true,
+    );
+    return XWidgetUtils.getOnlyChild(
+      widget.element.qualifiedName,
+      children.objects,
+      const SizedBox(),
+    );
   }
 
   @override
@@ -55,7 +53,7 @@ class EventListenerState extends State<EventListener> with EventNotifier {
     if (widget.onEvent != null) {
       widget.onEvent!(event, payload);
     }
-    setState(() { });
+    setState(() {});
   }
 }
 
@@ -71,9 +69,9 @@ class EventListenerInflater extends Inflater {
 
   @override
   EventListener inflate(
-      Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
+    Map<String, dynamic> attributes,
+    List<dynamic> children,
+    List<String> text,
   ) {
     return EventListener(
       key: attributes['key'],
@@ -87,9 +85,12 @@ class EventListenerInflater extends Inflater {
   @override
   dynamic parseAttribute(String name, String value) {
     switch (name) {
-      case 'key': return parseKey(value);
-      case 'event': return parseEvent(value);
-      case 'onEvent': break;
+      case 'key':
+        return parseKey(value);
+      case 'event':
+        return parseEvent(value);
+      case 'onEvent':
+        break;
     }
     return value;
   }

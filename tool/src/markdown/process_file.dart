@@ -6,8 +6,8 @@ import 'code_utils.dart';
 import 'include.dart';
 import 'space.dart';
 
-
-const usageHint = "<!-- This file was generated. "
+const usageHint =
+    "<!-- This file was generated. "
     "Run 'dart run tool/markdown.dart -i doc/README.md -o README.md' "
     "to update this file. -->";
 

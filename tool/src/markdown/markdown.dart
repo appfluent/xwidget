@@ -3,7 +3,6 @@ import 'package:args/args.dart';
 import '../utils/cli_log.dart';
 import 'process_file.dart';
 
-
 void main(List<String> unparsedArgs) {
   CliLog.info("Markdown Processor (version 0.1.0)");
 

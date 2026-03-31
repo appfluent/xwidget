@@ -6,21 +6,20 @@ import 'package:xwidget/xwidget.dart';
 import '../../fixtures/src/inflaters.g.dart';
 import '../testing_utils.dart';
 
-main() {
-  final assetBundle = TestAssetBundle([
-    "test/fixtures/res"
-  ]);
+void main() {
+  final assetBundle = TestAssetBundle(["test/fixtures/res"]);
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await Resources.instance.loadResources("test/fixtures/res", assetBundle);
+    await XWidget.initialize(
+      fragmentsPath: 'test/fixtures/res/fragments',
+      assetBundle: assetBundle,
+    );
     registerXWidgetInflaters();
   });
 
   test('test fragment attributes', () {
-    final Text widget = XWidget.inflateFragment("text", Dependencies({
-      "title": "Hello world!"
-    }));
+    final Text widget = XWidget.inflateFragment("text", Dependencies({"title": "Hello world!"}));
     expect(widget.toString(), 'Text("Hello world!")');
   });
 
@@ -31,9 +30,10 @@ main() {
 
   test('test fragment inherited attributes', () {
     final xml = XmlDocument.parse('<Column><fragment name="text" maxLines="3"/></Column>');
-    final Column widget = XWidget.inflateFromXmlElement(xml.rootElement, Dependencies({
-      "title": "Hello world!"
-    }));
+    final Column widget = XWidget.inflateFromXmlElement(
+      xml.rootElement,
+      Dependencies({"title": "Hello world!"}),
+    );
     expect(widget.children.toString(), '[Text("Hello world!", maxLines: 3)]');
   });
 }

@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 
-
 extension StringExt on String {
   List<String> chunk(int chunkSize) {
     var chunks = <String>[];
@@ -18,9 +17,12 @@ extension StringExt on String {
 
   bool parseBool() {
     switch (toLowerCase()) {
-      case "true": return true;
-      case "false": return false;
-      default: throw Exception("Invalid bool value: $this");
+      case "true":
+        return true;
+      case "false":
+        return false;
+      default:
+        throw Exception("Invalid bool value: $this");
     }
   }
 }
@@ -28,18 +30,15 @@ extension StringExt on String {
 extension UriExt on Uri {
   static String encodeQueryParameters(Map<String, String> params) {
     return params.entries
-      .map((e)=>'${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-      .join('&');
+        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
   }
 
   static Uri emailUri({required String to, String? subject, String? body}) {
     return Uri(
       scheme: "mailto",
       path: to,
-      query: encodeQueryParameters(<String, String>{
-        'subject': subject ?? "",
-        "body": body ?? "",
-      }),
+      query: encodeQueryParameters(<String, String>{'subject': subject ?? "", "body": body ?? ""}),
     );
   }
 }

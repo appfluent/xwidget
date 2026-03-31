@@ -1,6 +1,5 @@
 import 'package:xwidget_el/xwidget_el.dart';
 
-
 class Path {
   static const _separator = "/";
 
@@ -23,8 +22,10 @@ class Path {
           if (parsedPath.isNotEmpty) {
             parsedPath.removeLast();
           } else {
-            throw Exception("Unable resolve relative path '$path'. Try Using "
-                "'parseRelativeTo' instead.");
+            throw Exception(
+              "Unable resolve relative path '$path'. Try Using "
+              "'parseRelativeTo' instead.",
+            );
           }
         } else if (index == segments.length - 1 && segment.contains(".")) {
           fileName = segment;
@@ -39,9 +40,7 @@ class Path {
   static Path parseRelativeTo(String? path, String? relativeTo) {
     if (path == null) return Path.parse("");
     final relativePath = Path.parse(relativeTo).pathToString();
-    final separator = isNotEmpty(relativePath) && isNotEmpty(path)
-        ? _separator
-        : "";
+    final separator = isNotEmpty(relativePath) && isNotEmpty(path) ? _separator : "";
     return Path.parse("$relativePath$separator$path");
   }
 
@@ -52,9 +51,7 @@ class Path {
   @override
   toString() {
     final pathStr = pathToString();
-    final separator = isNotEmpty(pathStr) && isNotEmpty(_fileName)
-        ? _separator
-        : "";
+    final separator = isNotEmpty(pathStr) && isNotEmpty(_fileName) ? _separator : "";
     return "$pathStr$separator$_fileName";
   }
 }

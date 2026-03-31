@@ -7,4 +7,3 @@ import 'package:xwidget/xwidget.dart';
 void registerXWidgetIcons() {
   XWidget.registerIcon('Icons.add', Icons.add);
 }
-

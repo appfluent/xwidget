@@ -5,7 +5,6 @@ import 'code_utils.dart';
 import 'lines.dart';
 import 'process_file.dart';
 
-
 const _endComment = '<!-- // end of #include -->';
 
 String applyIncludeMacro(File file, String content) {
@@ -35,14 +34,12 @@ List<String> _readIncludeFile(File includeFile) {
   var lines = LineSplitter.split(includeFile.readAsStringSync()).toList();
 
   // Process included file
-  lines = LineSplitter
-      .split(processContent(includeFile, lines.join('\n')))
-      .toList();
+  lines = LineSplitter.split(processContent(includeFile, lines.join('\n'))).toList();
 
   // Remove any macros
-  lines = lines.where((line) =>
-    !line.isAnyMacro() && !line.isAnyMacroEnd() && line != usageHint
-  ).toList();
+  lines = lines
+      .where((line) => !line.isAnyMacro() && !line.isAnyMacroEnd() && line != usageHint)
+      .toList();
 
   return lines;
 }

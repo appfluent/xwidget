@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Stack;
+import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
 import 'package:xwidget_el/xwidget_el.dart';
 
+import 'analytics/analytics.dart';
 import 'custom/async.dart';
 import 'custom/collection.dart';
 import 'custom/controller.dart';
@@ -16,12 +19,13 @@ import 'tags/for_loop.dart';
 import 'tags/fragment.dart';
 import 'tags/if_else.dart';
 import 'tags/variable.dart';
-import 'utils/logging.dart';
+import 'utils/logging/log_handler.dart';
+import 'utils/platform/platform_utils.dart';
 import 'utils/resources.dart';
-
+import 'utils/xml.dart';
 
 class XWidget {
-  static const _log = CommonLog("XWidget");
+  static final _log = Logger("XWidget");
 
   static final _controllerInflater = ControllerWidgetInflater();
   static final _dynamicBuilderInflater = DynamicBuilderInflater();
@@ -71,6 +75,8 @@ class XWidget {
   static final _controllerFactories = <String, XWidgetControllerFactory>{};
   static final _attributeContainsExpressions = RegExp(r"\$\{(.*?)}");
   static final _xmlCache = <String, XmlDocument>{};
+  static final _fragmentStack = <Fragment>[];
+  static bool _wasFragmentErrorTracked = false;
 
   /// Enable or disable fragment XML caching
   ///
@@ -85,6 +91,67 @@ class XWidget {
   //===================================
   // Public Methods
   //===================================
+
+  /// Initializes the XWidget framework.
+  ///
+  /// This method must be called before using any XWidget features, typically
+  /// in the app's `main()` function before `runApp()`. It configures logging,
+  /// requests persistent storage, and loads all fragment and value resources
+  /// needed for server-driven UI rendering.
+  ///
+  /// Resources can be loaded from local assets, XWidget Cloud, or both.
+  /// When using XWidget Cloud, [projectKey] is required for all cloud
+  /// services, and [storageKey] is required for downloading resources.
+  ///
+  /// Example:
+  /// ```dart
+  /// void main() async {
+  ///   WidgetsFlutterBinding.ensureInitialized();
+  ///   await XWidget.initialize(
+  ///     fragmentsPath: 'assets/fragments',
+  ///     valuesPath: 'assets/values',
+  ///   );
+  ///   runApp(MyApp());
+  /// }
+  /// ```
+  ///
+  /// - [fragmentsPath]: Asset path to local XML fragment resources.
+  /// - [valuesPath]: Asset path to local value resources.
+  /// - [projectKey]: XWidget Cloud project key. Required for all cloud
+  ///   services including analytics and resource delivery.
+  /// - [storageKey]: XWidget Cloud storage key. Required for downloading
+  ///   cloud-hosted resources.
+  /// - [channel]: The cloud channel to download resources from (e.g.
+  ///   `'stable'`, `'beta'`).
+  /// - [version]: The specific resource version to download or the version of
+  ///   the local resource
+  /// - [logLevel]: Minimum log level for XWidget's internal logging.
+  ///   Defaults to [Level.INFO].
+  static Future<void> initialize({
+    String? fragmentsPath, // path to fragment resources
+    String? valuesPath, // path to value resources
+    String? projectKey, // cloud project key - required for all cloud services
+    String? storageKey, // cloud storage key - require for download services
+    String? channel, // cloud channel to download resources from
+    String? version,
+    Duration? downloadTimeout,
+    AssetBundle? assetBundle,
+    Level logLevel = Level.INFO,
+  }) async {
+    Logger.root.level = logLevel;
+    Logger.root.onRecord.listen(defaultLogHandler);
+    await requestStoragePersistence();
+    await Resources.instance.loadResources(
+      fragmentsPath: fragmentsPath,
+      valuesPath: valuesPath,
+      projectKey: projectKey,
+      storageKey: storageKey,
+      channel: channel,
+      version: version,
+      downloadTimeout: downloadTimeout,
+      assetBundle: assetBundle,
+    );
+  }
 
   static void registerIcon(String name, IconData iconData) {
     _icons[name] = iconData;
@@ -102,23 +169,18 @@ class XWidget {
     _tags[tag.name] = tag;
   }
 
-  static void registerControllerFactory<T extends Controller>(
-      XWidgetControllerFactory<T> factory
-  ) {
+  static void registerControllerFactory<T extends Controller>(XWidgetControllerFactory<T> factory) {
     registerControllerFactoryForName(T.toString(), factory);
   }
 
-  static void registerControllerFactoryForName(
-    String name,
-    XWidgetControllerFactory factory
-  ) {
+  static void registerControllerFactoryForName(String name, XWidgetControllerFactory factory) {
     _controllerFactories[name] = factory;
   }
 
   static void registerModel<T extends Model>(
     ModelFactory<T> factory, [
-    List<PropertyTransformer>? transformers]
-  ) {
+    List<PropertyTransformer>? transformers,
+  ]) {
     Models.register<T>(factory, transformers);
   }
 
@@ -137,56 +199,189 @@ class XWidget {
     _xmlCache.clear();
   }
 
+  /// Pushes a new route onto the navigator by inflating an XML fragment.
+  ///
+  /// This is a convenience method for navigating to a fragment-backed page.
+  /// It inflates the fragment specified by [fragmentName] into a widget and
+  /// pushes it onto the navigation stack using either a [MaterialPageRoute]
+  /// or [CupertinoPageRoute].
+  ///
+  /// The route name defaults to [fragmentName] unless [pageName] is
+  /// provided, which is useful for analytics tracking and route-aware
+  /// widgets like [NavigationObserver].
+  ///
+  /// Example:
+  /// ```dart
+  /// XWidget.pushFragment(
+  ///   context,
+  ///   'screens/settings',
+  ///   dependencies,
+  ///   pageName: '/settings',
+  ///   params: {'userId': currentUser.id},
+  /// );
+  /// ```
+  ///
+  /// - [context]: The build context used to locate the [Navigator].
+  /// - [fragmentName]: The name of the fragment resource to inflate.
+  /// - [dependencies]: The dependency scope for data binding and
+  ///   expression evaluation within the fragment.
+  /// - [pageName]: Optional route name for the [RouteSettings]. Defaults
+  ///   to [fragmentName] if omitted.
+  /// - [params]: Optional key-value pairs passed to the fragment during
+  ///   inflation. See [inflateFragment] for details on parameter handling.
+  /// - [cupertinoStyle]: If `true`, uses [CupertinoPageRoute] for an
+  ///   iOS-style page transition. Defaults to `false`, which uses
+  ///   [MaterialPageRoute].
+  static void pushFragment(
+    BuildContext context,
+    String fragmentName,
+    Dependencies dependencies, {
+    String? pageName,
+    Map<String, dynamic>? params,
+    bool cupertinoStyle = false,
+  }) {
+    final settings = RouteSettings(name: pageName ?? fragmentName);
+    builder(_) => XWidget.inflateFragment(fragmentName, dependencies, params: params) as Widget;
+
+    final route = (cupertinoStyle)
+        ? CupertinoPageRoute(settings: settings, builder: builder)
+        : MaterialPageRoute(settings: settings, builder: builder);
+
+    Navigator.of(context).push(route);
+  }
+
+  /// Inflates an XML fragment by name and returns the resulting widget tree.
+  ///
+  /// This is the primary method for rendering dynamic UIs from XML
+  /// fragment resources. It resolves the fragment by [fragmentName], injects
+  /// any query parameters and additional [params] into the [dependencies]
+  /// scope, and inflates the fragment's XML into a widget tree of type [T].
+  ///
+  /// A render event is tracked on success. On error, a tracking record is
+  /// logged only at the top of the fragment stack to avoid duplicate error
+  /// entries as exceptions bubble up through nested fragments.
+  ///
+  /// Returns `null` if the inflated output is null.
+  ///
+  /// Example:
+  /// ```dart
+  /// final widget = XWidget.inflateFragment<Widget>(
+  ///   'screens/home',
+  ///   dependencies,
+  ///   params: {'title': 'Welcome'},
+  /// );
+  /// ```
+  ///
+  /// - [fragmentName]: The name of the fragment resource to inflate.
+  /// - [dependencies]: The dependency scope used for data binding and
+  ///   expression evaluation within the fragment.
+  /// - [inheritedAttributes]: Optional XML attributes inherited from a
+  ///   parent fragment or element, typically used for attribute propagation
+  ///   across fragment boundaries.
+  /// - [params]: Optional key-value pairs injected into [dependencies]
+  ///   before inflation. These override any query parameters defined on
+  ///   the fragment itself.
+  ///
+  /// Throws if the fragment cannot be found or if inflation fails.
   static T? inflateFragment<T>(
     String fragmentName,
     Dependencies dependencies, {
     Iterable<XmlAttribute>? inheritedAttributes,
-    Map<String, dynamic>? params
+    Map<String, dynamic>? params,
   }) {
-    String name;
-    final splitIndex = fragmentName.indexOf("?");
-    if (splitIndex > -1) {
-      // process params in name
-      name = fragmentName.substring(0, splitIndex).trim();
-      final query = fragmentName.substring(splitIndex + 1).trim();
-      final queryParams = query.isNotEmpty ? Uri.splitQueryString(query) : {};
-      queryParams.forEach((key, value) => dependencies.setValue(key, value));
-    } else {
-      name = fragmentName.trim();
-    }
-    if (params != null && params.isNotEmpty) {
-      // process formal params
-      params.forEach((key, value) => dependencies.setValue(key, value));
-    }
+    _fragmentStack.add(FragmentPlaceholder(requestedName: fragmentName));
 
-    final output = inflateFromXmlElement(
-      getFragmentXml(name).rootElement,
-      dependencies,
-      inheritedAttributes: inheritedAttributes,
-    );
-    return output;
+    try {
+      final fragment = getFragment(fragmentName);
+      _fragmentStack[_fragmentStack.length - 1] = fragment;
+
+      // add params to dependencies
+      fragment.queryParams.forEach((key, val) => dependencies.setValue(key, val));
+      if (params != null && params.isNotEmpty) {
+        params.forEach((key, value) => dependencies.setValue(key, value));
+      }
+
+      final output = inflateFromXmlElement(
+        fragment.xmlDocument.rootElement,
+        dependencies,
+        inheritedAttributes: inheritedAttributes,
+      );
+
+      Analytics.trackRender(fragmentName: fragment.qualifiedName);
+      return output;
+    } catch (e) {
+      if (!_wasFragmentErrorTracked) {
+        _wasFragmentErrorTracked = true;
+        final fragment = _fragmentStack.last;
+        Analytics.trackError(fragmentName: fragment.qualifiedName, error: e);
+      }
+      rethrow;
+    } finally {
+      _fragmentStack.removeLast();
+      if (_fragmentStack.isEmpty) {
+        _wasFragmentErrorTracked = false;
+      }
+    }
   }
 
+  /// Inflates a single XML element into its corresponding Dart object.
+  ///
+  /// This is the core inflation engine that maps an XML element to a
+  /// registered inflater and produces a widget or object of type [T].
+  /// The process involves parsing attributes, evaluating visibility,
+  /// inflating children, and invoking the matched inflater.
+  ///
+  /// The inflation pipeline for each element:
+  /// 1. Looks up the inflater registered for the element's tag name.
+  /// 2. Parses XML attributes and evaluates any data binding expressions.
+  /// 3. Injects an analytics observer for render tracking.
+  /// 4. Evaluates the `visible` attribute — if `false`, returns `null`
+  ///    without inflating the element. If omitted, visibility defaults
+  ///    to `true`.
+  /// 5. For custom widgets, injects the raw [element] and [dependencies]
+  ///    as private attributes (`_element`, `_dependencies`) so the widget
+  ///    can manage its own inflation.
+  /// 6. Inflates child elements. If the inflater declares that it manages
+  ///    its own children, only attribute-referenced children are inflated
+  ///    here; the component handles the rest.
+  /// 7. Invokes the inflater with the resolved attributes, child objects,
+  ///    and any text content.
+  ///
+  /// Returns `null` if the element is not visible or if an error occurs
+  /// during inflation. Errors are logged with a diagnostic dump of the
+  /// element and its dependencies, and tracked via analytics with the
+  /// fragment file path and source position.
+  ///
+  /// - [element]: The XML element to inflate.
+  /// - [dependencies]: The dependency scope for data binding and
+  ///   expression evaluation.
+  /// - [inheritedAttributes]: Optional attributes inherited from a parent
+  ///   element or fragment boundary, merged during attribute parsing.
+  ///
+  /// Throws if no inflater is registered for the element's tag name.
+  /// All other inflation errors are caught, logged, and return `null`.
   static T? inflateFromXmlElement<T>(
     XmlElement element,
     Dependencies dependencies, {
-    Iterable<XmlAttribute>? inheritedAttributes
+    Iterable<XmlAttribute>? inheritedAttributes,
   }) {
     try {
       final type = element.localName;
       final inflater = _inflaters[type];
       if (inflater != null) {
-        final attributes = parseXmlAttributes(element, dependencies,
+        final attributes = parseXmlAttributes(
+          element,
+          dependencies,
           inflater: inflater,
           inheritedAttributes: inheritedAttributes,
         );
 
         T? returnValue;
+        _injectAnalyticsObserver(inflater, attributes);
 
         // we only want to evaluate the 'visible' attribute if one was provided;
         // otherwise, the component is visible by default.
-        if (!attributes.containsKey("visible") ||
-            toBool(attributes["visible"]) == true) {
+        if (!attributes.containsKey("visible") || toBool(attributes["visible"]) == true) {
           // widget is visible, so let's continue
           if (inflater.inflatesCustomWidget) {
             // inflating a custom widget or object, so include the element and
@@ -194,51 +389,91 @@ class XWidget {
             attributes["_element"] = element;
             attributes["_dependencies"] = dependencies;
           }
-          final children = inflateXmlElementChildren(element, dependencies,
-              // if the component inflates it's own children the we only want to
-              // inflate the children the reference attributes so we can pass
-              // them to the constructor. THe component is responsible for
-              // inflating the remaining children.
-              onlyAttributes: inflater.inflatesOwnChildren
+          final children = inflateXmlElementChildren(
+            element,
+            dependencies,
+            // if the component inflates it's own children the we only want to
+            // inflate the children the reference attributes so we can pass
+            // them to the constructor. THe component is responsible for
+            // inflating the remaining children.
+            onlyAttributes: inflater.inflatesOwnChildren,
           );
           attributes.addAll(children.attributes);
-          returnValue = inflater.inflate(
-              attributes,
-              children.objects,
-              children.text
-          );
+          returnValue = inflater.inflate(attributes, children.objects, children.text);
         }
         return returnValue;
       }
       throw Exception("XWidget inflater not found for XML element <$type>");
     } catch (e, stacktrace) {
-      _log.error("Problem inflating XML element."
-          "${dump(element, dependencies)}", e, stacktrace);
+      final msg = "Problem inflating XML element '${element.name}'";
+      _log.severe("$msg: ${dump(element, dependencies)}", e, stacktrace);
+
+      // track element inflate error
+      final name = element.position?.filePath;
+      final tag = element.position?.openTag;
+      final line = tag?.start.line;
+      final col = tag?.start.column;
+      final pos = "[line:$line, col:$col]";
+      Analytics.trackError(fragmentName: name, error: "$msg $e $pos");
+
       return null;
     }
   }
 
+  /// Inflates the children of an XML element and collects the results.
+  ///
+  /// Iterates over the child nodes of [element] and processes each based
+  /// on its type: text nodes, tag elements, and component elements. The
+  /// results are collected into a [Children] object containing three
+  /// categories:
+  ///
+  /// - **text**: Raw text and CDATA content from the element body.
+  /// - **attributes**: Named child objects designated via the `for`
+  ///   attribute, passed to the parent inflater as named constructor
+  ///   parameters (e.g. `<Widget for="leading">`).
+  /// - **objects**: Unnamed child objects added as positional children.
+  ///
+  /// Child elements are classified as either *tags* or *components*.
+  /// Tags are special directives (e.g. control flow, iteration) that are
+  /// processed via [Tag.processTag] and may produce zero or more children.
+  /// Components are standard widgets or objects inflated recursively via
+  /// [inflateFromXmlElement].
+  ///
+  /// The filtering parameters control which children are processed:
+  ///
+  /// - [excludeElements]: Tag names to skip entirely during inflation.
+  /// - [excludeText]: If `true`, text and CDATA nodes are ignored.
+  /// - [excludeAttributes]: If `true`, children with a `for` attribute
+  ///   are skipped.
+  /// - [onlyAttributes]: If `true`, only children with a `for` attribute
+  ///   are inflated, and text nodes are ignored. Used when a component
+  ///   inflates its own children and only needs named attribute children
+  ///   resolved upfront.
+  ///
+  /// - [element]: The parent XML element whose children will be inflated.
+  /// - [dependencies]: The dependency scope for data binding and
+  ///   expression evaluation.
   static Children inflateXmlElementChildren(
-      XmlElement element,
-      Dependencies dependencies, {
-      Set<String>? excludeElements,
-      bool excludeText = false,
-      excludeAttributes = false,
-      onlyAttributes = false,
+    XmlElement element,
+    Dependencies dependencies, {
+    Set<String>? excludeElements,
+    bool excludeText = false,
+    excludeAttributes = false,
+    onlyAttributes = false,
   }) {
     final children = Children();
     for (final child in element.children) {
-      if (!excludeText &&
-          !onlyAttributes &&
-          (child is XmlText || child is XmlCDATA)) {
+      if (!excludeText && !onlyAttributes && (child is XmlText || child is XmlCDATA)) {
         if (child.value != null && child.value!.isNotEmpty) {
           children.text.add(child.value!);
         }
-      } else if (child is XmlElement && shouldInflateXmlElement(child,
-          excludeElements: excludeElements,
-          excludeAttributes: excludeAttributes,
-          onlyAttributes: onlyAttributes)
-      ) {
+      } else if (child is XmlElement &&
+          shouldInflateXmlElement(
+            child,
+            excludeElements: excludeElements,
+            excludeAttributes: excludeAttributes,
+            onlyAttributes: onlyAttributes,
+          )) {
         // child is an element and we should inflate it
         final tag = _tags[child.localName];
         if (tag != null) {
@@ -276,8 +511,7 @@ class XWidget {
       if (excludeAttributes || onlyAttributes) {
         final attributeName = element.getAttribute("for");
         final forAttribute = attributeName != null && attributeName.isNotEmpty;
-        return (forAttribute && !excludeAttributes) ||
-            (!forAttribute && !onlyAttributes);
+        return (forAttribute && !excludeAttributes) || (!forAttribute && !onlyAttributes);
       }
       return true;
     }
@@ -291,10 +525,7 @@ class XWidget {
     Iterable<XmlAttribute>? inheritedAttributes,
   }) {
     final attributes = <String, dynamic>{};
-    final mergedAttributes = mergeXmlAttributes(
-        element.attributes,
-        inheritedAttributes
-    );
+    final mergedAttributes = mergeXmlAttributes(element.attributes, inheritedAttributes);
     for (final attribute in mergedAttributes) {
       try {
         final attributeName = attribute.qualifiedName;
@@ -306,9 +537,16 @@ class XWidget {
         );
         attributes[attributeName] = attributeValue;
       } catch (e, stacktrace) {
-        _log.error("Problem parsing XML element attribute "
-            "'${attribute.qualifiedName}'. "
-            "${dump(element, dependencies)}", e, stacktrace);
+        final msg = "Problem parsing XML attribute '${attribute.qualifiedName}'";
+        _log.severe("$msg: ${dump(element, dependencies)}", e, stacktrace);
+
+        // track xml attribute parsing error
+        final name = element.position?.filePath;
+        final tag = element.position?.openTag;
+        final line = tag?.start.line;
+        final col = tag?.start.column;
+        final pos = "[line:$line, col:$col]";
+        Analytics.trackError(fragmentName: name, error: "$msg: $e $pos");
       }
     }
     return attributes;
@@ -328,8 +566,8 @@ class XWidget {
     if (attributeValue.startsWith("\${") && attributeValue.endsWith("}")) {
       // the attribute value is an expression that needs to be parsed
       final value = parseExpression(
-          attributeValue.substring(2, attributeValue.length - 1),
-          dependencies
+        attributeValue.substring(2, attributeValue.length - 1),
+        dependencies,
       );
       return (inflater != null && value is String)
           ? inflater.parseAttribute(attributeName, value)
@@ -360,14 +598,12 @@ class XWidget {
     }
 
     final value = parseAllExpressions(attributeValue, dependencies);
-    return (inflater != null)
-        ? inflater.parseAttribute(attributeName, value)
-        : value;
+    return (inflater != null) ? inflater.parseAttribute(attributeName, value) : value;
   }
 
   static Iterable<XmlAttribute> mergeXmlAttributes(
-      Iterable<XmlAttribute> list1,
-      Iterable<XmlAttribute>? list2
+    Iterable<XmlAttribute> list1,
+    Iterable<XmlAttribute>? list2,
   ) {
     // if list2 is null or empty then just return list1 for efficiency
     if (list2 == null || list2.isEmpty) return list1;
@@ -387,7 +623,7 @@ class XWidget {
     // using a regexp
     if (input.contains("\${")) {
       // possible embedded expression
-      return input.replaceAllMapped(_attributeContainsExpressions,(Match match){
+      return input.replaceAllMapped(_attributeContainsExpressions, (Match match) {
         // parse embedded expression
         final value = parseExpression(match[1]!, dependencies);
         return value != null ? value.toString() : "";
@@ -400,28 +636,48 @@ class XWidget {
     return elParser.evaluate(expression, dependencies);
   }
 
-  static XmlDocument getFragmentXml(String name) {
+  static Fragment getFragment(String name) {
+    String requestedName;
+    String qualifiedName;
+    Map<String, String> queryParams;
     XmlDocument? xmlDocument;
-    if (xmlCacheEnabled) {
-      xmlDocument = _xmlCache[name];
+
+    final splitIndex = name.indexOf("?");
+    if (splitIndex > -1) {
+      // process params in name
+      requestedName = name.substring(0, splitIndex).trim();
+      final query = name.substring(splitIndex + 1).trim();
+      queryParams = query.isNotEmpty ? Uri.splitQueryString(query) : {};
+    } else {
+      requestedName = name.trim();
+      queryParams = {};
     }
+
+    qualifiedName = Resources.instance.getFragmentFqn(requestedName);
+    if (xmlCacheEnabled) xmlDocument = _xmlCache[qualifiedName];
+
     if (xmlDocument == null) {
-      final fragmentFqn = Resources.instance.getFragmentFqn(name);
-      final xmlString = Resources.instance.getFragment(fragmentFqn);
-      xmlDocument = XmlDocument.parse(xmlString);
-      if (xmlCacheEnabled) {
-        _xmlCache[name] = xmlDocument;
-      }
+      final xmlString = Resources.instance.getFragment(qualifiedName);
+      xmlDocument = XmlParser.parse(
+        SourceCode(xmlString, filePath: qualifiedName, withPosition: true),
+      );
+      if (xmlCacheEnabled) _xmlCache[qualifiedName] = xmlDocument;
     }
-    return xmlDocument;
+
+    return Fragment(
+      requestedName: requestedName,
+      qualifiedName: qualifiedName,
+      queryParams: queryParams,
+      xmlDocument: xmlDocument,
+    );
   }
 
   static Dependencies scopeDependencies(
-      XmlElement element,
-      Dependencies dependencies,
-      String? scope,
-      [String defaultScope = "inherit"]
-  ) {
+    XmlElement element,
+    Dependencies dependencies,
+    String? scope, [
+    String defaultScope = "inherit",
+  ]) {
     if (isEmpty(scope)) {
       scope = defaultScope;
       for (final child in element.children) {
@@ -431,16 +687,38 @@ class XWidget {
       }
     }
     switch (scope) {
-      case "new": return Dependencies();
-      case "copy": return dependencies.copy();
-      case "inherit": return dependencies;
-      default: throw Exception("Invalid Dependencies scope '$scope'");
+      case "new":
+        return Dependencies();
+      case "copy":
+        return dependencies.copy();
+      case "inherit":
+        return dependencies;
+      default:
+        throw Exception("Invalid Dependencies scope '$scope'");
     }
   }
 
   static String dump(XmlElement element, Dependencies dependencies) {
     return "\n----- XML Element -----\n${element.toXmlString(pretty: true)}"
         "\n----- Dependencies -----\n$dependencies";
+  }
+
+  static void _injectAnalyticsObserver(Inflater inflater, Map<String, dynamic> attributes) {
+    if (!Analytics.isInitialized) return;
+
+    final key = switch (inflater.type) {
+      'MaterialApp' || 'CupertinoApp' || 'WidgetsApp' => 'navigatorObservers',
+      'Navigator' => 'observers',
+      _ => null,
+    };
+
+    if (key != null) {
+      final observers = List<NavigatorObserver>.from(
+        attributes[key] as List<NavigatorObserver>? ?? [],
+      );
+      observers.add(AnalyticsNavigatorObserver());
+      attributes[key] = observers;
+    }
   }
 }
 
@@ -533,10 +811,7 @@ abstract class Inflater<T> {
   bool get inflatesCustomWidget;
 
   /// Inflates an xml element into a flutter object.
-  T? inflate(Map<String, dynamic> attributes,
-      List<dynamic> children,
-      List<String> text
-  );
+  T? inflate(Map<String, dynamic> attributes, List<dynamic> children, List<String> text);
 
   /// Parses an XML attribute into a constructor argument
   dynamic parseAttribute(String name, String value);
@@ -554,8 +829,29 @@ abstract class Tag {
   ///
   /// If the tag creates any children, they are return in a [Children] instance.
   Children? processTag(
-      XmlElement element,
-      Map<String, dynamic> attributes,
-      Dependencies dependencies
+    XmlElement element,
+    Map<String, dynamic> attributes,
+    Dependencies dependencies,
   );
+}
+
+class Fragment {
+  String requestedName;
+  String qualifiedName;
+  Map<String, String> queryParams;
+  XmlDocument xmlDocument;
+
+  Fragment({
+    required this.requestedName,
+    required this.qualifiedName,
+    required this.queryParams,
+    required this.xmlDocument,
+  });
+}
+
+class FragmentPlaceholder extends Fragment {
+  static final doc = XmlDocument();
+
+  FragmentPlaceholder({required super.requestedName})
+    : super(qualifiedName: '', queryParams: const {}, xmlDocument: doc);
 }

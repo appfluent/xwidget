@@ -6,11 +6,7 @@ class XWidgetUtils {
   /// inflaters to fail loudly if it can't render all of its children.
   /// Silently rendering only the first child leads to UI bugs that are
   /// difficult to find.
-  static dynamic getOnlyChild(
-      String widgetName,
-      List<dynamic> children,
-      [dynamic defaultValue]
-  ) {
+  static dynamic getOnlyChild(String widgetName, List<dynamic> children, [dynamic defaultValue]) {
     if (children.isEmpty) {
       return defaultValue;
     }
