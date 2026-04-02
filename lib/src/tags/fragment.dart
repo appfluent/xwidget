@@ -35,8 +35,8 @@ class FragmentTag implements Tag {
     // 'name' is a required attribute.
     final String? fragmentName = attributes["name"];
     if (fragmentName == null) {
-      final dump = XWidget.dump(element, dependencies);
-      throw Exception("<$name> 'name' attribute is required. $dump");
+      final details = XWidget.verboseErrors ? XWidget.dump(element, dependencies) : '';
+      throw Exception("<$name> 'name' attribute is required.$details");
     }
 
     final bool? visible = attributes["visible"];

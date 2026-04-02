@@ -24,6 +24,8 @@ void platformLogHandler(LogRecord record) {
       '${record.loggerName}: ${record.message}';
   if (record.level >= Level.WARNING) {
     stderr.writeln(message);
+    if (record.error != null) stderr.writeln(record.error);
+    if (record.stackTrace != null) stderr.writeln(record.stackTrace);
   } else {
     stdout.writeln(message);
   }

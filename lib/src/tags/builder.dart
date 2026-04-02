@@ -7,23 +7,22 @@ import '../../xwidget.dart';
 ///
 /// This tag is very useful when the parent requires a builder function, such as
 /// [PageView.builder](https://api.flutter.dev/flutter/widgets/PageView/PageView.builder.html).
-/// Use `vars`, `multiChild`, and `nullable` attributes to configure the
-/// builder function's signature. When the builder function executes, the
-/// values of named arguments defined in `vars` are stored as dependencies in
-/// the current `Dependencies` instance. The values of placeholder arguments
-/// (_) are simply ignored. The `BuildContext` is never stored as a
-/// dependency, even if explicitly named, because it would cause a memory leak.
+/// Use `vars` to define the builder function arguments. When the builder
+/// function executes, the values of named arguments defined in `vars` are
+/// stored as dependencies in the current `Dependencies` instance. The values
+/// of placeholder arguments (_) are simply ignored. The `BuildContext` is
+/// never stored as a dependency, even if explicitly named, because it would
+/// cause a memory leak.
 ///
 /// Attributes:
 /// - for (required): The name of the parent attribute that will be assigned
 ///   the builder function.
 /// - vars (optional): A comma separated list of named and placeholder
-///   function arguments. Named arguments are added to  `Dependencies`.
+///   function arguments. Named arguments are added to `Dependencies`.
 ///   Supports up to five arguments.
-/// - multiChild (optional): Whether the builder function should return
-///   an array or a single widget. Defaults to `false`.
-/// - nullable (optional): Whether the builder function can return null.
-///   Defaults to `false`.
+/// - returnType (optional): The return type of the builder function. When
+///   set to a List type (e.g. `List:PopupMenuEntry`), the builder returns
+///   all inflated children as a list instead of a single child.
 /// - dependenciesScope (optional): Defines the method for passing
 ///   Dependencies to immediate children. Valid values are `new`, `copy`,
 ///   and `inherit`. The default is `inherit`.
@@ -31,7 +30,7 @@ import '../../xwidget.dart';
 /// Example:
 /// ```xml
 /// <PageView.builder>
-///     <builder for="itemBuilder" vars="_,index" nullable="true">
+///     <builder for="itemBuilder" vars="_,index">
 ///         <Container>
 ///           <Text data="${index}"/>
 ///         </Container>
@@ -99,45 +98,16 @@ class BuilderTag implements Tag {
       ).addAll(params);
       List children = XWidget.inflateXmlElementChildren(element, deps).objects;
       if (children.length == 1 && children[0] is List) {
-        // flatten nested list. this might happen if the builder inflates
-        // a fragment that returns a list of items.
         children = children[0];
       }
       return isList ? children : XWidgetUtils.getOnlyChild("<$name> tag", children);
     }
 
-    Widget singleWidgetBuilder([p0, p1, p2, p3, p4]) {
-      return builder(p0, p1, p2, p3, p4);
-    }
-
-    Widget? nullableSingleWidgetBuilder([p0, p1, p2, p3, p4]) {
-      return builder(p0, p1, p2, p3, p4);
-    }
-
-    List<Widget> multiWidgetBuilder([p0, p1, p2, p3, p4]) {
-      return [...builder(p0, p1, p2, p3, p4)];
-    }
-
-    List<PopupMenuEntry> popupMenuEntryBuilder([p0, p1, p2, p3, p4]) {
-      return [...builder(p0, p1, p2, p3, p4)];
-    }
-
-    Function builderFunction;
-    if (returnType == "Widget?") {
-      builderFunction = nullableSingleWidgetBuilder;
-    } else if (returnType == "List:Widget") {
-      builderFunction = multiWidgetBuilder;
-    } else if (returnType == "List:PopupMenuEntry") {
-      builderFunction = popupMenuEntryBuilder;
-    } else {
-      builderFunction = singleWidgetBuilder;
-    }
-
     final children = Children();
     if (isEmpty(forAttribute)) {
-      children.objects.add(builderFunction);
+      children.objects.add(builder);
     } else {
-      children.attributes[forAttribute!] = builderFunction;
+      children.attributes[forAttribute!] = builder;
     }
     return children;
   }

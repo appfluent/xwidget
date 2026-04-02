@@ -1,18 +1,22 @@
+## 0.4.0
+
+- **BREAKING:** Removed `nullable` attribute from `<builder>` tag.
+- **BREAKING:** Requires `xwidget_builder` 0.4.0. Regenerate inflaters after upgrading.
+- Simplified `<builder>` tag by removing typed wrapper functions. Type adaptation is now handled by the generated inflater.
+- Added `verboseErrors` parameter to `XWidget.initialize()`. Defaults to `false`.
+- Added fragment name to `XWidget.dump()` error diagnostic output.
+- Fixed `platformLogHandler` on IO and web to include `record.error` and `record.stackTrace` in log output.
+
 ## 0.3.0 (Mar 31, 2026)
 
-### Breaking Changes
-- `Resources.instance.loadResources()` has been replaced with `XWidget.initialize()`.
-- Replaced `package:logger/logger.dart` dependency with `package:logging/logging.dart`.
-- Updated minimum Dart SDK to 3.8.
-
-### Added
+- **BREAKING:** `Resources.instance.loadResources()` has been replaced with `XWidget.initialize()`.
+- **BREAKING:** Replaced `package:logger/logger.dart` dependency with `package:logging/logging.dart`.
+- **BREAKING:** Updated minimum Dart SDK to 3.8.
 - Cloud resource loading — download fragment and value bundles from XWidget Cloud at runtime with ETag-based caching and offline fallback.
 - Automatic analytics — fragment renders, bundle downloads, errors, and navigation transitions tracked with zero instrumentation.
 - `AnalyticsNavigatorObserver` auto-injected into `MaterialApp`, `CupertinoApp`, and `Navigator` when inflated from XML.
 - Session-based navigation tracking with configurable timeout.
 - `XWidget.initialize()` — unified initialization for resources, cloud configuration, and analytics.
-
-### Fixed
 - Fragment and value resource folder resolution.
 
 ## 0.2.0 (Jan 22, 2026)

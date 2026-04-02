@@ -88,6 +88,9 @@ class XWidget {
   // EL parser
   static final elParser = ELParser();
 
+  /// Show verbose error messages
+  static bool verboseErrors = false;
+
   //===================================
   // Public Methods
   //===================================
@@ -137,7 +140,9 @@ class XWidget {
     Duration? downloadTimeout,
     AssetBundle? assetBundle,
     Level logLevel = Level.INFO,
+    bool verboseErrors = false, // suppress XML and dependency dumps
   }) async {
+    XWidget.verboseErrors = verboseErrors;
     Logger.root.level = logLevel;
     Logger.root.onRecord.listen(defaultLogHandler);
     await requestStoragePersistence();
@@ -406,7 +411,8 @@ class XWidget {
       throw Exception("XWidget inflater not found for XML element <$type>");
     } catch (e, stacktrace) {
       final msg = "Problem inflating XML element '${element.name}'";
-      _log.severe("$msg: ${dump(element, dependencies)}", e, stacktrace);
+      final details = verboseErrors ? ': ${dump(element, dependencies)}' : '';
+      _log.severe("$msg$details", e, stacktrace);
 
       // track element inflate error
       final name = element.position?.filePath;
@@ -538,7 +544,8 @@ class XWidget {
         attributes[attributeName] = attributeValue;
       } catch (e, stacktrace) {
         final msg = "Problem parsing XML attribute '${attribute.qualifiedName}'";
-        _log.severe("$msg: ${dump(element, dependencies)}", e, stacktrace);
+        final details = verboseErrors ? ': ${dump(element, dependencies)}' : '';
+        _log.severe("$msg$details", e, stacktrace);
 
         // track xml attribute parsing error
         final name = element.position?.filePath;
@@ -699,7 +706,9 @@ class XWidget {
   }
 
   static String dump(XmlElement element, Dependencies dependencies) {
-    return "\n----- XML Element -----\n${element.toXmlString(pretty: true)}"
+    final fragment = _fragmentStack.isNotEmpty ? _fragmentStack.last.qualifiedName : 'unknown';
+    return "\n----- Fragment -----\n$fragment"
+        "\n----- XML Element -----\n${element.toXmlString(pretty: true)}"
         "\n----- Dependencies -----\n$dependencies";
   }
 

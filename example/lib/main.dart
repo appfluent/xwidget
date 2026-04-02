@@ -11,10 +11,10 @@ void main() async {
   // Cloud settings should be loaded from Firebase's Remote Config
   // or similar service.
   await XWidget.initialize(
-    projectKey: '<your-project-key>',
-    storageKey: '<your-storage-key>',
-    channel: 'dev',
-    version: '1.0.1',
+    // projectKey: '<your-project-key>',
+    // storageKey: '<your-storage-key>',
+    // channel: 'dev',
+    // version: '1.0.0',
   );
 
   // register XWidget components

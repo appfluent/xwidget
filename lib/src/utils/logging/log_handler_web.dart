@@ -26,6 +26,8 @@ void platformLogHandler(LogRecord record) {
       '${record.loggerName}: ${record.message}';
   if (record.level >= Level.WARNING) {
     web.console.error(message.toJS);
+    if (record.error != null) web.console.error(record.error.toString().toJS);
+    if (record.stackTrace != null) web.console.error(record.stackTrace.toString().toJS);
   } else {
     web.console.log(message.toJS);
   }
