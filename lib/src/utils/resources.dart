@@ -19,6 +19,8 @@ final _log = Logger('Resources');
 
 class Resources {
   static final instance = Resources();
+  static const _defaultFragmentsPath = 'resources/fragments';
+  static const _defaultValuesPath = 'resources/values';
   static const _defaultDownloadTimeout = Duration(seconds: 15);
   static const _contentBaseUrl = String.fromEnvironment(
     'XWIDGET_CONTENT_URL',
@@ -53,8 +55,9 @@ class Resources {
     Duration? downloadTimeout,
     AssetBundle? assetBundle,
   }) async {
-    fragmentsPath ??= "resources/fragments";
-    valuesPath ??= "resources/values";
+    fragmentsPath ??= _defaultFragmentsPath;
+    valuesPath ??= _defaultValuesPath;
+    downloadTimeout ??= _defaultDownloadTimeout;
 
     // Validate cloud resource requirements
     if (storageKey != null) {
@@ -89,7 +92,7 @@ class Resources {
         storageKey: storageKey,
         channel: channel!,
         version: version!,
-        downloadTimeout: downloadTimeout ?? _defaultDownloadTimeout,
+        downloadTimeout: downloadTimeout,
       );
     } else {
       await _loadLocalResources(

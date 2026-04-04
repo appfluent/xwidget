@@ -1,0 +1,187 @@
+<MaterialApp xmlns="http://www.appfluent.us/xwidget">
+    <Controller for="home" name="BuilderTestController">
+        <Scaffold>
+            <AppBar for="appBar">
+                <Text for="title" data="Builder Type Tests"/>
+            </AppBar>
+
+            <SingleChildScrollView for="body">
+                <Padding padding="16">
+                    <Column crossAxisAlignment="start">
+
+                        <!-- ============================================ -->
+                        <!-- TEST 1: Widget Function(BuildContext, int)   -->
+                        <!-- ListView.builder itemBuilder                 -->
+                        <!-- ============================================ -->
+                        <Text data="1. ListView.builder — Widget Function(BuildContext, int)">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <SizedBox height="150">
+                            <ListView.builder itemCount="${length(fruits)}">
+                                <builder for="itemBuilder" vars="_,index">
+                                    <ListTile>
+                                        <Text for="title" data="${fruits[index]}"/>
+                                    </ListTile>
+                                </builder>
+                            </ListView.builder>
+                        </SizedBox>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 2: Widget Function(BuildContext, int)   -->
+                        <!--   + Widget Function(BuildContext, int)       -->
+                        <!-- ListView.separated itemBuilder + separator   -->
+                        <!-- ============================================ -->
+                        <Text data="2. ListView.separated — two builders">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <SizedBox height="150">
+                            <ListView.separated itemCount="${length(colors)}">
+                                <builder for="itemBuilder" vars="_,index">
+                                    <Container height="40" color="${colors[index]}">
+                                        <Center>
+                                            <Text data="${colorNames[index]}"/>
+                                        </Center>
+                                    </Container>
+                                </builder>
+                                <builder for="separatorBuilder" vars="_,__">
+                                    <Divider height="1"/>
+                                </builder>
+                            </ListView.separated>
+                        </SizedBox>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 3: List<PopupMenuEntry> Function(Ctx)  -->
+                        <!-- PopupMenuButton itemBuilder                  -->
+                        <!-- ============================================ -->
+                        <Text data="3. PopupMenuButton — List&lt;PopupMenuEntry&gt; builder">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <PopupMenuButton>
+                            <builder for="itemBuilder" vars="_" returnType="List:PopupMenuEntry">
+                                <PopupMenuItem value="copy">
+                                    <Text data="Copy"/>
+                                </PopupMenuItem>
+                                <PopupMenuItem value="paste">
+                                    <Text data="Paste"/>
+                                </PopupMenuItem>
+                                <PopupMenuItem value="delete">
+                                    <Text data="Delete"/>
+                                </PopupMenuItem>
+                            </builder>
+                            <Icon for="child" icon="Icons.more_vert"/>
+                        </PopupMenuButton>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 4: Widget Function(Ctx, BoxConstraints)-->
+                        <!-- LayoutBuilder                                -->
+                        <!-- ============================================ -->
+                        <Text data="4. LayoutBuilder — Widget Function(BuildContext, BoxConstraints)">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <LayoutBuilder>
+                            <builder for="builder" vars="_,constraints">
+                                <Text data="Max width: ${toString(constraints)}"/>
+                            </builder>
+                        </LayoutBuilder>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 5: void Function() — onPressed         -->
+                        <!-- ============================================ -->
+                        <Text data="5. ElevatedButton — void Function() callback">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <ElevatedButton>
+                            <callback for="onPressed" action="onButtonPressed('Test 5 passed!')"/>
+                            <Text data="Press Me"/>
+                        </ElevatedButton>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 6: void Function(String?) — onChanged  -->
+                        <!-- ============================================ -->
+                        <Text data="6. TextField — void Function(String?) onChanged">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <TextField>
+                            <callback for="onChanged" vars="value" action="onTextChanged(value)"/>
+                            <InputDecoration for="decoration" hintText="Type something..."/>
+                        </TextField>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 7: Widget Function(BuildContext, Widget?)-->
+                        <!-- AnimatedBuilder / similar transition builder -->
+                        <!-- ============================================ -->
+                        <Text data="7. OrientationBuilder — Widget Function(BuildContext, Orientation)">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <OrientationBuilder>
+                            <builder for="builder" vars="_,orientation">
+                                <Text data="Orientation: ${toString(orientation)}"/>
+                            </builder>
+                        </OrientationBuilder>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 8: Widget? Function(BuildContext, int)  -->
+                        <!-- PageView.builder — nullable return           -->
+                        <!-- ============================================ -->
+                        <Text data="8. PageView.builder — Widget? Function(BuildContext, int)">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <SizedBox height="100">
+                            <PageView.builder itemCount="3">
+                                <builder for="itemBuilder" vars="_,index">
+                                    <Center>
+                                        <Text data="Page ${toString(index + 1)}"/>
+                                    </Center>
+                                </builder>
+                            </PageView.builder>
+                        </SizedBox>
+
+                        <Divider/>
+
+                        <!-- ============================================ -->
+                        <!-- TEST 9: Mixed — builder + callback together  -->
+                        <!-- ============================================ -->
+                        <Text data="9. Mixed — builder + callback in same widget">
+                            <TextStyle for="style" fontWeight="600" fontSize="14"/>
+                        </Text>
+                        <SizedBox height="8"/>
+                        <SizedBox height="150">
+                            <ListView.builder itemCount="${length(fruits)}">
+                                <builder for="itemBuilder" vars="_,index">
+                                    <ListTile>
+                                        <Text for="title" data="${fruits[index]}"/>
+                                        <callback for="onTap" action="onItemTap(index)"/>
+                                    </ListTile>
+                                </builder>
+                            </ListView.builder>
+                        </SizedBox>
+
+                        <SizedBox height="32"/>
+                    </Column>
+                </Padding>
+            </SingleChildScrollView>
+        </Scaffold>
+    </Controller>
+</MaterialApp>

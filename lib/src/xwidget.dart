@@ -156,6 +156,14 @@ class XWidget {
       downloadTimeout: downloadTimeout,
       assetBundle: assetBundle,
     );
+
+    // add EL resource functions
+    registerFunction('resBool', Resources.instance.getBool);
+    registerFunction('resColor', Resources.instance.getColor);
+    registerFunction('resColorString', Resources.instance.getColorString);
+    registerFunction('resDouble', Resources.instance.getDouble);
+    registerFunction('resInt', Resources.instance.getInt);
+    registerFunction('resString', Resources.instance.getString);
   }
 
   static void registerIcon(String name, IconData iconData) {

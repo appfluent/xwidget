@@ -1,3 +1,21 @@
+## 0.4.1
+
+- **Added EL resource accessor functions.** The following functions are
+  now registered globally during `XWidget.initialize()`, making value resources accessible
+  directly in EL expressions:
+  - `resBool(name)` — returns a bool resource
+  - `resColor(name)` — returns a Color resource
+  - `resColorString(name)` — returns a color resource as a string
+  - `resDouble(name)` — returns a double resource
+  - `resInt(name)` — returns an int resource
+  - `resString(name)` — returns a string resource
+
+```xml
+  <Text data="${resString('app_title')}"/>
+  <Container color="${resColor('primary')}"/>
+```
+- Upgraded `xwidget_el` dependency to 0.4.0.
+
 ## 0.4.0
 
 - **BREAKING:** Removed `nullable` attribute from `<builder>` tag.
