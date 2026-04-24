@@ -1,3 +1,30 @@
+## 0.5.0
+
+- **BREAKING:** Resource configuration moved from `XWidget.initialize()` into
+  `LocalResources` and `CloudResources`. Construct the appropriate instance and
+  pass it to the new `resources` parameter. The `fragmentsPath`, `valuesPath`,
+  `projectKey`, `storageKey`, `channel`, `version`, `downloadTimeout`, and
+  `assetBundle` parameters have been removed from `XWidget.initialize()`.
+  - [Upgrading guide](https://docs.xwidget.dev/latest/getting_started/upgrading/)
+  - [LocalResources](https://docs.xwidget.dev/latest/runtime/local_resources/)
+  - [CloudResources](https://docs.xwidget.dev/latest/runtime/cloud_resources/)
+- Hot reload of fragments and values in debug builds. `LocalResources` registers
+  VM service extensions that the XWidget IntelliJ plugin and VSCode extension invokes
+  to apply edits without restarting.
+  - [IntelliJ plugin](https://plugins.jetbrains.com/plugin/25494-flutter-xwidget)
+  - [VS Code extension](https://marketplace.visualstudio.com/items?itemName=appfluent.flutter-xwidget)
+- `Resources` is now an extensible abstract base class. Subclass it for custom
+  loading strategies. The built-in subclasses are `LocalResources` (asset
+  bundle, default) and `CloudResources` (XWidget Cloud content server).
+- Added `LocalResources.withAnalytics` for local resource delivery with XWidget
+  Cloud analytics.
+- Added `register` parameter to `XWidget.initialize()`. Pass the generated
+  `registerXWidgetComponents` function to populate `XWidget.config` and register
+  inflaters, icons, and controllers.
+- Deprecated `XWidget.xmlCacheEnabled` and `XWidget.clearXmlCache()`. Parsed XML
+  caching is now managed by `Resources` — use `Resources.instance.clearXmlCache()`.
+- Upgraded `xwidget_el` dependency to 0.5.0.
+
 ## 0.4.1
 
 - **Added EL resource accessor functions.** The following functions are

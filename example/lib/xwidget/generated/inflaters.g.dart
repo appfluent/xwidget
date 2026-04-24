@@ -46,8 +46,9 @@ class InflaterArgs {
       Type? coreType,
       bool isRequired,
       bool isPositional,
-      dynamic defaultValue,
-  ) {
+      dynamic defaultValue, {
+      T Function(dynamic)? castElement,
+  }) {
     final isPresent = _isPresent(name, defaultValue);
     if (isRequired && !isPresent) {
       throw Exception("Argument '$name' of type '$T' is required");
@@ -55,9 +56,21 @@ class InflaterArgs {
     if (isPresent) {
       final arg = _getArgValue(name, defaultValue);
       if (coreType == List || coreType == Iterable) {
-        _addArg(name, arg is List ? <T>[...arg] : null, isPositional);
+        if (arg is List) {
+          _addArg(name, castElement != null
+              ? arg.map(castElement).toList()
+              : <T>[...arg], isPositional);
+        } else {
+          _addArg(name, null, isPositional);
+        }
       } else if (coreType == Set) {
-        _addArg(name, arg is Set ? <T>{...arg} : null, isPositional);
+        if (arg is Set) {
+          _addArg(name, castElement != null
+              ? arg.map(castElement).toSet()
+              : <T>{...arg}, isPositional);
+        } else {
+          _addArg(name, null, isPositional);
+        }
       } else if (coreType == String) {
         _addArg(name, arg?.toString(), isPositional);
       } else if (coreType == double) {
@@ -1402,7 +1415,7 @@ class MaterialAppInflater extends Inflater {
         args.addMapArg<String, Widget Function(BuildContext)>('routes', false, false, null);
         args.addArg('initialRoute', String, false, false, null);
         args.addFnArg('onGenerateRoute', (fn) => (p0) => Function.apply(fn, [p0]) as Route<dynamic>?, false, false, null);
-        args.addFnArg('onGenerateInitialRoutes', (fn) => (p0) => Function.apply(fn, [p0]) as List<Route<dynamic>>, false, false, null);
+        args.addFnArg('onGenerateInitialRoutes', (fn) => (p0) => (Function.apply(fn, [p0]) as List).cast<Route<dynamic>>(), false, false, null);
         args.addFnArg('onUnknownRoute', (fn) => (p0) => Function.apply(fn, [p0]) as Route<dynamic>?, false, false, null);
         args.addFnArg('onNavigationNotification', (fn) => (p0) => Function.apply(fn, [p0]) as bool, false, false, null);
         args.addArg<NavigatorObserver>('navigatorObservers', List, false, false, null);

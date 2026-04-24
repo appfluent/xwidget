@@ -21,7 +21,7 @@ import 'tags/if_else.dart';
 import 'tags/variable.dart';
 import 'utils/logging/log_handler.dart';
 import 'utils/platform/platform_utils.dart';
-import 'utils/resources.dart';
+import 'utils/resources/resources.dart';
 import 'utils/xml.dart';
 
 class XWidget {
@@ -74,15 +74,10 @@ class XWidget {
   static final _icons = <String, IconData>{};
   static final _controllerFactories = <String, XWidgetControllerFactory>{};
   static final _attributeContainsExpressions = RegExp(r"\$\{(.*?)}");
-  static final _xmlCache = <String, XmlDocument>{};
   static final _fragmentStack = <Fragment>[];
   static bool _wasFragmentErrorTracked = false;
 
-  /// Enable or disable fragment XML caching
-  ///
-  /// If enabled, the fragment's parsed XML is cached until the cache is
-  /// cleared.
-  /// DEFAULT: false
+  @Deprecated('Caching is now managed by Resources internally. This field has no effect.')
   static bool xmlCacheEnabled = true;
 
   // EL parser
@@ -90,6 +85,17 @@ class XWidget {
 
   /// Show verbose error messages
   static bool verboseErrors = false;
+
+  /// Framework-wide runtime configuration.
+  ///
+  /// Populated by the generated `registerComponents()` function from
+  /// `registry.g.dart`. Resources subclasses ([LocalResources],
+  /// [CloudResources]) read from this as a fallback when path
+  /// parameters aren't passed explicitly.
+  ///
+  /// If `registerComponents()` is never called (e.g., in tests),
+  /// this retains its default values.
+  static XWidgetConfig config = const XWidgetConfig();
 
   //===================================
   // Public Methods
@@ -102,60 +108,53 @@ class XWidget {
   /// requests persistent storage, and loads all fragment and value resources
   /// needed for server-driven UI rendering.
   ///
-  /// Resources can be loaded from local assets, XWidget Cloud, or both.
-  /// When using XWidget Cloud, [projectKey] is required for all cloud
-  /// services, and [storageKey] is required for downloading resources.
+  /// Pass [register] the generated `registerXWidgetComponents` function from
+  /// `registry.g.dart`. This populates [XWidget.config] and registers
+  /// all code-generated inflaters, icons, and controllers. When
+  /// omitted, registrations are skipped and [XWidget.config] retains
+  /// its default values.
+  ///
+  /// Pass a [Resources] subclass to control where resources are loaded
+  /// from. When omitted, defaults to [LocalResources] which loads from
+  /// Flutter's asset bundle.
   ///
   /// Example:
   /// ```dart
+  /// import 'xwidget/generated/registry.g.dart';
+  ///
   /// void main() async {
   ///   WidgetsFlutterBinding.ensureInitialized();
-  ///   await XWidget.initialize(
-  ///     fragmentsPath: 'assets/fragments',
-  ///     valuesPath: 'assets/values',
-  ///   );
+  ///   await XWidget.initialize(register: registerXWidgetComponents);
   ///   runApp(MyApp());
   /// }
   /// ```
   ///
-  /// - [fragmentsPath]: Asset path to local XML fragment resources.
-  /// - [valuesPath]: Asset path to local value resources.
-  /// - [projectKey]: XWidget Cloud project key. Required for all cloud
-  ///   services including analytics and resource delivery.
-  /// - [storageKey]: XWidget Cloud storage key. Required for downloading
-  ///   cloud-hosted resources.
-  /// - [channel]: The cloud channel to download resources from (e.g.
-  ///   `'stable'`, `'beta'`).
-  /// - [version]: The specific resource version to download or the version of
-  ///   the local resource
+  /// - [register]: The generated `registerComponents` function. Runs
+  ///   before resources are activated so any config it populates is
+  ///   available to the Resources subclass during loading.
+  /// - [resources]: Controls where resources are loaded from. See
+  ///   [LocalResources], [CloudResources], or extend [Resources] for
+  ///   a custom backend.
   /// - [logLevel]: Minimum log level for XWidget's internal logging.
   ///   Defaults to [Level.INFO].
+  /// - [verboseErrors]: When `true`, error logs include XML and
+  ///   dependency dumps for debugging.
   static Future<void> initialize({
-    String? fragmentsPath, // path to fragment resources
-    String? valuesPath, // path to value resources
-    String? projectKey, // cloud project key - required for all cloud services
-    String? storageKey, // cloud storage key - require for download services
-    String? channel, // cloud channel to download resources from
-    String? version,
-    Duration? downloadTimeout,
-    AssetBundle? assetBundle,
+    void Function()? register,
+    Resources? resources,
     Level logLevel = Level.INFO,
-    bool verboseErrors = false, // suppress XML and dependency dumps
+    bool verboseErrors = false,
   }) async {
     XWidget.verboseErrors = verboseErrors;
     Logger.root.level = logLevel;
     Logger.root.onRecord.listen(defaultLogHandler);
+
+    // Run generated registrations first so XWidget.config and any
+    // registered components are available before resource activation.
+    register?.call();
+
     await requestStoragePersistence();
-    await Resources.instance.loadResources(
-      fragmentsPath: fragmentsPath,
-      valuesPath: valuesPath,
-      projectKey: projectKey,
-      storageKey: storageKey,
-      channel: channel,
-      version: version,
-      downloadTimeout: downloadTimeout,
-      assetBundle: assetBundle,
-    );
+    await (resources ?? LocalResources()).activate();
 
     // add EL resource functions
     registerFunction('resBool', Resources.instance.getBool);
@@ -207,9 +206,12 @@ class XWidget {
     throw Exception("XWidget controller factory for '$name' not found");
   }
 
-  /// Clear fragment XML cache
+  /// Clears the parsed fragment XML cache.
+  @Deprecated("Use `Resources.instance.clearXmlCache()` instead.")
   static void clearXmlCache() {
-    _xmlCache.clear();
+    try {
+      Resources.instance.clearXmlCache();
+    } catch (_) {}
   }
 
   /// Pushes a new route onto the navigator by inflating an XML fragment.
@@ -655,7 +657,6 @@ class XWidget {
     String requestedName;
     String qualifiedName;
     Map<String, String> queryParams;
-    XmlDocument? xmlDocument;
 
     final splitIndex = name.indexOf("?");
     if (splitIndex > -1) {
@@ -669,15 +670,7 @@ class XWidget {
     }
 
     qualifiedName = Resources.instance.getFragmentFqn(requestedName);
-    if (xmlCacheEnabled) xmlDocument = _xmlCache[qualifiedName];
-
-    if (xmlDocument == null) {
-      final xmlString = Resources.instance.getFragment(qualifiedName);
-      xmlDocument = XmlParser.parse(
-        SourceCode(xmlString, filePath: qualifiedName, withPosition: true),
-      );
-      if (xmlCacheEnabled) _xmlCache[qualifiedName] = xmlDocument;
-    }
+    final xmlDocument = Resources.instance.getFragment(qualifiedName);
 
     return Fragment(
       requestedName: requestedName,
@@ -742,6 +735,31 @@ class XWidget {
 //===================================
 // Support Classes
 //===================================
+
+/// Framework-wide runtime configuration.
+///
+/// Holds values that control XWidget's behavior at runtime. The active
+/// instance is accessed through [XWidget.config] and is typically
+/// populated by the generated `registerComponents()` function in
+/// `registry.g.dart`.
+///
+/// [Resources] subclasses ([LocalResources], [CloudResources]) read
+/// from this as a fallback when corresponding constructor arguments
+/// aren't provided explicitly.
+class XWidgetConfig {
+  /// Path (inside the asset bundle or cloud tarball) where fragment
+  /// XML files are located.
+  final String fragmentsPath;
+
+  /// Path (inside the asset bundle or cloud tarball) where value
+  /// resource XML files are located.
+  final String valuesPath;
+
+  const XWidgetConfig({
+    this.fragmentsPath = 'resources/fragments',
+    this.valuesPath = 'resources/values',
+  });
+}
 
 class Children {
   /// Holds all parsed lines of text
