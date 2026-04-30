@@ -24,6 +24,8 @@ import 'utils/platform/platform_utils.dart';
 import 'utils/resources/resources.dart';
 import 'utils/xml.dart';
 
+enum NavigatorAction { push, pushReplacement, pushAndRemoveUntil, pushAndRemoveAll }
+
 class XWidget {
   static final _log = Logger("XWidget");
 
@@ -214,12 +216,17 @@ class XWidget {
     } catch (_) {}
   }
 
-  /// Pushes a new route onto the navigator by inflating an XML fragment.
+  /// Navigates to a fragment-backed page by inflating an XML fragment
+  /// and pushing the resulting widget onto the navigation stack.
   ///
-  /// This is a convenience method for navigating to a fragment-backed page.
-  /// It inflates the fragment specified by [fragmentName] into a widget and
-  /// pushes it onto the navigation stack using either a [MaterialPageRoute]
-  /// or [CupertinoPageRoute].
+  /// Inflates the fragment specified by [fragmentName] into a widget and
+  /// navigates using either a [MaterialPageRoute] or [CupertinoPageRoute].
+  /// The navigation behavior is determined by [action]:
+  ///
+  /// - [NavigatorAction.push] — adds the route on top of the stack.
+  /// - [NavigatorAction.pushReplacement] — replaces the current route.
+  /// - [NavigatorAction.pushAndRemoveAll] — pushes the route and removes
+  ///   all previous routes from the stack.
   ///
   /// The route name defaults to [fragmentName] unless [pageName] is
   /// provided, which is useful for analytics tracking and route-aware
@@ -227,12 +234,13 @@ class XWidget {
   ///
   /// Example:
   /// ```dart
-  /// XWidget.pushFragment(
+  /// XWidget.navigateToFragment(
   ///   context,
   ///   'screens/settings',
   ///   dependencies,
   ///   pageName: '/settings',
   ///   params: {'userId': currentUser.id},
+  ///   action: NavigatorAction.pushReplacement,
   /// );
   /// ```
   ///
@@ -247,6 +255,45 @@ class XWidget {
   /// - [cupertinoStyle]: If `true`, uses [CupertinoPageRoute] for an
   ///   iOS-style page transition. Defaults to `false`, which uses
   ///   [MaterialPageRoute].
+  /// - [action]: The navigation action to perform. Defaults to
+  ///   [NavigatorAction.push].
+  static void navigateToFragment(
+    BuildContext context,
+    String fragmentName,
+    Dependencies dependencies, {
+    String? pageName,
+    Map<String, dynamic>? params,
+    bool cupertinoStyle = false,
+    RoutePredicate? removeUntil,
+    NavigatorAction action = NavigatorAction.push,
+  }) {
+    if (action == NavigatorAction.pushAndRemoveUntil && removeUntil == null) {
+      throw ArgumentError(
+        'removeUntil predicate is required '
+        'with NavigatorAction.pushAndRemoveUntil',
+      );
+    }
+
+    final settings = RouteSettings(name: pageName ?? fragmentName);
+    builder(_) => XWidget.inflateFragment(fragmentName, dependencies, params: params) as Widget;
+
+    final route = (cupertinoStyle)
+        ? CupertinoPageRoute(settings: settings, builder: builder)
+        : MaterialPageRoute(settings: settings, builder: builder);
+
+    switch (action) {
+      case NavigatorAction.push:
+        Navigator.of(context).push(route);
+      case NavigatorAction.pushReplacement:
+        Navigator.of(context).pushReplacement(route);
+      case NavigatorAction.pushAndRemoveUntil:
+        Navigator.of(context).pushAndRemoveUntil(route, removeUntil!);
+      case NavigatorAction.pushAndRemoveAll:
+        Navigator.of(context).pushAndRemoveUntil(route, (_) => false);
+    }
+  }
+
+  @Deprecated('Use navigateToFragment instead')
   static void pushFragment(
     BuildContext context,
     String fragmentName,
@@ -255,14 +302,14 @@ class XWidget {
     Map<String, dynamic>? params,
     bool cupertinoStyle = false,
   }) {
-    final settings = RouteSettings(name: pageName ?? fragmentName);
-    builder(_) => XWidget.inflateFragment(fragmentName, dependencies, params: params) as Widget;
-
-    final route = (cupertinoStyle)
-        ? CupertinoPageRoute(settings: settings, builder: builder)
-        : MaterialPageRoute(settings: settings, builder: builder);
-
-    Navigator.of(context).push(route);
+    navigateToFragment(
+      context,
+      fragmentName,
+      dependencies,
+      pageName: pageName,
+      params: params,
+      cupertinoStyle: cupertinoStyle,
+    );
   }
 
   /// Inflates an XML fragment by name and returns the resulting widget tree.

@@ -1,3 +1,16 @@
+## 0.5.1
+
+- Added guard system to `Controller` — `guard()` runs before `init()` to enforce preconditions
+  like authentication and authorization. When `guard()` returns `false`, `init()` is skipped and
+  `onGuardFailed()` provides the rendered widget.
+- `guard()` supports both synchronous (`bool`) and asynchronous (`Future<bool>`) return types via
+  `FutureOr<bool>`.
+- Added `onGuardFailed()` to `Controller` — override to provide a widget or schedule side effects
+  (e.g. navigation redirect) when the guard denies access.
+- Added `navigateToFragment()` to `XWidget` with configurable `NavigatorAction` — supports `push`,
+  `pushReplacement`, `pushAndRemoveAll`, and `pushAndRemoveUntil`.
+- Deprecated `pushFragment()` in favor of `navigateToFragment()`.
+
 ## 0.5.0
 
 - **BREAKING:** Resource configuration moved from `XWidget.initialize()` into
