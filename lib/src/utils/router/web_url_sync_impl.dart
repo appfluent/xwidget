@@ -1,8 +1,6 @@
 import 'dart:js_interop';
 import 'dart:ui_web';
 
-import 'package:logging/logging.dart';
-
 import 'xrouter.dart';
 
 @JS('window.location.pathname')

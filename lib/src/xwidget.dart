@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
 import 'package:xwidget_el/xwidget_el.dart';
 
-import '../xwidget.dart';
 import 'analytics/analytics.dart';
 import 'custom/async.dart';
 import 'custom/collection.dart';
@@ -23,6 +22,7 @@ import 'tags/variable.dart';
 import 'utils/logging/log_handler.dart';
 import 'utils/platform/platform_utils.dart';
 import 'utils/resources/resources.dart';
+import 'utils/router/xrouter.dart';
 import 'utils/xml.dart';
 
 enum NavigatorAction { push, pushReplacement, pushAndRemoveUntil, pushAndRemoveAll }
@@ -257,7 +257,7 @@ class XWidget {
   ///
   /// The route name defaults to [fragmentName] unless [pageName] is
   /// provided, which is useful for analytics tracking and route-aware
-  /// widgets like [NavigationObserver].
+  /// widgets like [NavigatorObserver].
   ///
   /// Example:
   /// ```dart

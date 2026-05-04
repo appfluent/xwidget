@@ -68,7 +68,7 @@ class ControllerWidget extends StatefulWidget {
 ///    initialization is skipped entirely.
 /// 2. **Initialization** — [init] is called to perform setup work
 ///    such as loading data. Can return `void`, a [Future] (which
-///    shows [progressWidget] while loading), or a [Stream].
+///    shows [ControllerWidget.progressWidget] while loading), or a [Stream].
 /// 3. **Dependency binding** — [bindDependencies] exposes data and
 ///    methods to the XML fragment.
 /// 4. **Child inflation** — XML children are inflated with access
@@ -83,14 +83,11 @@ class ControllerWidget extends StatefulWidget {
 ///
 /// When [guard] returns `false`, [init] is skipped and
 /// [onGuardFailed] is called to provide the widget to render.
-/// When [guard] throws, [DynamicBuilder] displays the [errorWidget].
+/// When [guard] throws, [DynamicBuilder] displays the
+/// [ControllerWidget.errorWidget].
 ///
 /// The default [guard] returns `true`, so existing controllers are
 /// unaffected.
-///
-/// See also:
-/// - [AuthController], which uses the guard system to enforce
-///   authentication and authorization.
 abstract class Controller extends State<ControllerWidget> {
   /// The value returned by the guard/init chain, consumed by
   /// [DynamicBuilder] to manage async state.
@@ -148,14 +145,14 @@ abstract class Controller extends State<ControllerWidget> {
   /// controller's content. Return `null` to render a [SizedBox.shrink].
   ///
   /// This is also the appropriate place to schedule side effects
-  /// such as navigation redirects via [addPostFrameCallback].
+  /// such as navigation redirects via [WidgetsBinding.addPostFrameCallback].
   Widget? onGuardFailed() => null;
 
   /// Called once after [guard] succeeds to perform setup work.
   ///
   /// Override for data loading, API calls, or other initialization.
   /// Can return `void` for synchronous setup, a [Future] for async
-  /// work (which shows [progressWidget] while loading), or a
+  /// work (which shows [ControllerWidget.progressWidget] while loading), or a
   /// [Stream] for streaming data.
   dynamic init() {}
 

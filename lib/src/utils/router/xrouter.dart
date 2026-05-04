@@ -11,7 +11,7 @@ typedef UrlSyncCallback = void Function(String path);
 
 /// Callback invoked by the router to change the visible page in a
 /// multi-view widget. The implementation determines the widget type:
-/// [PageController.jumpToPage] for PageView, [setState] with an
+/// [PageController.jumpToPage] for PageView, [State.setState] with an
 /// index for IndexedStack, [TabController.animateTo] for TabBarView.
 typedef RouteCallback = void Function(int index, String? name, Map<String, dynamic> params);
 
@@ -207,7 +207,7 @@ class XRouter {
 
   /// Unregisters a view callback for a route group.
   ///
-  /// Call in the controller's [dispose] method.
+  /// Call in the controller's [State.dispose] method.
   static void unregisterRouteCallback(String groupName) {
     _callbacks.remove(groupName);
   }
@@ -231,7 +231,7 @@ class XRouter {
   ///
   /// Tracks the navigation event via [Analytics.trackNavigation]
   /// on every call. Updates the browser URL via [onUrlChanged]
-  /// for routes that have [history] enabled.
+  /// for routes that have [ResolvedRoute.history] enabled.
   ///
   /// [target] can be a path (e.g. "/analytics/renders") or a
   /// named route (e.g. "main:renders").

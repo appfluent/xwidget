@@ -12,9 +12,7 @@ import '../bundle/bundle_cache.dart';
 import '../hash.dart';
 import '../path.dart';
 import '../version.dart';
-import 'fragment_bundle.dart';
 import 'resources.dart';
-import 'value_bundle.dart';
 
 final _log = Logger('CloudResources');
 

@@ -9,9 +9,7 @@ import 'package:logging/logging.dart';
 import '../../analytics/analytics.dart';
 import '../../xwidget.dart';
 import '../path.dart';
-import 'fragment_bundle.dart';
 import 'resources.dart';
-import 'value_bundle.dart';
 
 final _log = Logger('LocalResources');
 
