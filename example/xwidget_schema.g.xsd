@@ -1449,9 +1449,8 @@ The z-coordinate at which to place this app bar relative to its parent.</p><br/>
 to the background color (see [Material.surfaceTintColor] for more
 detail).</p><br/>
 <p>The value must be non-negative.</p><br/>
-<p>If this property is null, then [AppBarTheme.elevation] of
-[ThemeData.appBarTheme] is used. If that is also null, the
-default value is 4.
+<p>If this property is null, then the ambient [AppBarThemeData.elevation]
+is used. If that is also null, the default value is 4.
 {@endtemplate}</p><br/>
 <p>See also:</p><br/>
 <ul>
@@ -1472,9 +1471,8 @@ shadow.</li>
 <p>{@template flutter.material.appbar.scrolledUnderElevation}
 The elevation that will be used if this app bar has something
 scrolled underneath it.</p><br/>
-<p>If non-null then it [AppBarTheme.scrolledUnderElevation] of
-[ThemeData.appBarTheme] will be used. If that is also null then [elevation]
-will be used.</p><br/>
+<p>If this property is null, then the ambient [AppBarThemeData.scrolledUnderElevation]
+is used. If that is also null then [elevation] is used.</p><br/>
 <p>The value must be non-negative.</p><br/>
 <p>{@endtemplate}</p><br/>
 <p>See also:</p><br/>
@@ -1505,9 +1503,8 @@ else for more complicated layouts.</p><br/>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@template flutter.material.appbar.shadowColor}
 The color of the shadow below the app bar.</p><br/>
-<p>If this property is null, then [AppBarTheme.shadowColor] of
-[ThemeData.appBarTheme] is used. If that is also null, the default value
-is fully opaque black.
+<p>If this property is null, then the ambient [AppBarThemeData.shadowColor]
+is used. If that is also null, the default value is fully opaque black.
 {@endtemplate}</p><br/>
 <p>See also:</p><br/>
 <ul>
@@ -1537,8 +1534,8 @@ background color to indicate elevation.</p><br/>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@template flutter.material.appbar.shape}
 The shape of the app bar's [Material] as well as its shadow.</p><br/>
-<p>If this property is null, then [AppBarTheme.shape] of
-[ThemeData.appBarTheme] is used. Both properties default to null.
+<p>If this property is null, then the ambient [AppBarThemeData.shape]
+is used. Both properties default to null.
 If both properties are null then the shape of the app bar's [Material]
 is just a simple rectangle.</p><br/>
 <p>A shadow is only displayed if the [elevation] is greater than
@@ -1644,9 +1641,8 @@ bar's [actions].</p><br/>
 <p>This property should only be used when the [actions] should be
 themed differently than the icon that appears in the app bar's [leading]
 widget.</p><br/>
-<p>If this property is null, then [AppBarTheme.actionsIconTheme] of
-[ThemeData.appBarTheme] is used. If that is also null, then the value of
-[iconTheme] is used.
+<p>If this property is null, then the ambient [AppBarThemeData.actionsIconTheme]
+is used. If that is also null, then the value of [iconTheme] is used.
 {@endtemplate}</p><br/>
 <p>See also:</p><br/>
 <ul>
@@ -1684,6 +1680,14 @@ adapted to the current [TargetPlatform].
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@template flutter.material.appbar.excludeHeaderSemantics}
 Whether the title should be wrapped with header [Semantics].</p><br/>
+<p>If false, the title will be used as [SemanticsProperties.namesRoute]
+for Android, Fuchsia, Linux, and Windows platform. This means the title is
+announced by screen reader when transition to this route.</p><br/>
+<p>The accessibility behavior is platform adaptive, based on the device's
+actual platform rather than the theme's platform setting. This ensures that
+assistive technologies like VoiceOver on iOS and macOS receive the correct
+<code>namesRoute</code> semantic information, even when the app's theme is configured
+to mimic a different platform's appearance.</p><br/>
 <p>Defaults to false.
 {@endtemplate}</p><br/>
                             ]]></xs:documentation>
@@ -3134,8 +3138,8 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.foregroundColor] is used. If that property is also
 null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -3146,8 +3150,8 @@ is used. If [ThemeData.useMaterial3] is set to false, then the
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.backgroundColor] is used. If that property is also
 null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -3291,7 +3295,8 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [FloatingActionButtonThemeData.mouseCursor] is used.
+If that is null, [WidgetStateMouseCursor.adaptiveClickable] will be used.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -3436,8 +3441,8 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.foregroundColor] is used. If that property is also
 null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -3448,8 +3453,8 @@ is used. If [ThemeData.useMaterial3] is set to false, then the
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.backgroundColor] is used. If that property is also
 null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -3593,7 +3598,8 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [FloatingActionButtonThemeData.mouseCursor] is used.
+If that is null, [WidgetStateMouseCursor.adaptiveClickable] will be used.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -3712,8 +3718,8 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.foregroundColor] is used. If that property is also
 null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -3724,8 +3730,8 @@ is used. If [ThemeData.useMaterial3] is set to false, then the
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.backgroundColor] is used. If that property is also
 null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -3869,7 +3875,8 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [FloatingActionButtonThemeData.mouseCursor] is used.
+If that is null, [WidgetStateMouseCursor.adaptiveClickable] will be used.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -3991,8 +3998,8 @@ used for accessibility.</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The default foreground color for icons and text within the button.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.foregroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.foregroundColor] is used. If that property is also
 null, then the [ColorScheme.onPrimaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.onSecondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -4003,8 +4010,8 @@ is used. If [ThemeData.useMaterial3] is set to false, then the
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>The button's background color.</p><br/>
-<p>If this property is null, then the [FloatingActionButtonThemeData.backgroundColor]
-of [ThemeData.floatingActionButtonTheme] is used. If that property is also
+<p>If this property is null, then the ambient
+[FloatingActionButtonThemeData.backgroundColor] is used. If that property is also
 null, then the [ColorScheme.primaryContainer] color of [ThemeData.colorScheme]
 is used. If [ThemeData.useMaterial3] is set to false, then the
 [ColorScheme.secondary] color of [ThemeData.colorScheme] is used.</p><br/>
@@ -4148,7 +4155,8 @@ floating action button work similar to an [ElevatedButton] but the titular
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@macro flutter.material.RawMaterialButton.mouseCursor}</p><br/>
-<p>If this property is null, [WidgetStateMouseCursor.clickable] will be used.</p><br/>
+<p>If this property is null, [FloatingActionButtonThemeData.mouseCursor] is used.
+If that is null, [WidgetStateMouseCursor.adaptiveClickable] will be used.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -5866,6 +5874,8 @@ prevents widgets inside the body from being obscured by the keyboard.</p><br/>
 <p>Whether this scaffold is being displayed at the top of the screen.</p><br/>
 <p>If true then the height of the [appBar] will be extended by the height
 of the screen's status bar, i.e. the top padding for [MediaQuery].</p><br/>
+<p>If true, on iOS and macOS, tapping the status bar scrolls the app's
+[PrimaryScrollController] to the top.</p><br/>
 <p>The default value of this property, like the default value of
 [AppBar.primary], is true.</p><br/>
                             ]]></xs:documentation>
@@ -6060,6 +6070,12 @@ an explicit key.</p><br/>
 <p>If the style's &quot;inherit&quot; property is true, the style will be merged with
 the closest enclosing [DefaultTextStyle]. Otherwise, the style will
 replace the closest enclosing [DefaultTextStyle].</p><br/>
+<p>The user or platform may override this [style]'s [TextStyle.fontWeight],
+[TextStyle.height], [TextStyle.letterSpacing], and [TextStyle.wordSpacing]
+via a [MediaQuery] ancestor's [MediaQueryData.boldText],
+[MediaQueryData.lineHeightScaleFactorOverride],
+[MediaQueryData.letterSpacingOverride], and [MediaQueryData.wordSpacingOverride]
+regardless of its [TextStyle.inherit] value.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -6067,6 +6083,8 @@ replace the closest enclosing [DefaultTextStyle].</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@macro flutter.painting.textPainter.strutStyle}</p><br/>
+<p>The user or platform may override this [strutStyle]'s [StrutStyle.height]
+via a [MediaQuery] ancestor's [MediaQueryData.lineHeightScaleFactorOverride].</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -6256,6 +6274,12 @@ an explicit key.</p><br/>
 <p>If the style's &quot;inherit&quot; property is true, the style will be merged with
 the closest enclosing [DefaultTextStyle]. Otherwise, the style will
 replace the closest enclosing [DefaultTextStyle].</p><br/>
+<p>The user or platform may override this [style]'s [TextStyle.fontWeight],
+[TextStyle.height], [TextStyle.letterSpacing], and [TextStyle.wordSpacing]
+via a [MediaQuery] ancestor's [MediaQueryData.boldText],
+[MediaQueryData.lineHeightScaleFactorOverride],
+[MediaQueryData.letterSpacingOverride], and [MediaQueryData.wordSpacingOverride]
+regardless of its [TextStyle.inherit] value.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -6263,6 +6287,8 @@ replace the closest enclosing [DefaultTextStyle].</p><br/>
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>{@macro flutter.painting.textPainter.strutStyle}</p><br/>
+<p>The user or platform may override this [strutStyle]'s [StrutStyle.height]
+via a [MediaQuery] ancestor's [MediaQueryData.lineHeightScaleFactorOverride].</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -7567,8 +7593,7 @@ popup menus.</p><br/>
                     <xs:attribute name="sliderTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>The colors and shapes used to render [Slider].</p><br/>
-<p>This is the value returned from [SliderTheme.of].</p><br/>
+<p>A theme for customizing the appearance and layout of [Slider] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -7604,7 +7629,8 @@ popup menus.</p><br/>
                     <xs:attribute name="textSelectionTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>A theme for customizing the appearance and layout of [TextField] widgets.</p><br/>
+<p>A theme for customizing the appearance for text selection in [TextField] and
+[SelectableText] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -7618,15 +7644,14 @@ popup menus.</p><br/>
                     <xs:attribute name="toggleButtonsTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>Defines the default configuration of [ToggleButtons] widgets.</p><br/>
+<p>A theme for customizing the appearance and layout of [ToggleButtons] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                     <xs:attribute name="tooltipTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>A theme for customizing the visual properties of [Tooltip]s.</p><br/>
-<p>This is the value returned from [TooltipTheme.of].</p><br/>
+<p>A theme for customizing the appearance and layout of [Tooltip] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -8398,8 +8423,7 @@ popup menus.</p><br/>
                     <xs:attribute name="sliderTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>The colors and shapes used to render [Slider].</p><br/>
-<p>This is the value returned from [SliderTheme.of].</p><br/>
+<p>A theme for customizing the appearance and layout of [Slider] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -8435,7 +8459,8 @@ popup menus.</p><br/>
                     <xs:attribute name="textSelectionTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>A theme for customizing the appearance and layout of [TextField] widgets.</p><br/>
+<p>A theme for customizing the appearance for text selection in [TextField] and
+[SelectableText] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -8449,15 +8474,14 @@ popup menus.</p><br/>
                     <xs:attribute name="toggleButtonsTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>Defines the default configuration of [ToggleButtons] widgets.</p><br/>
+<p>A theme for customizing the appearance and layout of [ToggleButtons] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                     <xs:attribute name="tooltipTheme">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
-<p>A theme for customizing the visual properties of [Tooltip]s.</p><br/>
-<p>This is the value returned from [TooltipTheme.of].</p><br/>
+<p>A theme for customizing the appearance and layout of [Tooltip] widgets.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>

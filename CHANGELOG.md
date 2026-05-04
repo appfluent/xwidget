@@ -1,3 +1,36 @@
+## 0.5.2
+
+- **BREAKING:** Changed `XWidget.navigateToFragment()` to make `BuildContext`
+  optional. Pass `context:` as a named argument when you need to use a specific
+  navigator; otherwise assign `XWidget.navigatorKey` to your root app and let
+  XWidget navigate without a context.
+- **BREAKING:** Replaced `Resources.instance.clearXmlCache()` with
+  `Resources.instance.clearFragmentCache()`. `XWidget.clearXmlCache()` remains
+  as a deprecated compatibility wrapper.
+- Added `XRouter` for context-free navigation by route path or name.
+- Added route definitions through value resource files with a `<routes>` root,
+  standalone `<route>` entries, and grouped `<routeGroup>` entries.
+- Added route groups with callback navigation for `PageView`, `TabBarView`,
+  `IndexedStack`, and similar multi-view widgets.
+- Added route names, group-qualified names, group path aliases, default group
+  routes, path parameters, query parameters, and per-route browser history
+  control.
+- Added web URL sync for callback route groups, including History API updates,
+  browser back/forward handling, query-string preservation, and startup
+  deep-link support after the first Flutter frame.
+- Added `XWidget.navigatorKey` and exported `XRouter` from `package:xwidget/xwidget.dart`.
+- Added XML navigation helpers registered during `XWidget.initialize()`:
+  `routeTo(target, [action])`, `routePop()`, `routePopAll()`, and
+  `navigatorKey()`.
+- Refactored resource handling into `FragmentResourceBundle` and
+  `ValueResourceBundle`, moving fragment XML caching into the fragment bundle
+  and value parsing into the value bundle.
+- Added route loading to value resources so `routes.xml` is loaded alongside
+  other value resource files for local and cloud resources.
+- Deprecated `XWidget.registerControllerFactory<T>()` in favor of
+  `registerControllerFactoryForName()` because `T.toString()` is not stable
+  under dart2js minification.
+
 ## 0.5.1
 
 - Added guard system to `Controller` — `guard()` runs before `init()` to enforce preconditions

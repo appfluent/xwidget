@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
 import 'package:xwidget_el/xwidget_el.dart';
 
+import '../xwidget.dart';
 import 'analytics/analytics.dart';
 import 'custom/async.dart';
 import 'custom/collection.dart';
@@ -78,6 +79,10 @@ class XWidget {
   static final _attributeContainsExpressions = RegExp(r"\$\{(.*?)}");
   static final _fragmentStack = <Fragment>[];
   static bool _wasFragmentErrorTracked = false;
+
+  /// Global navigator key. Assign to [MaterialApp.navigatorKey]
+  /// to enable context-free navigation for routes.
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
   @Deprecated('Caching is now managed by Resources internally. This field has no effect.')
   static bool xmlCacheEnabled = true;
@@ -165,6 +170,24 @@ class XWidget {
     registerFunction('resDouble', Resources.instance.getDouble);
     registerFunction('resInt', Resources.instance.getInt);
     registerFunction('resString', Resources.instance.getString);
+
+    // add EL navigation functions
+    registerFunction(
+      'routeTo',
+      (target, [action]) =>
+          () => XRouter.routeTo(target, action),
+    );
+    registerFunction(
+      'routePop',
+      () =>
+          () => XRouter.routePop(),
+    );
+    registerFunction(
+      'routePopAll',
+      () =>
+          () => XRouter.routePopAll(),
+    );
+    registerFunction('navigatorKey', () => XWidget.navigatorKey);
   }
 
   static void registerIcon(String name, IconData iconData) {
@@ -183,6 +206,10 @@ class XWidget {
     _tags[tag.name] = tag;
   }
 
+  @Deprecated(
+    'Use registerControllerFactoryForName instead. '
+    'This method uses T.toString() which breaks under dart2js minification.',
+  )
   static void registerControllerFactory<T extends Controller>(XWidgetControllerFactory<T> factory) {
     registerControllerFactoryForName(T.toString(), factory);
   }
@@ -209,10 +236,10 @@ class XWidget {
   }
 
   /// Clears the parsed fragment XML cache.
-  @Deprecated("Use `Resources.instance.clearXmlCache()` instead.")
+  @Deprecated("Use `Resources.instance.clearFragmentCache()` instead.")
   static void clearXmlCache() {
     try {
-      Resources.instance.clearXmlCache();
+      Resources.instance.clearFragmentCache();
     } catch (_) {}
   }
 
@@ -235,7 +262,6 @@ class XWidget {
   /// Example:
   /// ```dart
   /// XWidget.navigateToFragment(
-  ///   context,
   ///   'screens/settings',
   ///   dependencies,
   ///   pageName: '/settings',
@@ -244,7 +270,6 @@ class XWidget {
   /// );
   /// ```
   ///
-  /// - [context]: The build context used to locate the [Navigator].
   /// - [fragmentName]: The name of the fragment resource to inflate.
   /// - [dependencies]: The dependency scope for data binding and
   ///   expression evaluation within the fragment.
@@ -258,9 +283,9 @@ class XWidget {
   /// - [action]: The navigation action to perform. Defaults to
   ///   [NavigatorAction.push].
   static void navigateToFragment(
-    BuildContext context,
     String fragmentName,
     Dependencies dependencies, {
+    BuildContext? context,
     String? pageName,
     Map<String, dynamic>? params,
     bool cupertinoStyle = false,
@@ -274,6 +299,14 @@ class XWidget {
       );
     }
 
+    final navigator = context != null ? Navigator.of(context) : navigatorKey.currentState;
+    if (navigator == null) {
+      throw Exception(
+        'Navigator not found. Assign XWidget.navigatorKey to'
+        ' MaterialApp or CupertinoApp for context-free navigation.',
+      );
+    }
+
     final settings = RouteSettings(name: pageName ?? fragmentName);
     builder(_) => XWidget.inflateFragment(fragmentName, dependencies, params: params) as Widget;
 
@@ -283,13 +316,13 @@ class XWidget {
 
     switch (action) {
       case NavigatorAction.push:
-        Navigator.of(context).push(route);
+        navigator.push(route);
       case NavigatorAction.pushReplacement:
-        Navigator.of(context).pushReplacement(route);
+        navigator.pushReplacement(route);
       case NavigatorAction.pushAndRemoveUntil:
-        Navigator.of(context).pushAndRemoveUntil(route, removeUntil!);
+        navigator.pushAndRemoveUntil(route, removeUntil!);
       case NavigatorAction.pushAndRemoveAll:
-        Navigator.of(context).pushAndRemoveUntil(route, (_) => false);
+        navigator.pushAndRemoveUntil(route, (_) => false);
     }
   }
 
@@ -303,9 +336,9 @@ class XWidget {
     bool cupertinoStyle = false,
   }) {
     navigateToFragment(
-      context,
       fragmentName,
       dependencies,
+      context: context,
       pageName: pageName,
       params: params,
       cupertinoStyle: cupertinoStyle,

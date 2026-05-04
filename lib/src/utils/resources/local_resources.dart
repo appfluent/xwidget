@@ -8,7 +8,10 @@ import 'package:logging/logging.dart';
 
 import '../../analytics/analytics.dart';
 import '../../xwidget.dart';
+import '../path.dart';
+import 'fragment_bundle.dart';
 import 'resources.dart';
+import 'value_bundle.dart';
 
 final _log = Logger('LocalResources');
 
@@ -81,7 +84,7 @@ class LocalResources extends Resources {
     for (final fileName in manifestMap.keys) {
       if (fileName.startsWith('$fragmentsPath/')) {
         final relativePath = fileName.substring(fragmentsPath.length + 1);
-        final parts = splitFileName(relativePath);
+        final parts = splitPath(relativePath);
         if (parts != null) {
           await fragments.loadFromAssetBundle(
             fileName,
@@ -94,7 +97,7 @@ class LocalResources extends Resources {
         }
       } else if (fileName.startsWith('$valuesPath/')) {
         final relativePath = fileName.substring(valuesPath.length + 1);
-        final parts = splitFileName(relativePath);
+        final parts = splitPath(relativePath);
         if (parts != null) {
           await values.loadFromAssetBundle(
             fileName,
@@ -134,7 +137,7 @@ class LocalResources extends Resources {
         }
         final bundle = Resources.of<FragmentResourceBundle>();
         bundle.updateFragment(fqn, content);
-        Resources.instance.clearXmlCache();
+        Resources.instance.clearFragmentCache();
         WidgetsBinding.instance.reassembleApplication();
         _log.fine('Fragment updated via service extension: $fqn');
         return ServiceExtensionResponse.result('{}');

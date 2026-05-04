@@ -10,8 +10,11 @@ import '../../analytics/analytics.dart';
 import '../../xwidget.dart';
 import '../bundle/bundle_cache.dart';
 import '../hash.dart';
-import 'resources.dart';
+import '../path.dart';
 import '../version.dart';
+import 'fragment_bundle.dart';
+import 'resources.dart';
+import 'value_bundle.dart';
 
 final _log = Logger('CloudResources');
 
@@ -147,7 +150,7 @@ class CloudResources extends Resources {
         final name = file.name;
         if (name.startsWith(fragPrefix)) {
           final relativePath = name.substring(fragPrefix.length);
-          final parts = splitFileName(relativePath);
+          final parts = splitPath(relativePath);
           if (parts != null) {
             final content = utf8.decode(file.content as List<int>);
             fragments.loadFromString(parts.path, parts.name, parts.ext, content);
@@ -155,7 +158,7 @@ class CloudResources extends Resources {
           }
         } else if (name.startsWith(valPrefix)) {
           final relativePath = name.substring(valPrefix.length);
-          final parts = splitFileName(relativePath);
+          final parts = splitPath(relativePath);
           if (parts != null) {
             final content = utf8.decode(file.content as List<int>);
             values.loadFromString(parts.path, parts.name, parts.ext, content);
@@ -190,7 +193,7 @@ class CloudResources extends Resources {
     for (final fileName in manifestMap.keys) {
       if (fileName.startsWith('$fragmentsPath/')) {
         final relativePath = fileName.substring(fragmentsPath.length + 1);
-        final parts = splitFileName(relativePath);
+        final parts = splitPath(relativePath);
         if (parts != null) {
           await fragments.loadFromAssetBundle(
             fileName,
@@ -203,7 +206,7 @@ class CloudResources extends Resources {
         }
       } else if (fileName.startsWith('$valuesPath/')) {
         final relativePath = fileName.substring(valuesPath.length + 1);
-        final parts = splitFileName(relativePath);
+        final parts = splitPath(relativePath);
         if (parts != null) {
           await values.loadFromAssetBundle(fileName, parts.path, parts.name, parts.ext, rootBundle);
           valueFileCount++;

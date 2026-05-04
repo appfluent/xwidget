@@ -6,6 +6,6 @@ import 'package:xwidget/xwidget.dart';
 import 'package:xwidget_example/xwidget/controllers/app_controller.dart';
 
 void registerXWidgetControllers() {
-  XWidget.registerControllerFactory(() => AppController());
+  XWidget.registerControllerFactoryForName('AppController', () => AppController());
 }
 

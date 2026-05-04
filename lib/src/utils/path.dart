@@ -55,3 +55,31 @@ class Path {
     return "$pathStr$separator$_fileName";
   }
 }
+
+/// Splits a relative file path into its directory path, file name, and
+/// extension components.
+///
+/// For example, `subdir/my_file.xml` returns
+/// `(path: "subdir/", name: "my_file", ext: "xml")`.
+PathParts? splitPath(String relativePath) {
+  final lastSlash = relativePath.lastIndexOf('/');
+  final lastDot = relativePath.lastIndexOf('.');
+
+  if (lastDot < 0) return null; // no extension
+
+  final path = lastSlash >= 0 ? relativePath.substring(0, lastSlash + 1) : '';
+  final name = relativePath.substring(lastSlash + 1, lastDot);
+  final ext = relativePath.substring(lastDot + 1);
+
+  if (name.isEmpty || ext.isEmpty) return null;
+
+  return PathParts(path: path, name: name, ext: ext);
+}
+
+class PathParts {
+  final String path;
+  final String name;
+  final String ext;
+
+  PathParts({required this.path, required this.name, required this.ext});
+}
