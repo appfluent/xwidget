@@ -1,3 +1,38 @@
+## 0.5.3
+
+- Added `keepAlive` support to `<Controller>` so controllers can request
+  keep-alive behavior from keep-alive-aware parents such as `PageView`.
+- Added `XRouter.navigateToFragment()` as the primary fragment navigation API,
+  with support for `none`, `fade`, `slide`, `scale`, and `cupertino`
+  transitions.
+- Added route presenters to `XRouter`, including built-in `dialog` and
+  `bottomSheet` presenters and `XRouter.registerPresenter()` for custom
+  presentation handlers.
+- Added route redirects with configurable `<routes maxRedirects="...">`
+  protection.
+- Added nested route group activation so deep links can activate ancestor route
+  groups before navigating to a child route.
+- Added route group alias resume behavior so navigating to a group alias can
+  return to the group's last active child route.
+- Added `XRouter.navigatorKey`; `XWidget.navigatorKey` now delegates to it and is
+  deprecated.
+- Added browser URL replacement support for redirects so redirected startup
+  routes do not leave the original URL in the browser history stack.
+- Updated web URL synchronization so URL push/replace behavior is owned by the
+  router navigation flow instead of an external callback.
+- Updated `XWidget.navigateToFragment()` and `XWidget.pushFragment()` to delegate
+  to `XRouter.navigateToFragment()` and marked both wrappers deprecated.
+- Updated route resolution to preserve query parameters through redirects and
+  parameterized path resolution.
+- Updated `xrouter.xsd` with redirect, presenter, transition, and
+  `maxRedirects` route metadata.
+- Refactored local and cloud asset resource loading through a shared
+  `Resources.loadAssetResourcesFromManifest()` helper.
+- Updated local and fallback cloud resource loading to load XML fragment/value
+  assets in parallel and ignore non-XML assets under resource directories.
+- Updated `parseSize()` to accept comma-separated dimensions such as `"24, 16"`
+  in addition to `x`-separated values.
+
 ## 0.5.2
 
 - **BREAKING:** Changed `XWidget.navigateToFragment()` to make `BuildContext`

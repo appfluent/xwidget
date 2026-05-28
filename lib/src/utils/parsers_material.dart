@@ -434,7 +434,8 @@ Size? parseSize(String? value) {
   if (value != null && value.isNotEmpty) {
     double? width;
     double? height;
-    final parts = value.split("x");
+    final normalized = value.trim().replaceAll(',', 'x');
+    final parts = normalized.split("x").map((part) => part.trim()).toList();
     if (parts.length == 1) {
       width = double.tryParse(parts[0]);
       height = width;
@@ -447,7 +448,7 @@ Size? parseSize(String? value) {
     }
     throw Exception(
       "Problem parsing Size value: '$value'. Valid formats are "
-      "<W>x<H>, <W>x, x<H>, or <one value for W and H>",
+      "'<W>x<H>', '<W>x', 'x<H>', '<W>,<H>', or '<S>' for both width and height.",
     );
   }
   return null;

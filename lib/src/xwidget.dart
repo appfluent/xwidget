@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Stack;
 import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
@@ -24,8 +23,6 @@ import 'utils/platform/platform_utils.dart';
 import 'utils/resources/resources.dart';
 import 'utils/router/xrouter.dart';
 import 'utils/xml.dart';
-
-enum NavigatorAction { push, pushReplacement, pushAndRemoveUntil, pushAndRemoveAll }
 
 class XWidget {
   static final _log = Logger("XWidget");
@@ -82,7 +79,8 @@ class XWidget {
 
   /// Global navigator key. Assign to [MaterialApp.navigatorKey]
   /// to enable context-free navigation for routes.
-  static final navigatorKey = GlobalKey<NavigatorState>();
+  @Deprecated('Use XRouter.navigatorKey instead. ')
+  static final navigatorKey = XRouter.navigatorKey;
 
   @Deprecated('Caching is now managed by Resources internally. This field has no effect.')
   static bool xmlCacheEnabled = true;
@@ -187,7 +185,7 @@ class XWidget {
       () =>
           () => XRouter.routePopAll(),
     );
-    registerFunction('navigatorKey', () => XWidget.navigatorKey);
+    registerFunction('navigatorKey', () => XRouter.navigatorKey);
   }
 
   static void registerIcon(String name, IconData iconData) {
@@ -245,43 +243,7 @@ class XWidget {
 
   /// Navigates to a fragment-backed page by inflating an XML fragment
   /// and pushing the resulting widget onto the navigation stack.
-  ///
-  /// Inflates the fragment specified by [fragmentName] into a widget and
-  /// navigates using either a [MaterialPageRoute] or [CupertinoPageRoute].
-  /// The navigation behavior is determined by [action]:
-  ///
-  /// - [NavigatorAction.push] — adds the route on top of the stack.
-  /// - [NavigatorAction.pushReplacement] — replaces the current route.
-  /// - [NavigatorAction.pushAndRemoveAll] — pushes the route and removes
-  ///   all previous routes from the stack.
-  ///
-  /// The route name defaults to [fragmentName] unless [pageName] is
-  /// provided, which is useful for analytics tracking and route-aware
-  /// widgets like [NavigatorObserver].
-  ///
-  /// Example:
-  /// ```dart
-  /// XWidget.navigateToFragment(
-  ///   'screens/settings',
-  ///   dependencies,
-  ///   pageName: '/settings',
-  ///   params: {'userId': currentUser.id},
-  ///   action: NavigatorAction.pushReplacement,
-  /// );
-  /// ```
-  ///
-  /// - [fragmentName]: The name of the fragment resource to inflate.
-  /// - [dependencies]: The dependency scope for data binding and
-  ///   expression evaluation within the fragment.
-  /// - [pageName]: Optional route name for the [RouteSettings]. Defaults
-  ///   to [fragmentName] if omitted.
-  /// - [params]: Optional key-value pairs passed to the fragment during
-  ///   inflation. See [inflateFragment] for details on parameter handling.
-  /// - [cupertinoStyle]: If `true`, uses [CupertinoPageRoute] for an
-  ///   iOS-style page transition. Defaults to `false`, which uses
-  ///   [MaterialPageRoute].
-  /// - [action]: The navigation action to perform. Defaults to
-  ///   [NavigatorAction.push].
+  @Deprecated('Use XRouter.navigateToFragment instead')
   static void navigateToFragment(
     String fragmentName,
     Dependencies dependencies, {
@@ -292,41 +254,19 @@ class XWidget {
     RoutePredicate? removeUntil,
     NavigatorAction action = NavigatorAction.push,
   }) {
-    if (action == NavigatorAction.pushAndRemoveUntil && removeUntil == null) {
-      throw ArgumentError(
-        'removeUntil predicate is required '
-        'with NavigatorAction.pushAndRemoveUntil',
-      );
-    }
-
-    final navigator = context != null ? Navigator.of(context) : navigatorKey.currentState;
-    if (navigator == null) {
-      throw Exception(
-        'Navigator not found. Assign XWidget.navigatorKey to'
-        ' MaterialApp or CupertinoApp for context-free navigation.',
-      );
-    }
-
-    final settings = RouteSettings(name: pageName ?? fragmentName);
-    builder(_) => XWidget.inflateFragment(fragmentName, dependencies, params: params) as Widget;
-
-    final route = (cupertinoStyle)
-        ? CupertinoPageRoute(settings: settings, builder: builder)
-        : MaterialPageRoute(settings: settings, builder: builder);
-
-    switch (action) {
-      case NavigatorAction.push:
-        navigator.push(route);
-      case NavigatorAction.pushReplacement:
-        navigator.pushReplacement(route);
-      case NavigatorAction.pushAndRemoveUntil:
-        navigator.pushAndRemoveUntil(route, removeUntil!);
-      case NavigatorAction.pushAndRemoveAll:
-        navigator.pushAndRemoveUntil(route, (_) => false);
-    }
+    XRouter.navigateToFragment(
+      fragmentName,
+      dependencies,
+      context: context,
+      pageName: pageName,
+      params: params,
+      transition: cupertinoStyle ? 'cupertino' : null,
+      removeUntil: removeUntil,
+      action: action,
+    );
   }
 
-  @Deprecated('Use navigateToFragment instead')
+  @Deprecated('Use XRouter.navigateToFragment instead')
   static void pushFragment(
     BuildContext context,
     String fragmentName,
@@ -335,13 +275,13 @@ class XWidget {
     Map<String, dynamic>? params,
     bool cupertinoStyle = false,
   }) {
-    navigateToFragment(
+    XRouter.navigateToFragment(
       fragmentName,
       dependencies,
       context: context,
       pageName: pageName,
       params: params,
-      cupertinoStyle: cupertinoStyle,
+      transition: cupertinoStyle ? 'cupertino' : null,
     );
   }
 

@@ -12,6 +12,9 @@ external JSString get _search;
 @JS('window.history.pushState')
 external void _pushState(JSAny? state, JSString title, JSString url);
 
+@JS('window.history.replaceState')
+external void _replaceState(JSAny? state, JSString title, JSString url);
+
 @JS('window.history.back')
 external void _historyBack();
 
@@ -63,7 +66,6 @@ class WebUrlSync {
     }
 
     _enabled = true;
-    XRouter.onUrlChanged = _pushUrl;
     _popStateHandler = _onPopState.toJS;
     _addEventListener('popstate'.toJS, _popStateHandler!);
   }
@@ -74,7 +76,6 @@ class WebUrlSync {
     if (!_enabled) return;
 
     _enabled = false;
-    XRouter.onUrlChanged = null;
     if (_popStateHandler != null) {
       _removeEventListener('popstate'.toJS, _popStateHandler!);
       _popStateHandler = null;
@@ -82,9 +83,17 @@ class WebUrlSync {
   }
 
   /// Updates the browser URL without triggering a page reload.
-  static void _pushUrl(String path) {
+  static void pushUrl(String path) {
     if (path == currentPath) return;
     _pushState(null, ''.toJS, path.toJS);
+  }
+
+  /// Replaces the current browser URL without adding a history
+  /// entry. Used for redirects where the original URL should not
+  /// appear in the back stack.
+  static void replaceUrl(String path) {
+    if (path == currentPath) return;
+    _replaceState(null, ''.toJS, path.toJS);
   }
 
   /// Handles browser back/forward button presses.

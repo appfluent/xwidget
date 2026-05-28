@@ -181,41 +181,16 @@ class CloudResources extends Resources {
     );
 
     final manifestMap = await _loadFallbackManifest();
+    final result = await loadAssetResourcesFromManifest(
+      manifestMap: manifestMap,
+      assetBundle: rootBundle,
+      fragmentsPath: fragmentsPath,
+      valuesPath: valuesPath,
+    );
 
-    final fragments = FragmentResourceBundle(fragmentsPath);
-    final values = ValueResourceBundle(valuesPath);
-
-    var fragmentCount = 0;
-    var valueFileCount = 0;
-
-    for (final fileName in manifestMap.keys) {
-      if (fileName.startsWith('$fragmentsPath/')) {
-        final relativePath = fileName.substring(fragmentsPath.length + 1);
-        final parts = splitPath(relativePath);
-        if (parts != null) {
-          await fragments.loadFromAssetBundle(
-            fileName,
-            parts.path,
-            parts.name,
-            parts.ext,
-            rootBundle,
-          );
-          fragmentCount++;
-        }
-      } else if (fileName.startsWith('$valuesPath/')) {
-        final relativePath = fileName.substring(valuesPath.length + 1);
-        final parts = splitPath(relativePath);
-        if (parts != null) {
-          await values.loadFromAssetBundle(fileName, parts.path, parts.name, parts.ext, rootBundle);
-          valueFileCount++;
-        }
-      }
-    }
-
-    replaceResourceBundles([fragments, values]);
     _log.info(
-      'Fallback local resources loaded: $fragmentCount fragments, '
-      '$valueFileCount value files',
+      'Fallback local resources loaded: ${result.fragmentCount} fragments, '
+      '${result.valueFileCount} value files',
     );
   }
 

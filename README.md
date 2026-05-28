@@ -1,47 +1,63 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/doc/assets/xwidget_logo_full.png"
         alt="XWidget Logo"
-        height="80"
+        height="96"
     />
 </p>
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/appfluent/xwidget/main/doc/assets/code_animation.gif"
-        alt="Code Animation"
+        alt="XWidget XML authoring demo"
         style="max-width:800px; width:100%; height:auto;"
     />
 </p>
 
-# XWidget
+# What is XWidget?
 
-XWidget is a Flutter runtime for building dynamic UI from an expressive XML
-markup language. It lets you keep application behavior in Dart while moving
-layout, copy, styling, resources, and route definitions into XML that can be
-loaded from local assets or XWidget Cloud.
+XWidget is a server-driven UI platform for Flutter. It lets you move
+presentation resources out of the app binary and into versioned UI bundles that
+can be deployed through XWidget Cloud, while your compiled Flutter app keeps
+control of behavior, services, credentials, permissions, business rules, and
+native integrations.
+
+> XML is the markup. Bundles are the transport. Flutter remains the runtime.
+
+Use XWidget when you need to:
+
+- Update screens without shipping a new app build
+- Run A/B tests, staged rollouts, and channel-based releases
+- Keep UI moving while app store review and user update cycles catch up
+- Ship dynamic layout, copy, styling, resources, and routes from a content server
+- Keep app behavior in Dart instead of moving business logic into markup
+
+## Flutter First
+
+You use generated inflaters for the Flutter SDK, third-party packages, and your own widgets.
+XWidget Builder reads Dart specs and generates the runtime registration code,
+XML schema, icons, controllers, and IDE metadata your app uses at build time.
+
+That means your server-driven UI can use the widgets your Flutter app already
+uses.
+
+## Markup That Looks Like UI
+
+XWidget fragments are XML files that map closely to Flutter widget trees. They
+support nested fragments, parameters, control flow, resources, expressions, and
+dependency scopes.
 
 ```xml
 <Column xmlns="http://www.appfluent.us/xwidget" crossAxisAlignment="start">
     <Text data="Hello World">
         <TextStyle for="style" fontWeight="bold" color="#262626"/>
     </Text>
-    <Text>Welcome to XWidget!</Text>
+
+    <if test="${items.length > 0}">
+        <Text data="Found ${items.length} items"/>
+    </if>
 </Column>
 ```
 
-Use XWidget when you need to:
-
-- Update screens without shipping a new app build
-- Run A/B tests and gradual UI rollouts
-- Keep UI consistent across platforms despite app store review and user update cycles
-- Engage users with timely content across approval and update-cycle delays
-- Share dynamic layout, static resources, and route definitions across app versions
-
-## Features
-
-### Dynamic UI Fragments
-
-Define UI in XML and inflate it at runtime. Compose screens from reusable
-fragments with nesting, parameters, control flow, and inherited dependencies.
+Inflate a fragment from Dart:
 
 ```dart
 @override
@@ -50,28 +66,10 @@ Widget build(BuildContext context) {
 }
 ```
 
-### Generated Flutter Widget Support
+## Dart Owns Behavior
 
-Use generated inflaters for Flutter widgets, package widgets, and your own
-custom widgets. XWidget Builder reads Dart specs and generates the runtime
-registration code, XML schema, and IDE metadata your app uses at build time.
-
-### Expression Language
-
-Write dynamic expressions directly in XML. XWidget expressions support
-operators, built-in functions, custom functions, resource accessors, and values
-from your dependency scope.
-
-```xml
-<Text data="${user.firstName + ' ' + user.lastName}"/>
-<Text visible="${items.length > 0}" data="Found ${items.length} items"/>
-<Container color="${isActive ? toColor('#00FF00') : toColor('#FF0000')}"/>
-```
-
-### State Management
-
-Keep business logic in Dart with controllers, then bind XML to controller state
-using `ValueListener`, `EventListener`, dependency scopes, and callbacks.
+Controllers keep behavior in Dart. Fragments bind to controller state and
+callbacks through dependencies, `ValueListener`, and `EventListener`.
 
 ```xml
 <Controller name="CounterController">
@@ -81,41 +79,15 @@ using `ValueListener`, `EventListener`, dependency scopes, and callbacks.
 </Controller>
 ```
 
-### Static Resources
+This keeps UI presentation flexible without turning markup into your application
+runtime.
 
-Load reusable string, color, int, double, and bool resources from XML value
-files. Access them from expressions with functions such as `resString()` and
-`resColor()`.
+## Production SDUI
 
-```xml
-<Text data="${resString('app_title')}"/>
-<Container color="${resColor('primary')}"/>
-```
-
-### Routing
-
-Define routes in XML value resources and navigate from Dart or XML. XWidget
-supports Navigator-backed routes, callback route groups for `PageView`,
-`TabBarView`, and `IndexedStack`, path/query parameters, browser history, and
-startup deep links on web.
-
-```xml
-<routes>
-    <route path="/product/:id" name="product" fragment="product_detail"/>
-</routes>
-```
-
-```xml
-<TextButton onPressed="${routeTo('/product/42?tab=reviews')}">
-    <Text>View product</Text>
-</TextButton>
-```
-
-### Server-Driven UI
-
-Load fragments, value resources, and routes from XWidget Cloud. Deploy to a
-staging channel, test, then promote to production without waiting for app store
-review.
+XWidget Cloud delivers fragments, value resources, and routes as versioned UI
+bundles. Deploy to a staging channel, test, then promote to production. Apps can
+select channels and versions through remote configuration for beta users,
+rollouts, A/B cohorts, or pinned releases.
 
 ```dart
 await XWidget.initialize(
@@ -123,31 +95,39 @@ await XWidget.initialize(
   resources: CloudResources(
     projectKey: '<your-project-key>',
     storageKey: '<your-storage-key>',
-    channel: 'production',
-    version: '1.0.0',
+    channel: remoteConfig.xwidgetChannel,
+    version: remoteConfig.xwidgetVersion,
   ),
 );
 ```
 
-### Automatic Analytics
-
-When connected to XWidget Cloud, XWidget can track fragment renders, bundle
+When connected to XWidget Cloud, XWidget can also track fragment renders, bundle
 downloads, errors, and navigation transitions without manual instrumentation.
 
-### Cross-Platform
+## What Can Change Remotely
 
-Works on Flutter's supported platforms: iOS, Android, web, Windows, macOS, and
-Linux.
+XWidget is designed for presentation resources:
+
+- Screens and reusable fragments
+- Layout and visual structure
+- Copy and static resources
+- Colors, dimensions, and style resources
+- Route definitions and navigation targets
+- Experiment variants and release-channel differences
+
+Your Flutter app should still own sensitive and platform-bound behavior:
+credentials, native permissions, service integrations, critical business rules,
+and anything that must remain inside the compiled app.
 
 ## Quick Start
 
-Install XWidget and the code generator:
+Add the builder dev dependency:
 
 ```bash
-flutter pub add xwidget dev:xwidget_builder
+flutter pub add dev:xwidget_builder
 ```
 
-Initialize a new XWidget app:
+Initialize a new XWidget starter app:
 
 ```bash
 dart run xwidget_builder:init --new-app
@@ -178,25 +158,56 @@ void main() async {
 }
 ```
 
+## Features
+
+- **Generated widget support** - Flutter SDK widgets, package widgets, and app
+  widgets can be exposed to XML through generated inflaters.
+- **Expression language** - Bind XML attributes to dynamic values, operators,
+  functions, custom functions, and resources.
+- **Fragments** - Compose screens from reusable XML fragments with nested
+  dependencies and parameters.
+- **Controllers** - Keep state and behavior in Dart while fragments render the
+  presentation layer.
+- **Resources** - Load reusable strings, colors, numbers, booleans, and routes
+  from XML value files.
+- **Routing** - Define routes in XML and navigate from Dart or XML, including
+  callback route groups for `PageView`, `TabBarView`, and `IndexedStack`.
+- **Cloud delivery** - Load versioned bundles from XWidget Cloud through
+  channels and pinned versions.
+- **Analytics** - Track renders, downloads, errors, and navigation transitions
+  when using XWidget Cloud.
+- **Cross-platform** - Works on Flutter's supported platforms: iOS, Android,
+  web, Windows, macOS, and Linux.
+
 ## Documentation
 
 Full documentation is available at **[docs.xwidget.dev](https://docs.xwidget.dev)**,
 including:
 
-- [Quick Start](https://docs.xwidget.dev/getting_started/quick_start/) - installation and setup
-- [Fragments](https://docs.xwidget.dev/concepts/fragments/) - XML-based UI components
-- [Controllers](https://docs.xwidget.dev/concepts/controllers/) - state and business logic
-- [Resources](https://docs.xwidget.dev/concepts/resources/) - strings, colors, numbers,
-  booleans, and routes
-- [Routing](https://docs.xwidget.dev/concepts/routing/) - route XML, navigation, and
-  web URL sync
-- [Expression Language](https://docs.xwidget.dev/el/rules/) - operators, functions, and custom logic
-- [Server-Driven UI](https://docs.xwidget.dev/concepts/server_driven_ui/) - runtime delivery model
-- [Cloud Resources](https://docs.xwidget.dev/runtime/cloud_resources/) - over-the-air UI delivery
-- [Analytics](https://docs.xwidget.dev/analytics/overview/) - downloads, renders, errors,
-  and transitions
-- [Code Generation](https://docs.xwidget.dev/builder/overview/) - inflaters, icons,
-  controllers, registry, and schema
+- [Introduction](https://docs.xwidget.dev/getting_started/introduction/) -
+  server-driven Flutter with XWidget
+- [Quick Start](https://docs.xwidget.dev/getting_started/quick_start/) -
+  installation and setup
+- [Guided Setup](https://docs.xwidget.dev/guides/guided_setup/) - a fuller
+  walkthrough from local resources to cloud delivery
+- [Fragments](https://docs.xwidget.dev/concepts/fragments/) - XML-based UI
+  components
+- [Controllers](https://docs.xwidget.dev/concepts/controllers/) - state and
+  behavior in Dart
+- [Resources](https://docs.xwidget.dev/concepts/resources/) - strings, colors,
+  numbers, booleans, and routes
+- [Routing](https://docs.xwidget.dev/concepts/routing/) - route XML,
+  navigation, and web URL sync
+- [Expression Language](https://docs.xwidget.dev/el/rules/) - operators,
+  functions, and custom logic
+- [Server-Driven UI](https://docs.xwidget.dev/concepts/server_driven_ui/) -
+  runtime delivery model
+- [Cloud Resources](https://docs.xwidget.dev/runtime/cloud_resources/) -
+  over-the-air UI delivery
+- [Analytics](https://docs.xwidget.dev/analytics/overview/) - downloads,
+  renders, errors, and transitions
+- [Code Generation](https://docs.xwidget.dev/builder/overview/) - inflaters,
+  icons, controllers, registry, and schema
 
 ## IDE Plugins
 

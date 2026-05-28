@@ -39,6 +39,10 @@ class ControllerWidget extends StatefulWidget {
   /// via [Controller.options].
   final Map<String, dynamic> options;
 
+  /// Whether this controller should request keep-alive behavior from
+  /// keep-alive-aware parents such as [PageView].
+  final bool keepAlive;
+
   ControllerWidget({
     super.key,
     required this.name,
@@ -46,6 +50,7 @@ class ControllerWidget extends StatefulWidget {
     required this.dependencies,
     this.errorWidget,
     this.progressWidget,
+    this.keepAlive = false,
     Map<String, dynamic>? options,
   }) : options = options ?? {};
 
@@ -88,7 +93,8 @@ class ControllerWidget extends StatefulWidget {
 ///
 /// The default [guard] returns `true`, so existing controllers are
 /// unaffected.
-abstract class Controller extends State<ControllerWidget> {
+abstract class Controller extends State<ControllerWidget>
+    with AutomaticKeepAliveClientMixin<ControllerWidget> {
   /// The value returned by the guard/init chain, consumed by
   /// [DynamicBuilder] to manage async state.
   dynamic _initValue;
@@ -107,6 +113,9 @@ abstract class Controller extends State<ControllerWidget> {
   Map<String, dynamic> get options => widget.options;
 
   @override
+  bool get wantKeepAlive => widget.keepAlive;
+
+  @override
   @nonVirtual
   void initState() {
     super.initState();
@@ -117,8 +126,19 @@ abstract class Controller extends State<ControllerWidget> {
   }
 
   @override
+  @mustCallSuper
+  void didUpdateWidget(covariant ControllerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.keepAlive != widget.keepAlive) {
+      updateKeepAlive();
+    }
+  }
+
+  @override
   @nonVirtual
   Widget build(BuildContext context) {
+    super.build(context);
     return DynamicBuilder(
       initializer: (_, __) => _initValue,
       builder: (_, deps, __) => _inflateChildren(deps),
@@ -210,6 +230,7 @@ class ControllerWidgetInflater extends Inflater {
       dependencies: attributes['_dependencies'],
       errorWidget: attributes['errorWidget'],
       progressWidget: attributes['progressWidget'],
+      keepAlive: attributes['keepAlive'] ?? false,
       options: attributes['options'] != null ? {...attributes['options']} : null,
     );
   }
@@ -227,6 +248,8 @@ class ControllerWidgetInflater extends Inflater {
         break;
       case 'options':
         break;
+      case 'keepAlive':
+        return parseBool(value);
     }
     return value;
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
@@ -5,15 +6,17 @@ import 'package:xml/xml.dart';
 import '../../../xwidget.dart';
 import 'web_url_sync.dart';
 
-/// Callback invoked when the route changes. Used by the web sync
-/// layer to update the browser URL.
-typedef UrlSyncCallback = void Function(String path);
+enum NavigatorAction { push, pushReplacement, pushAndRemoveUntil, pushAndRemoveAll }
 
 /// Callback invoked by the router to change the visible page in a
 /// multi-view widget. The implementation determines the widget type:
 /// [PageController.jumpToPage] for PageView, [State.setState] with an
 /// index for IndexedStack, [TabController.animateTo] for TabBarView.
 typedef RouteCallback = void Function(int index, String? name, Map<String, dynamic> params);
+
+/// Opens a route's fragment in a custom presentation (dialog, sheet, …).
+typedef RoutePresenter =
+    void Function(ResolvedRoute route, Dependencies dependencies, Map<String, dynamic> params);
 
 /// The result of resolving a navigation target to a route.
 ///
@@ -41,13 +44,21 @@ class ResolvedRoute {
   /// to. Inherited from the route group when not set explicitly.
   final bool history;
 
+  final String? presenter;
+
+  final String? transition;
+
   /// The index of this route within its group. Null for standalone
   /// routes.
   final int? viewIndex;
 
   /// Merged parameters from path segments, query string, and
   /// caller-provided values.
-  final Map<String, String> params;
+  final Map<String, dynamic> params;
+
+  /// Parent group activations required before this route's own
+  /// group is on screen, ordered outermost first.
+  final List<RouteActivation> ancestors;
 
   const ResolvedRoute({
     required this.target,
@@ -57,13 +68,48 @@ class ResolvedRoute {
     this.groupName,
     this.viewIndex,
     this.history = true,
+    this.presenter,
+    this.transition,
     this.params = const {},
+    this.ancestors = const [],
   });
 
-  String get targetPath => target.startsWith('/') ? target : path;
+  // String get targetPath => target.startsWith('/') ? target : path;
 
   @override
-  String toString() => 'ResolvedRoute($path, params=$params)';
+  String toString() => 'ResolvedRoute($path, name=$name, presenter=$presenter, params=$params, )';
+}
+
+/// A single step in the ancestor activation chain for nested
+/// route groups.
+///
+/// When a route belongs to a nested group, each ancestor
+/// describes which parent group must be activated (and at which
+/// view index) before the route's own group is on screen.
+class RouteActivation {
+  final String groupName;
+  final int viewIndex;
+  final String? name;
+  final String? path;
+  final String? fragment;
+  final String? transition;
+
+  const RouteActivation({
+    required this.groupName,
+    required this.viewIndex,
+    this.path,
+    this.fragment,
+    this.name,
+    this.transition,
+  });
+
+  @override
+  String toString() => 'RouteActivation($groupName[$viewIndex], path=$path)';
+}
+
+class XRouterRouteSettings extends RouteSettings {
+  final bool sendTrackingAnalytics;
+  const XRouterRouteSettings({super.name, super.arguments, this.sendTrackingAnalytics = true});
 }
 
 /// Minimal singleton router for XWidget applications.
@@ -133,15 +179,34 @@ class XRouter {
   /// navigation.
   static ResolvedRoute? _currentRoute;
 
-  /// Callback fired when the URL should be updated. Set by the
-  /// web sync layer; null on non-web platforms.
-  static UrlSyncCallback? onUrlChanged;
+  /// Last navigated target per group, for resuming the active
+  /// tab when returning to a group via alias.
+  static final Map<String, String> _lastGroupRoute = {};
 
-  static bool _initialBrowserLocationApplyScheduled = false;
+  static bool _pendingRouteScheduled = false;
 
-  static bool _initialBrowserLocationApplied = false;
+  static bool _initialRouteProcessed = false;
+
+  static _PendingRoute? _pendingRoute;
+
+  static final int _defaultMaxRedirects = 5;
+
+  static final Map<String, RoutePresenter> _presenters = {
+    'dialog': _dialogPresenter,
+    'bottomSheet': _bottomSheetPresenter,
+  };
 
   static final _sourceMap = <String, Set<_Route>>{};
+
+  /// The currently active resolved route, or null before first
+  /// navigation.
+  static ResolvedRoute? get currentRoute => _currentRoute;
+
+  /// Global navigator key. Assign to [MaterialApp.navigatorKey]
+  /// to enable context-free navigation for routes.
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
+  static int maxRedirects = _defaultMaxRedirects;
 
   // ===================================
   // Initialization
@@ -157,6 +222,9 @@ class XRouter {
 
     final root = document.getElement('routes');
     if (root == null) return;
+
+    // set max redirects
+    maxRedirects = tryParseInt(root.getAttribute('maxRedirects')) ?? _defaultMaxRedirects;
 
     for (final element in root.childElements) {
       switch (element.name.qualified) {
@@ -200,9 +268,7 @@ class XRouter {
   static void registerRouteCallback(String groupName, RouteCallback callback) {
     _callbacks[groupName] = callback;
     WebUrlSync.enable();
-
-    // After this view group is ready, try to honor the browser URL.
-    _scheduleInitialBrowserLocationApply();
+    _schedulePendingRouteProcessing();
   }
 
   /// Unregisters a view callback for a route group.
@@ -216,6 +282,12 @@ class XRouter {
   /// group name.
   static bool hasRegisteredView(String groupName) {
     return _callbacks.containsKey(groupName);
+  }
+
+  /// Registers a presentation handler. Apps/packages call this to add
+  /// their own (e.g. xwidget_ui registering 'sidePanel').
+  static void registerPresenter(String name, RoutePresenter presenter) {
+    _presenters[name] = presenter;
   }
 
   // ===================================
@@ -253,19 +325,43 @@ class XRouter {
   }) {
     _log.info('goTo: target=$target');
 
+    // If target matches a group alias and the group has a
+    // previously active route, resume that route instead of
+    // navigating to the default child.
+    final lookupKey = target.startsWith('/')
+        ? Uri.parse(target).path.replaceAll(RegExp(r'/+'), '/')
+        : target;
+    final aliasRoute = _routes[lookupKey];
+    if (aliasRoute != null &&
+        aliasRoute.groupName != null &&
+        aliasRoute.aliases.contains(lookupKey)) {
+      final lastTarget = _lastGroupRoute[aliasRoute.groupName!];
+      if (lastTarget != null) {
+        target = lastTarget;
+      }
+    }
+
     final resolved = resolve(target);
     if (resolved == null) {
       _log.warning('No route found for "$target"');
       return;
     }
 
-    // final previous = _currentRoute;
-    _currentRoute = resolved;
+    // If the route has ancestors, use the cascade mechanism
+    if (resolved.ancestors.isNotEmpty) {
+      _pendingRoute = _PendingRoute(
+        resolved: resolved,
+        dependencies: dependencies,
+        action: action,
+        params: params,
+        urlUpdate: _UrlUpdate.push,
+        remainingAncestors: [...resolved.ancestors],
+      );
+      _processPendingRoute();
+      return;
+    }
 
-    // send analytics event
-    Analytics.trackNavigation(pageName: resolved.path);
-
-    // navigate to route
+    // No ancestors — navigate directly
     _navigateToRoute(resolved, dependencies: dependencies, params: params, action: action);
   }
 
@@ -297,90 +393,97 @@ class XRouter {
   /// against registered names and aliases. Returns null if no
   /// match is found.
   static ResolvedRoute? resolve(String target) {
-    final isPath =
-        target.startsWith('/') || target.startsWith('https://') || target.startsWith('http://');
-
-    if (isPath) {
-      final uri = Uri.parse(target);
-      final path = uri.path.replaceAll(RegExp(r'/+'), '/');
-      final queryParams = uri.queryParameters;
-      final pathAndQuery = uri.hasQuery ? '$path?${uri.query}' : path;
-
-      // Exact path match
-      final route = _routes[path];
-      if (route != null) return _toResolved(pathAndQuery, route, params: queryParams);
-
-      // Pattern match against parameterized routes
-      for (final pattern in _routePatterns) {
-        final match = pattern.regExp.firstMatch(path);
-        if (match == null) continue;
-
-        final pathParams = <String, String>{};
-        for (var i = 0; i < pattern.paramNames.length; i++) {
-          pathParams[pattern.paramNames[i]] = match.group(i + 1)!;
-        }
-        return _toResolved(pathAndQuery, pattern.route, params: {...pathParams, ...queryParams});
-      }
-    } else {
-      // Exact name match
-      final exactRoute = _routes[target];
-      if (exactRoute != null) return _toResolved(target, exactRoute);
-    }
-
-    return null;
+    return _resolveRoute(target);
   }
 
-  /// The currently active resolved route, or null before first
-  /// navigation.
-  static ResolvedRoute? get currentRoute => _currentRoute;
+  /// Navigates to a fragment-backed page by inflating an XML fragment
+  /// and pushing the resulting widget onto the navigation stack.
+  ///
+  /// Inflates the fragment specified by [fragmentName] into a widget and
+  /// navigates using either a [MaterialPageRoute] or [CupertinoPageRoute].
+  /// The navigation behavior is determined by [action]:
+  ///
+  /// - [NavigatorAction.push] — adds the route on top of the stack.
+  /// - [NavigatorAction.pushReplacement] — replaces the current route.
+  /// - [NavigatorAction.pushAndRemoveAll] — pushes the route and removes
+  ///   all previous routes from the stack.
+  ///
+  /// The route name defaults to [fragmentName] unless [pageName] is
+  /// provided, which is useful for analytics tracking and route-aware
+  /// widgets like [NavigatorObserver].
+  ///
+  /// Example:
+  /// ```dart
+  /// XWidget.navigateToFragment(
+  ///   'screens/settings',
+  ///   dependencies,
+  ///   pageName: '/settings',
+  ///   params: {'userId': currentUser.id},
+  ///   action: NavigatorAction.pushReplacement,
+  /// );
+  /// ```
+  ///
+  /// - [fragmentName]: The name of the fragment resource to inflate.
+  /// - [dependencies]: The dependency scope for data binding and
+  ///   expression evaluation within the fragment.
+  /// - [pageName]: Optional route name for the [RouteSettings]. Defaults
+  ///   to [fragmentName] if omitted.
+  /// - [params]: Optional key-value pairs passed to the fragment during
+  ///   inflation. See [inflateFragment] for details on parameter handling.
+  /// - [transition]: 'none', 'fade', 'slide', 'scale', 'cupertino',
+  ///    defaults to Material
+  ///   [MaterialPageRoute].
+  /// - [action]: The navigation action to perform. Defaults to
+  ///   [NavigatorAction.push].
+  static void navigateToFragment(
+    String fragmentName,
+    Dependencies dependencies, {
+    BuildContext? context,
+    String? pageName,
+    Map<String, dynamic>? params,
+    String? transition,
+    RoutePredicate? removeUntil,
+    bool sendTrackingAnalytics = true,
+    NavigatorAction action = NavigatorAction.push,
+  }) {
+    if (action == NavigatorAction.pushAndRemoveUntil && removeUntil == null) {
+      throw ArgumentError(
+        'removeUntil predicate is required '
+        'with NavigatorAction.pushAndRemoveUntil',
+      );
+    }
+
+    final navigator = context != null ? Navigator.of(context) : navigatorKey.currentState;
+    if (navigator == null) {
+      throw Exception(
+        'Navigator not found. Assign XWidget.navigatorKey to'
+        ' MaterialApp or CupertinoApp for context-free navigation.',
+      );
+    }
+
+    final settings = XRouterRouteSettings(
+      name: pageName ?? fragmentName,
+      sendTrackingAnalytics: sendTrackingAnalytics,
+    );
+
+    builder(_) => XWidget.inflateFragment(fragmentName, dependencies, params: params) as Widget;
+    final route = _buildRoute(transition, settings, builder);
+
+    switch (action) {
+      case NavigatorAction.push:
+        navigator.push(route);
+      case NavigatorAction.pushReplacement:
+        navigator.pushReplacement(route);
+      case NavigatorAction.pushAndRemoveUntil:
+        navigator.pushAndRemoveUntil(route, removeUntil!);
+      case NavigatorAction.pushAndRemoveAll:
+        navigator.pushAndRemoveUntil(route, (_) => false);
+    }
+  }
 
   // ===================================
   // Private Methods
   // ===================================
-
-  static ResolvedRoute _toResolved(
-    String target,
-    _Route route, {
-    Map<String, String> params = const {},
-  }) {
-    return ResolvedRoute(
-      target: target,
-      path: route.path,
-      fragment: route.fragment,
-      name: route.name,
-      groupName: route.groupName,
-      viewIndex: route.viewIndex,
-      history: route.history,
-      params: {...params},
-    );
-  }
-
-  static void _navigateToRoute(
-    ResolvedRoute resolved, {
-    Dependencies? dependencies,
-    NavigatorAction action = NavigatorAction.push,
-    Map<String, dynamic>? params,
-    bool updateUrl = true,
-  }) {
-    final mergedParams = <String, dynamic>{...resolved.params, ...?params};
-    final callback = resolved.groupName != null ? _callbacks[resolved.groupName] : null;
-
-    if (callback != null) {
-      callback(resolved.viewIndex ?? 0, resolved.name, mergedParams);
-    } else {
-      XWidget.navigateToFragment(
-        resolved.fragment,
-        dependencies ?? Dependencies(),
-        pageName: resolved.path,
-        params: mergedParams,
-        action: action,
-      );
-    }
-
-    if (updateUrl && resolved.history) {
-      onUrlChanged?.call(resolved.targetPath);
-    }
-  }
 
   /// Registers a route in the lookup maps and builds a compiled
   /// pattern if the path contains parameter segments.
@@ -424,29 +527,293 @@ class XRouter {
     (_sourceMap[source] ??= {}).add(route);
   }
 
-  static void _scheduleInitialBrowserLocationApply() {
-    if (_initialBrowserLocationApplied || _initialBrowserLocationApplyScheduled) return;
+  static void _navigateToRoute(
+    ResolvedRoute resolved, {
+    Dependencies? dependencies,
+    NavigatorAction action = NavigatorAction.push,
+    Map<String, dynamic>? params,
+    _UrlUpdate urlUpdate = _UrlUpdate.push,
+    bool sendTrackingAnalytics = true,
+  }) {
+    _log.fine(
+      '_navigateToRoute: '
+      'resolved=$resolved, '
+      'urlUpdate=$urlUpdate, '
+      'sendTrackingAnalytics=$sendTrackingAnalytics',
+    );
 
-    _initialBrowserLocationApplyScheduled = true;
+    final deps = dependencies ?? Dependencies();
+    final mergedParams = <String, dynamic>{...resolved.params, ...?params};
+    final presenter = resolved.presenter != null ? _presenters[resolved.presenter] : null;
+    final callback = resolved.groupName != null ? _callbacks[resolved.groupName] : null;
+
+    // send analytics event
+    if (sendTrackingAnalytics) {
+      Analytics.trackNavigation(pageName: resolved.path);
+    }
+
+    // we can't accurately manage previous routes for overlay routes because
+    // XRouter and Navigator are not synced. Need to switch to N2.0 routes.
+    final managed = presenter == null;
+    if (managed) {
+      _currentRoute = resolved;
+      if (resolved.groupName != null) {
+        _lastGroupRoute[resolved.groupName!] = resolved.target;
+      }
+    }
+
+    if (presenter != null) {
+      presenter(resolved, deps, mergedParams);
+    } else if (callback != null) {
+      callback(resolved.viewIndex ?? 0, resolved.name, mergedParams);
+    } else {
+      navigateToFragment(
+        resolved.fragment,
+        deps,
+        pageName: resolved.path,
+        params: mergedParams,
+        transition: resolved.transition,
+        action: action,
+        sendTrackingAnalytics: !sendTrackingAnalytics,
+      );
+    }
+
+    if (resolved.history && managed) {
+      if (urlUpdate == _UrlUpdate.push) {
+        WebUrlSync.pushUrl(resolved.target);
+      } else if (urlUpdate == _UrlUpdate.replace) {
+        WebUrlSync.replaceUrl(resolved.target);
+      }
+    }
+  }
+
+  static Route<T> _buildRoute<T>(
+    String? transition,
+    XRouterRouteSettings settings,
+    WidgetBuilder builder,
+  ) {
+    switch (transition) {
+      case 'none':
+        return PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (c, a, s) => builder(c),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        );
+      case 'fade':
+        return PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (c, a, s) => builder(c),
+          transitionsBuilder: (c, a, s, child) => FadeTransition(opacity: a, child: child),
+        );
+      case 'slide':
+        return PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (c, a, s) => builder(c),
+          transitionsBuilder: (c, a, s, child) => SlideTransition(
+            position: Tween(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: a, curve: Curves.easeOut)),
+            child: child,
+          ),
+        );
+      case 'scale':
+        return PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (c, a, s) => builder(c),
+          transitionsBuilder: (c, a, s, child) => ScaleTransition(scale: a, child: child),
+        );
+      case 'cupertino':
+        return CupertinoPageRoute<T>(settings: settings, builder: builder);
+      default: // 'default', null, '', unknown → current behavior
+        return MaterialPageRoute<T>(settings: settings, builder: builder);
+    }
+  }
+
+  static ResolvedRoute? _resolveRoute(
+    String target, {
+    Map<String, dynamic> params = const {},
+    int redirectCount = 0,
+  }) {
+    if (redirectCount > maxRedirects) {
+      throw Exception('Too many redirects resolving $target');
+    }
+
+    final isPath =
+        target.startsWith('/') || target.startsWith('https://') || target.startsWith('http://');
+
+    if (isPath) {
+      final uri = TargetUri.parse(target);
+
+      // Exact path match
+      final route = _routes[uri.path];
+      if (route != null) {
+        final redirect = route.redirect;
+        return redirect != null && redirect.isNotEmpty
+            ? _resolveRoute(
+                uri.buildTargetPath(redirect),
+                params: params,
+                redirectCount: redirectCount + 1,
+              )
+            : _toResolvedRoute(
+                uri.buildTargetPath(route.path),
+                route,
+                params: {...params, ...uri.queryParameters},
+              );
+      }
+
+      // Pattern match against parameterized routes
+      for (final pattern in _routePatterns) {
+        final match = pattern.regExp.firstMatch(uri.path);
+        if (match == null) continue;
+
+        final redirect = pattern.route.redirect;
+        return redirect != null && redirect.isNotEmpty
+            ? _resolveRoute(
+                uri.buildTargetPath(redirect, pattern),
+                params: params,
+                redirectCount: redirectCount + 1,
+              )
+            : _toResolvedRoute(
+                uri.buildTargetPath(pattern.route.path, pattern),
+                pattern.route,
+                params: {
+                  ...params,
+                  ...uri.queryParameters,
+                  ...pattern.paramNames.asMap().map(
+                    (i, name) => MapEntry(name, match.group(i + 1)!),
+                  ),
+                },
+              );
+      }
+    } else {
+      // Exact name match - does not support path or query params
+      final route = _routes[target];
+      if (route != null) {
+        final redirect = route.redirect;
+        return redirect != null && redirect.isNotEmpty
+            ? _resolveRoute(redirect, params: params, redirectCount: redirectCount + 1)
+            : _toResolvedRoute(route.path, route, params: params);
+      }
+    }
+    return null;
+  }
+
+  static ResolvedRoute? _toResolvedRoute(
+    String target,
+    _Route route, {
+    Map<String, dynamic> params = const {},
+  }) {
+    final fragment = route.fragment;
+    if (fragment != null && fragment.isNotEmpty) {
+      return ResolvedRoute(
+        target: target,
+        path: route.path,
+        fragment: fragment,
+        name: route.name,
+        groupName: route.groupName,
+        viewIndex: route.viewIndex,
+        history: route.history,
+        presenter: route.presenter,
+        transition: route.transition,
+        params: {...params},
+        ancestors: route.ancestors,
+      );
+    }
+    throw Exception(
+      'Resolved route does not define a fragment: '
+      'path=${route.path}, name=${route.name}, groupName=${route.groupName}',
+    );
+  }
+
+  static void _schedulePendingRouteProcessing() {
+    if (_pendingRouteScheduled) return;
+    _pendingRouteScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initialBrowserLocationApplyScheduled = false;
-      _applyInitialBrowserLocationIfReady();
+      _pendingRouteScheduled = false;
+
+      // On first run, resolve the browser URL
+      if (_pendingRoute == null && !_initialRouteProcessed) {
+        _initialRouteProcessed = true;
+        final resolved = resolve(WebUrlSync.currentPath) ?? resolve('/');
+        if (resolved == null) {
+          WebUrlSync.replaceUrl('/');
+          return;
+        }
+        _pendingRoute = _PendingRoute(
+          resolved: resolved,
+          urlUpdate: resolved.target != WebUrlSync.currentPath
+              ? _UrlUpdate.replace
+              : _UrlUpdate.none,
+          remainingAncestors: [...resolved.ancestors],
+        );
+      }
+
+      _processPendingRoute();
     });
   }
 
-  static void _applyInitialBrowserLocationIfReady() {
-    if (_initialBrowserLocationApplied) return;
+  /// Walks the ancestor chain of the pending route, activating
+  /// each level whose callback is registered. Stops at the first
+  /// unregistered callback and waits — the next
+  /// [registerRouteCallback] call resumes the cascade.
+  static void _processPendingRoute() {
+    final pending = _pendingRoute;
+    if (pending == null) return;
 
-    final resolved = resolve(WebUrlSync.currentPath);
-    if (resolved == null) return;
-
-    if (resolved.groupName != null && !_callbacks.containsKey(resolved.groupName)) {
-      return;
+    // Activate ancestors top-down
+    while (pending.remainingAncestors.isNotEmpty) {
+      final ancestor = pending.remainingAncestors.first;
+      final callback = _callbacks[ancestor.groupName];
+      if (callback == null) return; // wait for registration
+      callback(ancestor.viewIndex, ancestor.name, pending.resolved.params);
+      pending.remainingAncestors.removeAt(0);
     }
 
-    _initialBrowserLocationApplied = true;
-    _currentRoute = resolved;
-    _navigateToRoute(resolved, updateUrl: false);
+    // All ancestors processed — check final route's group
+    final group = pending.resolved.groupName;
+    if (group != null && !_callbacks.containsKey(group)) {
+      return; // wait for callback registration
+    }
+
+    // Navigate to final destination
+    final resolved = pending.resolved;
+    final urlUpdate = pending.urlUpdate;
+    _pendingRoute = null;
+    _navigateToRoute(
+      resolved,
+      dependencies: pending.dependencies,
+      action: pending.action,
+      params: pending.params,
+      urlUpdate: urlUpdate,
+    );
+  }
+
+  static void _dialogPresenter(
+    ResolvedRoute route,
+    Dependencies deps,
+    Map<String, dynamic> params,
+  ) {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+    showDialog(
+      context: context,
+      builder: (_) => XWidget.inflateFragment(route.fragment, deps, params: params) as Widget,
+    );
+  }
+
+  static void _bottomSheetPresenter(
+    ResolvedRoute route,
+    Dependencies deps,
+    Map<String, dynamic> params,
+  ) {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => XWidget.inflateFragment(route.fragment, deps, params: params) as Widget,
+    );
   }
 
   // ===================================
@@ -460,7 +827,16 @@ class XRouter {
   /// routes as defaults. The first route in document order serves
   /// as the group's default and receives aliases for the group
   /// name and group path.
-  static List<_Route> _parseRouteGroup(XmlElement element) {
+  static List<_Route> _parseRouteGroup(
+    XmlElement element, {
+    String? parentGroupName,
+    String? parentGroupPath,
+    bool parentGroupHistory = true,
+    String? parentGroupPresenter,
+    String? parentGroupTransition,
+    int? parentViewIndex,
+    List<RouteActivation> parentAncestors = const [],
+  }) {
     final groupName = element.getAttribute('name');
     if (groupName == null || groupName.isEmpty) {
       throw Exception("routeGroup requires a 'name' attribute");
@@ -476,30 +852,74 @@ class XRouter {
       }
     }
 
-    final groupHistory = tryParseBool(element.getAttribute('history')) ?? true;
+    final isNested = parentGroupName != null;
+    final groupFragment = element.getAttribute('fragment');
+
+    final groupHistory = tryParseBool(element.getAttribute('history')) ?? parentGroupHistory;
+    final groupPresenter = element.getAttribute('presenter') ?? parentGroupPresenter;
+    final groupTransition = element.getAttribute('transition') ?? parentGroupTransition;
+
+    // Compute full path for nested groups (parent prefix + group path)
+    final fullGroupPath = isNested && parentGroupPath != null && groupPath != null
+        ? '$parentGroupPath$groupPath'.replaceAll(RegExp(r'/+'), '/')
+        : groupPath;
+
+    // Build ancestor chain for children of this group
+    final childAncestors = isNested
+        ? [
+            ...parentAncestors,
+            RouteActivation(
+              groupName: parentGroupName,
+              viewIndex: parentViewIndex!,
+              name: groupName,
+              path: fullGroupPath,
+              fragment: groupFragment,
+              transition: groupTransition,
+            ),
+          ]
+        : parentAncestors;
 
     var index = 0;
     final routes = <_Route>[];
     for (final child in element.childElements) {
-      if (child.name.qualified == 'route') {
-        final route = _parseRoute(
-          child,
-          groupName: groupName,
-          groupPath: groupPath,
-          groupHistory: groupHistory,
-          viewIndex: index,
-        );
-        routes.add(route);
-        index++;
+      switch (child.name.qualified) {
+        case 'route':
+          final route = _parseRoute(
+            child,
+            groupName: groupName,
+            groupPath: fullGroupPath,
+            groupHistory: groupHistory,
+            groupPresenter: groupPresenter,
+            groupTransition: groupTransition,
+            viewIndex: index,
+            ancestors: childAncestors,
+          );
+          routes.add(route);
+          index++;
+        case 'routeGroup':
+          final nestedRoutes = _parseRouteGroup(
+            child,
+            parentGroupName: groupName,
+            parentGroupPath: fullGroupPath,
+            parentGroupHistory: groupHistory,
+            parentGroupPresenter: groupPresenter,
+            parentGroupTransition: groupTransition,
+            parentViewIndex: index,
+            parentAncestors: childAncestors,
+          );
+          routes.addAll(nestedRoutes);
+          index++;
       }
     }
 
-    // set aliases on group default route
-    if (routes.isNotEmpty) {
-      final defaultRoute = routes.first;
-      defaultRoute.aliases.add(groupName);
-      if (groupPath != null && groupPath.isNotEmpty) {
-        defaultRoute.aliases.add(groupPath);
+    // Set aliases on the group's default child route
+    final defaultChild = routes.where((r) => r.groupName == groupName).firstOrNull;
+    if (defaultChild != null) {
+      defaultChild.aliases.add(groupName);
+      if (!isNested && groupPath != null && groupPath.isNotEmpty) {
+        defaultChild.aliases.add(groupPath);
+      } else if (isNested && fullGroupPath != null) {
+        defaultChild.aliases.add(fullGroupPath);
       }
     }
 
@@ -516,7 +936,10 @@ class XRouter {
     String? groupName,
     String? groupPath,
     bool groupHistory = true,
+    String? groupPresenter,
+    String? groupTransition,
     int? viewIndex,
+    List<RouteActivation> ancestors = const [],
   }) {
     final path = element.getAttribute('path');
     if (path == null || path.isEmpty) {
@@ -528,24 +951,46 @@ class XRouter {
     if (path.contains(RegExp(r'//')) || (path.length > 1 && path.endsWith('/'))) {
       throw Exception("route path '$path' contains extra or trailing slashes");
     }
+
+    // fragment or redirect is required
     final fragment = element.getAttribute('fragment');
-    if (fragment == null || fragment.isEmpty) {
-      throw Exception("route '$path' requires a 'fragment' attribute");
+    final redirect = element.getAttribute('redirect');
+    final hasFragment = fragment != null && fragment.isNotEmpty;
+    final hasRedirect = redirect != null && redirect.isNotEmpty;
+    if (!hasFragment && !hasRedirect) {
+      throw Exception("route '$path' requires either a 'fragment' or 'redirect' attribute");
+    }
+    if (hasFragment && hasRedirect) {
+      throw Exception("route '$path' cannot specify both 'fragment' and 'redirect' attributes");
+    }
+    if (hasRedirect) {
+      if (!redirect.startsWith('/')) {
+        throw Exception("route 'redirect' must begin with a slash (/)");
+      }
+      if (redirect.contains(RegExp(r'//')) || (redirect.length > 1 && redirect.endsWith('/'))) {
+        throw Exception("route redirect '$path' contains extra or trailing slashes");
+      }
     }
 
     final name = element.getAttribute('name');
-
     final fullPath = (groupPath != null) ? '$groupPath$path'.replaceAll(RegExp(r'/+'), '/') : path;
     final fullName = (groupName != null && name != null) ? '$groupName:$name' : name;
     final history = tryParseBool(element.getAttribute('history')) ?? groupHistory;
+    final presenter = element.getAttribute('presenter') ?? groupPresenter;
+    final transition = element.getAttribute('transition') ?? groupTransition;
 
     return _Route(
       name: fullName,
       path: fullPath,
+      redirect: redirect,
       fragment: fragment,
       groupName: groupName,
+      groupPath: groupPath,
       history: history,
+      presenter: presenter,
+      transition: transition,
       viewIndex: viewIndex,
+      ancestors: ancestors,
     );
   }
 
@@ -564,19 +1009,29 @@ class XRouter {
 class _Route {
   final String? name;
   final String path;
-  final String fragment;
+  final String? redirect;
+  final String? fragment;
   final String? groupName;
+  final String? groupPath;
   final bool history;
+  final String? presenter;
+  final String? transition;
   final int? viewIndex;
   final List<String> aliases = [];
+  final List<RouteActivation> ancestors;
 
   _Route({
     this.name,
     required this.path,
-    required this.fragment,
+    this.fragment,
+    this.redirect,
     this.groupName,
+    this.groupPath,
     this.history = true,
+    this.presenter,
+    this.transition,
     this.viewIndex,
+    this.ancestors = const [],
   });
 }
 
@@ -588,3 +1043,76 @@ class _RoutePattern {
 
   const _RoutePattern({required this.route, required this.regExp, required this.paramNames});
 }
+
+/// Tracks an in-progress navigation through a nested route
+/// chain. Ancestors are consumed as each level activates.
+class _PendingRoute {
+  final ResolvedRoute resolved;
+  final Dependencies? dependencies;
+  final NavigatorAction action;
+  final Map<String, dynamic>? params;
+  final _UrlUpdate urlUpdate;
+  final List<RouteActivation> remainingAncestors;
+
+  _PendingRoute({
+    required this.resolved,
+    this.dependencies,
+    this.action = NavigatorAction.push,
+    this.params,
+    this.urlUpdate = _UrlUpdate.push,
+    required this.remainingAncestors,
+  });
+}
+
+class TargetUri {
+  static final _paramPattern = RegExp(r':(\w+)');
+  static final _multiSlash = RegExp(r'/+');
+
+  final Uri _uri;
+  final String path;
+
+  TargetUri._(this._uri, this.path);
+
+  factory TargetUri.parse(String target) {
+    final uri = Uri.parse(target);
+    final normalizedPath = uri.path.replaceAll(_multiSlash, '/');
+    return TargetUri._(uri, normalizedPath);
+  }
+
+  String get query => _uri.query;
+  bool get hasQuery => _uri.hasQuery;
+  Map<String, String> get queryParameters => _uri.queryParameters;
+
+  String buildTargetPath(String destinationPath, [_RoutePattern? matchedPattern]) {
+    if (matchedPattern == null) {
+      var concretePath = destinationPath.replaceAll(_multiSlash, '/');
+      return hasQuery ? '$concretePath?$query' : concretePath;
+    }
+
+    final match = matchedPattern.regExp.firstMatch(path);
+    final pathParams = <String, String>{};
+    if (match != null) {
+      for (var i = 0; i < matchedPattern.paramNames.length; i++) {
+        pathParams[matchedPattern.paramNames[i]] = match.group(i + 1)!;
+      }
+    }
+
+    var concretePath = destinationPath
+        .replaceAllMapped(_paramPattern, (m) {
+          final name = m.group(1)!;
+          final value = pathParams[name];
+          if (value == null) {
+            throw Exception(
+              'Unresolved path parameter ":$name" in "$destinationPath". '
+              'Source pattern "${matchedPattern.route.path}" does not define ":$name".',
+            );
+          }
+          return value;
+        })
+        .replaceAll(_multiSlash, '/');
+
+    return hasQuery ? '$concretePath?$query' : concretePath;
+  }
+}
+
+enum _UrlUpdate { none, push, replace }

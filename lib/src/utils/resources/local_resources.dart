@@ -8,7 +8,6 @@ import 'package:logging/logging.dart';
 
 import '../../analytics/analytics.dart';
 import '../../xwidget.dart';
-import '../path.dart';
 import 'resources.dart';
 
 final _log = Logger('LocalResources');
@@ -73,46 +72,16 @@ class LocalResources extends Resources {
     final activeAssetBundle = assetBundle ?? rootBundle;
     final manifestMap = await _loadManifest(activeAssetBundle);
 
-    final fragments = FragmentResourceBundle(fragmentsPath);
-    final values = ValueResourceBundle(valuesPath);
+    final result = await loadAssetResourcesFromManifest(
+      manifestMap: manifestMap,
+      assetBundle: activeAssetBundle,
+      fragmentsPath: fragmentsPath,
+      valuesPath: valuesPath,
+    );
 
-    var fragmentCount = 0;
-    var valueFileCount = 0;
-
-    for (final fileName in manifestMap.keys) {
-      if (fileName.startsWith('$fragmentsPath/')) {
-        final relativePath = fileName.substring(fragmentsPath.length + 1);
-        final parts = splitPath(relativePath);
-        if (parts != null) {
-          await fragments.loadFromAssetBundle(
-            fileName,
-            parts.path,
-            parts.name,
-            parts.ext,
-            activeAssetBundle,
-          );
-          fragmentCount++;
-        }
-      } else if (fileName.startsWith('$valuesPath/')) {
-        final relativePath = fileName.substring(valuesPath.length + 1);
-        final parts = splitPath(relativePath);
-        if (parts != null) {
-          await values.loadFromAssetBundle(
-            fileName,
-            parts.path,
-            parts.name,
-            parts.ext,
-            activeAssetBundle,
-          );
-          valueFileCount++;
-        }
-      }
-    }
-
-    replaceResourceBundles([fragments, values]);
     _log.info(
-      'Local resources loaded: $fragmentCount fragments, '
-      '$valueFileCount value files',
+      'Local resources loaded: ${result.fragmentCount} fragments, '
+      '${result.valueFileCount} value files',
     );
 
     _registerServiceExtensions();

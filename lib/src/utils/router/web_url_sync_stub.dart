@@ -6,4 +6,8 @@ class WebUrlSync {
   static void enable() {}
 
   static void disable() {}
+
+  static void pushUrl(String path) {}
+
+  static void replaceUrl(String path) {}
 }

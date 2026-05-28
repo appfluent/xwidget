@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 
+import '../path.dart';
 import 'fragment_bundle.dart';
 import 'value_bundle.dart';
 
@@ -96,6 +97,88 @@ abstract class Resources with FragmentResourceMixin, ValueResourceMixin {
   /// when a new instance is [activate]d. Override to clean up
   /// subclass-specific resources (watchers, connections, etc.).
   Future<void> dispose() async {}
+
+  Future<({int fragmentCount, int valueFileCount})> loadAssetResourcesFromManifest({
+    required dynamic manifestMap,
+    required AssetBundle assetBundle,
+    required String fragmentsPath,
+    required String valuesPath,
+  }) async {
+    final fragments = FragmentResourceBundle(fragmentsPath);
+    final values = ValueResourceBundle(valuesPath);
+
+    final resourceLoads = <Future<_LoadedAssetResource>>[];
+
+    for (final key in manifestMap.keys) {
+      if (key is! String) continue;
+
+      final fileName = key;
+      _PendingAssetResource? pending;
+
+      if (fileName.startsWith('$fragmentsPath/')) {
+        final relativePath = fileName.substring(fragmentsPath.length + 1);
+        final parts = splitPath(relativePath);
+        if (parts != null && parts.ext == 'xml') {
+          pending = _PendingAssetResource(
+            kind: _AssetResourceKind.fragment,
+            resPath: parts.path,
+            resName: parts.name,
+            resExt: parts.ext,
+          );
+        }
+      } else if (fileName.startsWith('$valuesPath/')) {
+        final relativePath = fileName.substring(valuesPath.length + 1);
+        final parts = splitPath(relativePath);
+        if (parts != null && parts.ext == 'xml') {
+          pending = _PendingAssetResource(
+            kind: _AssetResourceKind.value,
+            resPath: parts.path,
+            resName: parts.name,
+            resExt: parts.ext,
+          );
+        }
+      }
+
+      final resource = pending;
+      if (resource == null) continue;
+
+      resourceLoads.add(
+        assetBundle
+            .loadString(fileName)
+            .then((content) => _LoadedAssetResource(pending: resource, content: content)),
+      );
+    }
+
+    final loadedResources = await Future.wait(resourceLoads);
+
+    var fragmentCount = 0;
+    var valueFileCount = 0;
+
+    for (final loaded in loadedResources) {
+      final pending = loaded.pending;
+
+      switch (pending.kind) {
+        case _AssetResourceKind.fragment:
+          fragments.loadFromString(
+            pending.resPath,
+            pending.resName,
+            pending.resExt,
+            loaded.content,
+          );
+          fragmentCount++;
+          break;
+
+        case _AssetResourceKind.value:
+          values.loadFromString(pending.resPath, pending.resName, pending.resExt, loaded.content);
+          valueFileCount++;
+          break;
+      }
+    }
+
+    replaceResourceBundles([fragments, values]);
+
+    return (fragmentCount: fragmentCount, valueFileCount: valueFileCount);
+  }
 }
 
 abstract class ResourceBundle {
@@ -112,4 +195,27 @@ abstract class ResourceBundle {
   );
 
   void loadFromString(String resPath, String resName, String resExt, String content);
+}
+
+enum _AssetResourceKind { fragment, value }
+
+class _PendingAssetResource {
+  const _PendingAssetResource({
+    required this.kind,
+    required this.resPath,
+    required this.resName,
+    required this.resExt,
+  });
+
+  final _AssetResourceKind kind;
+  final String resPath;
+  final String resName;
+  final String resExt;
+}
+
+class _LoadedAssetResource {
+  const _LoadedAssetResource({required this.pending, required this.content});
+
+  final _PendingAssetResource pending;
+  final String content;
 }
