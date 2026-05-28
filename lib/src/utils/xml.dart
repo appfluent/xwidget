@@ -183,6 +183,7 @@ class XmlNodeDecoderSink with XmlEventVisitor implements ChunkedConversionSink<L
   Iterable<XmlAttribute> convertAttributes(Iterable<XmlEventAttribute> attributes) {
     return attributes.map(
       (attribute) => XmlAttribute(
+        // ignore: deprecated_member_use
         XmlName.fromString(attribute.name),
         attribute.value,
         attribute.attributeType,

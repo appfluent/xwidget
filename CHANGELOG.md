@@ -1,3 +1,8 @@
+## 0.5.4
+
+- Fixed XML attribute name parsing compatibility with both `xml` 6.6.1 and
+  7.0.1 while keeping static analysis clean.
+
 ## 0.5.3
 
 - Added `keepAlive` support to `<Controller>` so controllers can request

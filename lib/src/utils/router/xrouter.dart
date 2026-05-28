@@ -302,8 +302,8 @@ class XRouter {
   /// onto the [Navigator] using the specified [action].
   ///
   /// Tracks the navigation event via [Analytics.trackNavigation]
-  /// on every call. Updates the browser URL via [onUrlChanged]
-  /// for routes that have [ResolvedRoute.history] enabled.
+  /// on every call. Routes with [ResolvedRoute.history] enabled update the
+  /// browser URL when navigation is processed.
   ///
   /// [target] can be a path (e.g. "/analytics/renders") or a
   /// named route (e.g. "main:renders").
@@ -429,7 +429,8 @@ class XRouter {
   /// - [pageName]: Optional route name for the [RouteSettings]. Defaults
   ///   to [fragmentName] if omitted.
   /// - [params]: Optional key-value pairs passed to the fragment during
-  ///   inflation. See [inflateFragment] for details on parameter handling.
+  ///   inflation. See [XWidget.inflateFragment] for details on parameter
+  ///   handling.
   /// - [transition]: 'none', 'fade', 'slide', 'scale', 'cupertino',
   ///    defaults to Material
   ///   [MaterialPageRoute].
