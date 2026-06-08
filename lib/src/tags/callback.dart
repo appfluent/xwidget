@@ -18,13 +18,25 @@ import '../../xwidget.dart';
 /// declare those arguments using the `vars` attribute. This attribute takes
 /// a comma separated list of argument names. When the handler is triggered,
 /// argument values are added to `Dependencies` using the specified name as the
-/// key, and can be referenced in the `action` EL expression, if needed.
-/// They're also accessible anywhere else that instance of `Dependencies` is
-/// available. If you don't need the values, then use and underscore (_) in
+/// key, and can be referenced in the `action` EL expression, if needed. By
+/// default these values are scoped to that single invocation and do not persist
+/// after the handler returns (see `dependenciesScope` below). If you don't need
+/// the values, then use and underscore (_) in
 /// place of the name. This will ignore those value and they won't be added to
 /// `Dependencies` e.g. `...vars="_,index"...`. `BuildContext` is never
 /// added to `Dependencies` even when named, because this would cause a
 /// memory leak.
+///
+/// Use `returnVar` to capture the result of the `action` expression. The
+/// evaluated value is always stored in the surrounding `Dependencies` under the
+/// given key — independent of `dependenciesScope` — so other widgets can read it
+/// (e.g. as `${result}`).
+///
+/// `dependenciesScope` controls only how `action` is *evaluated*; it does not
+/// affect where `returnVar` is stored. It accepts `inherit` (evaluate against
+/// the surrounding `Dependencies`), `copy` (a per-invocation copy, so `vars`
+/// don't leak into the surrounding scope), or `new` (an empty scope). The
+/// default is `inherit`, or `copy` when `vars` are present.
 class CallbackTag implements Tag {
   static final RegExp _ignoreVar = RegExp(r"^_*$");
 
@@ -92,11 +104,11 @@ class CallbackTag implements Tag {
         element,
         dependencies,
         dependenciesScope,
-        params.isEmpty && !hasReturnVar ? "inherit" : "copy",
+        params.isEmpty ? "inherit" : "copy",
       ).addAll(params);
       final value = XWidget.parseExpression(action, deps);
       if (hasReturnVar) {
-        deps.setValue(returnVar, value);
+        dependencies.setValue(returnVar, value);
       }
     }
 

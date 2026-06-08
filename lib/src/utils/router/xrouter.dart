@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:xml/xml.dart';
+import 'package:xwidget_el/xwidget_el.dart';
 
-import '../../../xwidget.dart';
+import '../../analytics/analytics.dart';
+import '../../xwidget.dart';
 import 'web_url_sync.dart';
 
 enum NavigatorAction { push, pushReplacement, pushAndRemoveUntil, pushAndRemoveAll }
@@ -645,7 +647,7 @@ class XRouter {
         target.startsWith('/') || target.startsWith('https://') || target.startsWith('http://');
 
     if (isPath) {
-      final uri = TargetUri.parse(target);
+      final uri = _TargetUri.parse(target);
 
       // Exact path match
       final route = _routes[uri.path];
@@ -1065,19 +1067,19 @@ class _PendingRoute {
   });
 }
 
-class TargetUri {
+class _TargetUri {
   static final _paramPattern = RegExp(r':(\w+)');
   static final _multiSlash = RegExp(r'/+');
 
   final Uri _uri;
   final String path;
 
-  TargetUri._(this._uri, this.path);
+  _TargetUri._(this._uri, this.path);
 
-  factory TargetUri.parse(String target) {
+  factory _TargetUri.parse(String target) {
     final uri = Uri.parse(target);
     final normalizedPath = uri.path.replaceAll(_multiSlash, '/');
-    return TargetUri._(uri, normalizedPath);
+    return _TargetUri._(uri, normalizedPath);
   }
 
   String get query => _uri.query;

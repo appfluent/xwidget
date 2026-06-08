@@ -31,13 +31,9 @@ String toBase62(Uint8List bytes) {
   return String.fromCharCodes(buffer.toString().codeUnits.reversed);
 }
 
-/// Hashes a [storageKey] using SHA-256 and encodes the result as base62.
-///
-/// Used to construct the content path segment from the raw storage key,
-/// preventing the key from being exposed in URLs.
-String hashStorageKey(String storageKey) {
-  final bytes = utf8.encode(storageKey);
-  final digest = sha256.convert(bytes);
+/// SHA-256 of [value], base62-encoded. One-way; safe to transmit/log.
+String hashKey(String value) {
+  final digest = sha256.convert(utf8.encode(value));
   return toBase62(Uint8List.fromList(digest.bytes));
 }
 

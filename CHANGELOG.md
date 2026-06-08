@@ -1,3 +1,16 @@
+## 0.5.5
+
+- Updated analytics event upload authentication.
+- Changed analytics locale reporting to `language_COUNTRY` form (e.g. `en_US`),
+  falling back to language-only when no country code is present, replacing the
+  previous country-code-only value.
+- Exposed the web URL synchronization helper (`web_url_sync`) through the public
+  API.
+- Fixed `<callback>` `returnVar` to store the action's result in the surrounding
+  `Dependencies` so other widgets can read it after the handler runs; previously
+  the value was confined to a per-invocation scope and discarded. `dependenciesScope`
+  now affects only how `action` is evaluated, not where `returnVar` is stored.
+
 ## 0.5.4
 
 - Fixed XML attribute name parsing compatibility with both `xml` 6.6.1 and

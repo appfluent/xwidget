@@ -12,8 +12,10 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await XWidget.initialize(
-      fragmentsPath: 'test/fixtures/res/fragments',
-      assetBundle: assetBundle,
+      resources: LocalResources(
+        fragmentsPath: 'test/fixtures/res/fragments',
+        assetBundle: assetBundle,
+      ),
     );
     registerXWidgetInflaters();
   });

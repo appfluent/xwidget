@@ -62,7 +62,7 @@ class CloudResources extends Resources {
 
     _log.info('Loading cloud resources for channel=$channel, version=$version');
 
-    final hashedKey = hashStorageKey(storageKey);
+    final hashedKey = hashKey(storageKey);
     final ver = Version.parse(version);
     final url = '$_contentBaseUrl/$hashedKey/$channel/${ver.number}.tar.gz';
     final cache = BundleCache();

@@ -4,11 +4,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
 import '../utils/hash.dart';
 import '../utils/platform/platform_utils.dart' as platform;
+import '../utils/totp_plus/totp_plus_client.dart';
+import '../utils/totp_plus/totp_plus_http_client.dart';
 import '../utils/version.dart';
 import 'analytics_event.dart';
 import 'analytics_store.dart';
@@ -50,7 +51,6 @@ class Analytics with WidgetsBindingObserver {
     defaultValue: 'https://analytics.xwidget.dev',
   );
 
-  final String _projectKey;
   final String _channel;
   final String _versionNumber;
   final String _versionMetadata;
@@ -60,9 +60,10 @@ class Analytics with WidgetsBindingObserver {
   final Duration _flushInterval;
   final Duration _maxFileAge;
   final Duration _sessionTimeout;
-
   final _memoryBuffer = <String, AnalyticsEvent>{};
-  late final AnalyticsStore _store;
+  final AnalyticsStore _store = AnalyticsStore();
+  final TotpPlusHttpClient _httpClient;
+
   Timer? _persistTimer;
   Timer? _flushTimer;
   bool _isFlushing = false;
@@ -79,8 +80,7 @@ class Analytics with WidgetsBindingObserver {
     Duration flushInterval = _defaultFlushInterval,
     Duration maxFileAge = _defaultMaxFileAge,
     Duration sessionTimeout = _defaultSessionTimeout,
-  }) : _projectKey = projectKey,
-       _channel = channel,
+  }) : _channel = channel,
        _versionNumber = versionNumber,
        _versionMetadata = versionMetadata,
        _platform = platform,
@@ -88,9 +88,8 @@ class Analytics with WidgetsBindingObserver {
        _persistInterval = persistInterval,
        _flushInterval = flushInterval,
        _maxFileAge = maxFileAge,
-       _sessionTimeout = sessionTimeout {
-    _store = AnalyticsStore();
-  }
+       _sessionTimeout = sessionTimeout,
+       _httpClient = TotpPlusHttpClient(totp: TotpPlusClient(key: projectKey));
 
   static bool get isInitialized => _instance != null;
 
@@ -99,7 +98,8 @@ class Analytics with WidgetsBindingObserver {
   /// Must be called before any events are tracked. Typically called
   /// from [XWidget.initialize].
   ///
-  /// [projectKey] is sent as the X-API-Key header for authentication.
+  /// [projectKey] authenticates analytics uploads; it is used only to derive
+  /// per-request auth material on-device and is never transmitted.
   /// [channel] and [version] are attached to every event.
   /// [version] is split into version number and metadata at the '+'
   /// delimiter.
@@ -123,7 +123,7 @@ class Analytics with WidgetsBindingObserver {
     final plat = _detectPlatform();
 
     // Get locale country code
-    final locale = ui.PlatformDispatcher.instance.locale.countryCode ?? '';
+    final locale = _deviceLocaleString();
 
     _instance = Analytics._(
       projectKey: projectKey,
@@ -172,7 +172,7 @@ class Analytics with WidgetsBindingObserver {
   /// Tracks a fragment render event.
   ///
   /// Safe to call even if Analytics has not been initialized — silently
-  /// no-ops if [projectKey] was not provided.
+  /// no-ops in that case.
   static void trackRender({required String fragmentName, bool isError = false}) {
     final inst = _instance;
     if (inst == null) return;
@@ -198,7 +198,7 @@ class Analytics with WidgetsBindingObserver {
   /// (304) or downloaded fresh (200).
   ///
   /// Safe to call even if Analytics has not been initialized — silently
-  /// no-ops if [projectKey] was not provided.
+  /// no-ops in that case.
   static void trackDownload({bool isCacheHit = false, bool isError = false}) {
     final inst = _instance;
     if (inst == null) return;
@@ -225,7 +225,7 @@ class Analytics with WidgetsBindingObserver {
   /// prevent runaway error storms from flooding storage.
   ///
   /// Safe to call even if Analytics has not been initialized — silently
-  /// no-ops if [projectKey] was not provided.
+  /// no-ops in that case.
   static void trackError({required Object error, String? fragmentName, bool isDownload = false}) {
     final inst = _instance;
     if (inst == null) return;
@@ -300,6 +300,23 @@ class Analytics with WidgetsBindingObserver {
       timestamp: now,
     );
     inst._addEvent(event);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Internal — helpers
+  // ---------------------------------------------------------------------------
+
+  /// Returns the device locale as "lang_COUNTRY" (e.g. "en_US"),
+  /// or just "lang" (e.g. "en") when no country is set.
+  /// Script is intentionally omitted.
+  static String _deviceLocaleString() {
+    final locale = ui.PlatformDispatcher.instance.locale;
+    final lang = locale.languageCode.toLowerCase();
+    final country = locale.countryCode;
+    if (country == null || country.isEmpty) {
+      return lang;
+    }
+    return '${lang}_${country.toUpperCase()}';
   }
 
   // ---------------------------------------------------------------------------
@@ -486,12 +503,8 @@ class Analytics with WidgetsBindingObserver {
         }).toList(),
       });
 
-      final response = await http
-          .post(
-            Uri.parse(url),
-            headers: {'Content-Type': 'application/json', 'X-API-Key': _projectKey},
-            body: body,
-          )
+      final response = await _httpClient
+          .post(Uri.parse(url), headers: {'Content-Type': 'application/json'}, body: body)
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
