@@ -12,7 +12,13 @@ import 'package:crypto/crypto.dart';
 ///
 /// A token is `HMAC-SHA256(key, message)`, base64url-encoded, where
 /// `message` is an unambiguous, length-prefixed encoding of:
-///   (window, context, nonce)
+///   (window, context, nonce, [bodyHash])
+///
+/// `bodyHash` (optional) binds the token to the request body — see [hashBody].
+/// When omitted, `message` is the original 3-part form, so tokens minted before
+/// body-binding still verify. During rollout the server tries the body-bound
+/// form first, then falls back to the legacy form; once every client binds the
+/// body, the legacy fallback can be turned off (see the verifier).
 ///
 /// The token never reveals the key: it is a one-way derivation. The
 /// server verifies by recomputing the token from its own copy of the key and
@@ -80,14 +86,19 @@ int windowFor(DateTime utc, TotpPlusConfig config) {
 ///
 /// Each part is encoded as: 4-byte big-endian length, then the UTF-8 bytes of
 /// the part. Length-prefixing makes the encoding injective — no two distinct
-/// (window, context, nonce) triples can ever produce the same message — which
-/// plain concatenation does not guarantee (e.g. ("12","345") and ("123","45")
-/// both concatenate to "12345").
-Uint8List buildMessage(int window, String context, String nonce) {
+/// part tuples can ever produce the same message — which plain concatenation
+/// does not guarantee (e.g. ("12","345") and ("123","45") both concatenate to
+/// "12345").
+///
+/// [bodyHash], when non-null, is appended as a fourth part to bind the token to
+/// the request body. When null the message is the original 3-part form, so
+/// tokens minted before body-binding still verify byte-for-byte.
+Uint8List buildMessage(int window, String context, String nonce, {String? bodyHash}) {
   final parts = <List<int>>[
     utf8.encode(window.toString()),
     utf8.encode(context),
     utf8.encode(nonce),
+    if (bodyHash != null) utf8.encode(bodyHash),
   ];
   final builder = BytesBuilder();
   for (final part in parts) {
@@ -100,7 +111,7 @@ Uint8List buildMessage(int window, String context, String nonce) {
 
 /// Derives the TotpPlus token for an explicit [window].
 ///
-/// `token = base64url( HMAC-SHA256(key, buildMessage(window, context, nonce)) )`
+/// `token = base64url( HMAC-SHA256(key, buildMessage(window, context, nonce, bodyHash)) )`
 ///
 /// - [key]: the shared secret. Never transmitted; only used to sign.
 /// - [window]: the time-window index (see [windowFor]).
@@ -111,6 +122,9 @@ Uint8List buildMessage(int window, String context, String nonce) {
 ///   distinct even within the same window/context, enabling replay detection
 ///   and avoiding false replay rejections when multiple requests fall in one
 ///   window.
+/// - [bodyHash]: optional SHA-256 of the request body (see [hashBody]). When
+///   provided it binds the token to that exact body; when omitted the token is
+///   the legacy body-agnostic form.
 ///
 /// The output is base64url without padding.
 String deriveToken({
@@ -118,11 +132,21 @@ String deriveToken({
   required int window,
   required String context,
   required String nonce,
+  String? bodyHash,
 }) {
   final hmac = Hmac(sha256, utf8.encode(key));
-  final digest = hmac.convert(buildMessage(window, context, nonce));
+  final digest = hmac.convert(buildMessage(window, context, nonce, bodyHash: bodyHash));
   return base64Url.encode(digest.bytes).replaceAll('=', '');
 }
+
+/// SHA-256 of the raw request-body bytes, base64url (no padding).
+///
+/// Client and server compute this from the *same* bytes and pass it to
+/// [deriveToken] as `bodyHash`, binding the token to the exact body so a
+/// tampered body fails verification. It is **never transmitted** — each side
+/// derives it from the body it holds.
+String hashBody(List<int> bodyBytes) =>
+    base64Url.encode(sha256.convert(bodyBytes).bytes).replaceAll('=', '');
 
 /// Constant-time comparison of two strings.
 ///

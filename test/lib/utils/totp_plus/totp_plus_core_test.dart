@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xwidget/src/utils/totp_plus/totp_plus_core.dart';
 
@@ -91,6 +93,61 @@ void main() {
       const c = TotpPlusConfig(windowSeconds: 60, skewWindows: 1);
       expect(c.acceptanceSpanSeconds, 180); // (2*1 + 1) * 60
       expect(c.nonceTtl, const Duration(seconds: 300)); // 180s + 2m margin
+    });
+  });
+
+  group('body binding (bodyHash)', () {
+    test('a body-bound token differs from the unbound (legacy) token', () {
+      final unbound = deriveToken(key: 'k', window: 1, context: 'c', nonce: 'n');
+      final bound = deriveToken(key: 'k', window: 1, context: 'c', nonce: 'n', bodyHash: 'h');
+      expect(bound, isNot(unbound));
+    });
+
+    test('is deterministic for the same body hash', () {
+      expect(
+        deriveToken(key: 'k', window: 1, context: 'c', nonce: 'n', bodyHash: 'h'),
+        deriveToken(key: 'k', window: 1, context: 'c', nonce: 'n', bodyHash: 'h'),
+      );
+    });
+
+    test('changes when the body hash changes (tamper)', () {
+      final original = deriveToken(key: 'k', window: 1, context: 'c', nonce: 'n', bodyHash: 'h1');
+      final tampered = deriveToken(key: 'k', window: 1, context: 'c', nonce: 'n', bodyHash: 'h2');
+      expect(tampered, isNot(original));
+    });
+
+    test('omitting bodyHash reproduces the legacy 3-part token exactly', () {
+      // A null bodyHash must not perturb the original known-answer vector —
+      // that backward compatibility is what lets old clients keep verifying.
+      expect(
+        deriveToken(
+          key: 'test-key',
+          window: 26824320,
+          context: '',
+          nonce: 'fixed-nonce',
+          bodyHash: null,
+        ),
+        '766AkVcOlmsdYJL2Sz9anl0JAKZcmhzdg0lAZ0GHmtw',
+      );
+    });
+
+    test('buildMessage appends a fourth part only when bodyHash is provided', () {
+      expect(buildMessage(1, 'c', 'n', bodyHash: 'h'), isNot(equals(buildMessage(1, 'c', 'n'))));
+      // An empty-string hash is still a distinct fourth part, not "no part".
+      expect(buildMessage(1, 'c', 'n', bodyHash: ''), isNot(equals(buildMessage(1, 'c', 'n'))));
+    });
+  });
+
+  group('hashBody', () {
+    test('is deterministic and base64url without padding', () {
+      final hash = hashBody(utf8.encode('{"events":[]}'));
+      expect(hash, hashBody(utf8.encode('{"events":[]}')));
+      expect(hash.contains('='), isFalse);
+      expect(RegExp(r'^[A-Za-z0-9_-]+$').hasMatch(hash), isTrue);
+    });
+
+    test('differs for different bodies', () {
+      expect(hashBody(utf8.encode('a')), isNot(hashBody(utf8.encode('b'))));
     });
   });
 }

@@ -46,6 +46,29 @@ void main() {
       expect(c.tokenForRequest().keyHash, hashKey('abc'));
       expect(c.tokenForRequest().keyHash, c.tokenForRequest().keyHash);
     });
+
+    test('binds the body hash into the token', () {
+      final material = newClient().tokenForRequest(bodyHash: 'bh');
+      expect(
+        material.token,
+        deriveToken(
+          key: 'abc',
+          window: windowFor(fixedNow, config),
+          context: '',
+          nonce: 'n1',
+          bodyHash: 'bh',
+        ),
+      );
+      // A body-bound token differs from the unbound default.
+      expect(material.token, isNot(newClient().tokenForRequest().token));
+    });
+
+    test('a different body hash yields a different token (tamper)', () {
+      expect(
+        newClient().tokenForRequest(bodyHash: 'bh1').token,
+        isNot(newClient().tokenForRequest(bodyHash: 'bh2').token),
+      );
+    });
   });
 
   group('clock-skew offset', () {

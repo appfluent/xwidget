@@ -98,11 +98,22 @@ class TotpPlusClient {
   /// omitted it defaults to the empty string, meaning the token is not bound to
   /// any context (replay protection still applies via the nonce). If supplied,
   /// it must match the value the server uses to verify.
-  TotpPlusMaterial tokenForRequest({String context = ''}) {
+  ///
+  /// [bodyHash] is the SHA-256 of the request body (see `hashBody`). When
+  /// supplied the token is bound to that exact body, so a tampered body fails
+  /// verification. It is not transmitted — the server recomputes it from the
+  /// body it receives. Omit it (the default) for requests with no body.
+  TotpPlusMaterial tokenForRequest({String context = '', String? bodyHash}) {
     final now = correctedNowUtc();
     final window = windowFor(now, config);
     final nonce = _nonceGenerator();
-    final token = deriveToken(key: _key, window: window, context: context, nonce: nonce);
+    final token = deriveToken(
+      key: _key,
+      window: window,
+      context: context,
+      nonce: nonce,
+      bodyHash: bodyHash,
+    );
     return TotpPlusMaterial(
       keyHash: _keyHash,
       token: token,

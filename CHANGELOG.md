@@ -1,3 +1,7 @@
+## 0.5.6
+
+- Improved analytics event upload authentication.
+
 ## 0.5.5
 
 - Updated analytics event upload authentication.

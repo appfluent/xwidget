@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'totp_plus_client.dart';
+import 'totp_plus_core.dart';
 
 /// Issues TotpPlus-authenticated POSTs.
 ///
@@ -45,7 +46,10 @@ class TotpPlusHttpClient {
     Object? body,
     Encoding? encoding,
   }) async {
-    final material = totp.tokenForRequest();
+    // Bind the token to the body. We hash the same bytes `http.post` will send,
+    // so the server's recomputation (over the bytes it reads) matches. The hash
+    // is not transmitted — both sides derive it from the body.
+    final material = totp.tokenForRequest(bodyHash: hashBody(_bodyBytes(body)));
     final response = await http.post(
       url,
       headers: {
@@ -71,5 +75,17 @@ class TotpPlusHttpClient {
     }
 
     return response;
+  }
+
+  /// The bytes that will go on the wire for [body], so the hash matches what the
+  /// server reads back. A `String` is UTF-8 encoded (the analytics flush sends a
+  /// JSON string); raw bytes pass through; a null body hashes to empty. Maps are
+  /// not used here — if one is ever passed, it is stringified, which would *not*
+  /// match `http`'s form-encoding, so callers must send a String or bytes.
+  List<int> _bodyBytes(Object? body) {
+    if (body == null) return const [];
+    if (body is String) return utf8.encode(body);
+    if (body is List<int>) return body;
+    return utf8.encode(body.toString());
   }
 }
