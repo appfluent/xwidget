@@ -1,3 +1,30 @@
+## 0.6.0
+
+- Moved cloud bundle loading to the v2 deployment model. `CloudResources` now resolves a
+  channel pointer record (fetched with ETag-conditional requests) and downloads the immutable
+  per-revision bundle it names, verifying it against the pointer's SHA-256 hash. This replaces
+  the per-channel tarball fetch with MD5-vs-ETag validation. Requires bundles deployed with
+  xwidget_builder 0.6.0.
+- Cloud fetch errors now say which stage failed — deployment lookup, download, or
+  verification — with the channel and version, plus the revision for downloads — e.g.
+  `Deployment lookup returned 404 for channel prod, version 1.0.0`. These messages flow
+  through to error analytics and the console's Errors page, and stay stable across
+  environments and key rotations so occurrences group correctly.
+- The bundle cache now stores metadata (channel, version, revision, SHA-256, pointer ETag)
+  alongside the bundle. The cache is only trusted when its channel and version match the
+  current configuration, and unchanged pointers or already-cached revisions skip downloads.
+  BREAKING: custom `BundleCache` implementations must replace `loadETag()`/`saveETag()` with
+  `loadMetadata()`/`saveMetadata()` using the new public `BundleMetadata` type. The built-in
+  caches migrate automatically; the first launch after upgrading re-downloads the bundle once.
+- BREAKING: analytics events now report the full `version` string plus a nullable `revision`
+  dimension, replacing the `version_number`/`version_metadata` split. Requires the 0.2.x
+  analytics server. Added `Analytics.setRevision()`; `trackDownload` and `trackError` accept
+  an optional `revision`. Unsent events queued on-device by 0.5.x are discarded on upgrade.
+- Removed the internal `Version` utility class (obsolete now that versions are no longer
+  split at the `+` delimiter).
+- Minimum Flutter is now 3.35 / Dart 3.9, aligning with xwidget_builder 0.6.0 — the two
+  are upgraded together, so the builder's toolchain floor is the suite's floor.
+
 ## 0.5.6
 
 - Improved analytics event upload authentication.

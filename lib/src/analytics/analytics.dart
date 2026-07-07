@@ -10,7 +10,6 @@ import '../utils/hash.dart';
 import '../utils/platform/platform_utils.dart' as platform;
 import '../utils/totp_plus/totp_plus_client.dart';
 import '../utils/totp_plus/totp_plus_http_client.dart';
-import '../utils/version.dart';
 import 'analytics_event.dart';
 import 'analytics_store.dart';
 
@@ -52,8 +51,7 @@ class Analytics with WidgetsBindingObserver {
   );
 
   final String _channel;
-  final String _versionNumber;
-  final String _versionMetadata;
+  final String _version;
   final String _platform;
   final String _locale;
   final Duration _persistInterval;
@@ -64,6 +62,12 @@ class Analytics with WidgetsBindingObserver {
   final AnalyticsStore _store = AnalyticsStore();
   final TotpPlusHttpClient _httpClient;
 
+  /// The deployment revision the client currently holds. Null until known —
+  /// seeded from the cached bundle metadata, then updated from the pointer
+  /// when it resolves. Events report it as-is; null means the client's
+  /// bundle state is unknown (fresh install, pre-cache errors).
+  int? _revision;
+
   Timer? _persistTimer;
   Timer? _flushTimer;
   bool _isFlushing = false;
@@ -72,8 +76,7 @@ class Analytics with WidgetsBindingObserver {
   Analytics._({
     required String projectKey,
     required String channel,
-    required String versionNumber,
-    required String versionMetadata,
+    required String version,
     required String platform,
     required String locale,
     Duration persistInterval = _defaultPersistInterval,
@@ -81,8 +84,7 @@ class Analytics with WidgetsBindingObserver {
     Duration maxFileAge = _defaultMaxFileAge,
     Duration sessionTimeout = _defaultSessionTimeout,
   }) : _channel = channel,
-       _versionNumber = versionNumber,
-       _versionMetadata = versionMetadata,
+       _version = version,
        _platform = platform,
        _locale = locale,
        _persistInterval = persistInterval,
@@ -101,8 +103,6 @@ class Analytics with WidgetsBindingObserver {
   /// [projectKey] authenticates analytics uploads; it is used only to derive
   /// per-request auth material on-device and is never transmitted.
   /// [channel] and [version] are attached to every event.
-  /// [version] is split into version number and metadata at the '+'
-  /// delimiter.
   static Future<void> initialize({
     required String projectKey,
     required String channel,
@@ -116,9 +116,6 @@ class Analytics with WidgetsBindingObserver {
       return;
     }
 
-    // parse version
-    final ver = Version.parse(version);
-
     // Detect platform
     final plat = _detectPlatform();
 
@@ -128,8 +125,7 @@ class Analytics with WidgetsBindingObserver {
     _instance = Analytics._(
       projectKey: projectKey,
       channel: channel,
-      versionNumber: ver.number,
-      versionMetadata: ver.metadata ?? '',
+      version: version,
       platform: plat,
       locale: locale,
       persistInterval: persistInterval,
@@ -142,6 +138,22 @@ class Analytics with WidgetsBindingObserver {
       'Analytics initialized: channel=$channel, version=$version, '
       'platform=$plat, locale=$locale',
     );
+  }
+
+  /// Sets the deployment revision the client currently holds.
+  ///
+  /// Called by [CloudResources] when the cached bundle metadata is read,
+  /// and again when the pointer resolves to a newer revision. Events
+  /// tracked before the first call carry a null revision (bundle state
+  /// unknown).
+  ///
+  /// Safe to call even if Analytics has not been initialized — silently
+  /// no-ops in that case.
+  static void setRevision(int revision) {
+    final inst = _instance;
+    if (inst == null) return;
+    inst._revision = revision;
+    _log.fine('Analytics revision set: $revision');
   }
 
   /// Shuts down the Analytics singleton, flushing any remaining events.
@@ -180,8 +192,8 @@ class Analytics with WidgetsBindingObserver {
     final now = DateTime.now().toUtc();
     final event = RenderEvent(
       channel: inst._channel,
-      versionNumber: inst._versionNumber,
-      versionMetadata: inst._versionMetadata,
+      version: inst._version,
+      revision: inst._revision,
       platform: inst._platform,
       locale: inst._locale,
       fragmentName: fragmentName,
@@ -195,19 +207,26 @@ class Analytics with WidgetsBindingObserver {
   /// Tracks a bundle download event.
   ///
   /// [isCacheHit] indicates whether the bundle was served from cache
-  /// (304) or downloaded fresh (200).
+  /// or downloaded fresh.
+  /// [revision] is the deployment revision when known at the call site
+  /// (the caller has just parsed the pointer). Falls back to the revision
+  /// the client currently holds; null when neither is known.
+  ///
+  /// Download events are always about the bundle. Pointer fetch failures
+  /// are not download metrics — they are recorded as error events only
+  /// (see [trackError]).
   ///
   /// Safe to call even if Analytics has not been initialized — silently
   /// no-ops in that case.
-  static void trackDownload({bool isCacheHit = false, bool isError = false}) {
+  static void trackDownload({bool isCacheHit = false, bool isError = false, int? revision}) {
     final inst = _instance;
     if (inst == null) return;
 
     final now = DateTime.now().toUtc();
     final event = DownloadEvent(
       channel: inst._channel,
-      versionNumber: inst._versionNumber,
-      versionMetadata: inst._versionMetadata,
+      version: inst._version,
+      revision: revision ?? inst._revision,
       platform: inst._platform,
       locale: inst._locale,
       cacheCount: isCacheHit ? 1 : 0,
@@ -224,15 +243,23 @@ class Analytics with WidgetsBindingObserver {
   /// messages are capped at [_maxDistinctErrors] per persist cycle to
   /// prevent runaway error storms from flooding storage.
   ///
+  /// [isDownload] marks a download error, which is also counted on the
+  /// download aggregate.
+  ///
   /// Safe to call even if Analytics has not been initialized — silently
   /// no-ops in that case.
-  static void trackError({required Object error, String? fragmentName, bool isDownload = false}) {
+  static void trackError({
+    required Object error,
+    String? fragmentName,
+    bool isDownload = false,
+    int? revision,
+  }) {
     final inst = _instance;
     if (inst == null) return;
 
     // Track error count on the appropriate aggregate table
     if (isDownload) {
-      trackDownload(isError: true);
+      trackDownload(isError: true, revision: revision);
     } else if (fragmentName != null && fragmentName.isNotEmpty) {
       trackRender(fragmentName: fragmentName, isError: true);
     }
@@ -242,8 +269,8 @@ class Analytics with WidgetsBindingObserver {
     inst._addEvent(
       ErrorEvent(
         channel: inst._channel,
-        versionNumber: inst._versionNumber,
-        versionMetadata: inst._versionMetadata,
+        version: inst._version,
+        revision: revision ?? inst._revision,
         platform: inst._platform,
         locale: inst._locale,
         fragmentName: fragmentName ?? '',
@@ -290,8 +317,8 @@ class Analytics with WidgetsBindingObserver {
     final sessionSeq = ++inst._session.sequence;
     final event = NavigationEvent(
       channel: inst._channel,
-      versionNumber: inst._versionNumber,
-      versionMetadata: inst._versionMetadata,
+      version: inst._version,
+      revision: inst._revision,
       platform: inst._platform,
       locale: inst._locale,
       pageName: pageName.trim(),

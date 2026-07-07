@@ -85,9 +85,10 @@ runtime.
 ## Production SDUI
 
 XWidget Cloud delivers fragments, value resources, and routes as versioned UI
-bundles. Deploy to a staging channel, test, then promote to production. Apps can
-select channels and versions through remote configuration for beta users,
-rollouts, A/B cohorts, or pinned releases.
+bundles. Deploy to the cloud, then publish to a channel — test, staging,
+production — you decide the workflow. Apps can select channels and versions
+through remote configuration for beta users, rollouts, A/B cohorts, or pinned
+releases.
 
 ```dart
 await XWidget.initialize(
@@ -162,8 +163,8 @@ void main() async {
 
 - **Generated widget support** - Flutter SDK widgets, package widgets, and app
   widgets can be exposed to XML through generated inflaters.
-- **Expression language** - Bind XML attributes to dynamic values, operators,
-  functions, custom functions, and resources.
+- **Expression language** - Bind XML attributes to dynamic values, properties,
+  operators, functions, custom functions, and resources.
 - **Fragments** - Compose screens from reusable XML fragments with nested
   dependencies and parameters.
 - **Controllers** - Keep state and behavior in Dart while fragments render the

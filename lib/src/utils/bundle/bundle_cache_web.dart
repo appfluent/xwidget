@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:js_interop';
 import 'dart:typed_data';
 
@@ -12,7 +13,7 @@ class BundleCacheWeb implements BundleCache {
   static const _dbName = 'xwidget_cloud';
   static const _storeName = 'cache';
   static const _bundleKey = 'bundle';
-  static const _eTagKey = 'etag';
+  static const _metadataKey = 'metadata';
   static const _dbVersion = 1;
 
   @override
@@ -25,14 +26,27 @@ class BundleCacheWeb implements BundleCache {
     await _put(_bundleKey, bytes.buffer.toJS);
   }
 
+  /// Loads the cached bundle metadata (stored as a JSON string).
+  ///
+  /// Returns `null` if no metadata has been cached, the record is
+  /// malformed, or an error occurs during reading.
   @override
-  Future<String?> loadETag() async {
-    return _get<String>(_eTagKey);
+  Future<BundleMetadata?> loadMetadata() async {
+    try {
+      final jsonStr = await _get<String>(_metadataKey);
+      if (jsonStr == null) return null;
+      final jsonMap = json.decode(jsonStr);
+      if (jsonMap is Map<String, dynamic>) {
+        return BundleMetadata.fromJson(jsonMap);
+      }
+    } catch (_) {}
+    return null;
   }
 
+  /// Saves the bundle metadata (as a JSON string).
   @override
-  Future<void> saveETag(String eTag) async {
-    await _put(_eTagKey, eTag.toJS);
+  Future<void> saveMetadata(BundleMetadata metadata) async {
+    await _put(_metadataKey, json.encode(metadata.toJson()).toJS);
   }
 
   @override

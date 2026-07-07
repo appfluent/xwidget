@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -12,16 +13,16 @@ BundleCache createBundleCache() => BundleCacheIo();
 /// Native file system implementation of [BundleCache].
 ///
 /// Persists downloaded XWidget Cloud resource bundles and their
-/// associated ETags to the application documents directory under
+/// associated metadata to the application documents directory under
 /// an `xwidget_cloud` subdirectory. This enables offline access to
-/// the most recently downloaded bundle and conditional downloads
-/// via ETag-based cache validation against the content server.
+/// the most recently downloaded bundle and conditional pointer
+/// requests via ETag-based cache validation against the content server.
 ///
 /// File layout:
 ///
 ///     <app_documents>/xwidget_cloud/
 ///       bundle.tar.gz   — the compressed resource bundle
-///       etag            — the ETag string from the last download
+///       metadata.json   — channel, version, revision, sha256, etag
 ///
 /// All read operations silently return `null` on failure (missing
 /// files, permission errors, corrupt data) to allow graceful
@@ -29,7 +30,7 @@ BundleCache createBundleCache() => BundleCacheIo();
 class BundleCacheIo implements BundleCache {
   static const _dirName = 'xwidget_cloud';
   static const _bundleFileName = 'bundle.tar.gz';
-  static const _etagFileName = 'etag';
+  static const _metadataFileName = 'metadata.json';
 
   /// Loads the cached resource bundle from disk.
   ///
@@ -58,33 +59,38 @@ class BundleCacheIo implements BundleCache {
     await file.writeAsBytes(bytes, flush: true);
   }
 
-  /// Loads the cached ETag from disk.
+  /// Loads the cached bundle metadata from disk.
   ///
-  /// The ETag is used for conditional requests against the content server to
-  /// avoid re-downloading an unchanged bundle. Returns `null` if
-  /// no ETag has been cached or an error occurs during reading.
+  /// The metadata identifies which channel/version/revision the cached
+  /// bundle belongs to and carries the pointer ETag used for conditional
+  /// requests against the content server. Returns `null` if no metadata
+  /// has been cached, the record is malformed, or an error occurs during
+  /// reading.
   @override
-  Future<String?> loadETag() async {
+  Future<BundleMetadata?> loadMetadata() async {
     try {
       final dir = await _getCacheDir();
-      final file = File('${dir.path}/$_etagFileName');
+      final file = File('${dir.path}/$_metadataFileName');
       if (await file.exists()) {
-        return await file.readAsString();
+        final jsonMap = json.decode(await file.readAsString());
+        if (jsonMap is Map<String, dynamic>) {
+          return BundleMetadata.fromJson(jsonMap);
+        }
       }
     } catch (_) {}
     return null;
   }
 
-  /// Saves an ETag string to disk.
+  /// Saves the bundle metadata to disk.
   ///
-  /// Persists the [eTag] returned from the content server so subsequent
-  /// downloads can use conditional requests. Written with
-  /// `flush: true` to ensure durability.
+  /// Persists the [metadata] so subsequent loads can validate the cache
+  /// against the requesting channel/version and issue conditional pointer
+  /// requests. Written with `flush: true` to ensure durability.
   @override
-  Future<void> saveETag(String eTag) async {
+  Future<void> saveMetadata(BundleMetadata metadata) async {
     final dir = await _getCacheDir();
-    final file = File('${dir.path}/$_etagFileName');
-    await file.writeAsString(eTag, flush: true);
+    final file = File('${dir.path}/$_metadataFileName');
+    await file.writeAsString(json.encode(metadata.toJson()), flush: true);
   }
 
   /// Deletes the entire cache directory and its contents.

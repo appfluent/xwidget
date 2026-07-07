@@ -24,16 +24,20 @@ enum EventType {
 /// Base class for analytics events with shared dimensions.
 abstract class AnalyticsEvent {
   final String channel;
-  final String versionNumber;
-  final String versionMetadata;
+  final String version;
+
+  /// The deployment revision, when known. Null when the client's bundle
+  /// state is unknown. Reported as-is — never defaulted; the analytics
+  /// server maps null to its storage sentinel.
+  final int? revision;
   final String platform;
   final String locale;
   final DateTime timestamp;
 
   AnalyticsEvent({
     required this.channel,
-    required this.versionNumber,
-    required this.versionMetadata,
+    required this.version,
+    required this.revision,
     required this.platform,
     required this.locale,
     required this.timestamp,
@@ -90,8 +94,8 @@ class RenderEvent extends AnalyticsEvent {
 
   RenderEvent({
     required super.channel,
-    required super.versionNumber,
-    required super.versionMetadata,
+    required super.version,
+    required super.revision,
     required super.platform,
     required super.locale,
     required this.fragmentName,
@@ -102,7 +106,7 @@ class RenderEvent extends AnalyticsEvent {
 
   @override
   String get aggregationKey =>
-      'render|$channel|$versionNumber|$versionMetadata|$platform|'
+      'render|$channel|$version|$revision|$platform|'
       '$locale|$fragmentName|$eventDate|$eventHour';
 
   @override
@@ -117,8 +121,8 @@ class RenderEvent extends AnalyticsEvent {
   Map<String, dynamic> toJson() => {
     'type': EventType.render.name,
     'channel': channel,
-    'version_number': versionNumber,
-    'version_metadata': versionMetadata,
+    'version': version,
+    'revision': revision,
     'platform': platform,
     'locale': locale,
     'fragment_name': fragmentName,
@@ -130,8 +134,8 @@ class RenderEvent extends AnalyticsEvent {
 
   factory RenderEvent.fromJson(Map<String, dynamic> json) => RenderEvent(
     channel: json['channel'] as String,
-    versionNumber: json['version_number'] as String,
-    versionMetadata: json['version_metadata'] as String? ?? '',
+    version: json['version'] as String,
+    revision: json['revision'] as int?,
     platform: json['platform'] as String,
     locale: json['locale'] as String,
     fragmentName: json['fragment_name'] as String,
@@ -152,8 +156,8 @@ class DownloadEvent extends AnalyticsEvent {
 
   DownloadEvent({
     required super.channel,
-    required super.versionNumber,
-    required super.versionMetadata,
+    required super.version,
+    required super.revision,
     required super.platform,
     required super.locale,
     required this.cacheCount,
@@ -164,7 +168,7 @@ class DownloadEvent extends AnalyticsEvent {
 
   @override
   String get aggregationKey =>
-      'download|$channel|$versionNumber|$versionMetadata|$platform|'
+      'download|$channel|$version|$revision|$platform|'
       '$locale|$eventDate|$eventHour';
 
   @override
@@ -180,8 +184,8 @@ class DownloadEvent extends AnalyticsEvent {
   Map<String, dynamic> toJson() => {
     'type': EventType.download.name,
     'channel': channel,
-    'version_number': versionNumber,
-    'version_metadata': versionMetadata,
+    'version': version,
+    'revision': revision,
     'platform': platform,
     'locale': locale,
     'cache_count': cacheCount,
@@ -193,8 +197,8 @@ class DownloadEvent extends AnalyticsEvent {
 
   factory DownloadEvent.fromJson(Map<String, dynamic> json) => DownloadEvent(
     channel: json['channel'] as String,
-    versionNumber: json['version_number'] as String,
-    versionMetadata: json['version_metadata'] as String? ?? '',
+    version: json['version'] as String,
+    revision: json['revision'] as int?,
     platform: json['platform'] as String,
     locale: json['locale'] as String,
     cacheCount: json['cache_count'] as int? ?? 0,
@@ -215,8 +219,8 @@ class NavigationEvent extends AnalyticsEvent {
 
   NavigationEvent({
     required super.channel,
-    required super.versionNumber,
-    required super.versionMetadata,
+    required super.version,
+    required super.revision,
     required super.platform,
     required super.locale,
     required this.pageName,
@@ -227,7 +231,7 @@ class NavigationEvent extends AnalyticsEvent {
 
   @override
   String get aggregationKey =>
-      'navigation|$channel|$versionNumber|$versionMetadata|$platform|'
+      'navigation|$channel|$version|$revision|$platform|'
       '$locale|$pageName|$sessionId|$sessionSeq|$timestamp';
 
   @override
@@ -237,8 +241,8 @@ class NavigationEvent extends AnalyticsEvent {
   Map<String, dynamic> toJson() => {
     'type': EventType.navigation.name,
     'channel': channel,
-    'version_number': versionNumber,
-    'version_metadata': versionMetadata,
+    'version': version,
+    'revision': revision,
     'platform': platform,
     'locale': locale,
     'page_name': pageName,
@@ -249,8 +253,8 @@ class NavigationEvent extends AnalyticsEvent {
 
   factory NavigationEvent.fromJson(Map<String, dynamic> json) => NavigationEvent(
     channel: json['channel'] as String,
-    versionNumber: json['version_number'] as String,
-    versionMetadata: json['version_metadata'] as String? ?? '',
+    version: json['version'] as String,
+    revision: json['revision'] as int?,
     platform: json['platform'] as String,
     locale: json['locale'] as String,
     pageName: json['page_name'] as String,
@@ -273,8 +277,8 @@ class ErrorEvent extends AnalyticsEvent {
 
   ErrorEvent({
     required super.channel,
-    required super.versionNumber,
-    required super.versionMetadata,
+    required super.version,
+    required super.revision,
     required super.platform,
     required super.locale,
     required this.fragmentName,
@@ -287,7 +291,7 @@ class ErrorEvent extends AnalyticsEvent {
 
   @override
   String get aggregationKey =>
-      'error|$channel|$versionNumber|$versionMetadata|$platform|'
+      'error|$channel|$version|$revision|$platform|'
       '$locale|$fragmentName|$errorMessage|$eventDate|$eventHour';
 
   @override
@@ -301,8 +305,8 @@ class ErrorEvent extends AnalyticsEvent {
   Map<String, dynamic> toJson() => {
     'type': EventType.error.name,
     'channel': channel,
-    'version_number': versionNumber,
-    'version_metadata': versionMetadata,
+    'version': version,
+    'revision': revision,
     'platform': platform,
     'locale': locale,
     'fragment_name': fragmentName,
@@ -314,8 +318,8 @@ class ErrorEvent extends AnalyticsEvent {
 
   factory ErrorEvent.fromJson(Map<String, dynamic> json) => ErrorEvent(
     channel: json['channel'] as String,
-    versionNumber: json['version_number'] as String,
-    versionMetadata: json['version_metadata'] as String? ?? '',
+    version: json['version'] as String,
+    revision: json['revision'] as int?,
     platform: json['platform'] as String,
     locale: json['locale'] as String,
     fragmentName: json['fragment_name'] as String,
