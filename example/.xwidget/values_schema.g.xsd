@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="https://xwidget.dev/values"
+    targetNamespace="https://xwidget.dev/values">
+
+    <xs:annotation>
+        <xs:documentation>
+            XWidget value resources. Declares named string, bool, int, double,
+            and color resources that fragments reference as @string/name,
+            @bool/name, @int/name, @double/name, and @color/name.
+
+            Loaded at startup from XML files in the values path
+            (default: resources/values). Entries with empty content are
+            ignored. An element outside this vocabulary is an error.
+        </xs:documentation>
+    </xs:annotation>
+
+    <!-- =======================================================================
+         Root
+         ======================================================================= -->
+
+    <xs:element name="resources">
+        <xs:annotation>
+            <xs:documentation>
+                Root element of a value resources file. Contains any
+                combination of resource declarations in any order. Names are
+                unique per resource type; a later declaration with the same
+                name replaces an earlier one.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="string"/>
+                <xs:element ref="bool"/>
+                <xs:element ref="int"/>
+                <xs:element ref="double"/>
+                <xs:element ref="color"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- =======================================================================
+         Resource elements
+         ======================================================================= -->
+
+    <xs:element name="string">
+        <xs:annotation>
+            <xs:documentation>
+                A named string resource. Referenced as @string/name. Content
+                is stored verbatim, including inner whitespace; entries whose
+                content is empty after trimming are ignored.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="name" type="nameAttributeType" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The resource's unique name among string
+                                resources.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="bool">
+        <xs:annotation>
+            <xs:documentation>
+                A named boolean resource. Referenced as @bool/name. Content
+                must be 'true' or 'false'.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="boolContentType">
+                    <xs:attribute name="name" type="nameAttributeType" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The resource's unique name among bool
+                                resources.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="int">
+        <xs:annotation>
+            <xs:documentation>
+                A named integer resource. Referenced as @int/name. Content
+                must parse as a whole number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:integer">
+                    <xs:attribute name="name" type="nameAttributeType" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The resource's unique name among int
+                                resources.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="double">
+        <xs:annotation>
+            <xs:documentation>
+                A named double resource. Referenced as @double/name. Content
+                must parse as a decimal number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:double">
+                    <xs:attribute name="name" type="nameAttributeType" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The resource's unique name among double
+                                resources.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="color">
+        <xs:annotation>
+            <xs:documentation>
+                A named color resource. Referenced as @color/name. Content is
+                6 hex digits (RRGGBB, assumed fully opaque) or 8 hex digits
+                (AARRGGBB), with an optional # or 0x prefix
+                (e.g., '#FF5722', '0xAAFF5722').
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="colorContentType">
+                    <xs:attribute name="name" type="nameAttributeType" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The resource's unique name among color
+                                resources.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- =======================================================================
+         Simple types
+         ======================================================================= -->
+
+    <xs:simpleType name="nameAttributeType">
+        <xs:annotation>
+            <xs:documentation>
+                A non-empty resource name. Used in @type/name references from
+                fragments and in typed lookups from Dart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="boolContentType">
+        <xs:annotation>
+            <xs:documentation>
+                A boolean literal: 'true' or 'false'.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="colorContentType">
+        <xs:annotation>
+            <xs:documentation>
+                A color as 6 (RRGGBB, assumed opaque) or 8 (AARRGGBB) hex
+                digits, with an optional # or 0x prefix.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(#|0x)?([0-9a-fA-F]{6}|[0-9a-fA-F]{8})"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

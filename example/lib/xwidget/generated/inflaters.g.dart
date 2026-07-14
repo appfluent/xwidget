@@ -249,6 +249,7 @@ class CenterInflater extends Inflater {
             case 'key': return parseKey(value);
             case 'widthFactor': return parseDouble(value);
             case 'heightFactor': return parseDouble(value);
+            case 'child': break;
         }
         return value;
     }
@@ -1099,6 +1100,7 @@ class FloatingActionButtonInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'key': return parseKey(value);
+            case 'child': break;
             case 'tooltip': return value;
             case 'foregroundColor': return parseColor(value);
             case 'backgroundColor': return parseColor(value);
@@ -1169,6 +1171,7 @@ class FloatingActionButton_smallInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'key': return parseKey(value);
+            case 'child': break;
             case 'tooltip': return value;
             case 'foregroundColor': return parseColor(value);
             case 'backgroundColor': return parseColor(value);
@@ -1237,6 +1240,7 @@ class FloatingActionButton_largeInflater extends Inflater {
     dynamic parseAttribute(String name, String value) {
         switch (name) {
             case 'key': return parseKey(value);
+            case 'child': break;
             case 'tooltip': return value;
             case 'foregroundColor': return parseColor(value);
             case 'backgroundColor': return parseColor(value);

@@ -1,0 +1,5 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <uri name="https://xwidget.dev/fragments" uri="fragments_schema.g.xsd"/>
+    <uri name="https://xwidget.dev/routes" uri="routes_schema.g.xsd"/>
+    <uri name="https://xwidget.dev/values" uri="values_schema.g.xsd"/>
+</catalog>

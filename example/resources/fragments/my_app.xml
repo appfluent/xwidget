@@ -4,7 +4,7 @@
  Register the generated XML schema file `xwidget_schema.g.xsd` with your IDE for validation,
  code completion, and in-editor documentation.
 -->
-<MaterialApp xmlns="http://www.appfluent.us/xwidget" title="Flutter Demo">
+<MaterialApp xmlns="https://xwidget.dev/fragments" title="Flutter Demo">
     <ThemeData for="theme" useMaterial3="true">
         <ColorScheme.fromSeed for="colorScheme" seedColor="@color/primary"/>
     </ThemeData>

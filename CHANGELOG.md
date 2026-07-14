@@ -1,3 +1,34 @@
+## 0.7.0
+
+- BREAKING: Removed the seven deprecated APIs scheduled for this release:
+  `XWidget.navigatorKey` (use `XRouter.navigatorKey`), `XWidget.xmlCacheEnabled` (no
+  effect since caching moved into Resources), `XWidget.registerControllerFactory<T>`
+  (use `registerControllerFactoryForName` — the typed variant breaks under dart2js
+  minification), `XWidget.clearXmlCache()` (use
+  `Resources.instance.clearFragmentCache()`), `XWidget.navigateToFragment()` and
+  `XWidget.pushFragment()` (use `XRouter.navigateToFragment`), and
+  `MaterialStatePropertyOf` (use `WidgetStatePropertyOf`).
+- BREAKING: Removed the `<debug>` tag.
+- Fixed: `<fragment>` no longer forwards its `dependenciesScope` attribute to the child
+  fragment's root element. The tag consumes it, as the documentation always stated —
+  previously it leaked through as an inherited attribute.
+- Fixed: values and routes documents dispatch on local element names, so
+  namespace-prefixed documents (`<x:resources xmlns:x="…">`) parse identically to
+  default-namespace ones.
+- Routing hardening: route loads are now atomic — a document that fails validation
+  (bad path, duplicate path/name) registers nothing and leaves the previously loaded
+  routes untouched, instead of leaving partial state behind; redirects containing a
+  path parameter the source route can't supply now throw instead of "resolving" with
+  the literal placeholder as the value; and repeated slashes in navigation targets
+  normalize correctly, including leading ones (`//a/b` no longer parses as a URI
+  authority) — query values are never touched.
+- Analytics: unsent event files are retained for up to 7 days before being discarded
+  (was 72 hours), so a week-long offline stretch no longer loses its tail.
+- Analytics: `flushToServer()` and `isFlushing` are now public on `Analytics` for
+  manually forcing a flush cycle; `initialize` accepts an injectable store (testing
+  seam). `shutdown()`'s documentation now states its actual role — teardown for tests
+  and embedders; apps should never call it.
+
 ## 0.6.0
 
 - Moved cloud bundle loading to the v2 deployment model. `CloudResources` now resolves a

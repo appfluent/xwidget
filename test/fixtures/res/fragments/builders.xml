@@ -1,4 +1,4 @@
-<MaterialApp xmlns="http://www.appfluent.us/xwidget">
+<MaterialApp xmlns="https://xwidget.dev/fragments">
     <Controller for="home" name="BuilderTestController">
         <Scaffold>
             <AppBar for="appBar">

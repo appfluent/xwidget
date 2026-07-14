@@ -12,7 +12,6 @@ import 'custom/media.dart';
 import 'custom/value_listener.dart';
 import 'tags/builder.dart';
 import 'tags/callback.dart';
-import 'tags/debug.dart';
 import 'tags/for_each.dart';
 import 'tags/for_loop.dart';
 import 'tags/fragment.dart';
@@ -40,7 +39,6 @@ class XWidget {
 
   static final _builderTag = BuilderTag();
   static final _callbackTag = CallbackTag();
-  static final _debugTag = DebugTag();
   static final _forEachTag = ForEachTag();
   static final _forLoopTag = ForLoopTag();
   static final _fragmentTag = FragmentTag();
@@ -63,7 +61,6 @@ class XWidget {
   static final _tags = <String, Tag>{
     _builderTag.name: _builderTag,
     _callbackTag.name: _callbackTag,
-    _debugTag.name: _debugTag,
     _forEachTag.name: _forEachTag,
     _forLoopTag.name: _forLoopTag,
     _fragmentTag.name: _fragmentTag,
@@ -76,14 +73,6 @@ class XWidget {
   static final _attributeContainsExpressions = RegExp(r"\$\{(.*?)}");
   static final _fragmentStack = <Fragment>[];
   static bool _wasFragmentErrorTracked = false;
-
-  /// Global navigator key. Assign to [MaterialApp.navigatorKey]
-  /// to enable context-free navigation for routes.
-  @Deprecated('Use XRouter.navigatorKey instead. ')
-  static final navigatorKey = XRouter.navigatorKey;
-
-  @Deprecated('Caching is now managed by Resources internally. This field has no effect.')
-  static bool xmlCacheEnabled = true;
 
   // EL parser
   static final elParser = ELParser();
@@ -204,14 +193,6 @@ class XWidget {
     _tags[tag.name] = tag;
   }
 
-  @Deprecated(
-    'Use registerControllerFactoryForName instead. '
-    'This method uses T.toString() which breaks under dart2js minification.',
-  )
-  static void registerControllerFactory<T extends Controller>(XWidgetControllerFactory<T> factory) {
-    registerControllerFactoryForName(T.toString(), factory);
-  }
-
   static void registerControllerFactoryForName(String name, XWidgetControllerFactory factory) {
     _controllerFactories[name] = factory;
   }
@@ -231,58 +212,6 @@ class XWidget {
     final factory = _controllerFactories[name];
     if (factory != null) return factory();
     throw Exception("XWidget controller factory for '$name' not found");
-  }
-
-  /// Clears the parsed fragment XML cache.
-  @Deprecated("Use `Resources.instance.clearFragmentCache()` instead.")
-  static void clearXmlCache() {
-    try {
-      Resources.instance.clearFragmentCache();
-    } catch (_) {}
-  }
-
-  /// Navigates to a fragment-backed page by inflating an XML fragment
-  /// and pushing the resulting widget onto the navigation stack.
-  @Deprecated('Use XRouter.navigateToFragment instead')
-  static void navigateToFragment(
-    String fragmentName,
-    Dependencies dependencies, {
-    BuildContext? context,
-    String? pageName,
-    Map<String, dynamic>? params,
-    bool cupertinoStyle = false,
-    RoutePredicate? removeUntil,
-    NavigatorAction action = NavigatorAction.push,
-  }) {
-    XRouter.navigateToFragment(
-      fragmentName,
-      dependencies,
-      context: context,
-      pageName: pageName,
-      params: params,
-      transition: cupertinoStyle ? 'cupertino' : null,
-      removeUntil: removeUntil,
-      action: action,
-    );
-  }
-
-  @Deprecated('Use XRouter.navigateToFragment instead')
-  static void pushFragment(
-    BuildContext context,
-    String fragmentName,
-    Dependencies dependencies, {
-    String? pageName,
-    Map<String, dynamic>? params,
-    bool cupertinoStyle = false,
-  }) {
-    XRouter.navigateToFragment(
-      fragmentName,
-      dependencies,
-      context: context,
-      pageName: pageName,
-      params: params,
-      transition: cupertinoStyle ? 'cupertino' : null,
-    );
   }
 
   /// Inflates an XML fragment by name and returns the resulting widget tree.

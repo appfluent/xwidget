@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="https://xwidget.dev/routes"
+    targetNamespace="https://xwidget.dev/routes" elementFormDefault="qualified">
+
+    <xs:annotation>
+        <xs:documentation>
+            XWidget routing configuration. Declares the application's routes,
+            route groups for multi-view widgets (PageView, TabBarView,
+            IndexedStack), and their associated fragments, transitions, and
+            presenters.
+
+            Loaded at startup via XRouter.loadRoutesFromXml().
+        </xs:documentation>
+    </xs:annotation>
+
+    <!-- =======================================================================
+         Root
+         ======================================================================= -->
+
+    <xs:element name="routes">
+        <xs:annotation>
+            <xs:documentation>
+                Root element. Contains any combination of standalone routes and
+                route groups in any order.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="route" type="RouteType"/>
+                <xs:element name="routeGroup" type="RouteGroupType"/>
+            </xs:choice>
+            <xs:attribute name="maxRedirects" type="xs:positiveInteger" default="5">
+                <xs:annotation>
+                    <xs:documentation>
+                        Maximum number of redirects to follow while resolving a
+                        route. Defaults to 5.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- =======================================================================
+         Route group
+         ======================================================================= -->
+
+    <xs:complexType name="RouteGroupType">
+        <xs:annotation>
+            <xs:documentation>
+                Groups routes that drive a single multi-view widget (PageView,
+                TabBarView, IndexedStack). Navigating to a route in the group
+                invokes the registered RouteCallback rather than pushing a new
+                page onto the Navigator.
+
+                Child route and routeGroup order determines each child view
+                index. The first route in the group's own route list is the
+                group's default route and receives aliases for the group name
+                and group path.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="route" type="RouteType"/>
+            <xs:element name="routeGroup" type="RouteGroupType"/>
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Group identifier. Used as the registration key for the
+                    RouteCallback bound to the group's multi-view widget via
+                    XRouter.registerRouteCallback().
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="path" type="PathType">
+            <xs:annotation>
+                <xs:documentation>
+                    Optional path prefix prepended to each child route's path.
+                    Must begin with a forward slash.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="history" type="xs:boolean" default="true">
+            <xs:annotation>
+                <xs:documentation>
+                    Default browser history behavior for child routes. When true,
+                    navigation pushes a new browser history entry. Child routes
+                    may override this setting individually.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="fragment" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Optional fragment associated with this group when it appears
+                    as a nested routeGroup. Used as the fragment for the ancestor
+                    route activation before navigating to a child route.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="presenter" type="PresenterType">
+            <xs:annotation>
+                <xs:documentation>
+                    Default presenter inherited by child routes and nested route
+                    groups. Child routes or nested groups may override it.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="transition" type="TransitionType">
+            <xs:annotation>
+                <xs:documentation>
+                    Default transition inherited by child routes and nested route
+                    groups. Child routes or nested groups may override it.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <!-- =======================================================================
+         Route
+         ======================================================================= -->
+
+    <xs:complexType name="RouteType">
+        <xs:annotation>
+            <xs:documentation>
+                A single route definition. Maps a path to a fragment or a
+                redirect target. A route must specify either fragment or
+                redirect, but not both.
+
+                Standalone (under &lt;routes&gt;): pushes the fragment onto the
+                Navigator or invokes a presenter for overlay presentation.
+
+                Inside a &lt;routeGroup&gt;: invokes the group's registered
+                RouteCallback with this route's view index. The path is
+                suffixed to the group's path; the history attribute inherits
+                from the group when omitted.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="path" type="PathType" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    URL path for this route. Must begin with a forward slash.
+                    Supports parameter segments using a colon prefix
+                    (e.g., '/users/:id/posts/:postId').
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="fragment" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Name of the fragment to inflate when this route is active.
+                    Required unless redirect is present.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="redirect" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Redirect target to resolve when this route is active.
+                    Required when fragment is omitted. Cannot be used with
+                    fragment.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Optional name for programmatic navigation via
+                    XRouter.goTo('name'). Inside a route group, the route's
+                    fully-qualified name is 'groupName:routeName'.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="history" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether navigation to this route pushes a browser history
+                    entry. Standalone routes default to true. Inside a group,
+                    inherits the group's history setting when omitted.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="presenter" type="PresenterType">
+            <xs:annotation>
+                <xs:documentation>
+                    Presentation handler that opens this route as an overlay
+                    rather than pushing onto the Navigator. Built-in presenters:
+                    'dialog', 'bottomSheet'. Additional presenters may be
+                    registered via XRouter.registerPresentation().
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="transition" type="TransitionType">
+            <xs:annotation>
+                <xs:documentation>
+                    Transition animation when pushing this route. Built-in
+                    transitions: 'none', 'fade', 'slide', 'scale', 'material',
+                    'cupertino'. Omit for the default Material transition.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <!-- =======================================================================
+         Simple types
+         ======================================================================= -->
+
+    <xs:simpleType name="PathType">
+        <xs:annotation>
+            <xs:documentation>
+                A URL path beginning with a forward slash. Disallows double
+                slashes and trailing slashes. Supports parameter segments
+                prefixed with a colon.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="/|(/[^/]+)+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TransitionType">
+        <xs:annotation>
+            <xs:documentation>
+                Route transition animation. Built-in values are listed below
+                for IDE autocomplete; custom transition names may be used
+                after registration.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="none">
+                        <xs:annotation>
+                            <xs:documentation>No transition animation. Duration zero.</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="fade">
+                        <xs:annotation>
+                            <xs:documentation>Fade in from transparent.</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="slide">
+                        <xs:annotation>
+                            <xs:documentation>Slide in from the right with an ease-out curve.</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="scale">
+                        <xs:annotation>
+                            <xs:documentation>Scale up from zero.</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="material">
+                        <xs:annotation>
+                            <xs:documentation>Standard Material page transition via MaterialPageRoute. Platform-adaptive: uses the page transitions configured in the active ThemeData.</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="cupertino">
+                        <xs:annotation>
+                            <xs:documentation>iOS-style right-to-left slide via CupertinoPageRoute.</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="PresenterType">
+        <xs:annotation>
+            <xs:documentation>
+                Route presenter for overlay-style presentation. Built-in values
+                are listed below for IDE autocomplete; custom presenter names
+                may be used after registration via XRouter.registerPresentation().
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="dialog">
+                        <xs:annotation>
+                            <xs:documentation>Present the fragment as a modal dialog via showDialog().</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="bottomSheet">
+                        <xs:annotation>
+                            <xs:documentation>Present the fragment as a modal bottom sheet via showModalBottomSheet().</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+</xs:schema>

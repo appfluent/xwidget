@@ -83,7 +83,7 @@ class ValueResourceBundle extends ResourceBundle {
   void _parseXml(String xml) {
     final document = XmlDocument.parse(xml);
     final root = document.rootElement;
-    switch (root.name.qualified) {
+    switch (root.name.local) {
       case "resources":
         _processValues(root);
       case "routes":
@@ -93,7 +93,7 @@ class ValueResourceBundle extends ResourceBundle {
 
   void _processValues(XmlElement root) {
     for (final element in root.childElements) {
-      final resourceType = element.name.qualified;
+      final resourceType = element.name.local;
       final resourceName = element.getAttribute("name");
       final resourceValue = element.innerText.trim();
       if (resourceName != null && resourceValue.isNotEmpty) {

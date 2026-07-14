@@ -1,2 +1,2 @@
 <?xml version="1.0"?>
-<Text data="${title}"/>
+<Text xmlns="https://xwidget.dev/fragments" data="${title}"/>

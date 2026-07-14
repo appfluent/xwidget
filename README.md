@@ -46,7 +46,7 @@ support nested fragments, parameters, control flow, resources, expressions, and
 dependency scopes.
 
 ```xml
-<Column xmlns="http://www.appfluent.us/xwidget" crossAxisAlignment="start">
+<Column xmlns="https://xwidget.dev/fragments" crossAxisAlignment="start">
     <Text data="Hello World">
         <TextStyle for="style" fontWeight="bold" color="#262626"/>
     </Text>

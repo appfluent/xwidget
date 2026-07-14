@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.appfluent.us/xwidget"
-    targetNamespace="http://www.appfluent.us/xwidget">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="https://xwidget.dev/fragments"
+    targetNamespace="https://xwidget.dev/fragments">
 
     <!-- simple types -->
 
@@ -759,7 +759,8 @@
             </xs:attribute>
             <xs:attribute name="returnVar" type="xs:string">
                 <xs:annotation>
-                    <xs:documentation xml:lang="en"><![CDATA[<p>Dependency key in which to store the action's return value. Useful when the action computes something that subsequent code needs.</p>]]></xs:documentation>
+                    <xs:documentation xml:lang="en"><![CDATA[<p>Dependency key in which to store the action's return value.</p><br/>
+<p>The result is always stored in the surrounding <code>Dependencies</code> (independent of <code>dependenciesScope</code>), so other widgets can read it.</p>]]></xs:documentation>
                 </xs:annotation>
             </xs:attribute>
             <xs:attribute name="vars" type="xs:string">
@@ -769,7 +770,7 @@
             </xs:attribute>
             <xs:attribute name="dependenciesScope" type="dependenciesScopeAttributeType">
                 <xs:annotation>
-                    <xs:documentation xml:lang="en"><![CDATA[<p>Controls how <code>Dependencies</code> are scoped during action evaluation. Defaults to <code>inherit</code>, or <code>copy</code> when <code>vars</code> or <code>returnVar</code> are present.</p>]]></xs:documentation>
+                    <xs:documentation xml:lang="en"><![CDATA[<p>Controls how <code>Dependencies</code> are scoped while <code>action</code> is evaluated; it does not affect where <code>returnVar</code> is stored. Defaults to <code>inherit</code>, or <code>copy</code> when <code>vars</code> are present so the handler arguments don't leak into the surrounding scope.</p>]]></xs:documentation>
                 </xs:annotation>
             </xs:attribute>
         </xs:complexType>
@@ -1004,6 +1005,11 @@
                     <xs:attribute name="progressWidget">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[<p>Widget displayed during controller initialization. Defaults to <code>SizedBox.shrink()</code>.</p>]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="keepAlive">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en"><![CDATA[<p>Whether the controller should request keep-alive behavior from keep-alive-aware parents such as <code>PageView</code>. Defaults to <code>false</code>.</p>]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                     <xs:attribute name="options">
@@ -1930,6 +1936,14 @@ an explicit key.</p><br/>
                             <xs:documentation xml:lang="en"><![CDATA[
 <p>If non-null, sets its height to the child's height multiplied by this factor.</p><br/>
 <p>Can be both greater and less than 1.0 but must be non-negative.</p><br/>
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="child">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en"><![CDATA[
+<p>The widget below this widget in the tree.</p><br/>
+<p>{@macro flutter.widgets.ProxyWidget.child}</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
@@ -3125,6 +3139,14 @@ an explicit key.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="child">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en"><![CDATA[
+<p>The widget below this widget in the tree.</p><br/>
+<p>Typically an [Icon].</p><br/>
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="tooltip">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
@@ -3428,6 +3450,14 @@ an explicit key.</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
+                    <xs:attribute name="child">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en"><![CDATA[
+<p>The widget below this widget in the tree.</p><br/>
+<p>Typically an [Icon].</p><br/>
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="tooltip">
                         <xs:annotation>
                             <xs:documentation xml:lang="en"><![CDATA[
@@ -3702,6 +3732,14 @@ an explicit key.</p><br/>
 <ul>
 <li>The discussions at [Key] and [GlobalKey].</li>
 </ul>
+                            ]]></xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="child">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en"><![CDATA[
+<p>The widget below this widget in the tree.</p><br/>
+<p>Typically an [Icon].</p><br/>
                             ]]></xs:documentation>
                         </xs:annotation>
                     </xs:attribute>

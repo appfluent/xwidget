@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -43,7 +43,7 @@ class Analytics with WidgetsBindingObserver {
   static const _maxDistinctErrors = 50;
   static const _defaultPersistInterval = Duration(seconds: 10);
   static const _defaultFlushInterval = Duration(minutes: 15);
-  static const _defaultMaxFileAge = Duration(hours: 72);
+  static const _defaultMaxFileAge = Duration(days: 7);
   static const _defaultSessionTimeout = Duration(minutes: 15);
   static const _analyticsBaseUrl = String.fromEnvironment(
     'XWIDGET_ANALYTICS_URL',
@@ -59,7 +59,7 @@ class Analytics with WidgetsBindingObserver {
   final Duration _maxFileAge;
   final Duration _sessionTimeout;
   final _memoryBuffer = <String, AnalyticsEvent>{};
-  final AnalyticsStore _store = AnalyticsStore();
+  final AnalyticsStore _store;
   final TotpPlusHttpClient _httpClient;
 
   /// The deployment revision the client currently holds. Null until known —
@@ -83,6 +83,7 @@ class Analytics with WidgetsBindingObserver {
     Duration flushInterval = _defaultFlushInterval,
     Duration maxFileAge = _defaultMaxFileAge,
     Duration sessionTimeout = _defaultSessionTimeout,
+    AnalyticsStore? store,
   }) : _channel = channel,
        _version = version,
        _platform = platform,
@@ -91,6 +92,7 @@ class Analytics with WidgetsBindingObserver {
        _flushInterval = flushInterval,
        _maxFileAge = maxFileAge,
        _sessionTimeout = sessionTimeout,
+       _store = store ?? AnalyticsStore(),
        _httpClient = TotpPlusHttpClient(totp: TotpPlusClient(key: projectKey));
 
   static bool get isInitialized => _instance != null;
@@ -110,6 +112,7 @@ class Analytics with WidgetsBindingObserver {
     Duration persistInterval = _defaultPersistInterval,
     Duration flushInterval = _defaultFlushInterval,
     Duration maxFileAge = _defaultMaxFileAge,
+    @visibleForTesting AnalyticsStore? store,
   }) async {
     if (_instance != null) {
       _log.warning('Analytics already initialized, ignoring');
@@ -131,6 +134,7 @@ class Analytics with WidgetsBindingObserver {
       persistInterval: persistInterval,
       flushInterval: flushInterval,
       maxFileAge: maxFileAge,
+      store: store,
     );
 
     _instance!._start();
@@ -156,7 +160,22 @@ class Analytics with WidgetsBindingObserver {
     _log.fine('Analytics revision set: $revision');
   }
 
-  /// Shuts down the Analytics singleton, flushing any remaining events.
+  /// Tears down the Analytics singleton: cancels timers, unregisters the
+  /// lifecycle observer, persists buffered events, and attempts a final
+  /// flush.
+  ///
+  /// Apps should never call this. Backgrounding and process death are
+  /// handled automatically — events are persisted locally every few
+  /// seconds and flushed on lifecycle pause/detach, so there is nothing
+  /// for an app to clean up. Calling this mid-session permanently disables
+  /// tracking until [initialize] runs again.
+  ///
+  /// It exists for the two callers that genuinely need teardown: tests
+  /// recycling the singleton between cases, and embedders that must
+  /// reconfigure (e.g. switch project keys) via shutdown → initialize.
+  ///
+  /// Note: the final flush is awaited and can block up to the send
+  /// timeout per event type on a dead network.
   static Future<void> shutdown() async {
     final instance = _instance;
     if (instance == null) return;
@@ -328,6 +347,16 @@ class Analytics with WidgetsBindingObserver {
     );
     inst._addEvent(event);
   }
+
+  /// Whether a flush cycle is currently in progress. [flushToServer] calls
+  /// made while true are no-ops.
+  bool get isFlushing => _isFlushing;
+
+  /// Persists buffered events, rotates the current files, and sends all
+  /// unsent files to the server. Runs automatically on the flush timer and
+  /// on lifecycle pause/detach; call this to force a cycle. No-op when a
+  /// flush is already in progress.
+  Future<void> flushToServer() => _flushToServer();
 
   // ---------------------------------------------------------------------------
   // Internal — helpers

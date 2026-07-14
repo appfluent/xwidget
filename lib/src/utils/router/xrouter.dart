@@ -220,25 +220,45 @@ class XRouter {
   /// the document's `<routes>` root. Call once during app startup
   /// after [XWidget.initialize].
   static void loadRoutesFromXml(String source, XmlDocument document) {
-    _removeRoutes(source);
-
-    final root = document.getElement('routes');
+    // Match the root by local name so namespace-prefixed documents
+    // (<r:routes xmlns:r="...">) load the same as default-namespace ones.
+    final root = document.rootElement.name.local == 'routes' ? document.rootElement : null;
     if (root == null) return;
 
-    // set max redirects
-    maxRedirects = tryParseInt(root.getAttribute('maxRedirects')) ?? _defaultMaxRedirects;
+    final newMaxRedirects = tryParseInt(root.getAttribute('maxRedirects')) ?? _defaultMaxRedirects;
 
+    // Loads are atomic: parse and collision-check the entire document before
+    // touching live state, so a bad document (validation error, duplicate
+    // path/name) changes nothing — the previous routes stay registered and
+    // resolvable. Matters for hot reload and OTA updates, where a failed
+    // load must not leave partial or orphaned routes behind.
+
+    // Phase 1: parse. Throws leave everything untouched.
+    final parsed = <_Route>[];
     for (final element in root.childElements) {
-      switch (element.name.qualified) {
+      switch (element.name.local) {
         case 'routeGroup':
-          final routes = _parseRouteGroup(element);
-          for (final route in routes) {
-            _registerRoute(source, route);
-          }
+          parsed.addAll(_parseRouteGroup(element));
         case 'route':
-          _registerRoute(source, _parseRoute(element));
+          parsed.add(_parseRoute(element));
       }
     }
+
+    // Phase 2: validate collisions against a staged view of the route map
+    // with this source's old routes removed — a reload may reuse its keys.
+    final oldRoutes = _sourceMap[source] ?? {};
+    final staged = Map.of(_routes)..removeWhere((_, route) => oldRoutes.contains(route));
+    for (final route in parsed) {
+      _stageRoute(staged, route);
+    }
+
+    // Phase 3: commit. Cannot throw — the same inserts just validated
+    // against the same effective baseline.
+    _removeRoutes(source);
+    for (final route in parsed) {
+      _registerRoute(source, route);
+    }
+    maxRedirects = newMaxRedirects;
   }
 
   // ===================================
@@ -330,9 +350,7 @@ class XRouter {
     // If target matches a group alias and the group has a
     // previously active route, resume that route instead of
     // navigating to the default child.
-    final lookupKey = target.startsWith('/')
-        ? Uri.parse(target).path.replaceAll(RegExp(r'/+'), '/')
-        : target;
+    final lookupKey = target.startsWith('/') ? _TargetUri.parse(target).path : target;
     final aliasRoute = _routes[lookupKey];
     if (aliasRoute != null &&
         aliasRoute.groupName != null &&
@@ -373,12 +391,12 @@ class XRouter {
   }
 
   static void routePop() {
-    final navigator = XWidget.navigatorKey.currentState;
+    final navigator = navigatorKey.currentState;
     navigator?.pop();
   }
 
   static void routePopAll() {
-    final navigator = XWidget.navigatorKey.currentState;
+    final navigator = navigatorKey.currentState;
     navigator?.popUntil((route) => route.isFirst);
   }
 
@@ -494,28 +512,35 @@ class XRouter {
   /// Each route is registered under its path and optionally its
   /// name and aliases. Throws if any key collides with an existing
   /// registration.
-  static void _registerRoute(String source, _Route route) {
+  /// Inserts a route into [routes] by path, name, and aliases, throwing on
+  /// any key collision. Used against the staging map to validate a document
+  /// before commit, and against the live map during commit.
+  static void _stageRoute(Map<String, _Route> routes, _Route route) {
     // register route by path
-    if (_routes.containsKey(route.path)) {
+    if (routes.containsKey(route.path)) {
       throw Exception('Route path "${route.path}" already exists');
     }
-    _routes[route.path] = route;
+    routes[route.path] = route;
 
     // register route by name
     if (route.name != null) {
-      if (_routes.containsKey(route.name)) {
+      if (routes.containsKey(route.name)) {
         throw Exception('Route name "${route.name}" already exists');
       }
-      _routes[route.name!] = route;
+      routes[route.name!] = route;
     }
 
     // register routes by aliases
     for (final alias in route.aliases) {
-      if (_routes.containsKey(alias)) {
+      if (routes.containsKey(alias)) {
         throw Exception('Route name or path collision: "$alias"');
       }
-      _routes[alias] = route;
+      routes[alias] = route;
     }
+  }
+
+  static void _registerRoute(String source, _Route route) {
+    _stageRoute(_routes, route);
 
     // Build pattern for parameterized paths
     if (route.path.contains(':')) {
@@ -885,7 +910,7 @@ class XRouter {
     var index = 0;
     final routes = <_Route>[];
     for (final child in element.childElements) {
-      switch (child.name.qualified) {
+      switch (child.name.local) {
         case 'route':
           final route = _parseRoute(
             child,
@@ -1077,6 +1102,18 @@ class _TargetUri {
   _TargetUri._(this._uri, this.path);
 
   factory _TargetUri.parse(String target) {
+    // Collapse repeated slashes in path-style targets BEFORE Uri.parse —
+    // a leading "//" would otherwise be read as a URI authority (host) and
+    // swallow the first path segment. Only the path portion is collapsed;
+    // query values (e.g. ?next=https://...) must survive untouched. Full
+    // URLs keep their scheme's "//" and are normalized post-parse below.
+    if (target.startsWith('/')) {
+      final queryStart = target.indexOf('?');
+      target = queryStart == -1
+          ? target.replaceAll(_multiSlash, '/')
+          : target.substring(0, queryStart).replaceAll(_multiSlash, '/') +
+                target.substring(queryStart);
+    }
     final uri = Uri.parse(target);
     final normalizedPath = uri.path.replaceAll(_multiSlash, '/');
     return _TargetUri._(uri, normalizedPath);
@@ -1088,6 +1125,17 @@ class _TargetUri {
 
   String buildTargetPath(String destinationPath, [_RoutePattern? matchedPattern]) {
     if (matchedPattern == null) {
+      // No source pattern means no parameter values exist to substitute —
+      // any placeholder left in the destination is unresolvable. Without
+      // this guard, ":param" passes through literally and can "match" the
+      // destination's own pattern with the placeholder as the value.
+      final unresolved = _paramPattern.firstMatch(destinationPath);
+      if (unresolved != null) {
+        throw Exception(
+          'Unresolved path parameter ":${unresolved.group(1)}" in '
+          '"$destinationPath". The source route is not parameterized.',
+        );
+      }
       var concretePath = destinationPath.replaceAll(_multiSlash, '/');
       return hasQuery ? '$concretePath?$query' : concretePath;
     }

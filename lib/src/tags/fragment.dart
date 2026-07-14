@@ -13,7 +13,11 @@ import '../../xwidget.dart';
 ///         folders i.e. 'profile/login'.
 /// - dependenciesScope (optional): Defines the method for passing Dependencies
 ///         to immediate children. Valid values are `new`, `copy`, and
-///         `inherit`. The default is `inherit`.
+///         `inherit`. The default is `inherit`, or `copy` when params or
+///         query parameters are present.
+/// - visible (optional): Controls whether the fragment is rendered. When
+///         `false`, the fragment is not inflated at all. The default is
+///         `true`.
 /// - for (optional): name of parent attribute to render the fragment into.
 ///         ```dart
 ///         <AppBar>
@@ -21,7 +25,7 @@ import '../../xwidget.dart';
 ///         </AppBar>
 ///         ```
 class FragmentTag implements Tag {
-  static const attributeNames = {"for", "name", "visible"};
+  static const attributeNames = {"dependenciesScope", "for", "name", "visible"};
 
   @override
   String get name => "fragment";
