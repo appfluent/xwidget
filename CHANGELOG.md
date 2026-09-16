@@ -1,3 +1,10 @@
+## 0.7.1
+
+- Fixed: the web bundle cache's `clear()` could throw despite its catch-all handler, and
+  `_get()` could escape its "return null on failure" guard. Both returned an IndexedDB
+  completer's future from inside a `try` block without awaiting it, so a transaction that
+  failed after the block exited bypassed the `catch`. Now awaited in place.
+
 ## 0.7.0
 
 - BREAKING: Removed the seven deprecated APIs scheduled for this release:

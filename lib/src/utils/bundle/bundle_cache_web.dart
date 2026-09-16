@@ -66,7 +66,7 @@ class BundleCacheWeb implements BundleCache {
         completer.completeError(Exception('Failed to clear IndexedDB store'));
       }.toJS;
 
-      return completer.future;
+      return await completer.future;
     } catch (_) {}
   }
 
@@ -119,7 +119,7 @@ class BundleCacheWeb implements BundleCache {
         completer.complete(null);
       }.toJS;
 
-      return completer.future;
+      return await completer.future;
     } catch (_) {
       return null;
     }
