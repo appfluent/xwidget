@@ -1,3 +1,9 @@
+## 0.7.2
+
+- Two unused callback parameters in the custom controller's `DynamicBuilder` call now use
+  the `_` wildcard twice instead of `_` and `__`, clearing the `unnecessary_underscores`
+  lint reported by pub.dev's analyzer.
+
 ## 0.7.1
 
 - Fixed: the web bundle cache's `clear()` could throw despite its catch-all handler, and

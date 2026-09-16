@@ -140,8 +140,8 @@ abstract class Controller extends State<ControllerWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return DynamicBuilder(
-      initializer: (_, __) => _initValue,
-      builder: (_, deps, __) => _inflateChildren(deps),
+      initializer: (_, _) => _initValue,
+      builder: (_, deps, _) => _inflateChildren(deps),
       dependencies: widget.dependencies,
       errorWidget: widget.errorWidget,
       progressWidget: widget.progressWidget,
